@@ -1,0 +1,1 @@
+/home/laite/.bash_aliases
