@@ -1,0 +1,13 @@
+// Ex 5.
+
+#include "../Ch5headers.h"
+
+int main()
+{
+
+	const char *c = "this and this.";
+	const char *ptr = c;
+
+
+	return 0;
+}

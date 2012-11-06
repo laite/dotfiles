@@ -1,0 +1,11 @@
+// Ex 9.
+
+#include "../../helpers.h"
+
+int main()
+{
+	string s("What's up");
+	int notMuch = 2;
+
+	return 0;
+}

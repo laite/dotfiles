@@ -1,0 +1,9 @@
+// Ex 5.
+
+#include "../Ch5headers.h"
+
+int main()
+{
+
+	return 0;
+}

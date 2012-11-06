@@ -1,0 +1,19 @@
+// Ex 7.26: plurals
+
+#include "../Ch7Headers.h"
+
+string &make_plural(string &s, char pluralSuffix = 's')
+{
+	s += pluralSuffix;
+	return (s+"aa");
+}
+
+int main()
+{
+	string success("success"), failure("failure");
+
+	cout << make_plural(success, '\'') << endl;
+	cout << make_plural(failure) << endl;
+
+	return 0;
+}

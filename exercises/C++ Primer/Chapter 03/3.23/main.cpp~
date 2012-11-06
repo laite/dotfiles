@@ -1,0 +1,14 @@
+// Ex 3.23: a bit of fun
+
+#include "../Ch3headers.h"
+
+int main()
+{
+	cout << "* Example begins *" << endl;
+
+	bitset<32> myBit(1010101);
+
+	cout << myBit << endl;
+
+	return 0;
+}

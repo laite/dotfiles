@@ -1,0 +1,20 @@
+// Ex 2.15 : slight differences
+
+#include <iostream>
+
+int calc()
+{
+	return 1;
+}
+
+int main()
+{
+	int month = 2;
+	int day = month = 7;
+
+	int calac = calc();
+
+	std::cout << day << "." << month << std::endl;
+
+	return 0;
+}
