@@ -35,6 +35,7 @@ set foldcolumn=2
 set foldmethod=manual
 set foldnestmax=2
 set foldminlines=1
+set splitright
 
 " Make shift-insert work like in Xterm
 map <S-Insert> <MiddleMouse>
@@ -43,6 +44,7 @@ map <F2> <C-]>
 
 " delete into abyss with R<motion>
 nnoremap R "_d
+nnoremap Q qq 
 
 " some key bindings
 nnoremap <silent> ö :TagbarToggle<CR>
