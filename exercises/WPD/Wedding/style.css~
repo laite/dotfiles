@@ -1,0 +1,72 @@
+/* 	style.css (c) Markus Klinga 			*
+* 	Stylesheet for Paula Elonen KY			*
+* 	Wedding page							*/
+
+
+/*********************/
+/* Basic definitions */
+/*********************/
+
+body {
+	margin: 0;
+}
+
+h1 { 
+	margin: 0 0 1em;
+	padding-left: 50px;
+	font-style: italic;
+	font-size: 2em;
+}
+
+h2 {
+	text-decoration: underline;
+	background-image:url("img/p.jpg");
+	background-repeat: repeat-x;
+	padding: 10px 10px 5px 45px;
+	margin: 0 0 2em;
+	font-size: 1.33em;
+}
+
+/*********************/
+/* Class definitions */
+/*********************/
+
+.text {
+	margin: 0 0 1em;
+	padding: 0 50px 0 50px;
+}
+
+.floatImageLeft {
+	float: left;
+	padding: 5px;
+}
+
+.floatImageRight {
+	float: right;
+	padding: 5px;
+}
+
+.floatingFlower {
+	position: relative;
+	float: left;
+	left: 5px;
+	bottom: -5px;
+	margin: 3px;
+}
+
+/*********************/
+/* ID definitions    */
+/*********************/
+
+#container {
+	width: 700px;
+	margin: 0px 10px;
+	border-left: solid 1px #aaa;
+	padding: 0;
+}
+
+#content {
+	width: 500px;
+	margin: 10px;
+	padding: 10px 100px 10px 100px;
+}
