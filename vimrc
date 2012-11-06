@@ -74,6 +74,9 @@ let g:tagbar_compact = 1
 let g:tagbar_autoclose = 1
 
 
+set directory=~/.vim/tmp/
+set backupdir=~/.vim/tmp/
+
 " Only do this part when compiled with support for autocommands.
 if has("autocmd")
 

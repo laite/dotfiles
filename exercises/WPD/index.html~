@@ -13,7 +13,8 @@
 	<body>
 	<!-- scripts -->
 	<script src="js/button.js"></script>
-	<script type="text/javascript" src="js/pizza.js"></script>
+	<script src="js/pizza.js"></script>
+	<script src="js/datepicker.js"></script>
 	<script src="js/html5slider.js"></script>
 
 	<div id="container">
@@ -197,8 +198,12 @@
 		</table>
 
 		<form id="pizzaForm" onsubmit="pizzaSubmit()" onreset="pizzaReset()">
-			<h2>Order some pizza <em>now</em>!</h2>
+			<h2>Order some pizza <em>for the future</em>!</h2>
 			<table class="pizzaTable">
+				<tr class="pizzaItem">
+					<td>Delivery on</td>
+					<td><input type="date" id="pizzaDate" /></td>
+				</tr>
 				<tr class="pizzaItem">
 					<td>Name</td>
 					<td><input type="text" name="name" placeholder="John Snow" /></td>
@@ -239,8 +244,8 @@
 				<tr class="pizzaItem">
 					<td>Amount of Stuffing</td>
 					<td>
-						<input type="range" value="4" min="1" max="10" onchange="showSliderValue(this.value)" />
-						<span id="stuffingAmount">basic</span>
+						<input type="range" value="5" min="1" max="10" onchange="showSliderValue(this.value)" />
+						<span id="stuffingAmount">properly (5)</span>
 					</td>
 
 				<tr class="pizzaItem">
