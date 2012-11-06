@@ -10,8 +10,7 @@ function zeroPad(num, places) {
 window.onload = function()
 {
 	var now = new Date(); 
-	var dateString = now.getFullYear() + '-' + zeroPad((now.getMonth()+1),2) + '-' + zeroPad(now.getDate(),2);
+	var dateString = now.toJSON().substring(0,10); //toJSON() returns full date+time, we only need date
 
-	document.getElementById('pizzaDate').value = dateString;
-	document.getElementById('pizzaDate').min = dateString;
+	document.getElementById('pizzaDate').min = document.getElementById('pizzaDate').value = dateString;
 };

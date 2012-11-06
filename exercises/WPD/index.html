@@ -16,7 +16,8 @@
 	<script src="js/button.js"></script>
 	<script src="js/pizza.js"></script>
 	<script src="js/datepicker.js"></script>
-	<script src="js/html5slider.js"></script>
+	<script src="js/html5slider.js"></script> <!-- slider with html5 (for e.g. mozilla) -->
+	<script src="js/fade.js"></script> <!-- fade text, external script -->
 
 	<div id="container">
 		<header>
@@ -61,6 +62,10 @@
 			<button type="button" onclick="goSomewhereElse('http://uutimet.net/')">Uutimet</button><br />
 			<button type="button" onclick="goSomewhereElse('25.html')">Old</button>
 			<button type="button" onclick="resizeWindow()">Resize</button>
+			<h4>Reminder</h4>
+			<img src="pics/iconB.png" alt="Touch me!" onmouseover="fader.fade(2, true);" onmouseout="fader.fade(2, false);" />
+			<br />
+			<p id="fade0"></p>
 		</aside>
 		<section>
 		<h2 id="firstChapter"> 1<sup>st</sup> Chapter </h2>
@@ -78,6 +83,7 @@
 		-->
 		<h2 id="secondChapter"> 2<sup>nd</sup> Chapter </h2>
 			<p class="text">
+			<img class="floatingImageLeft" height="64" src="pics/iconA.png" alt="Touch me!" onmouseover="fader.fade(1, true);" onmouseout="fader.fade(1, false);" />
 			<span class="dropcap">U</span>t nunc urna, feugiat in elementum eget, venenatis eget lorem. Vestibulum et lorem a ante volutpat ultrices. Cras consectetur nunc eget felis <span class="warning">euismod ac hendrerit diam pellentesque.</span> Cras fermentum hendrerit orci eu dapibus. Vestibulum eu dolor ut libero iaculis volutpat vitae sit amet neque. Mauris eu porta sem. Etiam tincidunt leo sed odio blandit viverra ultricies quam rhoncus. Ut et tempus libero. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse lacinia feugiat ligula, in ultricies odio dignissim ac.
 			</p>
 		<h2 id="thirdChapter"> 3<sup>rd</sup> Chapter </h2>
