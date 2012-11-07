@@ -42,5 +42,14 @@ int main()
 	// first by size, and for each individual size by alphabet
 	PrintVector(words);
 	
+	// TEST2 : this is cool!
+	cout << "Test 2: please enter some integers!" << endl;
+
+	istream_iterator<int> cin_iter(cin);
+	istream_iterator<int> eof_iter; // empty iter is interpreted as eof
+	vector<int> vec(cin_iter, eof_iter);
+
+	PrintVector(vec);
+
 	return 0;
 }

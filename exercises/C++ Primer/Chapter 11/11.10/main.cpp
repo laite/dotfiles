@@ -47,17 +47,16 @@ int main()
 	// alphabetic order per each wordlength!
 	stable_sort(words.begin(), words.end(), isShorter);
 
-	// find_if return iterator to word that fits the condition
 	vector<string> longWords;
 	vector<string>::iterator longWord = words.begin();
 	size_t wordCount;
 
+	// find_if return iterator to the word that fits the condition (here GT)
 	while ((longWord = find_if(longWord, words.end(), GT)) != words.end())
 	{
 		// add longest words to the front this time
-		longWords.insert(longWords.begin(), *longWord);
+		longWords.insert(longWords.begin(), *(longWord++));
 		wordCount++;
-		longWord++;
 	}
 
 	cout << "There's " << wordCount << " word(s) longer than " << kCharLength << " characters." << endl;

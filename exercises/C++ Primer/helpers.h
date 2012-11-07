@@ -31,6 +31,7 @@
 #include <cstring>
 #include <cstdlib>
 #include <ctime>
+#include <iterator>
 
 // algorithms (ch. 11)
 #include <algorithm>
