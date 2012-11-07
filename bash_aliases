@@ -1,5 +1,10 @@
-
 function mkcd() { mkdir "$@" && cd "$@"; }
+
+alias sl='ls'
+alias ll='ls -l'
+alias la='ls -la'
+alias l='ls'
+alias lt='ls -lt'
 
 alias rawexit='rawdog -uw && exit'
 alias :q='exit'
