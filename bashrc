@@ -37,6 +37,11 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
+# make directory and cd to it instantly
+function mkcd() 
+{ 
+	mkdir "$@" && cd "$@"; 
+}
 
 # print contents of directory if it's less than 20 files
 function cd()
