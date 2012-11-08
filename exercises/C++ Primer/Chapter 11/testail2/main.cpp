@@ -49,7 +49,11 @@ int main()
 	istream_iterator<int> eof_iter; // empty iter is interpreted as eof
 	vector<int> vec(cin_iter, eof_iter);
 
-	PrintVector(vec);
+	sort(vec.begin(), vec.end());
+	ostream_iterator<int> output(cout, " ");
+
+	cout << "Printing ints through unique_copy: ";
+	unique_copy(vec.begin(), vec.end(), output);
 
 	return 0;
 }
