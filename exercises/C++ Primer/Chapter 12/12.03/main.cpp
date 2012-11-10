@@ -6,10 +6,10 @@ class Person
 {
 	public:
 		// getters
-		string getName() const {
+		string GetName() const {
 			return _name;
 		}
-		string getAddress() const { 
+		string GetAddress() const { 
 			return _address;
 		}
 
@@ -27,7 +27,7 @@ int main()
 {
 	Person masa("Masa", "Mierontie");
 
-	cout << masa.getName() << "@" << masa.getAddress() << endl;
+	cout << masa.GetName() << "@" << masa.GetAddress() << endl;
 
 	return 0;
 }
