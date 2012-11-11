@@ -45,10 +45,10 @@ editor = os.getenv("EDITOR") or "editor"
 editor_cmd = terminal .. " -e " .. editor
 gtkeditor = "gvim"
 filemanager = "ranger"
-guifilemanager = "pcmanfm"
 filemanager_cmd = terminal .. " -e " .. filemanager
+guifilemanager = "thunar"
 webbrowser = "chromium-browser"
-gmb = terminal
+xrandr = "sh /home/laite/bin/xr.sh"
 
 
 layouts =
@@ -72,7 +72,7 @@ tags = {}
 tags[1] = awful.tag({ "main", "www", "mail", "irc", "edit", "code", "m7", "m8", "feed"}, 1,
 { 
 	layouts[2], layouts[2], layouts[7],          -- Tags: 1, 2, 3
-	layouts[2], layouts[4], layouts[4],          --       4, 5 ,6
+	layouts[5], layouts[4], layouts[5],          --       4, 5 ,6
 	layouts[2], layouts[7], layouts[2]           --       7, 8, 9
 })
 if screen.count() == 2 then
@@ -145,7 +145,7 @@ mytasklist.buttons = awful.util.table.join(
 	local labelf = function(t, args) 
 		local text, bg_color, bg_image, icon = awful.widget.taglist.label.all(t, args)
 		if awful.util.table.hasitem(t:clients(), client.focus) then
-			text = string.gsub(text, "<span font_desc='(.+)'> ([^<]+) </span>", "<span font_desc='%1'><span color='" .. theme.fg_additi .. "'> %2 </span> </span>")
+			text = string.gsub(text, "<span font_desc='(.+)'> ([^<]+) </span>", "<span font_desc='%1'><span color='" .. theme.fg_additi .. "'> %2 </span></span>")
 		end
 		return text, bg_color, bg_image, icon
 	end
@@ -193,7 +193,7 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "u", function () awful.util.spawn(terminal_tabbed) end),
     awful.key({ modkey,           }, "p", function () awful.util.spawn(filemanager_cmd) end),
     awful.key({ modkey,           }, "i", function () awful.util.spawn(webbrowser) end),
-    awful.key({ modkey,           }, "g", function () awful.util.spawn(gmb) end),
+    awful.key({ modkey,           }, "g", function () awful.util.spawn(xrandr) end),
 
 	-- Helpers
     awful.key({ modkey, "Shift"   }, "d", function () awful.util.spawn("sh /home/laite/bin/dictnotify.sh") end),
@@ -390,4 +390,4 @@ awful.util.spawn("xset s off -dpms")
 --awful.util.spawn("xrandr --output HDMI-0 --mode 1920x1080")
 
 -- mpd scrobbler
-awful.util.spawn("scrobby")
+-- awful.util.spawn("scrobby")
