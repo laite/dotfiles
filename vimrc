@@ -42,16 +42,38 @@ map <S-Insert> <MiddleMouse>
 map! <S-Insert> <MiddleMouse>
 map <F2> <C-]>
 
-" delete into abyss with R<motion>
-nnoremap R "_d
-nnoremap Q qq 
+" Make use of english keys in normalmode
+nnoremap ä ]
+nnoremap ää ]]
+nnoremap äÄ ]}
+nnoremap äm ]m
+nnoremap äM ]M
+nnoremap Ä }
+nnoremap Ää }]
+nnoremap ÄÄ }}
+nnoremap ö [
+nnoremap öm [m
+nnoremap öM [M
+nnoremap öö [[
+nnoremap öÖ [{
+nnoremap Ö {
+nnoremap Öö {[
+nnoremap ÖÖ {{
 
-" some key bindings
-nnoremap <silent> ö :TagbarToggle<CR>
-nnoremap ä :nohl<CR>
+nnoremap öä []
+nnoremap äö ][
+
+nnoremap <silent> <F3> :TagbarToggle<CR>
+nnoremap å :nohl<CR>
 inoremap {<CR> {<CR>}<Esc>ko
 
 
+" delete into abyss with R<motion>
+nnoremap R "_d
+" Use Q to start quick recording
+nnoremap Q qq 
+
+" some key bindings
 "This allows for change paste motion cp{motion}
 nmap <silent> cp :set opfunc=ChangePaste<CR>g@
 function! ChangePaste(type, ...)
