@@ -42,7 +42,7 @@ map <S-Insert> <MiddleMouse>
 map! <S-Insert> <MiddleMouse>
 map <F2> <C-]>
 
-" Make use of english keys in normalmode
+" Make use of scandic keys in normalmode
 nnoremap ä ]
 nnoremap ää ]]
 nnoremap äÄ ]}
