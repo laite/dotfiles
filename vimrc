@@ -42,29 +42,8 @@ map <S-Insert> <MiddleMouse>
 map! <S-Insert> <MiddleMouse>
 map <F2> <C-]>
 
-" Make use of scandic keys in normalmode
-nnoremap ä ]
-nnoremap ää ]]
-nnoremap äÄ ]}
-nnoremap äm ]m
-nnoremap äM ]M
-nnoremap Ä }
-nnoremap Ää }]
-nnoremap ÄÄ }}
-nnoremap ö [
-nnoremap öm [m
-nnoremap öM [M
-nnoremap öö [[
-nnoremap öÖ [{
-nnoremap Ö {
-nnoremap Öö {[
-nnoremap ÖÖ {{
-
-nnoremap öä []
-nnoremap äö ][
-
 nnoremap <silent> <F3> :TagbarToggle<CR>
-nnoremap å :nohl<CR>
+nnoremap ä :nohl<CR>
 inoremap {<CR> {<CR>}<Esc>ko
 
 
@@ -80,7 +59,6 @@ function! ChangePaste(type, ...)
     silent exe "normal! `[v`]\"_c"
     silent exe "normal! p"
 endfunction
-
 
 
 """ Plugins """
