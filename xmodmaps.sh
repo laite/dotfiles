@@ -12,6 +12,9 @@ xmodmap -e 'keycode 34 = bracketleft braceleft bracketleft braceleft parenleft d
 # key 35 = dead_circum/dead_tilde
 xmodmap -e 'keycode 35 = bracketright braceright bracketright braceright parenright dead_abovering parenright dead_abovering'
 
+# key 38 = a
+xmodmap -e 'keycode 38 = a A a A dead_abovering SCHWA dead_abovering SCHWA'
+
 # key 49 = section/half
 xmodmap -e 'keycode 49 = asciicircum dollar asciicircum dollar 0 NoSymbol 0 NoSymbol'
 # key 51 = apostrophe/asterisk
