@@ -12,7 +12,7 @@ alias lncmpcpp='/home/laite/workspace/git/lncmpcpp/src/ncmpcpp'
 alias d='dict -d wn '
 
 # git
-alias st='git status'
-alias co='git commit'
-alias pu='git push origin master'
-alias ad='git add'
+alias g_st='git status'
+alias g_co='git commit'
+alias g_pu='git push origin master'
+alias g_ad='git add'
