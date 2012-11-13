@@ -383,8 +383,7 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 -- }}}
 
 -- Startup commands 
-awful.util.spawn("xmodmap -e \"keycode 61 = slash minus underscore endash dead_belowcomma endash\"")
-awful.util.spawn("xmodmap -e \"keycode 16 = 7 underscore 7 slash braceleft NoSymbol braceleft\"")
+awful.util.spawn("sh /home/laite/bin/xmodmaps.sh")
 awful.util.spawn("numlockx on")
 awful.util.spawn("xset s off -dpms")
 --awful.util.spawn("xrandr --output HDMI-0 --mode 1920x1080")
