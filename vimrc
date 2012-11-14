@@ -13,11 +13,6 @@ set history=100		" keep 50 lines of command line history
 set ruler			" show the cursor position all the time
 set showcmd			" display incomplete commands
 set incsearch		" do incremental searching
-
-" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
-" so that you can undo CTRL-U after inserting a line break.
-inoremap <C-U> <C-G>u<C-U>
-
 set mouse=a
 syntax on
 set hlsearch
@@ -37,7 +32,8 @@ set foldnestmax=2
 set foldminlines=1
 set splitright
 
-" Make shift-insert work like in Xterm
+let mapleader = "ö"
+inoremap <C-U> <C-G>u<C-U>
 map <S-Insert> <MiddleMouse>
 map! <S-Insert> <MiddleMouse>
 map <F2> <C-]>
@@ -115,4 +111,3 @@ endif
 
 " set pretty colors
 color jellybeans
-
