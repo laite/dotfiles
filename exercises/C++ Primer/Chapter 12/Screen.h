@@ -27,8 +27,8 @@ class Screen
 {
 	public:
 		// get character under cursor or from arbitrary position
-		char get() const;
-		char get(int x, int y) const { return _area[y*_width+x]; }
+		char GetCharacter() const;
+		char GetCharacter(int x, int y) const;
 
 		// dimension getters
 		int GetWidth() const { return _width; }
@@ -46,10 +46,12 @@ class Screen
 
 		// put random letters (a-z) to area
 		void RandomizeContent();
+		// fill area with specific char
+		void FillArea(char);
 
 		// constructors
-		Screen(): _cursor(0,0), _width(kDefaultScreenWidth), _height(kDefaultScreenHeight), _area(vector<char>(kDefaultScreenWidth*kDefaultScreenHeight)) {}
-		Screen(int width, int height): _cursor(0,0), _width(width), _height(height), _area(vector<char>(width*height)) {}
+		Screen(): _cursor(0,0), _width(kDefaultScreenWidth), _height(kDefaultScreenHeight), _area(vector<char>(kDefaultScreenWidth*kDefaultScreenHeight, '.')) {}
+		Screen(int width, int height): _cursor(0,0), _width(width), _height(height), _area(vector<char>(width*height, '.')) {}
 
 	private:
 		// actually dump display
@@ -60,11 +62,19 @@ class Screen
 		vector<char> _area;
 };
 
-char Screen::get() const
+char Screen::GetCharacter() const
 {
 	 pair<int, int> pos = this->_cursor.GetPosition();
 
-	 return Screen::get(pos.first, pos.second);
+	 return Screen::GetCharacter(pos.first, pos.second);
+}
+
+char Screen::GetCharacter(int x, int y) const
+{
+	if (this->_area.size() < (y*this->GetWidth()+x))
+		return 0;
+
+	return this->_area.at(y*this->GetWidth()+x);
 }
 
 Screen& Screen::Move(int x, int y)
@@ -94,6 +104,12 @@ void Screen::_DumpDisplay(std::ostream &outputStream) const
 			outputStream << "\n";
 	}
 }
+
+void Screen::FillArea(char c)
+{
+	vector<char>::iterator it = this->_area.begin();
+	while (it != this->_area.end())
+		*it++ = c; }
 
 void Screen::RandomizeContent()
 {

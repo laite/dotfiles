@@ -6,9 +6,12 @@
 int main()
 {
 	Screen s(7, 3);
-	s.RandomizeContent();
+	s.FillArea('_');
 
 	s.Move(4,2).SetCharacter('#').Display(cout);
+
+	// GetCharacter without arguments returns whatever is under the cursor
+	cout << s.GetCharacter() << s.GetCharacter(3, 1) << s.GetCharacter(4, 2) << endl;
 
 	return 0;
 }
