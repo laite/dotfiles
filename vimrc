@@ -6,42 +6,41 @@ set nocompatible
 call pathogen#infect()
 
 
-set backspace=indent,eol,start " allow backspacing over everything in insert mode
-set t_Co=256		" use 256 colors
-set backup			" keep a backup file
-set history=100		" keep 50 lines of command line history
-set ruler			" show the cursor position all the time
-set showcmd			" display incomplete commands
-set incsearch		" do incremental searching
-set mouse=a
-syntax on
-set hlsearch
-set tabstop=4
-set shiftwidth=4
-set smartindent
-set nowrap
-set ignorecase smartcase " ignore case on lowcase-searches
-set number " row numbers
-set scrolloff=10 " always +- 10 rows in sight
-set sidescrolloff=5
+syntax on						" make pretty colors
+set backspace=indent,eol,start 	" allow backspacing over everything in insert mode
+set t_Co=256					" use 256 colors
+set backup						" keep a backup file
+set history=100					" keep 50 lines of command line history
+set ruler						" show the cursor position all the time
+set showcmd						" display incomplete commands
+set incsearch					" do incremental searching
+set mouse=a						" enable mouse for all modes
+set hlsearch					" highlight search results
+set tabstop=4					" number of spaces a tab counts for
+set shiftwidth=4				" number of spaces for (auto)indent
+set smartindent					" start new lines indented
+set nowrap						" don't wrap long lines
+set ignorecase smartcase 		" ignore case on lowcase-searches
+set number 						" row numbers
+set scrolloff=10 				" always +- 10 rows in sight
+set sidescrolloff=5				" always +- 5 columns
+
 set listchars=extends:>,precedes:<
 
+" foldingmethods for gvim are specified in .gvimrc (they differ a bit)
 set foldcolumn=2
 set foldmethod=manual
 set foldnestmax=2
 set foldminlines=1
-set splitright
 
 let mapleader = "ö"
 inoremap <C-U> <C-G>u<C-U>
 map <S-Insert> <MiddleMouse>
 map! <S-Insert> <MiddleMouse>
-map <F2> <C-]>
 
 nnoremap <silent> <F3> :TagbarToggle<CR>
 nnoremap ä :nohl<CR>
 inoremap {<CR> {<CR>}<Esc>ko
-
 
 " delete into abyss with R<motion>
 nnoremap R "_d
