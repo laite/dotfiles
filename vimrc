@@ -70,6 +70,11 @@ let g:tagbar_left = 1
 let g:tagbar_compact = 1
 let g:tagbar_autoclose = 1
 
+" Supertab (gvim has its own settings in .gvimrc)
+let g:SuperTabMappingTabLiteral = '<tab>'
+" <C-@> in terminal equals control-space
+let g:SuperTabMappingForward = '<C-@>'
+let g:SuperTabMappingBackward = '<S-C-@>'
 
 set directory=~/.vim/tmp/
 set backupdir=~/.vim/tmp/
