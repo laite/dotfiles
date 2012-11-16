@@ -7,6 +7,7 @@ call pathogen#infect()
 
 
 syntax on						" make pretty colors
+set shortmess+=I				" hide start screen
 set backspace=indent,eol,start 	" allow backspacing over everything in insert mode
 set t_Co=256					" use 256 colors
 set backup						" keep a backup file
@@ -39,13 +40,12 @@ map <S-Insert> <MiddleMouse>
 map! <S-Insert> <MiddleMouse>
 
 nnoremap <silent> <F3> :TagbarToggle<CR>
-nnoremap ä :nohl<CR>
+nnoremap <silent> <Leader>ä :nohl<CR>
+
 inoremap {<CR> {<CR>}<Esc>ko
 
-" delete into abyss with R<motion>
-nnoremap R "_d
-" Use Q to start quick recording
-nnoremap Q qq 
+" delete into abyss with Q<motion>
+nnoremap Q "_d
 
 " some key bindings
 "This allows for change paste motion cp{motion}

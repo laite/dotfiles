@@ -4,7 +4,6 @@
 set ch=1
 set guioptions=agit
 set guicursor+=a:blinkon0
-set shortmess+=I
 set mousehide		" Hide the mouse when typing text
 
 " we presume that gvim is mostly for coding

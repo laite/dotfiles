@@ -24,4 +24,4 @@ xmodmap -e 'keycode 51 = apostrophe asterisk apostrophe asterisk quotedbl dead_c
 xmodmap -e 'keycode 61 = slash minus underscore slash underscore dead_belowcomma underscore dead_belowcomma'
 
 # change caps lock to escape (great in vim)
-xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
+xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape' -e 'add Control = Control_L'

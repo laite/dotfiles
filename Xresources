@@ -23,6 +23,11 @@ URxvt.cursorUnderline: true
 URxvt.letterSpace: -1
 URxvt.lineSpace: -1
 
+! ö unicode key 246; perhaps something like 246;5u?
+!URxvt.keysym.S-Home: \033[1;2H
+!keysum.S-0xf6: \033[7~
+!URxvt.keysum.C-0x61: \033[7~
+
 !URxvt.termName: urxvt-256color
 !screen-256color
 
