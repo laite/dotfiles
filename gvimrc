@@ -13,9 +13,4 @@ set foldmethod=syntax
 set foldnestmax=2
 set foldminlines=1
 
-" Supertab
-let g:SuperTabMappingTabLiteral = '<s-tab>'
-let g:SuperTabMappingForward = '<tab>'
-let g:SuperTabMappingBackward = '<s-c-space>'
-
 color laite04

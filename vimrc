@@ -39,15 +39,32 @@ inoremap <C-U> <C-G>u<C-U>
 map <S-Insert> <MiddleMouse>
 map! <S-Insert> <MiddleMouse>
 
+" normal mode mappings
 nnoremap <silent> <F3> :TagbarToggle<CR>
 nnoremap <silent> <Leader>ä :nohl<CR>
+" create empty lines and return to normal mode
+nnoremap <Leader>o o<Esc>
+nnoremap <Leader>O O<Esc>
+" delete into abyss with öd<motion>
+nnoremap <Leader>d "_d
+" treat c-h as real backspace also in normal mode
+nnoremap <C-H> "_X
 
+
+" insert mode mappings
 inoremap {<CR> {<CR>}<Esc>ko
+inoremap <C-L> <Esc>
+" join with previous line and continue from middle
+inoremap <C-K>k <Esc>kJi
+" join with previous line and continue from the end
+inoremap <C-K>a <Esc>kJA
+" join with previous line and exit insert mode
+inoremap <C-K>[ <Esc>kJ
+" c-b is currently not used
+" inoremap <C-B>
 
-" delete into abyss with Q<motion>
-nnoremap Q "_d
 
-" some key bindings
+" other key bindings
 "This allows for change paste motion cp{motion}
 nmap <silent> cp :set opfunc=ChangePaste<CR>g@
 function! ChangePaste(type, ...)
@@ -70,11 +87,17 @@ let g:tagbar_left = 1
 let g:tagbar_compact = 1
 let g:tagbar_autoclose = 1
 
-" Supertab (gvim has its own settings in .gvimrc)
-let g:SuperTabMappingTabLiteral = '<tab>'
-" <C-@> in terminal equals control-space
-let g:SuperTabMappingForward = '<C-@>'
-let g:SuperTabMappingBackward = '<S-C-@>'
+" Set separate Supertab settings for terminal and gvim
+if has('gui_running')
+	let g:SuperTabMappingTabLiteral = '<C-Tab>'
+	let g:SuperTabMappingForward = '<Tab>'
+	let g:SuperTabMappingBackward = '<C-S-Tab>'
+else
+	let g:SuperTabMappingTabLiteral = '<tab>'
+	" <C-@> in terminal equals control-space
+	let g:SuperTabMappingForward = '<C-@>'
+	let g:SuperTabMappingBackward = '<S-C-@>'
+endif
 
 set directory=~/.vim/tmp/
 set backupdir=~/.vim/tmp/
