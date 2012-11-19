@@ -1,0 +1,14 @@
+Pathogen
+https://github.com/tpope/vim-pathogen.git
+
+Tagbar
+git://github.com/majutsushi/tagbar
+
+EasyMotion
+https://github.com/Lokaltog/vim-easymotion.git
+
+YankRing
+https://github.com/vim-scripts/YankRing.vim.git
+
+SuperTab
+https://github.com/ervandew/supertab.git
