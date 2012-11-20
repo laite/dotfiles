@@ -68,6 +68,7 @@ layouts =
 tags = {}
 local association_table = {}
 local follow_associations = true;
+local ass_current = nil
 
 tags[1] = awful.tag({ "main", "www", "mail", "irc", "edit", "code", "m7", "m8", "feed"}, 1,
 { 
@@ -91,11 +92,15 @@ if screen.count() == 2 then
 	})
 
 	for i=1,# tags[1] do
+		-- this is the main function for assosiated screens
 		tags[1][i]:add_signal("property::selected", function ()
 			if follow_associations then 
 				if association_table[tags[1][i].name] then
-					awful.tag.viewonly(tags[2][association_table[tags[1][i].name]])
+					if tags[1][i].name ~= ass_current then
+						awful.tag.viewonly(tags[2][association_table[tags[1][i].name]])
+					end
 				end
+				ass_current = tags[1][i].name
 			end
 		end)
 	end
