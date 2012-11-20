@@ -100,8 +100,8 @@ if screen.count() == 2 then
 						awful.tag.viewonly(tags[2][association_table[tags[1][i].name]])
 					end
 				end
-				ass_current = tags[1][i].name
 			end
+			ass_current = tags[1][i].name
 		end)
 	end
 end
