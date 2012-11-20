@@ -78,18 +78,24 @@ tags[1] = awful.tag({ "main", "www", "mail", "irc", "edit", "code", "m7", "m8", 
 
 -- if we have dualscreen we 'associate' some tags to it
 if screen.count() == 2 then
-	association_table = { main=1, www=2, mail=3, irc=4, edit=5, code=6, m7=5, m8=5, feed=7 }
-	tags[2] = awful.tag({ "music", 1, 2, 3, 4, 5, 6, 7 }, 2, 
+
+	-- we can create some hardcoded associations, but it's propably not a very good idea
+	-- much better way is to let the user associate tags "on the fly"
+	--
+	-- association_table = { main=1, www=2, mail=3, irc=4, edit=5, code=6, m7=5, m8=5, feed=7 }
+
+	tags[2] = awful.tag({ 1, 2, 3, 4, 5, 6, 7 }, 2, 
 	{
-		layouts[2], layouts[2], layouts[2], layouts[2], -- music, 1, 2, 3
+		layouts[2], layouts[2], layouts[2], 			-- 1, 2, 3
 		layouts[2], layouts[2], layouts[2], layouts[2]  -- 4, 5, 6, 7
 	})
 
 	for i=1,# tags[1] do
 		tags[1][i]:add_signal("property::selected", function ()
 			if follow_associations then 
-				local primary_name = tags[1][i].name
-				awful.tag.viewonly(tags[2][association_table[primary_name]])
+				if association_table[tags[1][i].name] then
+					awful.tag.viewonly(tags[2][association_table[tags[1][i].name]])
+				end
 			end
 		end)
 	end
@@ -202,6 +208,17 @@ globalkeys = awful.util.table.join(
 
 	-- Follow associations on secondary screen
     awful.key({ modkey,           }, "a", function () follow_associations = not follow_associations end),
+	-- mod4+shift+a creates an association
+    awful.key({ modkey, "Shift"   }, "a", function () 
+		local sel = awful.tag.selected(1)
+		local sel2 = awful.tag.selected(2)
+		association_table[sel.name] = awful.tag.getidx(sel2)
+	end),
+	-- mod4+control+a clears association for selected tag
+    awful.key({ modkey, "Control"   }, "a", function () 
+		association_table[sel.name] = nil
+	end),
+
     -- Standard programs
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
     awful.key({ modkey,           }, "d", function () awful.util.spawn("dmenu_run -i -fn '-*-fixed-medium-r-*-*-*-100-100-100-c-*-iso10646-*' -m 0 -nb \"#3f3f3f\" -nf \"#dcdccc\" -sb \"#1e2320\" -sf \"#ececac\" ") end),
