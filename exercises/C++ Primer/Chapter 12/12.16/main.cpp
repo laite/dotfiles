@@ -9,8 +9,15 @@ class Testclass
 		index Function();
 };
 
+// we need to include scope to both the return type and name here
+Testclass::index Testclass::Function()
+{
+	return 1;
+}
+
 int main()
 {
+	Testclass testObject;
 
 	return 0;
 }
