@@ -1,3 +1,23 @@
 header {
-	margin: 10px auto;
+	margin: 0;
+	padding: 0;
+}
+
+aside {
+	float: right;
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+
+aside > img:hover {
+}
+
+section {
+	padding: 50px;
+	margin: 0px auto 0px 250px;
+	width: 500px;
+	border:0px solid #ddd;
+	border-radius: 15px 15px 0px 0px;
+	-moz-border-radius:15px; /* Firefox 3.6 and earlier */
 }

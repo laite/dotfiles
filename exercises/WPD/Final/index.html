@@ -2,39 +2,40 @@
 <html>
 <head>
 	<title>Frontside of the World</title>
-    <meta charset="UTF-8">
-    <meta name="description" content="">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/menu.css">
+    <meta charset="UTF-8" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/menu.css" />
+	<script type="text/javascript" src="js/visibility.js"></script>
+	<script src="js/fade.js"></script> <!-- fade text, external script -->
+	<script src="js/jquery-1.7.2.min.js"></script>
 </head>
 <body>
 	<div id="container">
-		<header>
-			<h1>Page One</h1>
-		</header>
+		<header></header>
 		<nav id="nav">
 			<ul id="navigation">
-				<li><a href="index.html" class="first">Home</a></li>
-				<li><a href="#">Pages &raquo;</a>
-					<ul>
+				<li><a href="#" onclick="fader.fade(0, true);">Home</a></li>
+				<li onclick="fader.fade(1, true); Toggle('menulist');"><a href="#">Pages &raquo;</a>
+					<ul id="menulist" style="display:none">
 						<li><a href="B/index.html">Wedding Example</a></li>
 						<li><a href="C/index.html">Styling Notes</a></li>
 						<li><a href="D/index.html">Set Of Pages</a> </li>                 
 						<li><a href="E/index.html">Responsive Web Design</a> </li>                 
 					</ul>
 				</li>
-				<li><a href="author.html">Markus Klinga?</a></li>
-				<li><a href="contact.html" class="last">Contact</a></li>
+				<li><a href="#" onclick="fader.fade(2, true);">Who?</a></li>
+				<li><a href="#" onclick="fader.fade(3, true);">Why?</a></li>
 			</ul>
 			<br />
 		</nav>
-		<aside></aside>
-		<section>
-			<h2>Not much here</h2>
-			<p> Just us words.</p>
+		<aside>
+			<img width="32" height="32" src="./images/tux.png" alt="Tux" onmouseover="fader.fade(4, true);"/>
+		</aside>
+		<section id="mainContent">
+			Welcome, friend.
 		</section>
 		<footer>
-			(c) Markus Klinga 2012
 		</footer>
 	</div> <!-- end container -->
 </body>
