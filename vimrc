@@ -78,7 +78,7 @@ inoremap <C-K>k <Esc>kJi
 inoremap <C-K>a <Esc>kJA
 " join with previous line and exit insert mode
 inoremap <C-K>[ <Esc>kJ
-" make <C-M> add ; and newline
+" make <C-J> add ; and newline
 inoremap <C-J> ;<CR>
 
 " c-b is currently not used
