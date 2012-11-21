@@ -35,7 +35,6 @@ set foldnestmax=2
 set foldminlines=1
 
 let mapleader = "ö"
-inoremap <C-U> <C-G>u<C-U>
 map <S-Insert> <MiddleMouse>
 map! <S-Insert> <MiddleMouse>
 
@@ -49,17 +48,39 @@ nnoremap <Leader>O O<Esc>
 nnoremap <Leader>d "_d
 " treat c-h as real backspace also in normal mode
 nnoremap <C-H> "_X
-
+" make Y behave like C and D (yank to the end of line)
+nnoremap Y y$
 
 " insert mode mappings
-inoremap {<CR> {<CR>}<Esc>ko
-inoremap <C-L> <Esc>
+inoremap <C-U> <C-G>u<C-U>
+
+" autocomplete { and newline, move cursor to middle
+inoremap {<CR> {<CR>}<Esc>O
+
+" complete brackets, make <c-l> exit latest
+inoremap ( ()<Esc>:let leavechar=")"<CR>i
+inoremap [ []<Esc>:let leavechar="]"<CR>i
+inoremap { {}<Esc>:let leavechar="}"<CR>i
+inoremap " ""<Esc>:let leavechar="\""<CR>i
+imap <C-L> <Esc>:exec "normal f" . leavechar<CR>a
+
+" by default, brackets are autocompleted, we can skip this with leader-key
+inoremap <Leader>[ [
+inoremap <Leader>( (
+inoremap <Leader>{ {
+
+" since we use ö also as a <leader>, we define 'öö' as a simple 'ö'
+inoremap <Leader>ö ö
+
 " join with previous line and continue from middle
 inoremap <C-K>k <Esc>kJi
 " join with previous line and continue from the end
 inoremap <C-K>a <Esc>kJA
 " join with previous line and exit insert mode
 inoremap <C-K>[ <Esc>kJ
+" make <C-M> add ; and newline
+inoremap <C-J> ;<CR>
+
 " c-b is currently not used
 " inoremap <C-B>
 
