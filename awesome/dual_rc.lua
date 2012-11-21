@@ -221,6 +221,7 @@ globalkeys = awful.util.table.join(
 	end),
 	-- mod4+control+a clears association for selected tag
     awful.key({ modkey, "Control"   }, "a", function () 
+		local sel = awful.tag.selected(1)
 		association_table[sel.name] = nil
 	end),
 
