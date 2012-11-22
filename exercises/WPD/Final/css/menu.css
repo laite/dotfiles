@@ -1,6 +1,16 @@
+
+/********************************************
+ * css/menu.css 							*
+ * Contains stylings for main TOC			*
+ * in WPD exercises/TOC-page				*
+ *											*
+ * (c) Markus Klinga 2012					*
+ *											*
+ ********************************************/
+
 #nav {
 	float: left;
-    margin: 0px 0px; 
+    margin: 0px; 
     padding: 0px 10px;
 }
  

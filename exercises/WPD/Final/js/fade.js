@@ -218,7 +218,7 @@ fader = new fadeObject('mainContent', 'ffffff', '000000', 40, 40);
 
 fader.msg[0] = "Welcome, friend.";
 fader.msg[1] = "Items under <em>Pages</em> will take you to the distant realms. Are you ready to go?";
-fader.msg[2] = "These <em>web pages</em> are made by Markus Klinga.<br /><br />Should you wish to contact him, use either of these codes <ul style='list-style-type: none;'><li>g8270</li><li>laite</li></ul>";
+fader.msg[2] = "These <em>web pages</em> are made by Markus Klinga.<ul style='list-style-type: none;'><li>g8270</li></ul>";
 fader.msg[3] = "This is an exercise for Web Page Development. It was foretold.";
 fader.msg[4] = "No penguins were harmed creating this web page.";
 
