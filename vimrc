@@ -38,6 +38,9 @@ let mapleader = "ö"
 map <S-Insert> <MiddleMouse>
 map! <S-Insert> <MiddleMouse>
 
+" open help by default to vertical split on the right
+cnoreabbrev help belowright vert help
+
 " normal mode mappings
 nnoremap <silent> <F3> :TagbarToggle<CR>
 nnoremap <silent> <Leader>ä :nohl<CR>
@@ -93,6 +96,7 @@ function! ChangePaste(type, ...)
     silent exe "normal! p"
 endfunction
 
+source $HOME/.numbermaps.vim
 
 """ Plugins """
 
