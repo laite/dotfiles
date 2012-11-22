@@ -38,7 +38,8 @@ let mapleader = "ö"
 map <S-Insert> <MiddleMouse>
 map! <S-Insert> <MiddleMouse>
 
-" open help by default to vertical split on the right
+" open :help by default to vertical split on the right
+" <F1> opens 'regular help'
 cnoreabbrev help belowright vert help
 
 " normal mode mappings
@@ -53,6 +54,10 @@ nnoremap <Leader>d "_d
 nnoremap <C-H> "_X
 " make Y behave like C and D (yank to the end of line)
 nnoremap Y y$
+" easier jumping between windows
+nnoremap <C-j> <C-w>w
+nnoremap <C-k> <C-w>W
+
 
 " insert mode mappings
 inoremap <C-U> <C-G>u<C-U>
