@@ -40,7 +40,7 @@ map! <S-Insert> <MiddleMouse>
 
 " open :help by default to vertical split on the right
 " <F1> opens 'regular help'
-cnoreabbrev help belowright vert help
+cnoreabbrev vhelp belowright vert help
 
 " normal mode mappings
 nnoremap <silent> <F3> :TagbarToggle<CR>
