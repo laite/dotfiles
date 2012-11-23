@@ -155,6 +155,9 @@ if has("autocmd")
     \   exe "normal! g`\"" |
     \ endif
 
+  " automatically reload vimrc when it's saved
+  au BufWritePost .vimrc so ~/.vimrc
+
   augroup END
 
 else
