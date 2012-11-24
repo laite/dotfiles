@@ -54,9 +54,11 @@ nnoremap <Leader>d "_d
 nnoremap <C-H> "_X
 " make Y behave like C and D (yank to the end of line)
 nnoremap Y y$
-" easier jumping between windows
+" easier jumping between windows and tabs
 nnoremap <C-j> <C-w>w
 nnoremap <C-k> <C-w>W
+nnoremap <C-h> gT
+nnoremap <C-l> gt
 
 
 " insert mode mappings
