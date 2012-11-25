@@ -72,12 +72,15 @@ inoremap ( ()<Esc>:let leavechar=")"<CR>i
 inoremap [ []<Esc>:let leavechar="]"<CR>i
 inoremap { {}<Esc>:let leavechar="}"<CR>i
 inoremap " ""<Esc>:let leavechar="\""<CR>i
+inoremap ' ''<Esc>:let leavechar="\'"<CR>i
 imap <C-L> <Esc>:exec "normal f" . leavechar<CR>a
 
 " by default, brackets are autocompleted, we can skip this with leader-key
 inoremap <Leader>[ [
 inoremap <Leader>( (
 inoremap <Leader>{ {
+inoremap <Leader>" "
+inoremap <Leader>' '
 
 " since we use ö also as a <leader>, we define 'öö' as a simple 'ö'
 inoremap <Leader>ö ö
