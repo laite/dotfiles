@@ -10,7 +10,7 @@
 
 #nav {
 	float: left;
-    margin: 0px; 
+    margin: 0px 15px; 
     padding: 0px 10px;
 }
  
@@ -20,8 +20,9 @@ ul#navigation {
 	list-style-type: decimal-leading-zero;
 }
 
-ul#navigation ul#menulist {
+ul#menulist {
 	list-style-type: lower-alpha;
+	display:none;
 }
 
 h1{

@@ -12,7 +12,18 @@ header {
 	margin: 0px;
 	padding: 0px;
 }
+body {
+	font-family: "Courier New";
+	font-size: 12pt;
+}
 
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
 #mainContent {
 	padding: 50px;
 	margin: 0px auto 0px 300px;

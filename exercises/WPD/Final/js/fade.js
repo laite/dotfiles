@@ -220,7 +220,8 @@ fader.msg[0] = "Welcome, friend.";
 fader.msg[1] = "Items under <em>Pages</em> will take you to the distant realms. Are you ready to go?";
 fader.msg[2] = "These <em>web pages</em> are made by Markus Klinga.<ul style='list-style-type: none;'><li>g8270</li></ul>";
 fader.msg[3] = "This is an exercise for Web Page Development. It was foretold.";
-fader.msg[4] = "No penguins were harmed creating this web page.";
+fader.msg[4] = "If you are still not convinced, you can enter my <a href=\"darkplace.html\"><span>...darkplace</span></a>";
+fader.msg[5] = "No penguins were harmed creating this web page.";
 
 function fadeIn(what)
 {

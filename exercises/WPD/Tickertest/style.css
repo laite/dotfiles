@@ -1,0 +1,103 @@
+/*+clearfix {*/
+#footer:after
+{
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+	font-size: 0;
+}
+#footer
+{
+	display: inline-block;
+}
+#footer
+{
+/*\*/
+	display: block;
+/**/
+	-height: 1px;
+}
+/*+}*/HTML
+{
+	background-color: #000000;
+}
+BODY
+{
+	color: #FFFFFF;
+	font-family: "Courier New";
+	font-size: 12pt;
+}
+A
+{
+	color: #D95D5D;
+	text-decoration: none;
+}
+A:hover
+{
+	text-decoration: underline;
+}
+H1
+{
+	font-size: 18pt;
+	font-weight: bold;
+	margin: 1em 0px 0px;
+	color: #E5C182;
+}
+H2
+{
+	font-size: 14pt;
+	font-weight: bold;
+	margin: 1em 0px 0px;
+}
+P
+{
+	line-height: 1.5em;
+	margin: 0.8em 0px;
+}
+PRE
+{
+	font-size: 10pt;
+	background-color: #3E3E3E;
+	padding: 10px;
+}
+#wrapper
+{
+	/*+placement:margin-auto 0px 0px;*/
+	margin-left: auto;
+	margin-right: auto;
+	position: relative;
+	left: 0px;
+	top: 0px;
+	width: 800px;
+	padding: 25px;
+}
+#ghostType
+{
+	display: none;
+}
+/*[clearfix]*/#footer
+{
+	padding: 30px 0px 0;
+}
+#footer LI
+{
+	line-height: 1.6em;
+}
+#copyright
+{
+	/*+placement:float-left 0px 0px;*/
+	float: left;
+	position: relative;
+	left: 0px;
+	top: 0px;
+}
+#footer-links
+{
+	/*+placement:float-right 0px 0px;*/
+	float: right;
+	position: relative;
+	left: 0px;
+	top: 0px;
+}
