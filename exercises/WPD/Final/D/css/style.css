@@ -1,0 +1,129 @@
+
+/********************************************
+ * D/css/style.css 							*
+ * Contains stylings for Koirakamut.com		*
+ *											*
+ * (c) Markus Klinga 2012					*
+ *											*
+ ********************************************/
+
+/********************************************
+ * 											*
+ * important colors: 						*
+ * banner: from #d6f791 to #f0ffc1			*
+ * logo: #ff6708
+ * link: #ffb56f, hover: #ffc995			*
+ * h1: #709c13, h2: #504589					*
+ *											*
+ ********************************************/
+
+/* style definitions of layout blocks */
+header {
+}
+
+body {
+	font-family: "sans";
+	font-size: 10pt;
+}
+
+nav ul li {
+	list-style-type: none;
+}
+
+
+/* definitions of basic HTML elements */
+a {
+	color: #80b3d2;
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+h1 {
+	padding: 5px;
+	color: #709c13;
+	font-size: 32pt;
+
+}
+h2 {
+	margin: 0px;
+	padding: 0px;
+	text-align: left;
+	color: #7ca12f;
+}
+
+h3 {
+	margin: 5px;
+}
+
+
+/* class - specific rules */
+.shortNews {
+
+}
+
+.timedate {
+	font-size: 80%;
+	color: #bbb;
+}
+
+.readMore {
+	font-size: 80%;
+	text-align: right;
+}
+
+.dogShow {
+	border: 2px dotted #ddd;
+	margin: 2em;
+}
+
+.dogShow:before,
+.dogShow:after {
+	content:"";
+	display:table;
+}
+.dogShow:after {
+	clear:both;
+}
+
+.dogPhoto {
+	width: 128px;
+	margin: 40px;
+	float: left;
+}
+
+/* Special IDentifiers */
+#tutustuSasuun {
+	border-radius: 25px;
+}
+
+#bigPromotionImage {
+	float: left;
+	width: 300px;
+	margin: 5px;
+	margin-right: 15px;
+	padding: 0px;
+}
+
+#news {
+
+}
+
+#newAdditions {
+	list-style-type: none;
+}
+
+#contentColumns {
+	border: 1px solid #ccc;
+}
+
+#contentColumns li {
+	border: 1px solid #e9f9e9;
+}
+
+#sideBar {
+	background: #b7d6e8;
+	border: 2px solid #a1a1a1;
+	border-radius: 25px;
+}
