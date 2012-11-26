@@ -38,9 +38,11 @@ let mapleader = "ö"
 map <S-Insert> <MiddleMouse>
 map! <S-Insert> <MiddleMouse>
 
-" open :help by default to vertical split on the right
-" <F1> opens 'regular help'
+" commandline mappings
 cnoreabbrev vhelp belowright vert help
+" make ctrl-p and ctrl-n behave like Up/Down-keys on command line
+cnoremap <C-p> <Up>
+cnoremap <C-n> <Down>
 
 " normal mode mappings
 nnoremap <silent> <F3> :TagbarToggle<CR>
@@ -84,6 +86,9 @@ inoremap <Leader>' '
 
 " since we use ö also as a <leader>, we define 'öö' as a simple 'ö'
 inoremap <Leader>ö ö
+" make C-p into <esc> until I figure out something better
+inoremap <C-p> <Esc>
+
 
 " join with previous line and continue from middle
 inoremap <C-K>k <Esc>kJi
