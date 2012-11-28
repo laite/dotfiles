@@ -10,10 +10,9 @@
 /********************************************
  * 											*
  * important colors: 						*
- * banner: from #d6f791 to #f0ffc1			*
- * logo: #ff6708
- * link: #ffb56f, hover: #ffc995			*
- * h1: #709c13, h2: #504589					*
+ * logo: #8f3b98							*
+ * link: ##3d7494							*
+ * h1: #709c13, h2: #7ca12f					*
  *											*
  ********************************************/
 
@@ -26,26 +25,23 @@ body {
 	font-size: 10pt;
 }
 
-nav ul li {
-	list-style-type: none;
-}
-
-
 /* definitions of basic HTML elements */
 a {
-	color: #80b3d2;
+	color: #3d7494;
 	text-decoration: none;
 }
 
 a:hover {
 	text-decoration: underline;
 }
+
 h1 {
 	padding: 5px;
 	color: #709c13;
 	font-size: 32pt;
 
 }
+
 h2 {
 	margin: 0px;
 	padding: 0px;
@@ -55,10 +51,29 @@ h2 {
 
 h3 {
 	margin: 5px;
+	color: #8f3b98;
 }
 
 
 /* class - specific rules */
+.mainSectionBlock {
+	border: 1px solid #ddd;
+}
+
+.navListItem {
+	list-style-type:none;
+}
+
+.navListItemCurrent {
+	list-style-type:disc;
+}
+
+.informativeHeader {
+	margin: 10px;
+	border: 1px solid #bbb;
+	background: #fafafa;
+}
+
 .shortNews {
 
 }
@@ -68,34 +83,68 @@ h3 {
 	color: #bbb;
 }
 
+.timedateRight {
+	text-align: right;
+}
+
 .readMore {
 	font-size: 80%;
 	text-align: right;
 }
 
-.dogShow {
-	border: 2px dotted #ddd;
-	margin: 2em;
-}
-
-.dogShow:before,
-.dogShow:after {
-	content:"";
-	display:table;
-}
-.dogShow:after {
-	clear:both;
+.dogContact td {
+	font-size: 80%;
+	text-align: right;
+	vertical-align: bottom;
 }
 
 .dogPhoto {
-	width: 128px;
-	margin: 40px;
-	float: left;
+	margin-right: 20px;
+}
+
+.genderPic {
+	width: 16px;
+	height: 16px;
+	padding-right: 3px;
+	vertical-align: top;
+}
+
+.formToggler {
+	cursor: pointer;
+}
+
+.noBorder {
+	border: 0px;
 }
 
 /* Special IDentifiers */
 #tutustuSasuun {
+	height: 300px;
+}
+#tutustuSasuunText {
+	display: none;
+	position: relative;
+	text-align: center;
+	text-decoration: none;
+	color: #fff;
+	border-radius: 5px;
+	background: rgba(0,0,0,0.5);
+	font-size: 150%;
+	bottom: 120px;
+	left: 0px;
+}
+
+#tutustuSasuun img {
 	border-radius: 25px;
+}
+
+#tutustuSasuun:hover #tutustuSasuunText {
+	display: block;
+	text-decoration: none;
+}
+
+#tutustuSasuun:hover img {
+	opacity: 0.5;
 }
 
 #bigPromotionImage {
@@ -106,24 +155,47 @@ h3 {
 	padding: 0px;
 }
 
-#news {
-
-}
-
-#newAdditions {
-	list-style-type: none;
-}
-
-#contentColumns {
-	border: 1px solid #ccc;
-}
-
-#contentColumns li {
-	border: 1px solid #e9f9e9;
-}
-
 #sideBar {
 	background: #b7d6e8;
 	border: 2px solid #a1a1a1;
 	border-radius: 25px;
+}
+
+#dogSearch {
+	padding: 5px;
+	margin: 5px;
+}
+
+#dogSearchForm {
+	display:none;
+	border: 1px solid #777;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+#dogShow {
+	padding: 10px;
+	margin: 10px;
+	width: 600px;
+}
+
+#dogShow table {
+	border: 1px dotted #aaa;
+	margin-top: 15px;
+}
+
+#dogShow td {
+	vertical-align: top;
+}
+
+#dogShow .dogContact td {
+	vertical-align: bottom;
+}
+
+#dogShow table:nth-child(odd) { 
+	background-color:#f4f0ea; 
+}
+
+#dogShow table:nth-child(even) {
+   background-color:#fff; 
 }

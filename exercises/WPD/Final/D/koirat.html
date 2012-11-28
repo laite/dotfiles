@@ -1,18 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Etsi koirakamuja</title>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Koirakamut" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/layout.css" />
+	<script src="../js/jquery-1.7.2.min.js"></script> <!-- load directly from 'final', no need to duplicate -->
+	<script src="../js/visibility.js"></script>
+</head>
+<body>
+	<div id="container">
+		<header>
+		<a href="index.html"><img id="headerIcon" src="images/dogIcon.png" alt="[dog]" /><img src="images/bannerText.jpg" alt="Koirakamut.com" /></a>
+		</header>
+		<aside id="sideBar">
 
-<li id="newAdditions">
-	<h2>Uusia koirakamuja!</h2>
-	<div class="dogShow">
-		<img class="dogPhoto" alt="Yesse" src="images/ponderingDog.jpg" />
-		<h3>Yesse</h3>
-		<p>
-		Yesse on nuori uros.
-		</p>
-	</div>
+			<!-- navigation items -->
+			<nav><ul>
+				<li class="navListItem"><a href="index.html">Etusivu</a></li>
+				<li class="navListItem"><a href="uutiset.html">Ajankohtaista</a></li>
+				<li class="navListItemCurrent"><a href="koirat.html">Lue ilmoituksia</a></li>
+				<li class="navListItem"><a href="ilmoita.html">Jätä ilmoitus</a></li>
+				<li class="navListItem"><a href="takasivu.html">Takasivu</a></li>
+			</ul></nav>
+			<div id="dogSearch">
+				<h3 class="formToggler" onClick="Toggle('#dogSearchForm');">Etsi koirakamuja &raquo;</h3>
+				<form action="#koirat.html" id="dogSearchForm" >
+					<table>
+						<tr>
+							<td>Paikkakunta: </td>
+						</tr><tr>
+							<td><input size="16" placeholder="Jyväskylä" name="location" /></td>
+						</tr><tr>
+							<td>Ikä:</td>
+						</tr><tr>
+							<td><input type="number" size="4" name="ageMin" value="0" min="0" max="25" /> - <input type="number" size="4" name="ageMax" value="0" min="0" max="25" /></td>
+						</tr><tr>
+							<td>Koko</td>
+						</tr><tr>
+							<td>
+								<select>
+								  <option value="any">Ei merkitystä</option>
+								  <option value="small">Pienikokoinen</option>
+								  <option value="medium">Keskikokoinen</option>
+								  <option value="big">Suurikokoinen</option>
+								</select>
+							</td>
+						</tr><tr>
+							<td>Vapaa sanahaku: </td>
+						</tr><tr>
+							<td><input size="16" name="freeword" /></td>
+						</tr><tr>
+							<td><input type="submit" value="Etsi"></td>
+						</tr>
+					</table>
+				</form>
+			</div>
+			<div id="tutustuSasuun">
+				<a href="koirat.html"><img src="images/cutePuppyx200.jpg" /><span id="tutustuSasuunText">Tutustu suloisiin koirakamuihin jo tänään!</span></a>
+			</div>
+		</aside>
 
-	<div class="dogShow">
-		<h3>Fido</h3>
-		<p>
-			Fido on nuori pentu.
-		</p>
+		<section id="mainSection">
+			<form action="#" class="informativeHeader" id="loginForm">
+				<table><tr><td>
+					Kirjaudu sisään tai <a href="rekisterointi.html">rekisteröidy</a>.
+				</td><td style="text-align: right;">
+					<input required size="10" type="text" placeholder="Käyttäjätunnus" name="username" />
+					<input required size="10" type="password" placeholder="Salasana" name="pwd" />
+					<button onclick="loginButton()">Kirjaudu</button>
+				</td></tr></table>
+			</form>
+
+			<div class="mainSectionBlock">
+				<div id="dogShow">
+					<h2>Uusimmat ilmoitukset</h2>
+					<!-- Yesse -->
+					<table>
+						<tr>
+							<td rowspan="3">
+								<a href="images/ponderingDog.jpg"><img class="dogPhoto" alt="Yesse" src="images/ponderingDog_t.jpg" /></a>
+							</td>
+							<td>
+								<h3><img class="genderPic" src="../images/male.png" alt="uros" /><a href="#">Yesse</a></h3>
+							</td>
+							<td class="timedate timedateRight">
+								28.11.2012 09:33
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<p>Yesse on nuori, monirotuinen uros, jota eivät huolet varjosta.</p>
+								<p>Suosikkileikkeihin Yessellä lukeutuvat uiminen, noutaminen sekä kunnon paini.</p>
+						</td></tr>
+						<tr class="dogContact"><td colspan="2">
+								<a href="#">Ota yhteyttä!</a>
+						</td></tr>
+					</table>
+					<!-- Ruu --> 
+					<table>
+						<tr>
+							<td rowspan="3">
+								<a href="images/playfulDog.jpg"><img class="dogPhoto" alt="Vera" src="images/playfulDog_t.jpg" /></a>
+							</td>
+							<td>
+								<h3><img class="genderPic" src="../images/female.png" alt="naaras" /><a href="#">Ruu</a></h3>
+							</td>
+							<td class="timedate timedateRight">
+								27.11.2012 22:05
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<p>Tässä on tyttö, jonka kanssa ei takuulla tule tylsää!</p>
+								<p>Ruu rakastaa etsimis-, jahtaamis- sekä noutamisleikkejä ylitse kaiken muun, mutta malttaa toki aina leikkiä reilusti, muutkin huomioon ottaen.</p>
+							</td>
+						</tr>
+						<tr class="dogContact"><td colspan="2">
+								<a href="#">Ota yhteyttä!</a>
+						</td></tr>
+					</table>
+					<!-- Vera --> 
+					<table>
+						<tr>
+							<td rowspan="3">
+								<a href="images/whiteShepherd.jpg"><img class="dogPhoto" alt="Vera" src="images/whiteShepherd_t.jpg" /></a>
+							</td>
+							<td>
+								<h3><img class="genderPic" src="../images/female.png" alt="naaras" /><a href="#">Vera</a></h3>
+							</td>
+						<td class="timedate timedateRight">
+							28.11.2012 07:12
+						</td>
+						<tr>
+							<td colspan="2">
+							<p>Vera on urheilullinen, leikkisä nainen, joka tulee kaikkien kanssa toimeen. Tottelee lähes nimeä kuin nimeä, mikäli herkkuja on tarjolla. Autiolle saarelle Vera ottaisi mukaan tennispallon sekä omistajansa!</p>
+							<p>Hakusessa on tositarkoituksella mukava kumppani, jonka kanssa jakaa niin elämä kuin olohuoneen mattokin.</p>
+						</td></tr>
+						<tr class="dogContact"><td colspan="2">
+								<a href="#">Ota yhteyttä!</a>
+						</td></tr>
+					</table>
+				</div> <!-- end "dogShow" -->
+			</div>
+			<footer>
+				Kaikki Koirakamut.com - sivuston materiaali on vapaasti levitettävissä, poikkeuksena kuitenkin osa kuvista <a href="../E/index.html" />(dokumentaatio)</a>
+			</footer>
+		</section>
 	</div>
-</li>
+</body>
+</html>

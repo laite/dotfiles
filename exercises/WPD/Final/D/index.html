@@ -5,39 +5,75 @@
     <meta charset="UTF-8" />
     <meta name="description" content="Koirakamut" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/layout.css" />
+	<script src="../js/jquery-1.7.2.min.js"></script> <!-- load directly from 'final', no need to duplicate -->
+	<script src="../js/visibility.js"></script>
 </head>
 <body>
 	<div id="container">
 		<header>
-			<img id="headerIcon" src="images/dogIcon.png" alt="[dog]" />
-			<img src="images/bannerText.jpg" alt="Koirakamut.com" />
+			<a href="index.html"><img id="headerIcon" src="images/dogIcon.png" alt="[dog]" /><img src="images/bannerText.jpg" alt="Koirakamut.com" /></a>
 		</header>
 		<aside id="sideBar">
-
 			<!-- navigation items -->
 			<nav><ul>
-					<li class="navListItem">Etusivu</li>
-					<li class="navListItem">Ajankohtaista</li>
-					<li class="navListItem">Etsi kavereita</li>
-					<li class="navListItem">Jätä ilmoitus</li>
-					<li class="navListItem">Takasivu</li>
+				<li class="navListItemCurrent"><a href="index.html">Etusivu</a></li>
+				<li class="navListItem"><a href="uutiset.html">Ajankohtaista</a></li>
+				<li class="navListItem"><a href="koirat.html">Lue ilmoituksia</a></li>
+				<li class="navListItem"><a href="ilmoita.html">Jätä ilmoitus</a></li>
+				<li class="navListItem"><a href="takasivu.html">Takasivu</a></li>
 			</ul></nav>
-
-			<img id="tutustuSasuun" src="images/cutePuppyx200.jpg" />
-
+			<div id="dogSearch">
+				<h3 class="formToggler" onClick="Toggle('#dogSearchForm');">Etsi koirakamuja &raquo;</h3>
+				<form action="koirat.html" id="dogSearchForm" >
+					<table>
+						<tr>
+							<td>Paikkakunta: </td>
+						</tr><tr>
+							<td><input size="16" placeholder="Jyväskylä" name="location" /></td>
+						</tr><tr>
+							<td>Ikä:</td>
+						</tr><tr>
+							<td><input type="number" size="4" name="ageMin" value="0" min="0" max="25" /> - <input type="number" size="4" name="ageMax" value="0" min="0" max="25" /></td>
+						</tr><tr>
+							<td>Koko</td>
+						</tr><tr>
+							<td>
+								<select>
+								  <option value="any">Ei merkitystä</option>
+								  <option value="small">Pienikokoinen</option>
+								  <option value="medium">Keskikokoinen</option>
+								  <option value="big">Suurikokoinen</option>
+								</select>
+							</td>
+						</tr><tr>
+							<td>Vapaa sanahaku: </td>
+						</tr><tr>
+							<td><input size="16" name="freeword" /></td>
+						</tr><tr>
+							<td><input type="submit" value="Etsi"></td>
+						</tr>
+					</table>
+				</form>
+			</div>
+			<div id="tutustuSasuun">
+				<a href="koirat.html"><img src="images/cutePuppyx200.jpg" /><span id="tutustuSasuunText">Tutustu suloisiin koirakamuihin jo tänään!</span></a>
+			</div>
 		</aside>
 		<!-- avainsanoja: Tutustu, ihastu, osallistu!  -->
 		<section id="mainSection">
-			<form action="#" id="loginForm">
-				<input size="10" type="email" placeholder="Käyttäjätunnus" name="username" />
-				<input required size="10" type="password" placeholder="Salasana" name="pwd" />
-				<input type="submit" value="Kirjaudu" />
+			<form action="#" class="informativeHeader" id="loginForm">
+				<table><tr><td>
+					Kirjaudu sisään tai <a href="rekisterointi.html">rekisteröidy</a>.
+				</td><td style="text-align: right;">
+					<input required size="10" type="text" placeholder="Käyttäjätunnus" name="username" />
+					<input required size="10" type="password" placeholder="Salasana" name="pwd" />
+					<button onclick="loginButton()">Kirjaudu</button>
+				</td></tr></table>
 			</form>
 			<!-- Ajankohtaista - osio -->
-			<div id="news">
+			<div class="mainSectionBlock">
 				<h2>Ajankohtaista</h2>
 				<p class="shortNews">
 					<span class="timedate">[Su 25.11.2012 18:02] </span><br />
@@ -62,7 +98,7 @@
 				</div>
 			</div>
 			<!-- Ajankohtaista - osio päättyy -->
-			<div id="promotion">
+			<div class="mainSectionBlock">
 				<div>
 					<img src="images/happyDog_300.jpg" alt="Two dogs" id="bigPromotionImage" />
 					<h2>Koirakamut.com</h2>
@@ -71,6 +107,14 @@
 					</p>
 					<p class="shortNews">
 					Kumppaneita on mahdollista hakea helposti paikkakunnan, iän, sukupuolen tai rodun mukaan - tai vain uppoutua selaamaan lukuisia valokuvia, koirakertomuksia tai keskusteluja aiheen tiimoilta ja vähän kauempaakin.
+					</p>
+				</div>
+
+				<div style="margin-top: 30px;">
+					<h2>Rekisteröidy jo tänään!</h2>
+					<p class="shortNews">
+					Monet toiminnot ovat tarjolla vain rekisteröidyille käyttäjille, joten liittyminen todella kannattaa. Lue lisätietoja 
+					<a href="rekisterointi.html">Rekisteröitymis-sivulta</a>.
 					</p>
 				</div>
 
