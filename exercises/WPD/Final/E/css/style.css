@@ -1,8 +1,7 @@
 
 /********************************************
- * C/css/style.css 							*
- * Contains stylings for Web Design			*
- * Basics									*
+ * E/css/style.css 							*
+ * Stylings for Documentation				*
  *											*
  * (c) Markus Klinga 2012					*
  *											*
@@ -29,8 +28,6 @@ nav ul {
 
 nav ul li {
 	display: inline-block; 
-	padding: 0px;
-	margin: 0px;
 }
 
 header {
@@ -40,8 +37,8 @@ header {
 
 a {
 	text-decoration: none;
-	color: #bd6b2f;
 	color: #a65214;
+	color: #367d75;
 }
 
 a:hover {
@@ -51,56 +48,25 @@ a:hover {
 h1 {
 	text-align: center;
 }
+
 h2 {
-	width: 100%;
+	margin-top: 20px;
+	padding: 5px 5px 2px 10px;
 	border-bottom: 1px solid #aaa;
-	color: #000;
+	color: #333;
+	font-size: 14pt;
+	font-weight: normal;
+	background:  #ffc295;
 }
 
-footer {
-	border: 1px dotted #aaa;
-	padding: 5px;
-	font-size: 80%;
-	text-align: center;
+h3 {
+	margin: 40px 10px 25px 0px;
 }
 
 /* class - specific rules */
 .navLink {
 	color: #fff;
 	margin: 0px 10px;
-}
-
-.glossarySidebar {
-	float: left;
-	width: 250px;
-	color: #000;
-	text-align: right;
-}
-.sidebar {
-	float: left;
-	width: 250px;
-	color: #000;
-}
-.sidebar li {
-	list-style-type: none;
-}
-
-.paraContainer:before,
-.paraContainer:after {
-	content:"";
-	display:table;
-}
-.paraContainer:after {
-	clear:both;
-}
-
-.content {
-	margin: 30px auto 70px 300px;
-}
-
-.glossaryContent {
-	margin: 0px auto 50px 280px;
-	padding: 0px;
 }
 
 /* Special IDentifiers */
@@ -111,4 +77,10 @@ footer {
 	border: 1px solid #ddd;
 	background: #ffffff;
 	box-shadow: 0px 0px 30px #bfbfbf;
+}
+
+#mainContent {
+	margin: 5px;
+	padding: 0px;
+	border-bottom: 1px solid #aaa;
 }

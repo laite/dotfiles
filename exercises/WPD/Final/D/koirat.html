@@ -4,11 +4,11 @@
 	<title>Etsi koirakamuja</title>
     <meta charset="UTF-8" />
     <meta name="description" content="Koirakamut" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/layout.css" />
 	<script src="../js/jquery-1.7.2.min.js"></script> <!-- load directly from 'final', no need to duplicate -->
-	<script src="../js/visibility.js"></script>
+	<script src="js/koirakamut.js"></script>
 </head>
 <body>
 	<div id="container">
@@ -16,137 +16,116 @@
 		<a href="index.html"><img id="headerIcon" src="images/dogIcon.png" alt="[dog]" /><img src="images/bannerText.jpg" alt="Koirakamut.com" /></a>
 		</header>
 		<aside id="sideBar">
-
 			<!-- navigation items -->
 			<nav><ul>
 				<li class="navListItem"><a href="index.html">Etusivu</a></li>
-				<li class="navListItem"><a href="uutiset.html">Ajankohtaista</a></li>
-				<li class="navListItemCurrent"><a href="koirat.html">Lue ilmoituksia</a></li>
-				<li class="navListItem"><a href="ilmoita.html">Jätä ilmoitus</a></li>
+				<li class="navListItem"><a href="rekisterointi.html">Rekisteröidy</a></li>
+				<li class="navListItemCurrent"><a href="koirat.html">Selaa ilmoituksia</a></li>
 				<li class="navListItem"><a href="takasivu.html">Takasivu</a></li>
 			</ul></nav>
 			<div id="dogSearch">
 				<h3 class="formToggler" onClick="Toggle('#dogSearchForm');">Etsi koirakamuja &raquo;</h3>
 				<form action="#koirat.html" id="dogSearchForm" >
-					<table>
-						<tr>
-							<td>Paikkakunta: </td>
-						</tr><tr>
-							<td><input size="16" placeholder="Jyväskylä" name="location" /></td>
-						</tr><tr>
-							<td>Ikä:</td>
-						</tr><tr>
-							<td><input type="number" size="4" name="ageMin" value="0" min="0" max="25" /> - <input type="number" size="4" name="ageMax" value="0" min="0" max="25" /></td>
-						</tr><tr>
-							<td>Koko</td>
-						</tr><tr>
-							<td>
-								<select>
-								  <option value="any">Ei merkitystä</option>
-								  <option value="small">Pienikokoinen</option>
-								  <option value="medium">Keskikokoinen</option>
-								  <option value="big">Suurikokoinen</option>
-								</select>
-							</td>
-						</tr><tr>
-							<td>Vapaa sanahaku: </td>
-						</tr><tr>
-							<td><input size="16" name="freeword" /></td>
-						</tr><tr>
-							<td><input type="submit" value="Etsi"></td>
-						</tr>
-					</table>
+					<div class="dogSearchItem">
+						<label for="location">Paikkakunta:</label>
+						<input size="16" id="location" placeholder="Jyväskylä" name="location" />
+					</div>
+					<div class="dogSearchItem">
+						<label for="ageMin">Ikä:</label>
+						<input type="number" id="ageMin" name="ageMin" value="0" min="0" max="25" />
+						<label for="ageMax">-</label>
+						<input type="number" name="ageMax" value="25" min="0" max="25" />
+					</div>
+					<div class="dogSearchItem">
+						<label for="size">Koko: </label>
+						<select id="size">
+							  <option value="any">Ei merkitystä</option>
+							  <option value="small">Pienikokoinen</option>
+							  <option value="medium">Keskikokoinen</option>
+							  <option value="big">Suurikokoinen</option>
+						</select>
+					</div>
+					<div class="dogSearchItem">
+						<label for="freeword">Vapaa sanahaku:</label>
+						<input id="freeword" size="16" name="freeword" />
+					</div>
+					<div class="dogSearchItem"><input type="button" onclick="searchDogs();" value="Etsi"></div>
 				</form>
 			</div>
-			<div id="tutustuSasuun">
-				<a href="koirat.html"><img src="images/cutePuppyx200.jpg" /><span id="tutustuSasuunText">Tutustu suloisiin koirakamuihin jo tänään!</span></a>
+			<div id="tutustu">
+				<a href="koirat.html"><img src="images/cutePuppyx200.jpg" alt="cute puppy" /><span id="tutustuText">Tutustu suloisiin koirakamuihin jo tänään!</span></a>
 			</div>
 		</aside>
-
 		<section id="mainSection">
-			<form action="#" class="informativeHeader" id="loginForm">
-				<table><tr><td>
-					Kirjaudu sisään tai <a href="rekisterointi.html">rekisteröidy</a>.
-				</td><td style="text-align: right;">
-					<input required size="10" type="text" placeholder="Käyttäjätunnus" name="username" />
-					<input required size="10" type="password" placeholder="Salasana" name="pwd" />
-					<button onclick="loginButton()">Kirjaudu</button>
-				</td></tr></table>
-			</form>
-
+			<!-- searchTools begin -->
+			<div class="mainSectionBlock">
+				<h2>Hakutoiminnot</h2>
+				<div class="informativeHeader" id="searchInfo">
+					<table><tr>
+							<td>
+								Kehittyneempi haku on valitettavasti tarjolla vain <a href="rekisterointi.html">rekisteröityneille</a> käyttäjille.
+							</td>
+							<td style="width: 50px; text-align: right;">
+								<img src="images/close.png" style="cursor: pointer;" alt="sulje" title="Sulje tämä tiedote" onclick="CloseInfo('#searchInfo');" /> 
+							</td>
+					</tr></table>
+				</div>
+			</div> <!-- searchTools end -->
+			<!-- dogShow begins -->
 			<div class="mainSectionBlock">
 				<div id="dogShow">
 					<h2>Uusimmat ilmoitukset</h2>
 					<!-- Yesse -->
-					<table>
-						<tr>
-							<td rowspan="3">
-								<a href="images/ponderingDog.jpg"><img class="dogPhoto" alt="Yesse" src="images/ponderingDog_t.jpg" /></a>
-							</td>
-							<td>
-								<h3><img class="genderPic" src="../images/male.png" alt="uros" /><a href="#">Yesse</a></h3>
-							</td>
-							<td class="timedate timedateRight">
-								28.11.2012 09:33
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2">
+					<div class="dogBlock">
+						<a href="images/ponderingDog.jpg"><img class="dogPhoto" alt="Yesse" src="images/ponderingDog_t.jpg" /></a>
+						<div class="dogBlockText">
+							<h3><img class="genderPic" src="../images/male.png" alt="uros" /><a href="rekisterointi.html">Yesse</a>
+							<span class="timedate timedateRight">[02.12.2012 09:33]</span></h3>
 								<p>Yesse on nuori, monirotuinen uros, jota eivät huolet varjosta.</p>
 								<p>Suosikkileikkeihin Yessellä lukeutuvat uiminen, noutaminen sekä kunnon paini.</p>
-						</td></tr>
-						<tr class="dogContact"><td colspan="2">
-								<a href="#">Ota yhteyttä!</a>
-						</td></tr>
-					</table>
-					<!-- Ruu --> 
-					<table>
-						<tr>
-							<td rowspan="3">
-								<a href="images/playfulDog.jpg"><img class="dogPhoto" alt="Vera" src="images/playfulDog_t.jpg" /></a>
-							</td>
-							<td>
-								<h3><img class="genderPic" src="../images/female.png" alt="naaras" /><a href="#">Ruu</a></h3>
-							</td>
-							<td class="timedate timedateRight">
-								27.11.2012 22:05
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2">
+							<div class="dogContact"><a href="rekisterointi.html">Ota yhteyttä!</a></div>
+						</div>
+					</div>
+
+					<!-- topi -->
+					<div class="dogBlock">
+						<a href="images/coolDog.jpg"><img class="dogPhoto" alt="Topi" src="images/coolDog_t.jpg" /></a>
+						<div class="dogBlockText">
+							<h3><img class="genderPic" src="../images/male.png" alt="uros" /><a href="rekisterointi.html">Topi</a>
+							<span class="timedate timedateRight">[02.12.2012 07:16]</span></h3>
+							<p>Hey-o! Cool dog is cool.</p>
+							<p>Etsitään seuraa festareille tai muuten vaan hengaamaan.</p>
+							<div class="dogContact"><a href="rekisterointi.html">Ota yhteyttä!</a></div>
+						</div>
+					</div>
+
+					<!-- ruu -->
+					<div class="dogBlock">
+						<a href="images/playfulDog.jpg"><img class="dogPhoto" alt="Vera" src="images/playfulDog_t.jpg" /></a>
+						<div class="dogBlockText">
+							<h3><img class="genderPic" src="../images/female.png" alt="naaras" /><a href="rekisterointi.html">Ruu</a>
+							<span class="timedate timedateRight">[30.11.2012 11:32]</span></h3>
 								<p>Tässä on tyttö, jonka kanssa ei takuulla tule tylsää!</p>
 								<p>Ruu rakastaa etsimis-, jahtaamis- sekä noutamisleikkejä ylitse kaiken muun, mutta malttaa toki aina leikkiä reilusti, muutkin huomioon ottaen.</p>
-							</td>
-						</tr>
-						<tr class="dogContact"><td colspan="2">
-								<a href="#">Ota yhteyttä!</a>
-						</td></tr>
-					</table>
+							<div class="dogContact"><a href="rekisterointi.html">Ota yhteyttä!</a></div>
+						</div>
+					</div>
+
 					<!-- Vera --> 
-					<table>
-						<tr>
-							<td rowspan="3">
-								<a href="images/whiteShepherd.jpg"><img class="dogPhoto" alt="Vera" src="images/whiteShepherd_t.jpg" /></a>
-							</td>
-							<td>
-								<h3><img class="genderPic" src="../images/female.png" alt="naaras" /><a href="#">Vera</a></h3>
-							</td>
-						<td class="timedate timedateRight">
-							28.11.2012 07:12
-						</td>
-						<tr>
-							<td colspan="2">
-							<p>Vera on urheilullinen, leikkisä nainen, joka tulee kaikkien kanssa toimeen. Tottelee lähes nimeä kuin nimeä, mikäli herkkuja on tarjolla. Autiolle saarelle Vera ottaisi mukaan tennispallon sekä omistajansa!</p>
-							<p>Hakusessa on tositarkoituksella mukava kumppani, jonka kanssa jakaa niin elämä kuin olohuoneen mattokin.</p>
-						</td></tr>
-						<tr class="dogContact"><td colspan="2">
-								<a href="#">Ota yhteyttä!</a>
-						</td></tr>
-					</table>
-				</div> <!-- end "dogShow" -->
+					<div class="dogBlock">
+						<a href="images/whiteShepherd.jpg"><img class="dogPhoto" alt="Vera" src="images/whiteShepherd_t.jpg" /></a>
+						<div class="dogBlockText">
+							<h3><img class="genderPic" src="../images/female.png" alt="naaras" /><a href="rekisterointi.html">Vera</a>
+							<span class="timedate timedateRight">[29.11.2012 22:31]</span></h3>
+								<p>Vera on urheilullinen, leikkisä nainen, joka tulee kaikkien kanssa toimeen. Tottelee lähes nimeä kuin nimeä, mikäli herkkuja on tarjolla. Autiolle saarelle Vera ottaisi mukaan tennispallon sekä omistajansa!</p>
+								<p>Hakusessa on tositarkoituksella mukava kumppani, jonka kanssa jakaa niin elämä kuin olohuoneen mattokin.</p>
+							<div class="dogContact"><a href="rekisterointi.html">Ota yhteyttä!</a></div>
+						</div>
+					</div>
+				</div> <!-- dogShow ends -->
 			</div>
 			<footer>
-				Kaikki Koirakamut.com - sivuston materiaali on vapaasti levitettävissä, poikkeuksena kuitenkin osa kuvista <a href="../E/index.html" />(dokumentaatio)</a>
+				Kaikki Koirakamut.com - sivuston materiaali on vapaasti levitettävissä, poikkeuksena kuitenkin osa kuvista <a href="../E/index.html#linksAndLicenses">(dokumentaatio)</a>
 			</footer>
 		</section>
 	</div>

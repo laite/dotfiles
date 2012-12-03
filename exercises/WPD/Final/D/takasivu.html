@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<title>Koirakamut/takasivu</title>
     <meta charset="UTF-8" />
-	<title>Koirakamut.com - rekisteröinti</title>
-    <meta name="description" content="Koirakamut rekisteröinti" />
+    <meta name="description" content="Koirakamut, omistaja" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/layout.css" />
@@ -19,10 +19,11 @@
 			<!-- navigation items -->
 			<nav><ul>
 				<li class="navListItem"><a href="index.html">Etusivu</a></li>
-				<li class="navListItemCurrent"><a href="rekisterointi.html">Rekisteröidy</a></li>
+				<li class="navListItem"><a href="rekisterointi.html">Rekisteröidy</a></li>
 				<li class="navListItem"><a href="koirat.html">Selaa ilmoituksia</a></li>
-				<li class="navListItem"><a href="takasivu.html">Takasivu</a></li>
-			</ul></nav>
+				<li class="navListItemCurrent"><a href="takasivu.html">Takasivu</a></li>
+			</ul>
+			</nav>
 			<div id="dogSearch">
 				<h3 class="formToggler" onClick="Toggle('#dogSearchForm');">Etsi koirakamuja &raquo;</h3>
 				<form action="#koirat.html" id="dogSearchForm" >
@@ -37,7 +38,7 @@
 						<input type="number" name="ageMax" value="25" min="0" max="25" />
 					</div>
 					<div class="dogSearchItem">
-						<label for="size">Koko:</label>
+						<label for="size">Koko: </label>
 						<select id="size">
 							  <option value="any">Ei merkitystä</option>
 							  <option value="small">Pienikokoinen</option>
@@ -51,49 +52,31 @@
 					</div>
 					<div class="dogSearchItem"><input type="button" onclick="searchDogs();" value="Etsi"></div>
 				</form>
-			</div> <!-- dogsearch ends -->
+			</div> <!-- end dogsearch -->
 			<div id="tutustu">
 				<a href="koirat.html"><img src="images/cutePuppyx200.jpg" alt="cute puppy" /><span id="tutustuText">Tutustu suloisiin koirakamuihin jo tänään!</span></a>
 			</div>
 		</aside>
+		<!-- avainsanoja: Tutustu, ihastu, osallistu!  -->
 		<section id="mainSection">
-			<!-- registeration - osio -->
+			<!-- information - osio -->
 			<div class="mainSectionBlock">
-				<h1>Rekisteröidy käyttäjäksi</h1>
-				<div>
-					<div id="bigPromotionImage">
-						<img src="images/happyDog_300.jpg" alt="Happy dog" />
+				<div id="dogShow">
+					<h2>Omistaja</h2>
+					<div class="dogBlock">
+						<a href="images/mklinga.jpg"><img class="dogPhoto" alt="Markus" src="images/mklinga_t.jpg" /></a>
+						<div class="dogBlockText">
+							<h3><img class="genderPic" src="../images/male.png" alt="uros" /><a href="rekisterointi.html">Markus Klinga</a></h3>
+							<span class="timedate timedateRight">28.11.2012 09:33</span>
+								<p>Markus on nuorehko, kaukaasialainen uros, joka nauttii koodaamisesta sekä progressiivisesta musiikista.</p>
+								<p>Markuksen ryhmä/opiskelijatunnus ovat <strong>HTI12S1A / G8270</strong></p>
+							<div class="dogContact"><a href="mailto:laite@gmx.com">Ota yhteyttä!</a></div>
+						</div>
 					</div>
-					<h2>Koirakamut.com</h2>
-					<p class="shortNews">
-					Koirakamut.com on uusi, täysin kotimainen palvelu, jonka tarkoituksena on saattaa mahdollisimman monta nappisilmää sekä huiskuhäntää yhteen.
-					</p>
-					<p class="shortNews">
-					Kumppaneita on mahdollista hakea helposti paikkakunnan, iän, sukupuolen tai rodun mukaan - tai vain uppoutua selaamaan lukuisia valokuvia, koirakertomuksia tai keskusteluja aiheen tiimoilta ja vähän kauempaakin.
-					</p>
+					<!-- Omistaja -->
 				</div>
 
-				<div style="margin-top: 30px;">
-					<h2>Rekisteröidy helposti!</h2>
-					<p class="shortNews">
-						Rekisteröityminen Koirakamut.comiin on todella helppoa! Seuraa vain näitä yksinkertaisia ohjeita ja kohta olet osallinen Suomen mukavimmasta yhteisöstä!
-					</p>
-				</div>
-				<div style="margin-top: 30px;">
-					<h3>Yksityiskohtaiset ohjeet</h3>
-					<ol>
-						<li>Vie täydenkuun aikaan Keltinmäen koulun piha-aidan tolpan juureen harmaa kangassäkki, joka sisältää <em>seitsemän koiralle kelpaavaa yrttiä</em> sekä <em>ison tukun seteleitä</em></li>
-						<li><strong>Älä jää seuraamaan</strong> mitä kassille tapahtuu, vaan poistu välittömästi paikalta.</li>
-						<li>Noin 5-8 viikon kuluessa saat postissa nimettömän kirjekuoren, joka sisältää lisäohjeita</li>
-					</ol>
-				</div>
-				<div style="margin-top: 30px;">
-					<h2>Ota yhteyttä</h2>
-					<p class="shortNews">
-						Ongelmatilanteissa ota yhteyttä virkavaltaan tai muuhun vastaavaan tahoon.
-					</p>
-				</div>
-			</div> <!-- end mainSectionBlock -->
+			</div>
 			<footer>
 				Kaikki Koirakamut.com - sivuston materiaali on vapaasti levitettävissä, poikkeuksena kuitenkin osa kuvista <a href="../E/index.html#linksAndLicenses">(dokumentaatio)</a>
 			</footer>

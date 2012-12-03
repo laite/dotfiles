@@ -217,10 +217,10 @@ var fader;
 fader = new fadeObject('mainContent', 'ffffff', '000000', 40, 40);
 
 fader.msg[0] = "Welcome, friend.";
-fader.msg[1] = "Items under <em>Pages</em> will take you to the distant realms. Are you ready to go?";
+fader.msg[1] = "Items under <em>Pages</em> will take you to the distant realms. <ol style='list-style-type:lower-alpha;'><li><strong><a style='color:inherit;' href='B/index.html'>Wedding Example</a></strong> is a terrific example of modern looks and dashing usability</li><li><strong><a style='color:inherit;' href='C/index.html'>Styling Notes</a></strong> are a short take on Web Design and Usability</li><li><strong><a style='color:inherit;' href='D/index.html'>Koirakamut</a></strong>, the magnum opus, is a never-before seen page cluster full of ancient wonders and modern pimpin'</li><li><strong><a style='color:inherit;' href='E/index.html'>Documentation</a></strong> contains some documents about Koirakamut</li></ol>";
 fader.msg[2] = "These <em>web pages</em> are made by Markus Klinga.<ul style='list-style-type: none;'><li>g8270</li></ul>";
 fader.msg[3] = "This is an exercise for Web Page Development. It was foretold.";
-fader.msg[4] = "If you are still not convinced, you can enter my <a href=\"darkplace.html\"><span>...darkplace</span></a>";
+fader.msg[4] = "If you are still not convinced, you can enter my <a style='color: inherit;' href=\"darkplace.html\"><span>...darkplace</span></a>";
 fader.msg[5] = "No penguins were harmed creating this web page.";
 
 function fadeIn(what)

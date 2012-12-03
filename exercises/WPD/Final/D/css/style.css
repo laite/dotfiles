@@ -12,14 +12,11 @@
  * important colors: 						*
  * logo: #8f3b98							*
  * link: ##3d7494							*
- * h1: #709c13, h2: #7ca12f					*
+ * h1/h3: #8f3b98, h2: #7ca12f				*
  *											*
  ********************************************/
 
-/* style definitions of layout blocks */
-header {
-}
-
+/* basic text rules for page*/
 body {
 	font-family: "sans";
 	font-size: 10pt;
@@ -37,8 +34,12 @@ a:hover {
 
 h1 {
 	padding: 5px;
-	color: #709c13;
+	margin: 5px;
+	margin-bottom: 20px;
+	color: #8f3b98;
 	font-size: 32pt;
+	border-bottom: 1px solid #666;
+	text-align: center;
 
 }
 
@@ -54,8 +55,18 @@ h3 {
 	color: #8f3b98;
 }
 
+/* this should prevent nasty blue bordering with IE */
+header > a {
+	color: #fff;
+}
 
 /* class - specific rules */
+.dogSearchItem {
+	padding: 0px 5px;
+	margin: 3px 10px;
+	display: inline-block; /* search items get 'cut off' by block and its label when resizing window */
+}
+
 .mainSectionBlock {
 	border: 1px solid #ddd;
 }
@@ -69,22 +80,22 @@ h3 {
 }
 
 .informativeHeader {
+	display: block;
+	padding: 5px 5px;
 	margin: 10px;
 	border: 1px solid #bbb;
 	background: #fafafa;
 }
 
-.shortNews {
-
-}
-
 .timedate {
-	font-size: 80%;
-	color: #bbb;
+	font-size: 8pt;
+	font-weight: normal;
+	color: #aaa;
 }
 
 .timedateRight {
-	text-align: right;
+	float: right;
+	margin-right: 5px;
 }
 
 .readMore {
@@ -92,14 +103,35 @@ h3 {
 	text-align: right;
 }
 
-.dogContact td {
+.dogBlock {
+	border: 1px dotted #aaa;
+	margin-top: 15px;
+	width: 100%;
+	overflow: auto; /* this fixes floating images breaking out of div */
+}
+
+/* show every other dogBlock with different color */
+.dogBlock:nth-child(odd) { 
+	background-color:#f4f0ea; 
+}
+
+.dogBlock:nth-child(even) {
+   background-color:#fff; 
+}
+
+.dogBlockText {
+	/* the pic_t on the left is always 150px, plus 20px of margin */
+	margin-left: 170px;
+	margin-bottom: 10px;
+}
+
+.dogContact {
 	font-size: 80%;
-	text-align: right;
-	vertical-align: bottom;
 }
 
 .dogPhoto {
-	margin-right: 20px;
+	float: left;
+	padding: 5px;
 }
 
 .genderPic {
@@ -109,6 +141,7 @@ h3 {
 	vertical-align: top;
 }
 
+/* make it clear that user can press here */
 .formToggler {
 	cursor: pointer;
 }
@@ -118,14 +151,15 @@ h3 {
 }
 
 /* Special IDentifiers */
-#tutustuSasuun {
+#tutustu {
 	height: 300px;
 }
-#tutustuSasuunText {
+
+/* tutustu-text is hidden by default */
+#tutustuText {
 	display: none;
 	position: relative;
 	text-align: center;
-	text-decoration: none;
 	color: #fff;
 	border-radius: 5px;
 	background: rgba(0,0,0,0.5);
@@ -134,22 +168,25 @@ h3 {
 	left: 0px;
 }
 
-#tutustuSasuun img {
-	border-radius: 25px;
-}
-
-#tutustuSasuun:hover #tutustuSasuunText {
-	display: block;
+#tutustu a:hover {
 	text-decoration: none;
 }
 
-#tutustuSasuun:hover img {
-	opacity: 0.5;
+#tutustu img {
+	border-radius: 25px;
+}
+
+/* display 'promotiontext' over the image when hovered */
+#tutustu:hover #tutustuText {
+	display: block;
+}
+
+#tutustu:hover img {
+	opacity: 0.75;
 }
 
 #bigPromotionImage {
 	float: left;
-	width: 300px;
 	margin: 5px;
 	margin-right: 15px;
 	padding: 0px;
@@ -161,41 +198,10 @@ h3 {
 	border-radius: 25px;
 }
 
-#dogSearch {
-	padding: 5px;
-	margin: 5px;
-}
-
 #dogSearchForm {
 	display:none;
 	border: 1px solid #777;
 	border-radius: 5px;
 	padding: 5px;
-}
-
-#dogShow {
-	padding: 10px;
 	margin: 10px;
-	width: 600px;
-}
-
-#dogShow table {
-	border: 1px dotted #aaa;
-	margin-top: 15px;
-}
-
-#dogShow td {
-	vertical-align: top;
-}
-
-#dogShow .dogContact td {
-	vertical-align: bottom;
-}
-
-#dogShow table:nth-child(odd) { 
-	background-color:#f4f0ea; 
-}
-
-#dogShow table:nth-child(even) {
-   background-color:#fff; 
 }
