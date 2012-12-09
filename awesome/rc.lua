@@ -47,8 +47,7 @@ gtkeditor = "gvim"
 filemanager = "ranger"
 filemanager_cmd = terminal .. " -e " .. filemanager
 guifilemanager = "thunar"
-webbrowser = "chromium-browser"
-xrandr = "sh /home/laite/bin/xr.sh"
+webbrowser = "chromium"
 
 
 layouts =
@@ -193,7 +192,6 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "u", function () awful.util.spawn(terminal_tabbed) end),
     awful.key({ modkey,           }, "p", function () awful.util.spawn(filemanager_cmd) end),
     awful.key({ modkey,           }, "i", function () awful.util.spawn(webbrowser) end),
-    awful.key({ modkey,           }, "g", function () awful.util.spawn(xrandr) end),
 
 	-- Helpers
     awful.key({ modkey, "Shift"   }, "d", function () awful.util.spawn("sh /home/laite/bin/dictnotify.sh") end),
@@ -383,10 +381,6 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 -- }}}
 
 -- Startup commands 
-awful.util.spawn("sh /home/laite/bin/xmodmaps.sh")
+awful.util.spawn("sh /home/laite/workspace/dotfiles/xmodmaps.sh")
 awful.util.spawn("numlockx on")
 awful.util.spawn("xset s off -dpms")
---awful.util.spawn("xrandr --output HDMI-0 --mode 1920x1080")
-
--- mpd scrobbler
--- awful.util.spawn("scrobby")
