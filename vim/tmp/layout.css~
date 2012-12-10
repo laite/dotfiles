@@ -1,0 +1,165 @@
+
+/********************************************
+ * D/css/layout.css 						*
+ * Contains definitions for Koirakamut.com	*
+ * layout, depending on screen resolution	*
+ *											*
+ * (c) Markus Klinga 2012					*
+ *											*
+ ********************************************/
+
+/* definitions of basic HTML elements */
+
+/* Basic settings for 'large screen' (980px+) */
+@media screen
+{
+	body {
+		margin: 0px;
+		padding: 0px;
+	}
+
+	/* we use max. 920px of horizontal space anyway */
+	#container {
+		width: 920px;
+		margin: 0px auto;
+		padding-top: 30px;
+	}
+
+	header {
+		height: 110px;
+		width: 100%;
+	}
+
+	/* real width is 200px + 40px = 240px */
+	#sideBar {
+		width: 200px;
+		float: right;
+		margin: 10px 0px 0px 40px;
+		padding: 10px;
+	}
+
+	/* space for columns is 920-240 = 680px */
+	#mainSection {
+		width: 680px;
+		margin: 0px;
+	}
+
+	/* real space within sectionblock is 620px */
+	.mainSectionBlock {
+		width: 640px;
+		padding: 10px;
+		margin: 15px auto;
+	}
+
+	footer {
+		width: auto;
+		margin: 10px auto;
+		padding: 10px;
+		border: 2px dotted #ccc;
+		font-size: 75%;
+		position: relative;
+		bottom: 0px;
+	}
+
+	#loginForm table {
+		text-align: center;
+		width: 640px;
+	}
+
+}
+
+@media screen and (max-width: 980px)
+{
+	/* use always 80% of screen estate (no nav bar on the side) */
+	#container {
+		width: 80%;
+	}
+
+	/* hide the dog on the left of banner */
+	#headerIcon {
+		display: none;
+	}
+	
+	header {
+		height: auto;
+		width: 80%;
+		margin: 0px auto;
+	}
+
+	header img {
+		width: 100%;
+	}
+
+	/* sidebar jumps over mainSection, becomes horizontal */
+	#sideBar {
+		width: 80%;
+		float: none;
+		text-align: center;
+		margin: 10px auto;
+		padding: 0px;
+	}
+
+	#sideBar ul {
+		padding: 0px;
+		margin: 10px;
+	}
+	
+	.navListItem,
+	.navListItemCurrent	{
+		display: inline;
+	}
+
+	#dogSearch {
+		margin: 0px;
+		padding: 0px;
+	}
+
+	#mainSection {
+		width: 100%;
+		margin: 0px auto;
+	}
+
+	#loginHelperText,
+	#closeLoginForm {
+		display: none;
+	}
+
+	#loginForm {
+		width: 80%;
+		margin: 0px auto;
+		border: 0px;
+		text-align: right;
+		background: none:
+	}
+
+	#loginForm table {
+		width: 100%; 
+		text-align: center;
+	}
+
+	#tutustuSasuun {
+		display: none;
+	}
+
+	footer {
+		width: 80%;
+		margin: 10px auto;
+		padding: 10px;
+		border: 2px dotted #ccc;
+		font-size: 75%;
+		position: relative;
+		bottom: 0px;
+	}
+
+}
+
+@media screen and (max-width: 600px)
+{
+	header {
+		width: 80%;
+	}
+}
+
+@media screen and (max-width: 480px)
+{
+}

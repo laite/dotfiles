@@ -1,0 +1,31 @@
+/* there is a monster on the loose! */
+
+$(window).load(function() {
+    $("#monster").css("left", $("#monster").position().left).circulate({
+            sizeAdjustment: 160,
+            speed: 2000,
+            width: -820,
+            height: 500,
+            loop: true,
+            zIndexValues: [1, 50, 50, 1]
+    });
+
+    $("#monster2").css("left", $("#monster2").position().left).circulate({
+            sizeAdjustment: 160,
+            speed: 1666,
+            width: -220,
+            height: 200,
+            loop: true,
+            zIndexValues: [50, 1, 1, 50]
+    });
+
+    $("#monster3").css("left", $("#monster3").position().left).circulate({
+            sizeAdjustment: 160,
+            speed: 1366,
+            width: -220,
+            height: 0,
+            loop: true,
+            zIndexValues: [50, 1, 1, 50]
+    });
+
+});

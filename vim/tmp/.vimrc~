@@ -175,7 +175,6 @@ if has("autocmd")
   au BufWritePost .vimrc so ~/.vimrc
 
   " use cpp11 additions by default
-  autocmd Syntax cpp call EnhanceCppSyntax()
   au BufNewFile,BufRead *.cpp set syntax=cpp11
 
   augroup END

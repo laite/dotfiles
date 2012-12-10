@@ -1,0 +1,15 @@
+#canvas11{
+	position: fixed;
+}
+
+#canvas12{
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+}
+
+#canvas13{
+	position: fixed;
+}
+

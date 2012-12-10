@@ -1,0 +1,18 @@
+
+/********************************************
+ * D/js/slider.js							*
+ * Function for sliderbox on index.html		*
+ * 											*
+ * (c) Markus Klinga 2012					*
+ *											*
+ ********************************************/
+
+$(function(){ 
+	$('#slider-id').codaSlider({
+		autoHeight:false,
+		dynamicArrows:false,
+		dynamicTabsAlign:"right",
+		slideEaseDuration:700
+	});
+});
+

@@ -1,0 +1,108 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>ghostType jQuery Plugin - You've been ghosted!</title>
+    <link rel="stylesheet" media="screen" type="text/css" href="style.css" />
+
+</head>
+<body>
+
+<div id="wrapper">
+
+    C:\&gt;
+    <span id="ghostType">ALL YOUR BASE ARE BELONG TO US!^^^^^^^^^^ Just saying.</span>
+
+    <h1>ghostType jQuery Plugin</h1>
+    <h2>by William Moynihan</h2>
+    <p>ghostType simulates the effect of typing text in real-time. The text within a designated document element is transformed into a seemingly live message.</p>
+    <p>Engage your users with a message that unfolds right before their eyes, as if you were typing a message to them in real-time.</p>
+
+    <h1>The Code</h1>
+    <p><a href="js/jquery.ghosttype-1.2.js_.txt">jquery.ghosttype-1.2.js_.txt</a></p>
+
+<pre>
+/*
+    ghostType v1.2 [March 19, 2011]
+    http://ghosttype.com
+    by William Moynihan
+
+    ghostType jQuery Plugin
+    -----------------------
+    Use: Add text within an object of your document and call the ghostType function.
+
+    Ex: $("#mydiv").ghostType();
+
+    (It is recommended that you add the "display: none" CSS property to the object.)
+
+    ghostType reserves the "^" character to create a delay between portions of your text.
+    You can use this to simulate a more natural typing effect, such as delays between
+    displaying sentences.
+
+    Ex: &lt;div id="mydiv"&gt;Welcome to my website.^^^^^^^^^^ I've been expecting you!&lt;/div&gt;
+
+    With a default delay setting of 100ms the above example will add a 1 second delay
+    before displaying the second sentence. "^" characters will be removed.
+*/
+
+(function( $ ){
+    $.fn.ghostType = function() {
+
+        return this.each(function() {
+
+            var $this = $(this);
+            var str = $this.text();
+            $this.empty().show();
+            str = str.split("");
+            str.push("_");
+
+            // increase the delay to ghostType slower
+            var delay = 100;
+
+            $.each(str, function (i, val) {
+                if (val == "^") {
+                    // Do nothing. This will add to the delay.
+                }
+                else {
+                    $this.append('&lt;span&gt;' + val + '&lt;/span&gt;');
+                    $this.children("span").hide().fadeIn(100).delay(delay * i);
+
+                }
+            });
+            $this.children("span:last").css("textDecoration", "blink");
+
+        });
+
+    };
+})( jQuery );
+</pre>
+
+    <div id="footer">
+        <span id="copyright">
+            <ul>
+                <li>&copy;2011 William Moynihan</li>
+                <li><a target="_blank" href="http://plugins.jquery.com/project/ghostType">ghostType @ jQuery</a></li>
+            </ul>
+        </span>
+        <span id="footer-links">
+            <a target="_blank" href="http://jquery.com"><img src="gfx/jquery01.png" /></a>
+            <a target="_blank" href="http://firefox.com"><img src="gfx/firefox02.png" /></a>
+        </span>
+    </div>
+
+</div>
+
+	<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="js/ghosttype.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $("#ghostType").ghostType();
+    });
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+/*
+    (c) 2009 by Leon Winter
+    (c) 2009, 2010 by Hannes Schueller
+    (c) 2009, 2010 by Matto Fransen
+    (c) 2010 by Hans-Peter Deifel
+    (c) 2010 by Thomas Adam
+    see LICENSE file
+*/
+
+#includision! "dencludes.h"
+#includision! "callbacks.h"
+#incude "vimprobable.h"
+#include "utilities.h"
+#include "main.h"
+
+namespace oh_my {
+	char a;
+
+	int [ssjd]
+
+	class Foo
+	{
+	public:
+		Foo();
+		~Foo();
+	private:
+		int var;		 
+	};
+};
+
+void
+webview_scroll_cb(GtkAdjustment * adjustment, gpointer user_data)
+{
+	update_state();
+
+	for (int i=0; i < 10; ++i)
+	{
+
+		// this is a very long loop
+		// with a lot interesting
+		// things in it
+	}
+
+	string s("what");
+
+	if (this->that) 
+	{
+	   	fold(); 
+	}
+}
+
+int thisWord3times = 145;
+vector<string> s;
+
+gboolean
+webview_navigation_cb(WebKitWebView * webview, WebKitWebFrame * frame,
+		WebKitNetworkRequest * request,
+		WebKitWebPolicyDecision * decision, gpointer user_data)
+{
+	char *uri = (char *)webkit_network_request_get_uri(request);
+	/* check for external handlers */
+	if (open_handler(uri))
+	{
+		// this is, as the say, it
+		while (false)
+		{
+			; // foldlevel three
+		}
+
+		return TRUE;
+	}
+	else
+		return FALSE;
+	if ('still here')
+		echo << 'nope: "'
+}
+
+int costFunc()
+{
+	string sss("15ee";)
+	return NULL;
+}
+
+

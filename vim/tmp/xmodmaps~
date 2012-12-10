@@ -1,0 +1,2 @@
+xmodmap -e "keycode 16 = 7 underscore 7 slash braceleft NoSymbol braceleft"
+xmodmap -e "keycode 61 = slash minus underscore endash dead_belowcomma endash"

@@ -1,0 +1,16 @@
+
+
+/********************************************
+ * js/toggle.js								*
+ * Contains javascript for toggling 		*
+ * toggle visibility of searchform			*
+ *											*
+ * (c) Markus Klinga 2012					*
+ *											*
+ ********************************************/
+
+
+function formToggle(id)
+{
+	document.getElementById(id).style.display = (document.getElementById(id).style.display != "block") ? "block" : "none";
+}
