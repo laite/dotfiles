@@ -83,6 +83,17 @@ end
 -- {{{ Wibox
 mytextclock = awful.widget.textclock({ align = "right" }, "<span color=\"#808076\">%a %d.%m.%Y,</span><span color=\"#dcdccc\"> %H:%M </span>")
 
+gmb_box = widget({ type = "textbox" })
+vicious.register(gmb_box, vicious.widgets.uptime,
+	function (widget,args)
+		f = assert (io.popen ("cat /home/laite/.config/awesome/np_gmb"))
+	  
+		for line in f:lines() do last = line end -- for loop
+		f:close()
+		return last
+	end, 3)
+
+
 -- Create a systray
 mysystray = widget({ type = "systray" })
 
@@ -167,6 +178,7 @@ mytasklist.buttons = awful.util.table.join(
         mylayoutbox,
         mytextclock,
         mysystray or nil,
+		gmb_box,
         --mytasklist,
         layout = awful.widget.layout.horizontal.rightleft
     }

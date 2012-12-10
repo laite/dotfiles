@@ -8,7 +8,7 @@
 
 -- {{{ Main
 theme = {}
-theme.wallpaper_cmd = { "feh --bg-center /home/laite/.config/awesome/wall.jpg" }
+theme.wallpaper_cmd = { "feh --bg-center /home/laite/.config/awesome/wall.png" }
 -- }}}
 
 -- {{{ Styles
