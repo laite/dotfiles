@@ -1,6 +1,0 @@
-/* penguin walks some */
-
-function fadeoutPenguin()
-{
-	document.getElementById('penguin').className = 'fadeoutPenguin';
-}
