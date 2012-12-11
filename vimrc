@@ -69,13 +69,15 @@ inoremap <C-U> <C-G>u<C-U>
 " autocomplete { and newline, move cursor to middle
 inoremap {<CR> {<CR>}<Esc>O
 
-" complete brackets, make <c-l> exit latest
-inoremap ( ()<Esc>:let leavechar=")"<CR>i
-inoremap [ []<Esc>:let leavechar="]"<CR>i
-inoremap { {}<Esc>:let leavechar="}"<CR>i
-inoremap " ""<Esc>:let leavechar="\""<CR>i
-inoremap ' ''<Esc>:let leavechar="\'"<CR>i
+" complete brackets, make <c-l> exit latest, <leader><c-l> the one before that
+inoremap ( ()<Esc>:let lastleavechar=leavechar<CR>:let leavechar=")"<CR>i
+inoremap [ []<Esc>:let lastleavechar=leavechar<CR>:let leavechar="]"<CR>i
+inoremap { {}<Esc>:let lastleavechar=leavechar<CR>:let leavechar="}"<CR>i
+inoremap < <><Esc>:let lastleavechar=leavechar<CR>:let leavechar=">"<CR>i
+inoremap " ""<Esc>:let lastleavechar=leavechar<CR>:let leavechar="\""<CR>i
+inoremap ' ''<Esc>:let lastleavechar=leavechar<CR>:let leavechar="\'"<CR>i
 imap <C-L> <Esc>:exec "normal f" . leavechar<CR>a
+imap <Leader><C-L> <Esc>:exec "normal f" . lastleavechar<CR>a
 
 " by default, brackets are autocompleted, we can skip this with leader-key
 inoremap <Leader>[ [
