@@ -70,6 +70,7 @@ inoremap <C-U> <C-G>u<C-U>
 inoremap {<CR> {<CR>}<Esc>O
 
 " complete brackets, make <c-l> exit latest, <leader><c-l> the one before that
+let leavechar=""
 inoremap ( ()<Esc>:let lastleavechar=leavechar<CR>:let leavechar=")"<CR>i
 inoremap [ []<Esc>:let lastleavechar=leavechar<CR>:let leavechar="]"<CR>i
 inoremap { {}<Esc>:let lastleavechar=leavechar<CR>:let leavechar="}"<CR>i
