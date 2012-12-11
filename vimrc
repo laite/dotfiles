@@ -62,7 +62,6 @@ nnoremap <C-k> <C-w>W
 nnoremap <C-h> gT
 nnoremap <C-l> gt
 
-
 " insert mode mappings
 inoremap <C-U> <C-G>u<C-U>
 
@@ -84,8 +83,12 @@ imap <Leader><C-L> <Esc>:exec "normal f" . lastleavechar<CR>a
 inoremap <Leader>[ [
 inoremap <Leader>( (
 inoremap <Leader>{ {
+inoremap <Leader>< <
 inoremap <Leader>" "
 inoremap <Leader>' '
+
+" also, we'll add << to an exception (useful in cpp)
+inoremap << <<
 
 " since we use ö also as a <leader>, we define 'öö' as a simple 'ö'
 inoremap <Leader>ö ö
