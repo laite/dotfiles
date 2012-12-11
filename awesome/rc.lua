@@ -86,7 +86,7 @@ mytextclock = awful.widget.textclock({ align = "right" }, "<span color=\"#808076
 gmb_box = widget({ type = "textbox" })
 mytimer = timer({ timeout = 5 })
 mytimer:add_signal("timeout", function() 
-	local line, last
+	local line, last = ""
 	local f = assert (io.popen ("cat /home/laite/.config/awesome/np_gmb"))
 	  
 	for line in f:lines() do last = line end -- for loop (there *really* shouldn't be more than one line in file)
