@@ -251,8 +251,10 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey, "Shift"   }, "q", awesome.quit),
     awful.key({ modkey },            "r",     function () mypromptbox:run() end),
 
-    awful.key({ modkey,           }, "Right",     function () awful.tag.incmwfact( 0.05)    end),
-    awful.key({ modkey,           }, "Left",     function () awful.tag.incmwfact(-0.05)    end),
+    awful.key({ modkey,           }, "Right", function () awful.tag.incmwfact( 0.05)    end),
+    awful.key({ modkey,           }, "Left",  function () awful.tag.incmwfact(-0.05)    end),
+    awful.key({ modkey,           }, "Up",    function () awful.client.incwfact( 0.05)    end),
+    awful.key({ modkey,           }, "Down",  function () awful.client.incwfact(-0.05)    end),
     awful.key({ modkey, "Shift"   }, "h",     function () awful.tag.incnmaster( 1)      end),
     awful.key({ modkey, "Shift"   }, "l",     function () awful.tag.incnmaster(-1)      end),
     awful.key({ modkey, "Control" }, "h",     function () awful.tag.incncol( 1)         end),
