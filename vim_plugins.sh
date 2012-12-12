@@ -12,13 +12,13 @@ cp ./vim-pathogen.git/autoload/pathogen.vim ~/.vim/autoload
 git clone git://github.com/majutsushi/tagbar ~/.vim/bundle/tagbar 
 
 # EasyMotion
-git clone https://github.com/Lokaltog/vim-easymotion.git ~/.vim/bundle/vim-easymotion.git 
+git clone https://github.com/Lokaltog/vim-easymotion.git ~/.vim/bundle/vim-easymotion
 
-# YankRing
-git clone https://github.com/vim-scripts/YankRing.vim.git ~/.vim/bundle/YankRing.vim.git 
+# Fanf,ingTastic;
+git clone https://github.com/dahu/vim-fanfingtastic.git ~/.vim/bundle/vim-fanfingtastic
 
 # SuperTab
-git clone https://github.com/ervandew/supertab.git ~/.vim/bundle/supertab.git 
+git clone https://github.com/ervandew/supertab.git ~/.vim/bundle/supertab
 
 # SnipMate
-git clone https://github.com/msanders/snipmate.vim.git ~/.vim/bundle/snipmate.vim.git 
+git clone https://github.com/msanders/snipmate.vim.git ~/.vim/bundle/snipmate.vim
