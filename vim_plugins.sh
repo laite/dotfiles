@@ -14,9 +14,6 @@ git clone git://github.com/majutsushi/tagbar ~/.vim/bundle/tagbar
 # EasyMotion
 git clone https://github.com/Lokaltog/vim-easymotion.git ~/.vim/bundle/vim-easymotion
 
-# Fanf,ingTastic;
-git clone https://github.com/dahu/vim-fanfingtastic.git ~/.vim/bundle/vim-fanfingtastic
-
 # SuperTab
 git clone https://github.com/ervandew/supertab.git ~/.vim/bundle/supertab
 
