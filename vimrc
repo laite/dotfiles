@@ -117,13 +117,10 @@ function! ChangePaste(type, ...)
     silent exe "normal! p"
 endfunction
 
+" define motion 'numbers' in external file
 source $HOME/.numbermaps.vim
 
 """ Plugins """
-
-" Yankring
-let g:yankring_history_dir = '/home/laite/.vim/'
-nnoremap <silent> <F11> :YRShow<CR>
 
 " EasyMotion
 let g:EasyMotion_leader_key = '<Leader>'
