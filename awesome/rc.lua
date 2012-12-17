@@ -36,7 +36,7 @@ end
 --awful.util.spawn_with_shell("xcompmgr -cF &")
 
 -- {{{ Variable definitions
-beautiful.init("/home/laite/.config/awesome/themes/laite2/theme.lua")
+beautiful.init("/home/laite/.config/awesome/themes/laite_light/theme.lua")
 modkey = "Mod4"
 
 terminal = "x-terminal-emulator"
@@ -81,7 +81,7 @@ end
 --
 
 -- {{{ Wibox
-mytextclock = awful.widget.textclock({ align = "right" }, "<span color=\"#808076\">%a %d.%m.%Y,</span><span color=\"#dcdccc\"> %H:%M </span>")
+mytextclock = awful.widget.textclock({ align = "right" }, "<span color='" .. theme.fg_normal .. "'>%a %d.%m.%Y,</span><span weight=\"bold\"> %H:%M </span>")
 
 gmb_box = widget({ type = "textbox" })
 mytimer = timer({ timeout = 5 })

@@ -12,22 +12,22 @@ theme.wallpaper_cmd = { "feh --bg-center /home/laite/.config/awesome/wall.png" }
 -- }}}
 
 -- {{{ Styles
-theme.font      = "Terminus 8"
+theme.font      = "Sans 8"
 
 -- {{{ Colors
-theme.fg_normal = "#606060"
-theme.fg_focus  = "#668866"
-theme.fg_urgent = "#cc7777"
-theme.fg_additi = "#885500"
-theme.bg_normal = "#252627"
-theme.bg_focus  = "#252627"
-theme.bg_urgent = "#252627"
+theme.fg_normal = "#1a1a1a"
+theme.fg_focus  = "#ffffff"
+theme.fg_urgent = "#ffffff"
+theme.fg_additi = "#1ac61a"
+theme.bg_normal = "#ffffff"
+theme.bg_focus  = "#8aab68"
+theme.bg_urgent = "#8aab68"
 -- }}}
 
 -- {{{ Borders
 theme.border_width  = "1"
-theme.border_normal = "#252627"
-theme.border_focus  = "#668866"
+theme.border_normal = "#1a1a1a"
+theme.border_focus  = "#8aab68"
 theme.border_marked = "#CCAC8C"
 -- }}}
 
@@ -63,18 +63,18 @@ theme.tasklist_floating_icon = "/home/laite/.config/awesome/themes/zenburn/taskl
 -- }}}
 
 -- {{{ Layout
-theme.layout_tile       = "/home/laite/.config/awesome/themes/zenburn/layouts/tile.png"
-theme.layout_tileleft   = "/home/laite/.config/awesome/themes/zenburn/layouts/tileleft.png"
-theme.layout_tilebottom = "/home/laite/.config/awesome/themes/zenburn/layouts/tilebottom.png"
-theme.layout_tiletop    = "/home/laite/.config/awesome/themes/zenburn/layouts/tiletop.png"
-theme.layout_fairv      = "/home/laite/.config/awesome/themes/zenburn/layouts/fairv.png"
-theme.layout_fairh      = "/home/laite/.config/awesome/themes/zenburn/layouts/fairh.png"
-theme.layout_spiral     = "/home/laite/.config/awesome/themes/zenburn/layouts/spiral.png"
-theme.layout_dwindle    = "/home/laite/.config/awesome/themes/zenburn/layouts/dwindle.png"
-theme.layout_max        = "/home/laite/.config/awesome/themes/zenburn/layouts/max.png"
-theme.layout_fullscreen = "/home/laite/.config/awesome/themes/zenburn/layouts/fullscreen.png"
-theme.layout_magnifier  = "/home/laite/.config/awesome/themes/zenburn/layouts/magnifier.png"
-theme.layout_floating   = "/home/laite/.config/awesome/themes/zenburn/layouts/floating.png"
+theme.layout_tile       = "/home/laite/.config/awesome/themes/default/layouts/tile.png"
+theme.layout_tileleft   = "/home/laite/.config/awesome/themes/default/layouts/tileleft.png"
+theme.layout_tilebottom = "/home/laite/.config/awesome/themes/default/layouts/tilebottom.png"
+theme.layout_tiletop    = "/home/laite/.config/awesome/themes/default/layouts/tiletop.png"
+theme.layout_fairv      = "/home/laite/.config/awesome/themes/default/layouts/fairv.png"
+theme.layout_fairh      = "/home/laite/.config/awesome/themes/default/layouts/fairh.png"
+theme.layout_spiral     = "/home/laite/.config/awesome/themes/default/layouts/spiral.png"
+theme.layout_dwindle    = "/home/laite/.config/awesome/themes/default/layouts/dwindle.png"
+theme.layout_max        = "/home/laite/.config/awesome/themes/default/layouts/max.png"
+theme.layout_fullscreen = "/home/laite/.config/awesome/themes/default/layouts/fullscreen.png"
+theme.layout_magnifier  = "/home/laite/.config/awesome/themes/default/layouts/magnifier.png"
+theme.layout_floating   = "/home/laite/.config/awesome/themes/default/layouts/floating.png"
 -- }}}
 
 -- {{{ Titlebar
