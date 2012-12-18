@@ -33,6 +33,12 @@ do
 end
 -- }}}
 
+-- update text-only layoutbox
+function updatelayoutbox(l, s)
+	local screen = s or 1
+	l.text = beautiful["layout_txt_" .. awful.layout.getname(awful.layout.get(screen))]
+end
+
 --awful.util.spawn_with_shell("xcompmgr -cF &")
 
 -- {{{ Variable definitions
@@ -149,12 +155,25 @@ mytasklist.buttons = awful.util.table.join(
     mypromptbox = awful.widget.prompt({ layout = awful.widget.layout.horizontal.leftright })
     -- Create an imagebox widget which will contains an icon indicating which layout we're using.
     -- We need one layoutbox per screen.
-    mylayoutbox = awful.widget.layoutbox(1)
-    mylayoutbox:buttons(awful.util.table.join(
-                           awful.button({ }, 1, function () awful.layout.inc(layouts, 1) end),
-                           awful.button({ }, 3, function () awful.layout.inc(layouts, -1) end),
-                           awful.button({ }, 4, function () awful.layout.inc(layouts, 1) end),
-                           awful.button({ }, 5, function () awful.layout.inc(layouts, -1) end)))
+    -- mylayoutbox = awful.widget.layoutbox(1)
+    -- mylayoutbox:buttons(awful.util.table.join(
+		-- awful.button({ }, 1, function () awful.layout.inc(layouts, 1) end),
+		-- awful.button({ }, 3, function () awful.layout.inc(layouts, -1) end),
+		-- awful.button({ }, 4, function () awful.layout.inc(layouts, 1) end),
+		-- awful.button({ }, 5, function () awful.layout.inc(layouts, -1) end)
+	--))
+
+	-- text-only layoutbox
+	txtlayoutbox = widget({ type = "textbox" })
+    txtlayoutbox.text = beautiful["layout_txt_" .. awful.layout.getname(awful.layout.get(s))] 
+    awful.tag.attached_add_signal(s, "property::selected", function ()
+        updatelayoutbox(txtlayoutbox, s) 
+    end)
+    awful.tag.attached_add_signal(s, "property::layout", function ()
+        updatelayoutbox(txtlayoutbox, s) 
+    end)
+
+	-- color up other tags where window resides
 	local labelf = function(t, args) 
 		local text, bg_color, bg_image, icon = awful.widget.taglist.label.all(t, args)
 		if awful.util.table.hasitem(t:clients(), client.focus) then
@@ -175,10 +194,11 @@ mytasklist.buttons = awful.util.table.join(
     mywibox.widgets = {
         {
             mytaglist,
+			txtlayoutbox,
             mypromptbox,
             layout = awful.widget.layout.horizontal.leftright
         },
-        mylayoutbox,
+        --mylayoutbox,
         mytextclock,
         mysystray or nil,
 		gmb_box,

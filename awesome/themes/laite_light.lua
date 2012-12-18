@@ -64,7 +64,21 @@ theme.menu_submenu_icon      = "/home/laite/.config/awesome/themes/default/subme
 theme.tasklist_floating_icon = "/home/laite/.config/awesome/themes/zenburn/tasklist/floating.png"
 -- }}}
 
--- {{{ Layout
+-- {{{ Layout indicators
+-- text version
+theme.layout_txt_tile       = " ⁝ tiled" 
+theme.layout_txt_tileleft   = " ⁝ tiled left"
+theme.layout_txt_tilebottom = " ⁝ tiled bottom"
+theme.layout_txt_tiletop    = " ⁝ tiled top"
+theme.layout_txt_fairv      = " ⁝ fair vertical"
+theme.layout_txt_fairh      = " ⁝ fair horizontal"
+theme.layout_txt_spiral     = " ⁝ spiral"
+theme.layout_txt_dwindle    = " ⁝ dwindle"
+theme.layout_txt_max        = " ⁝ maximized"
+theme.layout_txt_fullscreen = " ⁝ fullscreen"
+theme.layout_txt_magnifier  = " ⁝ magnifier"
+theme.layout_txt_floating   = " ⁝ floating"
+-- and graphical
 theme.layout_tile       = "/home/laite/.config/awesome/themes/default/layouts/tile.png"
 theme.layout_tileleft   = "/home/laite/.config/awesome/themes/default/layouts/tileleft.png"
 theme.layout_tilebottom = "/home/laite/.config/awesome/themes/default/layouts/tilebottom.png"
