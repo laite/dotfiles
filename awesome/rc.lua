@@ -424,9 +424,11 @@ end)
 client.add_signal("unmanage", function (c)
 	local current_tag = awful.tag.selected(1)
 	local amount_of_clients = #current_tag:clients()
-	if amount_of_clients == 1 and c.class ~= "URxvt" then
+	if amount_of_clients == 1 then
 		for _, cli in pairs(current_tag:clients()) do
-			cli.border_width = 0
+			if cli.class ~= "URxvt" then
+				cli.border_width = 0
+			end
 		end
 	end
 end)
