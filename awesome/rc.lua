@@ -90,6 +90,9 @@ end
 mytextclock = awful.widget.textclock({ align = "right" }, "<span color='" .. theme.fg_normal .. "'>%a %d.%m.%Y,</span><span weight=\"bold\"> %H:%M </span>")
 
 gmb_box = widget({ type = "textbox" })
+gmb_box.align = "center"
+gmb_box.width = "1920"
+
 mytimer = timer({ timeout = 5 })
 mytimer:add_signal("timeout", function() 
 	local line, last = ""
@@ -198,12 +201,10 @@ mytasklist.buttons = awful.util.table.join(
             mypromptbox,
             layout = awful.widget.layout.horizontal.leftright
         },
-        --mylayoutbox,
-        mytextclock,
-        mysystray or nil,
+		mytextclock,
+		mysystray or nil,
 		gmb_box,
-        --mytasklist,
-        layout = awful.widget.layout.horizontal.rightleft
+		layout = awful.widget.layout.horizontal.rightleft
     }
 -- }}}
 
