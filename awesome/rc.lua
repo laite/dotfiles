@@ -66,20 +66,18 @@ layouts =
     awful.layout.suit.spiral,
     awful.layout.suit.max
 }
--- }}}
+-- }}} Variables
 
 
 -- {{{ Tags
 tags = {}
--- only 1 tag for 'video' screen
-
--- Each screen has its own tag table.
 tags[1] = awful.tag({ "main", "www", "mail", "irc", "edit", "code", "m7", "m8", "feed"}, 1,
 { 
 	layouts[2], layouts[2], layouts[7],          -- Tags: 1, 2, 3
 	layouts[5], layouts[4], layouts[5],          --       4, 5 ,6
 	layouts[2], layouts[7], layouts[2]           --       7, 8, 9
 })
+-- if we have a second display, use simple tiling there
 if screen.count() == 2 then
 	tags[2] = awful.tag({ 1 }, 2, layouts[1])
 end
