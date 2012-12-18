@@ -1,0 +1,1 @@
+/home/laite/workspace/dotfiles/awesome/theme.lua

@@ -337,10 +337,10 @@ awful.rules.rules = {
 					 size_hints_honor = false,
                      keys = clientkeys,
                      buttons = clientbuttons } },
+    { rule = { class = "URxvt" },
+      properties = { border_color = beautiful.border_terminal } },
     { rule = { class = "Xfce4-appfinder" },
       properties = { floating = true } },
---    { rule = { name = "Confirm ModeSwitch"},
---      properties = { floating = true, tag = tags[1][1] } },
     { rule = { class = "Firefox" },
       properties = { floating = false } },
     { rule = { class = "File-roller" },
@@ -393,8 +393,20 @@ client.add_signal("manage", function (c, startup)
     end
 end)
 
-client.add_signal("focus", function(c) c.border_color = beautiful.border_focus end)
-client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+client.add_signal("focus", function(c) 
+	if c.class == "URxvt" then
+		c.border_color = theme.border_terminal_focus
+	else
+		c.border_color = theme.border_focus
+	end
+end)
+client.add_signal("unfocus", function(c)
+	if c.class == "URxvt" then
+		c.border_color = theme.border_terminal
+	else
+		c.border_color = beautiful.border_normal
+	end
+end)
 -- }}}
 
 -- Startup commands 

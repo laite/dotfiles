@@ -26,8 +26,10 @@ theme.bg_urgent = "#8aab68"
 
 -- {{{ Borders
 theme.border_width  = "1"
-theme.border_normal = "#1a1a1a"
-theme.border_focus  = "#8aab68"
+theme.border_normal = "#d6d6d6"
+theme.border_focus  = "#1a1a1a"
+theme.border_terminal = "#101010" -- background of URxvt (as 2012/12/18 anyway :P)
+theme.border_terminal_focus = "#8aab68"
 theme.border_marked = "#CCAC8C"
 -- }}}
 
