@@ -386,7 +386,6 @@ awful.rules.rules = {
 -- }}}
 
 -- {{{ Signals
--- Signal function to awful.util.spawn(ute when a new client appears.
 client.add_signal("manage", function (c, startup)
     -- Add a titlebar
     -- awful.titlebar.add(c, { modkey = modkey })
@@ -399,6 +398,16 @@ client.add_signal("manage", function (c, startup)
         end
     end)
 
+	local current_tag = awful.tag.selected(1)
+	local amount_of_clients = #current_tag:clients()
+	if amount_of_clients == 1 and c.class ~= "URxvt" then
+		c.border_width = 0
+	else
+		for _, cli in pairs(current_tag:clients()) do
+			cli.border_width = 1
+		end
+	end
+
     if not startup then
         -- Set the windows at the slave,
         -- i.e. put it at the end of others instead of setting it master.
@@ -410,6 +419,16 @@ client.add_signal("manage", function (c, startup)
             awful.placement.no_offscreen(c)
         end
     end
+end)
+
+client.add_signal("unmanage", function (c)
+	local current_tag = awful.tag.selected(1)
+	local amount_of_clients = #current_tag:clients()
+	if amount_of_clients == 1 and c.class ~= "URxvt" then
+		for _, cli in pairs(current_tag:clients()) do
+			cli.border_width = 0
+		end
+	end
 end)
 
 client.add_signal("focus", function(c) 
