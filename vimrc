@@ -61,6 +61,10 @@ nnoremap <C-j> <C-w>w
 nnoremap <C-k> <C-w>W
 nnoremap <C-h> gT
 nnoremap <C-l> gt
+" entering insert mode hides hlsearch, but we want to get it back with n and N
+nnoremap n :set hlsearch<CR>n
+nnoremap N :set hlsearch<CR>N
+
 
 " insert mode mappings
 inoremap <C-U> <C-G>u<C-U>
@@ -145,6 +149,9 @@ endif
 set directory=~/.vim/tmp/
 set backupdir=~/.vim/tmp/
 
+" don't save basic options with the session
+set ssop-=options
+
 " Add highlighting for function definition in C++
 function! EnhanceCppSyntax()
   syn match cppFuncDef "::\~\?\zs\h\w*\ze([^)]*\()\s*\(const\)\?\)\?$"
@@ -160,6 +167,10 @@ if has("autocmd")
   " remember folding
   au BufWinLeave * silent! mkview
   au BufWinEnter * silent! loadview
+
+  " hide search highlighting when entering insert mode
+  " new search through / or ? returns hls, as do letters n and N
+  autocmd InsertEnter * :set nohlsearch
 
   " Put these in an autocmd group, so that we can delete them easily.
   augroup vimrcEx
@@ -177,9 +188,9 @@ if has("autocmd")
   " automatically reload vimrc when it's saved
   au BufWritePost .vimrc so ~/.vimrc
 
-  " use cpp11 additions by default
   autocmd Syntax cpp call EnhanceCppSyntax()
-  au BufNewFile,BufRead *.cpp set syntax=cpp11
+  " don't use cpp11 additions by default
+  " au BufNewFile,BufRead *.cpp set syntax=cpp11
 
   augroup END
 
