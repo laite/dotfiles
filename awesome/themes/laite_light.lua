@@ -66,7 +66,7 @@ theme.tasklist_floating_icon = "/home/laite/.config/awesome/themes/zenburn/taskl
 
 -- {{{ Layout indicators
 -- text version
-theme.layout_txt_tile       = " ⁝ tiled "
+theme.layout_txt_tile       = " ⁝ tiled right "
 theme.layout_txt_tileleft   = " ⁝ tiled left "
 theme.layout_txt_tilebottom = " ⁝ tiled bottom "
 theme.layout_txt_tiletop    = " ⁝ tiled top "
