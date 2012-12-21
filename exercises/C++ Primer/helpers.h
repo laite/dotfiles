@@ -3,6 +3,8 @@
 #ifndef HELPERS_H
 #define HELPERS_H
 
+#ifndef NO_INCLUDES
+
 // various streams
 #include <iostream>
 #include <istream>
@@ -41,6 +43,9 @@
 #include <cassert>
 #include <exception>
 #include <stdexcept>
+
+#endif // NO_INCLUDES
+
 
 #define Max(a,b) (((a) > (b)) ? (a) : (b))
 #define Min(a,b) (((a) < (b)) ? (a) : (b))
