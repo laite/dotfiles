@@ -154,7 +154,7 @@ set ssop-=options
 
 " Add highlighting for function definition in C++
 function! EnhanceCppSyntax()
-  syn match cppFuncDef "::\~\?\zs\h\w*\ze([^)]*\()\s*\(const\)\?\)\?$"
+  syn match cppFuncDef "::\~\?\zs\h\w*\ze([^)]*\()\s*\(const\)\?\)\?\(\:\)\?$"
   hi def link cppFuncDef Special
 endfunction
 
