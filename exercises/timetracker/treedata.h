@@ -8,6 +8,7 @@
 #define TREEDATA_H
 
 #include <gtkmm.h>
+#include <map>
 
 class DataBase;
 class DataItem;
@@ -38,12 +39,13 @@ class TreeData
 		/*
 		 *  Public Functions
 		 */
+		void InitializeTreeView();
 		
 		unsigned int GetSelectedID();
 		Gtk::TreeModel::Row GetRowFromID(unsigned int);
 		Gtk::TreeModel::Row GetSelectedRow();
-		void ChangeRow(Gtk::TreeModel::Row&, DataItem&);
 		void UpdateRow(Gtk::TreeModel::Row&);
+		void AddRow(const DataItem&);
 
 		void PopulateRow(Gtk::TreeModel::Row&, const DataItem&);
 		void PopulateTreeModel();
@@ -63,6 +65,7 @@ class TreeData
 		Gtk::TreeView *_treeView;
 		Glib::RefPtr<Gtk::ListStore> _refTreeModel;
 		Glib::RefPtr<Gtk::TreeSelection> _refTreeSelection;
+		std::map<unsigned int, Gtk::TreeModel::iterator> _rowMap;
 		ModelColumns _columns;
 };
 

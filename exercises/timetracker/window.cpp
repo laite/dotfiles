@@ -87,31 +87,9 @@ MainWindow::MainWindow(DataBase *d):
 	 */
 
 	_treeData = new TreeData(&_treeView, _db);
-	
-	_treeView.set_model(_treeData->GetRefTreeModel());
-
-	_treeView.append_column("ID", _treeData->Columns().columnID);
-	_treeView.append_column("Name", _treeData->Columns().columnName);
-	_treeView.append_column("Total", _treeData->Columns().columnElapsedTime);
-	_treeView.append_column("Goal", _treeData->Columns().columnGoalTime);
-
-	//Display a progress bar instead of a decimal number:
-	Gtk::CellRendererProgress* cell = Gtk::manage(new Gtk::CellRendererProgress);
-	int cols_count = _treeView.append_column("Percentage", *cell);
-	Gtk::TreeViewColumn* pColumn = _treeView.get_column(cols_count - 1);
-	if(pColumn)
-		pColumn->add_attribute(cell->property_value(), _treeData->Columns().columnPercentage);
-
-	// make all columns reorderable and resizable
-	std::vector<Gtk::TreeView::Column*> allColumns = _treeView.get_columns();
-	for (std::vector<Gtk::TreeView::Column*>::iterator columnIter = allColumns.begin();
-			columnIter != allColumns.end(); ++columnIter)
-	{
-		(*columnIter)->set_reorderable();
-		(*columnIter)->set_resizable();
-	}
-
+	_treeData->InitializeTreeView();
 	_treeData->PopulateTreeModel();
+
 	_buttonStop.set_sensitive(false); // disable stop button by default
 	
 	/*
@@ -200,9 +178,9 @@ void MainWindow::_OnButtonStop()
 
 void MainWindow::_OnButtonNew()
 {
-	DataItem &testi = _db->GetItem(_treeData->GetSelectedID());
+	DataItem &testi = _db->GetItem(3);
 	testi.name = "hölöö";
-	Gtk::TreeModel::Row rt = _treeData->GetSelectedRow();
+	Gtk::TreeModel::Row rt = _treeData->GetRowFromID(3);
 	_treeData->UpdateRow(rt);
 }
 
