@@ -34,26 +34,36 @@ class TreeData
 	public:
 
 		TreeData(Gtk::TreeView *, DataBase *);
+
+		/*
+		 *  Public Functions
+		 */
+		
 		unsigned int GetSelectedID();
 		Gtk::TreeModel::Row GetRowFromID(unsigned int);
 		Gtk::TreeModel::Row GetSelectedRow();
 		void ChangeRow(Gtk::TreeModel::Row&, DataItem&);
 		void UpdateRow(Gtk::TreeModel::Row&);
 
+		void PopulateRow(Gtk::TreeModel::Row&, const DataItem&);
+		void PopulateTreeModel();
+		
 		ModelColumns& Columns();
-		Glib::RefPtr<Gtk::ListStore>& RefTreeModel();
-		Glib::RefPtr<Gtk::TreeSelection>& RefTreeSelection();
+		Glib::RefPtr<Gtk::ListStore>& GetRefTreeModel();
+		Glib::RefPtr<Gtk::TreeSelection>& GetRefTreeSelection();
 
 
 	private:
 
-		ModelColumns _columns;
-
+		/*
+		 *  Private members
+		 */
+		
 		DataBase *_db;
 		Gtk::TreeView *_treeView;
 		Glib::RefPtr<Gtk::ListStore> _refTreeModel;
 		Glib::RefPtr<Gtk::TreeSelection> _refTreeSelection;
-		
+		ModelColumns _columns;
 };
 
 #endif /* end TREEDATA_H */

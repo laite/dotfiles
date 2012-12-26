@@ -1,7 +1,19 @@
-project(example)
+link_directories( ${GTKMM_LIBRARY_DIRS} )
 
-find_package(PkgConfig)
+include_directories( ${GTKMM_INCLUDE_DIRS} )
 
-pkg_check_modules(GTKMM gtkmm-3.0)
+add_executable(example
+	main.cpp
+	log.cpp
+	log.h 
+	window.cpp
+	window.h 
+	treedata.cpp
+	treedata.h
+	data.cpp
+	data.h )
 
-add_subdirectory(src)
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
+target_link_libraries( example
+	${GTKMM_LIBRARIES} )

@@ -88,10 +88,12 @@ MainWindow::MainWindow(DataBase *d):
 
 	_treeData = new TreeData(&_treeView, _db);
 	
-	_treeView.set_model(_treeData->RefTreeModel());
+	_treeView.set_model(_treeData->GetRefTreeModel());
 
 	_treeView.append_column("ID", _treeData->Columns().columnID);
 	_treeView.append_column("Name", _treeData->Columns().columnName);
+	_treeView.append_column("Total", _treeData->Columns().columnElapsedTime);
+	_treeView.append_column("Goal", _treeData->Columns().columnGoalTime);
 
 	//Display a progress bar instead of a decimal number:
 	Gtk::CellRendererProgress* cell = Gtk::manage(new Gtk::CellRendererProgress);
@@ -99,23 +101,18 @@ MainWindow::MainWindow(DataBase *d):
 	Gtk::TreeViewColumn* pColumn = _treeView.get_column(cols_count - 1);
 	if(pColumn)
 		pColumn->add_attribute(cell->property_value(), _treeData->Columns().columnPercentage);
-	_treeView.append_column("Total", _treeData->Columns().columnElapsedTime);
-	_treeView.append_column("Goal", _treeData->Columns().columnGoalTime);
 
-	for(guint i = 0; i < 5; i++) // make reorder/resize of columns possible
+	// make all columns reorderable and resizable
+	std::vector<Gtk::TreeView::Column*> allColumns = _treeView.get_columns();
+	for (std::vector<Gtk::TreeView::Column*>::iterator columnIter = allColumns.begin();
+			columnIter != allColumns.end(); ++columnIter)
 	{
-		Gtk::TreeView::Column* pColumn = _treeView.get_column(i);
-		pColumn->set_reorderable();
-		pColumn->set_resizable();
+		(*columnIter)->set_reorderable();
+		(*columnIter)->set_resizable();
 	}
 
+	_treeData->PopulateTreeModel();
 	_buttonStop.set_sensitive(false); // disable stop button by default
-
-	/*
-	 *  Populate TreeModel
-	 */
-	
-	_db->PopulateTreeModel(_treeData->RefTreeModel(), _treeData->Columns());
 	
 	/*
 	 *  Add signals
@@ -127,15 +124,15 @@ MainWindow::MainWindow(DataBase *d):
 	_buttonStart.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonStart) );
 	_buttonStop.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonStop) );
 
-	_treeData->RefTreeSelection()->signal_changed().connect(sigc::mem_fun(*this, &MainWindow::_TreeViewSelectionChanged));
+	_treeData->GetRefTreeSelection()->signal_changed().connect(sigc::mem_fun(*this, &MainWindow::_TreeViewSelectionChanged));
 
 	/*
 	 *  Select first row by default (if there is one)
 	 */
 	
 	if (_db->GetSize() > 0) {
-		Gtk::TreeModel::Children treeChildren = _treeData->RefTreeModel()->children();
-		_treeData->RefTreeSelection()->select(*(treeChildren.begin()));
+		Gtk::TreeModel::Children treeChildren = _treeData->GetRefTreeModel()->children();
+		_treeData->GetRefTreeSelection()->select(*(treeChildren.begin()));
 	}
 	
 	/*
@@ -222,9 +219,11 @@ void MainWindow::_OnButtonQuit()
 void MainWindow::_TreeViewSelectionChanged()
 {
 	unsigned int ID = _treeData->GetSelectedID();
-	DataItem selectedDataItem = _db->GetIDDataCopy(ID);
+	DataItem* selectedDataItem = _db->GetIDDataCopy(ID);
 
-	_UpdateStatistics(selectedDataItem);
+	// GetIDDataCopy returns NULL if it doesn't find ID
+	if (selectedDataItem)
+		_UpdateStatistics(*selectedDataItem);
 }
 
 void MainWindow::_UpdateStatistics(DataItem &dataItem)

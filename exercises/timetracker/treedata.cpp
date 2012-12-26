@@ -40,25 +40,48 @@ Gtk::TreeModel::Row TreeData::GetRowFromID(unsigned int ID)
 	
 }
 
+// Fill TreeView in MainWindow with data
+void TreeData::PopulateTreeModel()
+{
+	const std::map<unsigned int, DataItem> _data = _db->GetData();
+	
+	//Fill the TreeView's model
+	for (std::map<unsigned int, DataItem>::const_iterator dataIter = _data.begin();
+			dataIter != _data.end(); ++dataIter)
+	{
+		Gtk::TreeModel::Row row = *(_refTreeModel->append());
+		PopulateRow(row, (*dataIter).second);
+	}
+}
+
+void TreeData::PopulateRow(Gtk::TreeModel::Row &row, const DataItem &ditem)
+{
+	row[_columns.columnID] = ditem.ID;
+	row[_columns.columnName] = ditem.name;
+	row[_columns.columnPercentage] = ditem.percentage;
+	row[_columns.columnElapsedTime] = ditem.elapsedTime;
+	row[_columns.columnGoalTime] = ditem.goalTime;
+}
+
 void TreeData::ChangeRow(Gtk::TreeModel::Row &row, DataItem &dataItem)
 {
-	_db->PopulateRow(row, _columns, dataItem);
+	PopulateRow(row, dataItem);
 }
 
 void TreeData::UpdateRow(Gtk::TreeModel::Row &row)
 {
-	_db->PopulateRow(row, _columns, _db->GetItem(row[_columns.columnID]));
+	PopulateRow(row, _db->GetItem(row[_columns.columnID]));
 }
 
 ModelColumns& TreeData::Columns()
 {
 	return _columns;
 }
-Glib::RefPtr<Gtk::ListStore>& TreeData::RefTreeModel()
+Glib::RefPtr<Gtk::ListStore>& TreeData::GetRefTreeModel()
 {
 	return _refTreeModel;
 }
-Glib::RefPtr<Gtk::TreeSelection>& TreeData::RefTreeSelection()
+Glib::RefPtr<Gtk::TreeSelection>& TreeData::GetRefTreeSelection()
 {
 	return _refTreeSelection;
 }

@@ -150,39 +150,22 @@ DataItem& DataBase::GetItem(std::map<unsigned int, DataItem>::iterator wanted)
 	return wanted->second;
 }
 
-// Fill TreeView in MainWindow with data
-void DataBase::PopulateTreeModel(Glib::RefPtr<Gtk::ListStore> &mrefTreeModel, ModelColumns &mColumns)
-{
-	//Fill the TreeView's model
-	for (std::map<unsigned int, DataItem>::const_iterator iter = _data.begin(); iter != _data.end(); ++iter)
-	{
-		Gtk::TreeModel::Row row = *(mrefTreeModel->append());
-		PopulateRow(row, mColumns, (*iter).second);
-	}
-}
-
-void DataBase::PopulateRow(Gtk::TreeModel::Row &row, ModelColumns &mColumns, const DataItem &ditem)
-{
-	row[mColumns.columnID] = ditem.ID;
-	row[mColumns.columnName] = ditem.name;
-	row[mColumns.columnPercentage] = ditem.percentage;
-	row[mColumns.columnElapsedTime] = ditem.elapsedTime;
-	row[mColumns.columnGoalTime] = ditem.goalTime;
-	
-}
-
 // Get specific DataItem from DataBase
-DataItem DataBase::GetIDDataCopy(unsigned int ID)
+DataItem* DataBase::GetIDDataCopy(unsigned int ID)
 {
-	std::map<unsigned int, DataItem>::const_iterator wantedIDIter = _data.find(ID);
+	std::map<unsigned int, DataItem>::iterator wantedIDIter = _data.find(ID);
 	Log.Add("Looking for ID = " + std::to_string(ID));
 
 	if (wantedIDIter != _data.end())
-		return wantedIDIter->second;
+		return &wantedIDIter->second;
 	else
 	{
 		Log.Add("ID = " + std::to_string(ID) + " was Not Found!");
-		return DataItem(); // TODO: we shouldn' return anything unless specific id is found?
+		return NULL;
 	}
 }
 
+const std::map<unsigned int, DataItem>& DataBase::GetData()
+{
+	return _data;
+}

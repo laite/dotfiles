@@ -66,14 +66,13 @@ class DataBase
 		void AddItemToDataBase(DataItem&);
 		void RemoveItemFromDataBase(unsigned int);
 		
-		void PopulateRow(Gtk::TreeModel::Row&, ModelColumns&, const DataItem&);
-		void PopulateTreeModel(Glib::RefPtr<Gtk::ListStore>&, ModelColumns&);
-		DataItem GetIDDataCopy(unsigned int);
+		DataItem* GetIDDataCopy(unsigned int);
 
 		int GetSize();
 		bool IsIn(unsigned int ID);
 		DataItem& GetItem(std::map<unsigned int, DataItem>::iterator wanted);
 		DataItem& GetItem(unsigned int);
+		const std::map<unsigned int, DataItem>& GetData();
 
 	private:
 
