@@ -7,6 +7,7 @@
 #include "treedata.h"
 #include "data.h"
 #include "window.h"
+#include "log.h"
 
 
 TreeData::TreeData(Gtk::TreeView *originalTree, DataBase *db)
@@ -78,8 +79,10 @@ void TreeData::PopulateTreeModel()
 	//Fill the TreeView's model
 	for (std::map<unsigned int, DataItem>::const_iterator dataIter = _data.begin();
 			dataIter != _data.end(); ++dataIter) {
-		AddRow((*dataIter).second);
+		AddRow((*dataIter).second, false);
 	}
+
+	_RebuildRowMap();
 }
 
 void TreeData::PopulateRow(Gtk::TreeModel::Row &row, const DataItem &ditem)
@@ -91,12 +94,21 @@ void TreeData::PopulateRow(Gtk::TreeModel::Row &row, const DataItem &ditem)
 	row[_columns.columnGoalTime] = ditem.goalTime;
 }
 
-void TreeData::AddRow(const DataItem &dataItem)
+void TreeData::AddRow(const DataItem &dataItem, bool rebuildRowMap)
 {
 	Gtk::TreeModel::iterator rowIter = _refTreeModel->append();
 	Gtk::TreeModel::Row row = *rowIter;
-	_rowMap[dataItem.ID] = rowIter;
 	PopulateRow(row, dataItem);
+	if (rebuildRowMap)
+		_RebuildRowMap();
+}
+
+void TreeData::DeleteRow(Gtk::TreeModel::iterator rowIter)
+{
+	// ..
+	
+	// remember to rebuild rowmap
+	_RebuildRowMap();
 }
 
 void TreeData::UpdateRow(Gtk::TreeModel::Row &row)
@@ -109,13 +121,30 @@ ModelColumns& TreeData::Columns()
 {
 	return _columns;
 }
+
 Glib::RefPtr<Gtk::ListStore>& TreeData::GetRefTreeModel()
 {
 	return _refTreeModel;
 }
+
 Glib::RefPtr<Gtk::TreeSelection>& TreeData::GetRefTreeSelection()
 {
 	return _refTreeSelection;
+}
+
+void TreeData::_RebuildRowMap()
+{
+	Log.Add("Rebuilding _rowMap:");
+	_rowMap.clear();
+
+	Gtk::TreeModel::Children treeChildren = _refTreeModel->children();
+	for (Gtk::TreeModel::iterator treeIter = treeChildren.begin();
+			treeIter != treeChildren.end(); ++treeIter)
+	{
+		unsigned int ID = (*treeIter)[_columns.columnID];
+		_rowMap[ID] = treeIter;
+		Log.Add("Found ID = " + std::to_string(ID));
+	}
 }
 
 

@@ -45,7 +45,8 @@ class TreeData
 		Gtk::TreeModel::Row GetRowFromID(unsigned int);
 		Gtk::TreeModel::Row GetSelectedRow();
 		void UpdateRow(Gtk::TreeModel::Row&);
-		void AddRow(const DataItem&);
+		void AddRow(const DataItem&, bool rebuildRowMap = true);
+		void DeleteRow(Gtk::TreeModel::iterator);
 
 		void PopulateRow(Gtk::TreeModel::Row&, const DataItem&);
 		void PopulateTreeModel();
@@ -56,7 +57,13 @@ class TreeData
 
 
 	private:
+		
+		/*
+		 *  Private functions
+		 */
 
+		void _RebuildRowMap();
+		
 		/*
 		 *  Private members
 		 */
