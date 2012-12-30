@@ -30,8 +30,11 @@ URxvt.font:xft:dejavu sans mono:medium:size=9
 URxvt.boldFont:xft:dejavu sans mono:medium:size=9
 
 ! (true) transparency
-URxvt.depth: 32
-URxvt.background: rgba:1111/1111/1111/dddd
+!URxvt.depth: 32
+!URxvt.background: rgba:1111/1111/1111/ffff
+
+! no transparency
+URxvt.transparent: false
 
 ! disable scrollbar
 Urxvt.scrollBar: false
