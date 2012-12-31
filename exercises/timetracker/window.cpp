@@ -139,7 +139,7 @@ void MainWindow::_OnButtonStart()
 	// obtain reference to original item
 	_activeDataItem = &_db->GetItem(selectedID);
 
-	_timerBeginPoint = std::chrono::steady_clock::now();
+	_timerBeginPoint = std::chrono::system_clock::now();
 	_activeDataItem->lastTime = _timerBeginPoint;
 
 	// Set also to first time if needed

@@ -12,11 +12,13 @@
 #include "log.h"
 #include "data.h"
 #include "treedata.h"
+#include "config.h"
 
 
 /*
  *  UniqueID
  */
+
 
 UniqueID::UniqueID():
 	_lastID(0),
@@ -42,7 +44,6 @@ unsigned int UniqueID::GenerateID()
 	else
 	{
 		newID = ++_lastID;
-		Log.Add("Generated new Unique id.");
 	}
 
 	return newID;
@@ -54,24 +55,18 @@ void UniqueID::ReleaseID(unsigned int newlyReleasedID)
 	_releasedIDs.insert(newlyReleasedID);
 }
 
+
 /*
  *  DataItem
  */
 
+
 DataItem::DataItem():
-	name("[empty]"), description("[empty]"), percentage(0), continuous(false), times(0),
-	elapsedTime(0)
+	ID(0), name("[empty]"), description("[empty]"), percentage(0), continuous(false), inverse(false), 
+	times(0), elapsedTime(0), goalTime(0)
 {
 
 }
-
-DataItem::DataItem(std::string pName, std::string pDescription, bool pContinuous, double pGoalTime):
-	name(pName), description(pDescription), continuous(pContinuous), goalTime(pGoalTime), times(0),
-	elapsedTime(0)
-{
-	percentage = 41;
-}
-
 
 /*
  *  DataBase
@@ -90,21 +85,20 @@ DataBase::~DataBase()
 
 void DataBase::_Load()
 {
-	
-	DataItem a("Trait A", "blah blah blah", true, 15);
-	DataItem b("Trait B", "dalp dalp dalp", true, 500);
-	DataItem c("Trait C", "blah blah blah", true, 15);
-	DataItem d("Trait D", "dalp dalp dalp", false, 500);
-	DataItem e("Trait E", "blah blah blah", true, 15);
-	DataItem f("Trait F", "dalp dalp dalp", true, 500);
+	std::vector<DataItem> loadedData = Config.GetSavedData();
 
-	AddItemToDataBase(a);
-	AddItemToDataBase(b);
-	AddItemToDataBase(c);
-	AddItemToDataBase(d);
-	AddItemToDataBase(e);
-	RemoveItemFromDataBase(d.ID);
-	AddItemToDataBase(f);
+	if (loadedData.size() == 0) // XXX:: for debug only
+	{
+		for (int i=0; i < 4; ++i)
+		{
+			DataItem t;
+			loadedData.push_back(t);
+		}
+	}
+
+	for (std::vector<DataItem>::iterator dataIter = loadedData.begin();
+			dataIter != loadedData.end(); ++dataIter)
+		AddItemToDataBase(*dataIter);
 
 	Log.Add("Loaded " + std::to_string(_data.size()) + " items");
 
@@ -118,7 +112,7 @@ void DataBase::_Save()
 void DataBase::AddItemToDataBase(DataItem &item)
 {
 	unsigned int newID = _uniqueID.GenerateID();
-	Log.Add("Added item " + std::to_string(newID));
+	Log.Add("Added item " + std::to_string(newID) + ". " + item.name);
 
 	item.ID = newID; // we don't care if DataItem already has an ID
 	_data.insert(std::make_pair(newID, item));

@@ -32,19 +32,19 @@ class UniqueID
 struct DataItem 
 {
 	DataItem();
-	DataItem(std::string pName, std::string pDescription, bool pContinuous, double pGoalTime);
 	unsigned int ID; // unique identifier in DataBase, only created when dataItem is put in db
 	std::string name; // short name of data item
 	std::string description; // longer definition
 	int percentage; // [0..100], basically current/goal
 	bool continuous; // whether data is measured continuously (seconds) or by instances
+	bool inverse; // do we count to or from, default false
 	int times;
 
 	long elapsedTime; // elapsed time in seconds
 	int goalTime; // seconds per day
 
-	std::chrono::steady_clock::time_point firstTime; // timePoint of first modification
-	std::chrono::steady_clock::time_point lastTime; // timePoint of last modification
+	std::chrono::system_clock::time_point firstTime; // timePoint of first modification
+	std::chrono::system_clock::time_point lastTime; // timePoint of last modification
 
 };
 
@@ -78,6 +78,8 @@ class DataBase
 
 		void _Load();
 		void _Save();
+		std::string _GetSettingsFolder();
+		std::vector<std::string> _ReadConfigFile();
 
 		std::map<unsigned int, DataItem> _data;
 		UniqueID _uniqueID;
