@@ -61,6 +61,7 @@ class MainWindow : public Gtk::Window
 		
 		void _OnButtonNew();
 		void _OnButtonRemove();
+		void _OnButtonEdit();
 		void _OnButtonStart();
 		void _OnButtonStop();
 		void _OnButtonQuit();
@@ -98,12 +99,16 @@ class MainWindow : public Gtk::Window
 		 *  Buttons
 		 */
 
+		Gtk::HBox _buttonRowBox;
 		Gtk::ButtonBox _buttonBox;
 		Gtk::Button _buttonQuit;
 		Gtk::Button _buttonNew;
+		Gtk::Button _buttonEdit;
 		Gtk::Button _buttonRemove;
 		Gtk::Button _buttonStart;
 		Gtk::Button _buttonStop;
+
+		Gtk::Label _buttonStatusLabel;
 
 		/*
 		 *  Other members

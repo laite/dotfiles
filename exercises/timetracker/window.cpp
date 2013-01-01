@@ -20,6 +20,7 @@ MainWindow::MainWindow(DataBase *d):
 	_mainVBox(Gtk::ORIENTATION_VERTICAL),
 	_contentVBox(Gtk::ORIENTATION_VERTICAL),
 	_buttonQuit("Quit"), _buttonNew("New"), _buttonRemove("Remove"), _buttonStart("Start"), _buttonStop("Stop"),
+	_buttonEdit("Edit"), _buttonStatusLabel("Everything seems to be fine."),
 	_isTracking(false)
 {
 
@@ -66,13 +67,17 @@ MainWindow::MainWindow(DataBase *d):
 	/*
 	 *  Buttons
 	 */
-	
+
 	_buttonBox.pack_start(_buttonStart, Gtk::PACK_SHRINK);
 	_buttonBox.pack_start(_buttonStop, Gtk::PACK_SHRINK);
 	_buttonBox.pack_start(_buttonNew, Gtk::PACK_SHRINK);
+	_buttonBox.pack_start(_buttonEdit, Gtk::PACK_SHRINK);
 	_buttonBox.pack_start(_buttonRemove, Gtk::PACK_SHRINK);
 	_buttonBox.pack_start(_buttonQuit, Gtk::PACK_SHRINK);
 
+	_buttonRowBox.pack_start(_buttonStatusLabel, false, false);
+	_buttonRowBox.pack_start(_buttonBox, true, true);
+	
 	_buttonBox.set_border_width(5);
 	_buttonBox.set_layout(Gtk::BUTTONBOX_END);
 
@@ -81,7 +86,7 @@ MainWindow::MainWindow(DataBase *d):
 	 */
 
 	add(_mainVBox); // the main VBox
-	_mainVBox.pack_start(_buttonBox, Gtk::PACK_SHRINK);
+	_mainVBox.pack_start(_buttonRowBox, Gtk::PACK_SHRINK);
 	_mainVBox.pack_start(_contentVBox);
 
 	/*
@@ -100,6 +105,7 @@ MainWindow::MainWindow(DataBase *d):
 	
 	_buttonQuit.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonQuit) );
 	_buttonNew.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonNew) );
+	_buttonEdit.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonEdit) );
 	_buttonRemove.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonRemove) );
 	_buttonStart.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonStart) );
 	_buttonStop.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonStop) );
@@ -156,6 +162,7 @@ void MainWindow::_OnButtonStart()
 	_isTracking = true;
 	_buttonStart.set_sensitive(false);
 	_buttonStop.set_sensitive(true);
+	_buttonStatusLabel.set_text("Timer is running!");
 	Log.Add("Started timer for " + _activeDataItem->name);
 }
 
@@ -175,6 +182,7 @@ void MainWindow::_OnButtonStop()
 	}
 
 	Log.Add("Stopping timer after " + std::to_string(timeSpan.count()) + " seconds.");
+	_buttonStatusLabel.set_text("Everything seems stable.");
 	_buttonStart.set_sensitive(true);
 	_buttonStop.set_sensitive(false);
 	_isTracking = false;
@@ -196,6 +204,11 @@ void MainWindow::_OnButtonNew()
 		_buttonStart.set_sensitive(1);
 		_buttonRemove.set_sensitive(1);
 	}
+
+}
+
+void MainWindow::_OnButtonEdit()
+{
 
 }
 
