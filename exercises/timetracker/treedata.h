@@ -44,6 +44,7 @@ class TreeData
 		unsigned int GetSelectedID();
 		Gtk::TreeModel::Row GetRowFromID(unsigned int);
 		Gtk::TreeModel::Row GetSelectedRow();
+		Gtk::TreeModel::iterator GetSelectedRowIter();
 		void UpdateRow(Gtk::TreeModel::Row&);
 		void AddRow(const DataItem&, bool rebuildRowMap = true);
 		void DeleteRow(Gtk::TreeModel::iterator);

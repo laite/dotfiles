@@ -62,6 +62,13 @@ Gtk::TreeModel::Row TreeData::GetSelectedRow()
 	return (*iter);
 }
 
+Gtk::TreeModel::iterator TreeData::GetSelectedRowIter()
+{
+	Gtk::TreeModel::iterator iter = _refTreeSelection->get_selected();
+
+	return iter;
+}
+
 Gtk::TreeModel::Row TreeData::GetRowFromID(unsigned int ID)
 {
 	Gtk::TreeModel::iterator foundIter;
@@ -105,9 +112,8 @@ void TreeData::AddRow(const DataItem &dataItem, bool rebuildRowMap)
 
 void TreeData::DeleteRow(Gtk::TreeModel::iterator rowIter)
 {
-	// ..
+	_refTreeModel->erase(rowIter);
 	
-	// remember to rebuild rowmap
 	_RebuildRowMap();
 }
 

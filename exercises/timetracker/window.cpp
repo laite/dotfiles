@@ -193,7 +193,22 @@ void MainWindow::_OnButtonNew()
 
 void MainWindow::_OnButtonRemove()
 {
+	if (_treeData->GetSelectedID() == 0)
+		return; // return if nothing is selected
 
+	Gtk::MessageDialog dialog(*this, "Are you sure you wish to remove selected item?",
+			false /* use_markup */, Gtk::MESSAGE_WARNING,
+			Gtk::BUTTONS_OK_CANCEL);
+	dialog.set_secondary_text(
+			"There is no going back after this.");
+
+	int result = dialog.run();
+
+	if (result == Gtk::RESPONSE_OK)
+	{
+		_db->RemoveItemFromDataBase(_treeData->GetSelectedID());
+		_treeData->DeleteRow(_treeData->GetSelectedRowIter());
+	}
 }
 
 void MainWindow::_OnButtonQuit()
