@@ -87,15 +87,6 @@ void DataBase::_Load()
 {
 	std::vector<DataItem> loadedData = Config.GetSavedData();
 
-	if (loadedData.size() == 0) // XXX:: for debug only
-	{
-		for (int i=0; i < 4; ++i)
-		{
-			DataItem t;
-			loadedData.push_back(t);
-		}
-	}
-
 	for (std::vector<DataItem>::iterator dataIter = loadedData.begin();
 			dataIter != loadedData.end(); ++dataIter)
 		AddItemToDataBase(*dataIter);

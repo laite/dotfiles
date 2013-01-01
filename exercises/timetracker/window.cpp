@@ -113,6 +113,11 @@ MainWindow::MainWindow(DataBase *d):
 		Gtk::TreeModel::Children treeChildren = _treeData->GetRefTreeModel()->children();
 		_treeData->GetRefTreeSelection()->select(*(treeChildren.begin()));
 	}
+	else
+	{
+		_buttonStart.set_sensitive(0);
+		_buttonRemove.set_sensitive(0);
+	}
 	
 	/*
 	 *  Release
@@ -187,6 +192,8 @@ void MainWindow::_OnButtonNew()
 		DataItem newItem = dialog.GetItem();
 		_db->AddItemToDataBase(newItem);
 		_treeData->AddRow(newItem, true);
+		_buttonStart.set_sensitive(1);
+		_buttonRemove.set_sensitive(1);
 	}
 
 }
@@ -208,6 +215,11 @@ void MainWindow::_OnButtonRemove()
 	{
 		_db->RemoveItemFromDataBase(_treeData->GetSelectedID());
 		_treeData->DeleteRow(_treeData->GetSelectedRowIter());
+		if (_db->GetSize() == 0)
+		{
+			_buttonStart.set_sensitive(0);
+			_buttonRemove.set_sensitive(0);
+		}
 	}
 }
 
