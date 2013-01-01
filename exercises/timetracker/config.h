@@ -5,8 +5,8 @@
  * contains all configurations and saved data - related stuff
  */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef TIMETRACKER_CONFIG_H
+#define TIMETRACKER_CONFIG_H
 
 #include <string>
 #include <vector>

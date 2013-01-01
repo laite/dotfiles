@@ -4,8 +4,8 @@
  * 
  */
 
-#ifndef TREEDATA_H
-#define TREEDATA_H
+#ifndef TIMETRACKER_TREEDATA_H
+#define TIMETRACKER_TREEDATA_H
 
 #include <gtkmm.h>
 #include <map>

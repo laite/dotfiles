@@ -13,6 +13,10 @@
 #include "log.h"
 #include "data.h"
 
+/*
+ *  Constructor
+ */
+
 ConfigClass::ConfigClass(std::string configFile):
 	_configFileNameWithoutPath(configFile)
 {
@@ -28,15 +32,26 @@ ConfigClass::ConfigClass(std::string configFile):
 	_configDataNames[DATAITEM_FIRST_TIME] = "first_time";
 	_configDataNames[DATAITEM_LAST_TIME] = "last_time";
 
-	Log.Add("Created Config.");
+	Log.Add("Created ConfigClass.");
 	_ReadConfigFile();
 	_ParseConfigFile();
 }
+
+/*
+ *  Destructor
+ */
 
 ConfigClass::~ConfigClass()
 {
 
 }
+
+/*
+ *  _GetSettingsFolder()
+ *
+ *  Return: 
+ *  	"/home/USERNAME/.config/timetracker" or "."  (if there is no $HOME to be found)
+ */
 
 std::string ConfigClass::_GetSettingsFolder()
 {
@@ -51,6 +66,13 @@ std::string ConfigClass::_GetSettingsFolder()
 
 	return value;
 }
+
+/*
+ *  _ReadConfigFile()
+ *
+ *  Does:
+ *  	Read configFileFullName into _rawConfigFileContents
+ */
 
 void ConfigClass::_ReadConfigFile()
 {
@@ -81,6 +103,13 @@ void ConfigClass::_ReadConfigFile()
 	}
 }
 
+/*
+ *  _ParseConfigFile()
+ *
+ *  Does:
+ *  	Splits _rawConfigFileContents into _rawAppConfig and _rawDbConfig
+ */
+
 void ConfigClass::_ParseConfigFile()
 {
 	if (_rawConfigFileContents.size() == 0)
@@ -103,31 +132,40 @@ void ConfigClass::_ParseConfigFile()
 		{
 			if (section == 0) // this is error
 				continue;
-			else if (section == 1) // Header
-			{
-				Log.Add(line);
-			}
-			else if (section == 2) // application settings
-			{
+			else if (section == 1) // application settings
 				_rawAppConfig.push_back(line);
-			}
-			else if (section == 3) // DataBase
-			{
+			else if (section == 2) // DataBase
 				_rawDbConfig.push_back(line);
+			else // this is also an error
+			{
+				Log.Add("ERROR (_ParseConfigFile): Too many sections found, some data may be not loaded properly!");
+				continue;
 			}
 		}
 	}
 }
 
+/*
+ *  _BuildConfigFile()
+ *
+ *  Does:
+ *  	Populates _rawAppConfig and _rawDbConfig with current data
+ */
+
 void ConfigClass::_BuildConfigFile(DataBase *db)
 {
-	_rawConfigFileContents.clear();
-	_rawConfigFileContents.push_back("[Head]");
-	_rawConfigFileContents.push_back("version = " + TIMETRACKER_VERSION);
+	_rawConfigFileContents.clear(); // clear old data
 
 	_FetchAppConfig();
 	_FetchDBConfig(db);
 }
+
+/*
+ *  _WriteConfigFile()
+ *
+ *  Does:
+ *  	Writes all data to config file
+ */
 
 void ConfigClass::_WriteConfigFile()
 {
@@ -159,6 +197,15 @@ void ConfigClass::_WriteConfigFile()
 	
 	Log.Add("Saved " + _configFileFullName);
 }
+
+/*
+ * 	GetSavedData()
+ *
+ * 	Does:
+ * 		Parses DataItems from _rawDbConfig
+ * 	Return:
+ * 		Vector of DataItems parsed from data file
+ */
 
 std::vector<DataItem> ConfigClass::GetSavedData()
 {
@@ -221,6 +268,15 @@ std::vector<DataItem> ConfigClass::GetSavedData()
 	return loaded;
 }
 
+/*
+ *  _IsLineDbItem()
+ *
+ *  Does:
+ *  	Checks whether line starts with _configDataNames[item]
+ *  Return:
+ *  	True or false
+ */
+
 bool ConfigClass::_IsLineDbItem(std::string line, int item)
 {
 	return ((line.size() >= _configDataNames[item].size())
@@ -228,12 +284,26 @@ bool ConfigClass::_IsLineDbItem(std::string line, int item)
 			(line.substr(0, _configDataNames[item].size()) == _configDataNames[item]));
 }
 
+/*
+ *  SaveEverything()
+ *
+ *  Does:
+ *  	Builds current config and saves it into a file
+ */
+
 void ConfigClass::SaveEverything(DataBase *db)
 {
 	_BuildConfigFile(db);
 	_WriteConfigFile();
 
 }
+
+/*
+ *  _FetchAppConfig()
+ *
+ *  Does:
+ *  	Fetches current application settings into _rawAppConfig
+ */
 
 void ConfigClass::_FetchAppConfig()
 {
@@ -249,6 +319,13 @@ void ConfigClass::_FetchAppConfig()
 
 	_rawAppConfig = appConfig;
 }
+
+/*
+ *  _FetchDbConfig()
+ *
+ *  Does:
+ *  	Fetches current DataItems into _rawDbConfig
+ */
 
 void ConfigClass::_FetchDBConfig(DataBase *db)
 {

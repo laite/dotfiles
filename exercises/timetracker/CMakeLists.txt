@@ -7,6 +7,8 @@ link_directories( ${GTKMM_LIBRARY_DIRS} ${Boost_LIBRARY_DIRS})
 add_executable(timetracker
 	config.cpp
 	config.h 
+	dialogs.cpp
+	dialogs.h 
 	data.cpp
 	data.h 
 	log.cpp
