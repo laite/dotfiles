@@ -10,7 +10,6 @@
 #include "log.h"
 #include "helpers.h"
 
-
 TreeData::TreeData(Gtk::TreeView *originalTree, DataBase *db)
 {
 	_treeView = originalTree;

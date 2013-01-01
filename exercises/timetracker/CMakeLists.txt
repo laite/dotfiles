@@ -12,6 +12,7 @@ add_executable(timetracker
 	dialogs.cpp
 	dialogs.h 
 	helpers.h
+	helpers.cpp
 	log.cpp
 	log.h 
 	main.cpp

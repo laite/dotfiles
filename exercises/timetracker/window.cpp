@@ -11,6 +11,7 @@
 #include "log.h"
 #include "window.h"
 #include "data.h" // need DataBase class implementation
+#include "helpers.h"
 #include "treedata.h"
 #include "dialogs.h"
 
@@ -169,7 +170,6 @@ void MainWindow::_OnButtonStop()
 	else {
 		_activeDataItem->elapsedTime += timeSpan.count();
 		++_activeDataItem->times;
-		_activeDataItem->description = "This just in.";
 		_db->UpdateItemStats(_activeDataItem->ID);
 		_treeData->UpdateRow(_treeData->GetRowIterFromID(_activeDataItem->ID));
 	}
@@ -253,7 +253,7 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 	tempValue = (dataItem.continuous)? "Time" : "Instance";
 	_AddKeyValueToTextView("Type: ", tempValue);
 	
-	_AddKeyValueToTextView("Elapsed: ", std::to_string(dataItem.elapsedTime));
+	_AddKeyValueToTextView("Elapsed: ", Helpers::ParseShortTime(dataItem.elapsedTime));
 	
 	_AddKeyValueToTextView("First Time: ", _GetTimePointTextWithDaysAgo(dataItem.firstTime)); 
 	_AddKeyValueToTextView("Last Time: ", _GetTimePointTextWithDaysAgo(dataItem.lastTime)); 
