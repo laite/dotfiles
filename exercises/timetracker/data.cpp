@@ -73,9 +73,9 @@ void DataItem::CalculatePercentage()
 {
 	std::chrono::duration<int,std::ratio<1> > timeAgo = std::chrono::duration_cast< std::chrono::duration<int,std::ratio<1> > >(std::chrono::steady_clock::now() - firstTime);
 	
-	int hasBeen = timeAgo.count(); // this is in seconds
-	int worked = elapsedTime; // and so is this
-	int goal = goalTime;
+	long hasBeen = timeAgo.count(); // this is in seconds
+	long worked = elapsedTime; // and so is this
+	long goal = goalTime;
 
 	if ((goal == 0) || (hasBeen == 0))
 	{

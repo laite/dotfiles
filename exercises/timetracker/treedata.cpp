@@ -10,6 +10,8 @@
 #include "log.h"
 #include "helpers.h"
 
+#include <chrono>
+
 TreeData::TreeData(Gtk::TreeView *originalTree, DataBase *db)
 {
 	_treeView = originalTree;
@@ -25,6 +27,7 @@ void TreeData::InitializeTreeView()
 	_treeView->append_column("ID", Columns().columnID);
 	_treeView->append_column("Name", Columns().columnName);
 	_treeView->append_column("Total", Columns().columnElapsedTime);
+	_treeView->append_column("Avg.", Columns().columnAverageTime);
 	_treeView->append_column("Goal", Columns().columnGoalTime);
 
 	//Display a progress bar instead of a decimal number:
@@ -93,6 +96,12 @@ void TreeData::PopulateRow(Gtk::TreeModel::iterator rowIter, const DataItem &dit
 	row[_columns.columnName] = ditem.name;
 	row[_columns.columnPercentage] = ditem.percentage;
 	row[_columns.columnElapsedTime] = Helpers::ParseShortTime(ditem.elapsedTime);
+
+	std::chrono::duration<double,std::ratio<60*60*24> > timeAgo = std::chrono::duration_cast< std::chrono::duration<double,std::ratio<60*60*24> > >(std::chrono::steady_clock::now() - ditem.firstTime);
+	double hasBeen = timeAgo.count(); // this is in days
+	long avg = (ditem.elapsedTime/hasBeen); // we get seconds per day
+	row[_columns.columnAverageTime] = Helpers::ParseShortTime(avg);
+
 	row[_columns.columnGoalTime] = Helpers::ParseShortTime(ditem.goalTime);
 }
 
@@ -161,6 +170,7 @@ ModelColumns::ModelColumns()
 	add(columnID);
 	add(columnName);
 	add(columnElapsedTime);
+	add(columnAverageTime);
 	add(columnGoalTime);
 	add(columnPercentage);
 }
