@@ -12,6 +12,7 @@
 #include "window.h"
 #include "data.h" // need DataBase class implementation
 #include "treedata.h"
+#include "dialogs.h"
 
 MainWindow::MainWindow(DataBase *d): 
 	_db(d), // main database
@@ -178,10 +179,16 @@ void MainWindow::_OnButtonStop()
 
 void MainWindow::_OnButtonNew()
 {
-	DataItem &testi = _db->GetItem(3);
-	testi.name = "hölöö";
-	Gtk::TreeModel::Row rt = _treeData->GetRowFromID(3);
-	_treeData->UpdateRow(rt);
+	NewDataItemDialog dialog;
+
+	if (dialog.LaunchDialog() == Gtk::RESPONSE_OK)
+	{
+		Log.Add("NewItemDialog gives OK.");
+		DataItem newItem = dialog.GetItem();
+		_db->AddItemToDataBase(newItem);
+		_treeData->AddRow(newItem, true);
+	}
+
 }
 
 void MainWindow::_OnButtonRemove()

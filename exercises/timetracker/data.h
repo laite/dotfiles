@@ -41,7 +41,7 @@ struct DataItem
 	int times;
 
 	long elapsedTime; // elapsed time in seconds
-	int goalTime; // seconds per day
+	int goalTime; // minutes per day
 
 	std::chrono::system_clock::time_point firstTime; // timePoint of first modification
 	std::chrono::system_clock::time_point lastTime; // timePoint of last modification
