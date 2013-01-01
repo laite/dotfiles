@@ -255,6 +255,16 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 	
 	_AddKeyValueToTextView("Elapsed: ", Helpers::ParseShortTime(dataItem.elapsedTime));
 	
+	if (dataItem.times != 0) {
+		tempValue = std::string(" (about ") + Helpers::ParseShortTime(dataItem.elapsedTime/dataItem.times);
+		tempValue += " on average)";
+	}
+	else {
+		tempValue = "";
+	}
+
+	_AddKeyValueToTextView("Instances: ", std::to_string(dataItem.times) + tempValue);
+
 	_AddKeyValueToTextView("First Time: ", _GetTimePointTextWithDaysAgo(dataItem.firstTime)); 
 	_AddKeyValueToTextView("Last Time: ", _GetTimePointTextWithDaysAgo(dataItem.lastTime)); 
 
