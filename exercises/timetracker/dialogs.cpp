@@ -64,6 +64,8 @@ int NewDataItemDialog::LaunchDialog()
 
 		dItem.continuous = !_continuousButton.get_active();
 		dItem.inverse = _inverseButton.get_active();
+
+		dItem.goalTime = _goalButton.get_value();
 	}
 
 	_newItem = dItem;

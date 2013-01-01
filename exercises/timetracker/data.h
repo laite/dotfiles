@@ -41,11 +41,12 @@ struct DataItem
 	int times;
 
 	long elapsedTime; // elapsed time in seconds
-	int goalTime; // minutes per day
+	long goalTime; // seconds per day
 
 	std::chrono::system_clock::time_point firstTime; // timePoint of first modification
 	std::chrono::system_clock::time_point lastTime; // timePoint of last modification
 
+	void CalculatePercentage();
 };
 
 class DataBase 
@@ -66,13 +67,15 @@ class DataBase
 		void AddItemToDataBase(DataItem&);
 		void RemoveItemFromDataBase(unsigned int);
 		
-		DataItem* GetIDDataCopy(unsigned int);
-
 		int GetSize();
 		bool IsIn(unsigned int ID);
 		DataItem& GetItem(std::map<unsigned int, DataItem>::iterator wanted);
 		DataItem& GetItem(unsigned int);
+		DataItem* GetIDDataCopy(unsigned int);
+
 		const std::map<unsigned int, DataItem>& GetData();
+
+		void UpdateItemStats(unsigned int);
 
 	private:
 
@@ -80,6 +83,8 @@ class DataBase
 		void _Save();
 		std::string _GetSettingsFolder();
 		std::vector<std::string> _ReadConfigFile();
+
+		unsigned int _CalculatePercentage(const DataItem&);
 
 		std::map<unsigned int, DataItem> _data;
 		UniqueID _uniqueID;

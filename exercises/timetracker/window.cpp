@@ -170,6 +170,7 @@ void MainWindow::_OnButtonStop()
 		_activeDataItem->elapsedTime += timeSpan.count();
 		++_activeDataItem->times;
 		_activeDataItem->description = "This just in.";
+		_db->UpdateItemStats(_activeDataItem->ID);
 		_treeData->UpdateRow(_treeData->GetRowIterFromID(_activeDataItem->ID));
 	}
 
@@ -278,7 +279,7 @@ std::string MainWindow::_GetTimePointTextWithDaysAgo(std::chrono::steady_clock::
 
 	formattedString = ctime(&temp_t);
 	formattedString = formattedString.substr(0, formattedString.length() - 1); // remove \n from the end
-	std::chrono::duration<int,std::ratio<60*60*24> > timeAgo = std::chrono::duration_cast< std::chrono::duration<int,std::ratio<60*60*24> > >(std::chrono::steady_clock::now() - timePoint);
+	std::chrono::duration<int,std::ratio<60*60*24> > timeAgo = std::chrono::duration_cast< std::chrono::duration<int,std::ratio<60*60*24> > >(std::chrono::system_clock::now() - timePoint);
 	
 	formattedString = formattedString + " (" + std::to_string(timeAgo.count()) + " days ago)";
 

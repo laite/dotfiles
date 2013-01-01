@@ -246,7 +246,7 @@ std::vector<DataItem> ConfigClass::GetSavedData()
 				else if (_IsLineDbItem(line, DATAITEM_ELAPSED_TIME))
 					dataIter->elapsedTime = std::stol(line.substr(_configDataNames[DATAITEM_ELAPSED_TIME].size() + 3));
 				else if (_IsLineDbItem(line, DATAITEM_GOAL_TIME))
-					dataIter->goalTime = std::stoi(line.substr(_configDataNames[DATAITEM_GOAL_TIME].size() + 3));
+					dataIter->goalTime = std::stol(line.substr(_configDataNames[DATAITEM_GOAL_TIME].size() + 3));
 				else if (_IsLineDbItem(line, DATAITEM_FIRST_TIME))
 				{
 					long savedTime = std::stol(line.substr(_configDataNames[DATAITEM_FIRST_TIME].size() + 3));

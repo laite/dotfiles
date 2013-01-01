@@ -8,6 +8,7 @@
 #include <iostream>
 #include <ctime>
 #include <ratio>
+#include <chrono>
 
 #include "log.h"
 #include "data.h"
@@ -68,6 +69,33 @@ DataItem::DataItem():
 
 }
 
+void DataItem::CalculatePercentage()
+{
+	std::chrono::duration<int,std::ratio<1> > timeAgo = std::chrono::duration_cast< std::chrono::duration<int,std::ratio<1> > >(std::chrono::steady_clock::now() - firstTime);
+	
+	int hasBeen = timeAgo.count(); // this is in seconds
+	int worked = elapsedTime; // and so is this
+	int goal = goalTime;
+
+	if ((goal == 0) || (hasBeen == 0))
+	{
+		percentage = 0;
+		return;
+	}
+
+	double supposedRatio = 1.0*goal / (24*60*60); // calculate ratio to be 'percents of day'
+	double workedRatio = 1.0*worked / hasBeen; // and completed ratio
+
+	double result = (1.0*workedRatio) / supposedRatio;
+
+	if (result > 1)
+		result = 1;
+	else if (result < 0)
+		result = 0;
+
+	percentage = std::round(result);
+}
+
 /*
  *  DataBase
  */
@@ -103,6 +131,7 @@ void DataBase::_Save()
 void DataBase::AddItemToDataBase(DataItem &item)
 {
 	unsigned int newID = _uniqueID.GenerateID();
+	item.CalculatePercentage();
 	Log.Add("Added item " + std::to_string(newID) + ". " + item.name);
 
 	item.ID = newID; // we don't care if DataItem already has an ID
@@ -154,3 +183,12 @@ const std::map<unsigned int, DataItem>& DataBase::GetData()
 {
 	return _data;
 }
+
+void DataBase::UpdateItemStats(unsigned int ID)
+{
+	if (!IsIn(ID))
+		return;
+
+	_data[ID].CalculatePercentage();
+}
+
