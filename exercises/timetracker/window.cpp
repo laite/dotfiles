@@ -253,6 +253,7 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 	tempValue = (dataItem.continuous)? "Time" : "Instance";
 	_AddKeyValueToTextView("Type: ", tempValue);
 	
+	_AddKeyValueToTextView("Elapsed: ", std::to_string(dataItem.elapsedTime));
 	
 	_AddKeyValueToTextView("First Time: ", _GetTimePointTextWithDaysAgo(dataItem.firstTime)); 
 	_AddKeyValueToTextView("Last Time: ", _GetTimePointTextWithDaysAgo(dataItem.lastTime)); 

@@ -8,6 +8,7 @@
 #include "data.h"
 #include "window.h"
 #include "log.h"
+#include "helpers.h"
 
 
 TreeData::TreeData(Gtk::TreeView *originalTree, DataBase *db)
@@ -92,8 +93,8 @@ void TreeData::PopulateRow(Gtk::TreeModel::iterator rowIter, const DataItem &dit
 	row[_columns.columnID] = ditem.ID;
 	row[_columns.columnName] = ditem.name;
 	row[_columns.columnPercentage] = ditem.percentage;
-	row[_columns.columnElapsedTime] = ditem.elapsedTime;
-	row[_columns.columnGoalTime] = ditem.goalTime;
+	row[_columns.columnElapsedTime] = Helpers::ParseShortTime(ditem.elapsedTime);
+	row[_columns.columnGoalTime] = Helpers::ParseShortTime(ditem.goalTime);
 }
 
 void TreeData::AddRow(const DataItem &dataItem, bool rebuildRowMap)

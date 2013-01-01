@@ -93,7 +93,7 @@ void DataItem::CalculatePercentage()
 	else if (result < 0)
 		result = 0;
 
-	percentage = std::round(result);
+	percentage = std::round(100*result);
 }
 
 /*
