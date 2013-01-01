@@ -42,14 +42,13 @@ class TreeData
 		void InitializeTreeView();
 		
 		unsigned int GetSelectedID();
-		Gtk::TreeModel::Row GetRowFromID(unsigned int);
-		Gtk::TreeModel::Row GetSelectedRow();
+		Gtk::TreeModel::iterator GetRowIterFromID(unsigned int);
 		Gtk::TreeModel::iterator GetSelectedRowIter();
-		void UpdateRow(Gtk::TreeModel::Row&);
+		void UpdateRow(Gtk::TreeModel::iterator);
 		void AddRow(const DataItem&, bool rebuildRowMap = true);
 		void DeleteRow(Gtk::TreeModel::iterator);
 
-		void PopulateRow(Gtk::TreeModel::Row&, const DataItem&);
+		void PopulateRow(Gtk::TreeModel::iterator, const DataItem&);
 		void PopulateTreeModel();
 		
 		ModelColumns& Columns();

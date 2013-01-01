@@ -55,13 +55,6 @@ unsigned int TreeData::GetSelectedID()
 	return ID;
 }
 
-Gtk::TreeModel::Row TreeData::GetSelectedRow()
-{
-	Gtk::TreeModel::iterator iter = _refTreeSelection->get_selected();
-
-	return (*iter);
-}
-
 Gtk::TreeModel::iterator TreeData::GetSelectedRowIter()
 {
 	Gtk::TreeModel::iterator iter = _refTreeSelection->get_selected();
@@ -69,13 +62,13 @@ Gtk::TreeModel::iterator TreeData::GetSelectedRowIter()
 	return iter;
 }
 
-Gtk::TreeModel::Row TreeData::GetRowFromID(unsigned int ID)
+Gtk::TreeModel::iterator TreeData::GetRowIterFromID(unsigned int ID)
 {
-	Gtk::TreeModel::iterator foundIter;
+	Gtk::TreeModel::iterator foundIter = _refTreeModel->children().end();
 	if (_rowMap.find(ID) != _rowMap.end())
 		 foundIter = _rowMap[ID];
 
-	return *foundIter;
+	return foundIter;
 }
 
 // Fill TreeView in MainWindow with data
@@ -92,8 +85,10 @@ void TreeData::PopulateTreeModel()
 	_RebuildRowMap();
 }
 
-void TreeData::PopulateRow(Gtk::TreeModel::Row &row, const DataItem &ditem)
+void TreeData::PopulateRow(Gtk::TreeModel::iterator rowIter, const DataItem &ditem)
 {
+	Gtk::TreeModel::Row row = *rowIter;
+
 	row[_columns.columnID] = ditem.ID;
 	row[_columns.columnName] = ditem.name;
 	row[_columns.columnPercentage] = ditem.percentage;
@@ -117,10 +112,13 @@ void TreeData::DeleteRow(Gtk::TreeModel::iterator rowIter)
 	_RebuildRowMap();
 }
 
-void TreeData::UpdateRow(Gtk::TreeModel::Row &row)
+void TreeData::UpdateRow(Gtk::TreeModel::iterator rowIter)
 {
-	const DataItem ditem = _db->GetItem(row[_columns.columnID]);
-	PopulateRow(row, ditem);
+	if (rowIter == _refTreeModel->children().end())
+		return;
+
+	const DataItem ditem = _db->GetItem((*rowIter)[_columns.columnID]);
+	PopulateRow(rowIter, ditem);
 }
 
 ModelColumns& TreeData::Columns()

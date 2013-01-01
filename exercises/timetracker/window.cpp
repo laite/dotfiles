@@ -170,7 +170,7 @@ void MainWindow::_OnButtonStop()
 		_activeDataItem->elapsedTime += timeSpan.count();
 		++_activeDataItem->times;
 		_activeDataItem->description = "This just in.";
-		//_treeData->UpdateRow(_treeData->GetRowFromID(_activeDataItem->ID));
+		_treeData->UpdateRow(_treeData->GetRowIterFromID(_activeDataItem->ID));
 	}
 
 	Log.Add("Stopping timer after " + std::to_string(timeSpan.count()) + " seconds.");
