@@ -18,6 +18,8 @@ namespace Helpers
 	extern std::string ParseShortTime(long seconds);
 	extern std::string TruncateToString(double number, unsigned int prec = 2);
 
+	// this adds leading zero to single digits only, everything else is bypassed
+	extern std::string AddLeadingZero(std::string originalString);
 }
 
 namespace Global

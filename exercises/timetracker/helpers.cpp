@@ -9,40 +9,43 @@
 std::string Helpers::ParseShortTime(long seconds)
 {
 	std::string helper("");
-	if (seconds > 365*24*60*60)
-	{
-		helper += std::to_string(seconds/(365*24*60*60));
-		helper += "y ";
+	if (seconds > 365*24*60*60) {
+		helper += std::to_string(seconds/(365*24*60*60)) + "y ";
 		seconds %= (365*24*60*60);
 	}
-	if (seconds > 30*24*60*60)
-	{
-		helper += std::to_string(seconds/(30*24*60*60));
-		helper += "m ";
+	if (seconds > 30*24*60*60) {
+		helper += std::to_string(seconds/(30*24*60*60)) + "m ";
 		seconds %= (30*24*60*60);
 	}
-	if (seconds > 24*60*60)
-	{
-		helper += std::to_string(seconds/(24*60*60));
-		helper += "d ";
+	if (seconds > 24*60*60) {
+		helper += std::to_string(seconds/(24*60*60)) + "d ";
 		seconds %= (24*60*60);
 	}
-	if (seconds > 60*60)
+
+	if (Global::Config.GetAppOptions().useShortTimeFormat)
 	{
-		helper += std::to_string(seconds/(60*60));
-		helper += "h ";
-		seconds %= (60*60);
+		if (seconds > 0)
+		{
+			helper += Helpers::AddLeadingZero(std::to_string((seconds/(60*60)))) + ":";
+			seconds %= (60*60);
+			helper += Helpers::AddLeadingZero(std::to_string((seconds/(60)))) + ":";
+			seconds %= (60);
+			helper += Helpers::AddLeadingZero(std::to_string(seconds));
+		}
 	}
-	if (seconds > 60)
+	else
 	{
-		helper += std::to_string((seconds/(60)));
-		helper += "min ";
-		seconds %= (60);
-	}
-	if (seconds > 0)
-	{
-		helper += std::to_string(seconds);
-		helper += "s";
+		if (seconds > 60*60) {
+			helper += std::to_string(seconds/(60*60)) + "h ";
+			seconds %= (60*60);
+		}
+		if (seconds > 60) {
+			helper += std::to_string(seconds/(60)) + "min ";
+			seconds %= (60);
+		}
+		if (seconds > 0) {
+			helper += std::to_string(seconds) + "s ";
+		}
 	}
 
 	if (helper.size() == 0)
@@ -58,3 +61,10 @@ std::string Helpers::TruncateToString(double number, unsigned int prec)
 	return ss.str();
 }
 
+std::string Helpers::AddLeadingZero(std::string originalString)
+{
+	if (originalString.size() == 1)
+		return std::string(1,'0').append(originalString);
+	else 
+		return originalString;
+}

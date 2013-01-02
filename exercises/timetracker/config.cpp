@@ -14,9 +14,22 @@
 #include "data.h"
 #include "helpers.h"
 
+
 /*
- *  Constructor
+ *  AppOptions
  */
+
+AppOptions::AppOptions():
+	useShortTimeFormat(false)
+{
+
+}
+
+
+/*
+ *  ConfigClass
+ */
+
 
 ConfigClass::ConfigClass(std::string configFile):
 	_configFileNameWithoutPath(configFile)
@@ -393,3 +406,7 @@ void ConfigClass::_FetchDBConfig(DataBase *db)
 	_rawDbConfig = dbConfig;
 }
 
+AppOptions ConfigClass::GetAppOptions()
+{
+	return _appOptions;
+}

@@ -17,6 +17,14 @@ class DataBase;
 
 const std::string TIMETRACKER_VERSION = "-0.1";
 
+struct AppOptions
+{
+	AppOptions();
+
+	bool useShortTimeFormat;
+	
+};
+
 class ConfigClass
 {
 	public:
@@ -37,6 +45,8 @@ class ConfigClass
 		void LoadConfig();
 
 		void ChangeFileName(std::string newName);
+
+		AppOptions GetAppOptions();
 
 	private:
 		
@@ -74,6 +84,7 @@ class ConfigClass
 		std::vector<std::string> _rawAppConfig;
 		std::vector<std::string> _rawDbConfig;
 		
+		AppOptions _appOptions;
 };
 
 extern ConfigClass Config;
