@@ -42,12 +42,16 @@ int main(int argc, char *argv[])
 		argc = 1;
 	}
 
+	std::string applicationName("org.gtkmm.timetracker");
 	if (Global::debugMode)
+	{
 		Global::Config.ChangeFileName("debug");
+		applicationName = "org.gtkmm.timetracker-debug";
+	}
 
 	Global::Config.LoadConfig();
 
-	Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "org.gtkmm.timetracker");
+	Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, applicationName);
 
 	DataBase db;
 	MainWindow window(&db);

@@ -55,6 +55,10 @@ class MainWindow : public Gtk::Window
 		void _AddKeyValueToTextView(const std::string, std::string);
 		std::string _GetTimePointTextWithDaysAgo(std::chrono::steady_clock::time_point&);
 		
+		void _StartTracking(unsigned int);
+		void _StopTracking();
+		void _UpdateStartButtonText(bool continuous);
+
 		/*
 		 *  Signal Handlers
 		 */
@@ -116,7 +120,6 @@ class MainWindow : public Gtk::Window
 
 		DataBase *_db;
 		DataItem *_activeDataItem;
-		bool _isTracking;
 		std::chrono::system_clock::time_point _timerBeginPoint;
 };
 

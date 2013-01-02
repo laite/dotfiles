@@ -20,8 +20,7 @@ MainWindow::MainWindow(DataBase *d):
 	_mainVBox(Gtk::ORIENTATION_VERTICAL),
 	_contentVBox(Gtk::ORIENTATION_VERTICAL),
 	_buttonQuit("Quit"), _buttonNew("New"), _buttonRemove("Remove"), _buttonStart("Start"), _buttonStop("Stop"),
-	_buttonEdit("Edit"), _buttonStatusLabel("Everything seems to be fine."),
-	_isTracking(false)
+	_buttonEdit("Edit"), _buttonStatusLabel("Everything seems to be fine.")
 {
 
 	set_title("TimeTracker/laite");
@@ -143,52 +142,18 @@ void MainWindow::_OnButtonStart()
 {
 	int selectedID = _treeData->GetSelectedID();
 
-	// See if there's an ID, and it exists in _db
+	// See if there's an ID, and that it exists in _db
 	if ((selectedID == 0) || (!_db->IsIn(selectedID))) {
 		Global::Log.Add("* ERROR * Can not find item with ID = " + std::to_string(selectedID));
 		return;
 	}
 
-	// obtain reference to original item
-	_activeDataItem = &_db->GetItem(selectedID);
-
-	_timerBeginPoint = std::chrono::system_clock::now();
-	_activeDataItem->lastTime = _timerBeginPoint;
-
-	// Set also to first time if needed
-	if (_activeDataItem->firstTime.time_since_epoch().count() == 0)
-		_activeDataItem->firstTime = _timerBeginPoint;
-
-	_isTracking = true;
-	_buttonStart.set_sensitive(false);
-	_buttonStop.set_sensitive(true);
-	_buttonStatusLabel.set_text("Timer is running!");
-	Global::Log.Add("Started timer for " + _activeDataItem->name);
+	_StartTracking(selectedID);
 }
 
 void MainWindow::_OnButtonStop()
 {
-	std::chrono::steady_clock::time_point endPoint = std::chrono::steady_clock::now();
-	std::chrono::duration<int> timeSpan = std::chrono::duration_cast<std::chrono::duration<int>>(endPoint -_timerBeginPoint);
-
-	if (!_activeDataItem) {
-		Global::Log.Add("CRITICAL! Stopping timer can't find _activeDataItem.");
-	}
-	else {
-		_activeDataItem->elapsedTime += timeSpan.count();
-		++_activeDataItem->times;
-		_db->UpdateItemStats(_activeDataItem->ID);
-		_treeData->UpdateRow(_treeData->GetRowIterFromID(_activeDataItem->ID));
-	}
-
-	Global::Log.Add("Stopping timer after " + std::to_string(timeSpan.count()) + " seconds.");
-	_buttonStatusLabel.set_text("Everything seems stable.");
-	_buttonStart.set_sensitive(true);
-	_buttonStop.set_sensitive(false);
-	_isTracking = false;
-	_activeDataItem = NULL; // nullify the pointer
-
-	_UpdateStatistics(_db->GetItem(_treeData->GetSelectedID()));
+	_StopTracking();
 }
 
 void MainWindow::_OnButtonNew()
@@ -242,6 +207,58 @@ void MainWindow::_OnButtonQuit()
 	hide();
 }
 
+void MainWindow::_StartTracking(unsigned int selectedID)
+{
+	// obtain reference to original item
+	_activeDataItem = &_db->GetItem(selectedID);
+
+	_timerBeginPoint = std::chrono::system_clock::now();
+	_activeDataItem->lastTime = _timerBeginPoint;
+
+	// Set also to first time if needed
+	if (_activeDataItem->firstTime.time_since_epoch().count() == 0)
+		_activeDataItem->firstTime = _timerBeginPoint;
+
+	if (_activeDataItem->continuous)
+	{
+		_buttonStart.set_sensitive(false);
+		_buttonStop.set_sensitive(true);
+		_buttonStatusLabel.set_text("Timer is running!");
+	}
+	else
+	{
+		_StopTracking();
+	}
+}
+
+void MainWindow::_StopTracking()
+{
+	if (!_activeDataItem) {
+		Global::Log.Add("CRITICAL! Stopping timer can't find _activeDataItem.");
+	}
+	else if (_activeDataItem->continuous)
+	{
+		std::chrono::steady_clock::time_point endPoint = std::chrono::steady_clock::now();
+		std::chrono::duration<int> timeSpan = std::chrono::duration_cast<std::chrono::duration<int>>(endPoint -_timerBeginPoint);
+
+		_activeDataItem->elapsedTime += timeSpan.count();
+		Global::Log.Add("Stopping timer after " + std::to_string(timeSpan.count()) + " seconds.");
+		_buttonStart.set_sensitive(true);
+		_buttonStop.set_sensitive(false);
+	}
+
+	++_activeDataItem->times;
+
+	_db->UpdateItemStats(_activeDataItem->ID);
+	_treeData->UpdateRow(_treeData->GetRowIterFromID(_activeDataItem->ID));
+
+	_buttonStatusLabel.set_text("Everything seems stable.");
+	_activeDataItem = NULL; 
+
+	_UpdateStatistics(_db->GetItem(_treeData->GetSelectedID()));
+
+}
+
 void MainWindow::_TreeViewSelectionChanged()
 {
 	unsigned int ID = _treeData->GetSelectedID();
@@ -249,16 +266,23 @@ void MainWindow::_TreeViewSelectionChanged()
 
 	// GetIDDataCopy returns NULL if it doesn't find ID
 	if (selectedDataItem)
+	{
 		_UpdateStatistics(*selectedDataItem);
+		_UpdateStartButtonText(selectedDataItem->continuous);
+	}
 }
 
+void MainWindow::_UpdateStartButtonText(bool continuous)
+{
+	if (continuous)
+		_buttonStart.set_label("Start");
+	else
+		_buttonStart.set_label("Tick");
+	
+}
 void MainWindow::_UpdateStatistics(DataItem &dataItem)
 {
-	// dataitem has following properties: ID, name, description, percentage 
-	// continuous, elapsedTime, times, lastTime, goal, goalTimeFrame
-	
 	std::string tempValue; // used for formatting some values
-
 	_statisticTextBuffer->erase(_statisticTextBuffer->begin(), _statisticTextBuffer->end());
 
 	_AddKeyValueToTextView("Name: ", dataItem.name);
@@ -267,7 +291,6 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 	_AddKeyValueToTextView("Type: ", tempValue);
 	
 	_AddKeyValueToTextView("Elapsed: ", Helpers::ParseShortTime(dataItem.elapsedTime));
-	
 	if (dataItem.times != 0)
 		tempValue = std::string(" (about ") + Helpers::ParseShortTime(dataItem.elapsedTime/dataItem.times) + " on average)";
 	else 
@@ -282,7 +305,7 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 	else if (dataItem.goalTimeFrame == Global::GOAL_TIMEFRAME_WEEK)
 		tempValue = "per month";
 	else
-		tempValue = "unknown";
+		tempValue = "unknown [NOT a good thing]";
 	_AddKeyValueToTextView("Time Frame: ", tempValue);
 
 	_AddKeyValueToTextView("First Time: ", _GetTimePointTextWithDaysAgo(dataItem.firstTime)); 
