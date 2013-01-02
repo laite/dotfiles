@@ -9,6 +9,7 @@
 #include <ctime>
 #include <ratio>
 #include <chrono>
+#include <algorithm>
 
 #include "log.h"
 #include "data.h"
@@ -100,10 +101,10 @@ void DataItem::CalculatePercentage()
 
 	double result = (1.0*workedRatio) / supposedRatio;
 
-	if (result > 1)
-		result = 1;
-	else if (result < 0)
-		result = 0;
+	if (inverse)
+		result = 2 - result;
+
+	result = std::min(std::max(result, 0.0), 1.0);
 
 	percentage = std::round(100*result);
 }
