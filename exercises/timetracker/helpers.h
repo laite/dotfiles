@@ -14,4 +14,9 @@ namespace Helpers
 	extern std::string ParseShortTime(long seconds);
 }
 
+namespace Global
+{
+	extern bool debugMode;
+}
+
 #endif /* end TIMETRACKER_HELPERS_H */
