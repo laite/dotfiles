@@ -160,7 +160,7 @@ Glib::RefPtr<Gtk::TreeSelection>& TreeData::GetRefTreeSelection()
 
 void TreeData::_RebuildRowMap()
 {
-	Log.Add("Rebuilding _rowMap:");
+	Global::Log.Add("Rebuilding _rowMap:");
 	_rowMap.clear();
 
 	Gtk::TreeModel::Children treeChildren = _refTreeModel->children();
@@ -169,7 +169,7 @@ void TreeData::_RebuildRowMap()
 	{
 		unsigned int ID = (*treeIter)[_columns.columnID];
 		_rowMap[ID] = treeIter;
-		Log.Add("Found ID = " + std::to_string(ID));
+		Global::Log.Add("Found ID = " + std::to_string(ID));
 	}
 }
 

@@ -34,6 +34,9 @@ class ConfigClass
 		
 		std::vector<DataItem> GetSavedData();
 		void SaveEverything(DataBase *db);
+		void LoadConfig();
+
+		void ChangeFileName(std::string newName);
 
 	private:
 		

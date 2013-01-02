@@ -136,7 +136,7 @@ MainWindow::MainWindow(DataBase *d):
 
 MainWindow::~MainWindow()
 {
-	Log.Add("Killing MainWindow");
+	Global::Log.Add("Killing MainWindow");
 }
 
 void MainWindow::_OnButtonStart()
@@ -145,7 +145,7 @@ void MainWindow::_OnButtonStart()
 
 	// See if there's an ID, and it exists in _db
 	if ((selectedID == 0) || (!_db->IsIn(selectedID))) {
-		Log.Add("* ERROR * Can not find item with ID = " + std::to_string(selectedID));
+		Global::Log.Add("* ERROR * Can not find item with ID = " + std::to_string(selectedID));
 		return;
 	}
 
@@ -163,7 +163,7 @@ void MainWindow::_OnButtonStart()
 	_buttonStart.set_sensitive(false);
 	_buttonStop.set_sensitive(true);
 	_buttonStatusLabel.set_text("Timer is running!");
-	Log.Add("Started timer for " + _activeDataItem->name);
+	Global::Log.Add("Started timer for " + _activeDataItem->name);
 }
 
 void MainWindow::_OnButtonStop()
@@ -172,7 +172,7 @@ void MainWindow::_OnButtonStop()
 	std::chrono::duration<int> timeSpan = std::chrono::duration_cast<std::chrono::duration<int>>(endPoint -_timerBeginPoint);
 
 	if (!_activeDataItem) {
-		Log.Add("CRITICAL! Stopping timer can't find _activeDataItem.");
+		Global::Log.Add("CRITICAL! Stopping timer can't find _activeDataItem.");
 	}
 	else {
 		_activeDataItem->elapsedTime += timeSpan.count();
@@ -181,7 +181,7 @@ void MainWindow::_OnButtonStop()
 		_treeData->UpdateRow(_treeData->GetRowIterFromID(_activeDataItem->ID));
 	}
 
-	Log.Add("Stopping timer after " + std::to_string(timeSpan.count()) + " seconds.");
+	Global::Log.Add("Stopping timer after " + std::to_string(timeSpan.count()) + " seconds.");
 	_buttonStatusLabel.set_text("Everything seems stable.");
 	_buttonStart.set_sensitive(true);
 	_buttonStop.set_sensitive(false);
@@ -197,7 +197,7 @@ void MainWindow::_OnButtonNew()
 
 	if (dialog.LaunchDialog() == Gtk::RESPONSE_OK)
 	{
-		Log.Add("NewItemDialog gives OK.");
+		Global::Log.Add("NewItemDialog gives OK.");
 		DataItem newItem = dialog.GetItem();
 		_db->AddItemToDataBase(newItem);
 		_treeData->AddRow(newItem, true);

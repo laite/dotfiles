@@ -66,6 +66,9 @@ int NewDataItemDialog::LaunchDialog()
 		dItem.inverse = _inverseButton.get_active();
 
 		dItem.goal= _goalButton.get_value();
+
+		if (dItem.continuous) // XXX : take note of TIMEFRAME once implemented
+			dItem.goal *= 60;
 	}
 
 	_newItem = dItem;

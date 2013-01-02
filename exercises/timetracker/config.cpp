@@ -12,6 +12,7 @@
 #include "config.h"
 #include "log.h"
 #include "data.h"
+#include "helpers.h"
 
 /*
  *  Constructor
@@ -33,9 +34,7 @@ ConfigClass::ConfigClass(std::string configFile):
 	_configDataNames[DATAITEM_FIRST_TIME] = "first_time";
 	_configDataNames[DATAITEM_LAST_TIME] = "last_time";
 
-	Log.Add("Created ConfigClass.");
-	_ReadConfigFile();
-	_ParseConfigFile();
+	Global::Log.Add("Created ConfigClass.");
 }
 
 /*
@@ -85,10 +84,10 @@ void ConfigClass::_ReadConfigFile()
 	{
 		path p(_configFileFullName);
 		if (!exists(p))
-			Log.Add("No data file found");
+			Global::Log.Add("No data file found");
 		else
 		{
-			Log.Add("Found data file!");
+			Global::Log.Add("Found data file!");
 			std::ifstream file(_configFileFullName);
 
 			std::string s;
@@ -100,7 +99,7 @@ void ConfigClass::_ReadConfigFile()
 	}
 	catch (const filesystem_error& ex)
 	{
-		Log.Add(std::string("Critical: ") + ex.what());
+		Global::Log.Add(std::string("Critical: ") + ex.what());
 	}
 }
 
@@ -139,7 +138,7 @@ void ConfigClass::_ParseConfigFile()
 				_rawDbConfig.push_back(line);
 			else // this is also an error
 			{
-				Log.Add("ERROR (_ParseConfigFile): Too many sections found, some data may be not loaded properly!");
+				Global::Log.Add("ERROR (_ParseConfigFile): Too many sections found, some data may be not loaded properly!");
 				continue;
 			}
 		}
@@ -193,10 +192,10 @@ void ConfigClass::_WriteConfigFile()
 	}
 	catch (const filesystem_error& ex)
 	{
-		Log.Add(std::string("Critical: ") + ex.what());
+		Global::Log.Add(std::string("Critical: ") + ex.what());
 	}
 	
-	Log.Add("Saved " + _configFileFullName);
+	Global::Log.Add("Saved " + _configFileFullName);
 }
 
 /*
@@ -266,7 +265,7 @@ std::vector<DataItem> ConfigClass::GetSavedData()
 		}
 	}
 
-	Log.Add("GetSavedData: " + std::to_string(loaded.size()));
+	Global::Log.Add("GetSavedData: " + std::to_string(loaded.size()));
 	
 	return loaded;
 }
@@ -303,6 +302,36 @@ void ConfigClass::SaveEverything(DataBase *db)
 }
 
 /*
+ *  LoadConfig()
+ *
+ *  Does:
+ *  	Read and parse config from file
+ */
+
+void ConfigClass::LoadConfig()
+{
+	_ReadConfigFile();
+	_ParseConfigFile();
+}
+
+
+/*
+ * ChangeFileName()
+ *
+ * Does:
+ *  	Change name of config file
+ */
+
+void ConfigClass::ChangeFileName(std::string newName)
+{
+	if (newName.size() == 0)
+		return;
+
+	_configFileNameWithoutPath = newName;
+	_configFileFullName = _GetSettingsFolder() + "/" + _configFileNameWithoutPath;
+}
+
+/*
  *  _FetchAppConfig()
  *
  *  Does:
@@ -311,7 +340,7 @@ void ConfigClass::SaveEverything(DataBase *db)
 
 void ConfigClass::_FetchAppConfig()
 {
-	Log.Add("Fetching App Settings");
+	Global::Log.Add("Fetching App Settings");
 
 	std::vector<std::string> appConfig;
 
@@ -336,7 +365,7 @@ void ConfigClass::_FetchDBConfig(DataBase *db)
 	std::vector<std::string> dbConfig { "[Database]" };
 
 	std::map<unsigned int, DataItem> dataItems = db-> GetData();
-	Log.Add("Fetching DataBase items (Found " + std::to_string(dataItems.size()) + ")");
+	Global::Log.Add("Fetching DataBase items (Found " + std::to_string(dataItems.size()) + ")");
 
 	if (dataItems.size() != 0)
 	{

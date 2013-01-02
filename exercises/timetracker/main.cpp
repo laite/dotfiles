@@ -15,9 +15,8 @@
 #include "data.h"
 #include "helpers.h"
 
-LogClass Log;
-ConfigClass Config;
-
+LogClass Global::Log;
+ConfigClass Global::Config;
 bool Global::debugMode = false;
 
 int main(int argc, char *argv[])
@@ -34,7 +33,7 @@ int main(int argc, char *argv[])
 		if (param == "-d")
 		{
 			Global::debugMode = true;
-			Log.Add("Debug Mode enabled.");
+			Global::Log.Add("Debug Mode enabled.");
 		}
 
 		// clear all parametres
@@ -43,16 +42,21 @@ int main(int argc, char *argv[])
 		argc = 1;
 	}
 
+	if (Global::debugMode)
+		Global::Config.ChangeFileName("debug");
+
+	Global::Config.LoadConfig();
+
 	Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "org.gtkmm.timetracker");
 
 	DataBase db;
 	MainWindow window(&db);
 
-	Log.Add("Init ready, launching window.");
+	Global::Log.Add("Init ready, launching window.");
 
 	app->run(window);
 
-	Config.SaveEverything(&db);
+	Global::Config.SaveEverything(&db);
 
 	return 0;
 }

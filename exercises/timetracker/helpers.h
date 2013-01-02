@@ -10,6 +10,8 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include "config.h"
+#include "log.h"
 
 namespace Helpers
 {
@@ -23,6 +25,8 @@ namespace Global
 	enum { GOAL_TIMEFRAME_DAY, GOAL_TIMEFRAME_WEEK, GOAL_TIMEFRAME_MONTH };
 
 	extern bool debugMode;
+	extern ConfigClass Config;
+	extern LogClass Log;
 }
 
 #endif /* end TIMETRACKER_HELPERS_H */

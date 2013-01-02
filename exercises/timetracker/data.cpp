@@ -26,7 +26,7 @@ UniqueID::UniqueID():
 	_lastID(0),
 	_amountOfIDs(0)
 {
-	Log.Add("UniqueID holder created");
+	Global::Log.Add("UniqueID holder created");
 }
 
 unsigned int UniqueID::GenerateID()
@@ -41,7 +41,7 @@ unsigned int UniqueID::GenerateID()
 		newID = *releasedIter;
 		_releasedIDs.erase(releasedIter);
 
-		Log.Add("Got UniqueId from _releasedIDs: " + std::to_string(_releasedIDs.size()) + " left");
+		Global::Log.Add("Got UniqueId from _releasedIDs: " + std::to_string(_releasedIDs.size()) + " left");
 	}
 	else
 	{
@@ -65,7 +65,7 @@ void UniqueID::ReleaseID(unsigned int newlyReleasedID)
 
 DataItem::DataItem():
 	ID(0), name("[empty]"), description("[empty]"), percentage(0), continuous(false), inverse(false), 
-	times(0), elapsedTime(0), goal(0), goalTimeFrame(0)
+	times(0), elapsedTime(0), goal(0), goalTimeFrame(Global::GOAL_TIMEFRAME_DAY)
 {
 
 }
@@ -81,7 +81,7 @@ void DataItem::CalculatePercentage()
 
 	if ((cGoal == 0) || (hasBeen == 0))
 	{
-		Log.Add("No cGoal or TimeSpent");
+		Global::Log.Add("No cGoal or TimeSpent");
 		percentage = 0;
 		return;
 	}
@@ -135,13 +135,13 @@ DataBase::~DataBase()
 
 void DataBase::_Load()
 {
-	std::vector<DataItem> loadedData = Config.GetSavedData();
+	std::vector<DataItem> loadedData = Global::Config.GetSavedData();
 
 	for (std::vector<DataItem>::iterator dataIter = loadedData.begin();
 			dataIter != loadedData.end(); ++dataIter)
 		AddItemToDataBase(*dataIter);
 
-	Log.Add("Loaded " + std::to_string(_data.size()) + " items");
+	Global::Log.Add("Loaded " + std::to_string(_data.size()) + " items");
 
 }
 
@@ -154,7 +154,7 @@ void DataBase::AddItemToDataBase(DataItem &item)
 {
 	unsigned int newID = _uniqueID.GenerateID();
 	item.CalculatePercentage();
-	Log.Add("Added item " + std::to_string(newID) + ". " + item.name);
+	Global::Log.Add("Added item " + std::to_string(newID) + ". " + item.name);
 
 	item.ID = newID; // we don't care if DataItem already has an ID
 	_data.insert(std::make_pair(newID, item));
@@ -190,13 +190,13 @@ DataItem& DataBase::GetItem(std::map<unsigned int, DataItem>::iterator wanted)
 DataItem* DataBase::GetIDDataCopy(unsigned int ID)
 {
 	std::map<unsigned int, DataItem>::iterator wantedIDIter = _data.find(ID);
-	Log.Add("Looking for ID = " + std::to_string(ID));
+	Global::Log.Add("Looking for ID = " + std::to_string(ID));
 
 	if (wantedIDIter != _data.end())
 		return &wantedIDIter->second;
 	else
 	{
-		Log.Add("ID = " + std::to_string(ID) + " was Not Found!");
+		Global::Log.Add("ID = " + std::to_string(ID) + " was Not Found!");
 		return NULL;
 	}
 }
