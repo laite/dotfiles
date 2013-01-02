@@ -25,9 +25,9 @@ class ModelColumns : public Gtk::TreeModel::ColumnRecord
 		Gtk::TreeModelColumn<unsigned int> columnID;
 		Gtk::TreeModelColumn<Glib::ustring> columnName;
 		Gtk::TreeModelColumn<int> columnPercentage;
-		Gtk::TreeModelColumn<std::string> columnElapsedTime;
-		Gtk::TreeModelColumn<std::string> columnAverageTime;
-		Gtk::TreeModelColumn<std::string> columnGoalTime;
+		Gtk::TreeModelColumn<std::string> columnElapsed;
+		Gtk::TreeModelColumn<std::string> columnAverage;
+		Gtk::TreeModelColumn<std::string> columnGoal;
 };
 
 

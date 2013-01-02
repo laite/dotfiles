@@ -255,7 +255,7 @@ void MainWindow::_TreeViewSelectionChanged()
 void MainWindow::_UpdateStatistics(DataItem &dataItem)
 {
 	// dataitem has following properties: ID, name, description, percentage 
-	// continuous, elapsedTime, times, lastTime, goalTime
+	// continuous, elapsedTime, times, lastTime, goal, goalTimeFrame
 	
 	std::string tempValue; // used for formatting some values
 
@@ -274,6 +274,16 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 		tempValue = "";
 
 	_AddKeyValueToTextView("Instances: ", std::to_string(dataItem.times) + tempValue);
+
+	if (dataItem.goalTimeFrame == Global::GOAL_TIMEFRAME_DAY)
+		tempValue = "per day";
+	else if (dataItem.goalTimeFrame == Global::GOAL_TIMEFRAME_WEEK)
+		tempValue = "per week";
+	else if (dataItem.goalTimeFrame == Global::GOAL_TIMEFRAME_WEEK)
+		tempValue = "per month";
+	else
+		tempValue = "unknown";
+	_AddKeyValueToTextView("Time Frame: ", tempValue);
 
 	_AddKeyValueToTextView("First Time: ", _GetTimePointTextWithDaysAgo(dataItem.firstTime)); 
 	_AddKeyValueToTextView("Last Time: ", _GetTimePointTextWithDaysAgo(dataItem.lastTime)); 

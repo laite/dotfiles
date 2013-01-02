@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
 			Log.Add("Debug Mode enabled.");
 		}
 
+		// clear all parametres
 		for (int i=1; i < argc; ++i)
 			argv[i] = NULL;
 		argc = 1;

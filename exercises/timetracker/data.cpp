@@ -14,6 +14,7 @@
 #include "data.h"
 #include "treedata.h"
 #include "config.h"
+#include "helpers.h"
 
 
 /*
@@ -64,7 +65,7 @@ void UniqueID::ReleaseID(unsigned int newlyReleasedID)
 
 DataItem::DataItem():
 	ID(0), name("[empty]"), description("[empty]"), percentage(0), continuous(false), inverse(false), 
-	times(0), elapsedTime(0), goalTime(0)
+	times(0), elapsedTime(0), goal(0), goalTimeFrame(0)
 {
 
 }
@@ -75,16 +76,27 @@ void DataItem::CalculatePercentage()
 	
 	long hasBeen = timeAgo.count(); // this is in seconds
 	long worked = elapsedTime; // and so is this
-	long goal = goalTime;
+	long cGoal = goal;
+	double supposedRatio, workedRatio;
 
-	if ((goal == 0) || (hasBeen == 0))
+	if ((cGoal == 0) || (hasBeen == 0))
 	{
+		Log.Add("No cGoal or TimeSpent");
 		percentage = 0;
 		return;
 	}
 
-	double supposedRatio = 1.0*goal / (24*60*60); // calculate ratio to be 'percents of day'
-	double workedRatio = 1.0*worked / hasBeen; // and completed ratio
+	if (continuous)
+	{
+		supposedRatio = 1.0*cGoal / (GetSecondsFromTimeFrame()); // calculate ratio to be 'percents of TIMEFRAME'
+		workedRatio = 1.0*worked / hasBeen; // and completed ratio
+	}
+	else
+	{
+		// format for ratios here is: instances / day
+		supposedRatio = 1.0*cGoal / (1.0*GetSecondsFromTimeFrame() / (24*60*60));
+		workedRatio = 1.0*times / (1.0*hasBeen / (24*60*60));
+	}
 
 	double result = (1.0*workedRatio) / supposedRatio;
 
@@ -94,6 +106,16 @@ void DataItem::CalculatePercentage()
 		result = 0;
 
 	percentage = std::round(100*result);
+}
+
+long DataItem::GetSecondsFromTimeFrame() const
+{
+	if (goalTimeFrame == Global::GOAL_TIMEFRAME_WEEK)
+		return (7*24*60*60);
+	else if (goalTimeFrame == Global::GOAL_TIMEFRAME_MONTH)
+		return (30*24*60*60);
+	else
+		return (24*60*60); // use GOAL_TIMEFRAME_DAY also as a fallback
 }
 
 /*

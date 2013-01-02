@@ -26,9 +26,9 @@ void TreeData::InitializeTreeView()
 
 	_treeView->append_column("ID", Columns().columnID);
 	_treeView->append_column("Name", Columns().columnName);
-	_treeView->append_column("Total", Columns().columnElapsedTime);
-	_treeView->append_column("Avg.", Columns().columnAverageTime);
-	_treeView->append_column("Goal", Columns().columnGoalTime);
+	_treeView->append_column("Total", Columns().columnElapsed);
+	_treeView->append_column("Avg.", Columns().columnAverage);
+	_treeView->append_column("Goal", Columns().columnGoal);
 
 	//Display a progress bar instead of a decimal number:
 	Gtk::CellRendererProgress* cell = Gtk::manage(new Gtk::CellRendererProgress);
@@ -95,14 +95,27 @@ void TreeData::PopulateRow(Gtk::TreeModel::iterator rowIter, const DataItem &dit
 	row[_columns.columnID] = ditem.ID;
 	row[_columns.columnName] = ditem.name;
 	row[_columns.columnPercentage] = ditem.percentage;
-	row[_columns.columnElapsedTime] = Helpers::ParseShortTime(ditem.elapsedTime);
 
 	std::chrono::duration<double,std::ratio<60*60*24> > timeAgo = std::chrono::duration_cast< std::chrono::duration<double,std::ratio<60*60*24> > >(std::chrono::steady_clock::now() - ditem.firstTime);
 	double hasBeen = timeAgo.count(); // this is in days
-	long avg = (ditem.elapsedTime/hasBeen); // we get seconds per day
-	row[_columns.columnAverageTime] = Helpers::ParseShortTime(avg);
 
-	row[_columns.columnGoalTime] = Helpers::ParseShortTime(ditem.goalTime);
+	if (ditem.continuous)
+	{
+		row[_columns.columnElapsed] = Helpers::ParseShortTime(ditem.elapsedTime);
+		long avg = (ditem.elapsedTime/hasBeen); // we get seconds per day
+		avg *= (1.0*ditem.GetSecondsFromTimeFrame()/(24*60*60)); // adapt to timeframe
+		row[_columns.columnAverage] = Helpers::ParseShortTime(avg);
+	
+		row[_columns.columnGoal] = Helpers::ParseShortTime(ditem.goal);
+	}
+	else // ditem !continuous
+	{
+		row[_columns.columnElapsed] = std::to_string(ditem.times);
+		double avg = (ditem.times/(hasBeen)); // we get instances per day
+		avg *= (1.0*ditem.GetSecondsFromTimeFrame()/(24*60*60));
+		row[_columns.columnAverage] = Helpers::TruncateToString(avg);
+		row[_columns.columnGoal] = std::to_string(ditem.goal);
+	}
 }
 
 void TreeData::AddRow(const DataItem &dataItem, bool rebuildRowMap)
@@ -169,8 +182,8 @@ ModelColumns::ModelColumns()
 {
 	add(columnID);
 	add(columnName);
-	add(columnElapsedTime);
-	add(columnAverageTime);
-	add(columnGoalTime);
+	add(columnElapsed);
+	add(columnAverage);
+	add(columnGoal);
 	add(columnPercentage);
 }

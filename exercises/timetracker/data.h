@@ -41,12 +41,14 @@ struct DataItem
 	int times;
 
 	long elapsedTime; // elapsed time in seconds
-	long goalTime; // seconds per day
+	long goal; // seconds per day OR instances per day, depending on item type (bool continuous)
+	int goalTimeFrame; // GOAL_TIMEFRAME_DAY, GOAL_TIMEFRAME_WEEK or GOAL_TIMEFRAME_MONTH
 
 	std::chrono::system_clock::time_point firstTime; // timePoint of first modification
 	std::chrono::system_clock::time_point lastTime; // timePoint of last modification
 
 	void CalculatePercentage();
+	long GetSecondsFromTimeFrame() const;
 };
 
 class DataBase 
