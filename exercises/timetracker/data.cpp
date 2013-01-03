@@ -73,7 +73,7 @@ DataItem::DataItem():
 
 void DataItem::CalculatePercentage()
 {
-	std::chrono::duration<int,std::ratio<1> > timeAgo = std::chrono::duration_cast< std::chrono::duration<int,std::ratio<1> > >(std::chrono::steady_clock::now() - firstTime);
+	std::chrono::duration<int,std::ratio<1> > timeAgo = std::chrono::duration_cast< std::chrono::duration<int,std::ratio<1> > >(std::chrono::steady_clock::now() - firstRunTime);
 	
 	long hasBeen = timeAgo.count(); // this is in seconds
 	long worked = elapsedTime; // and so is this
@@ -117,6 +117,41 @@ long DataItem::GetSecondsFromTimeFrame() const
 		return (30*24*60*60);
 	else
 		return (24*60*60); // use GOAL_TIMEFRAME_DAY also as a fallback
+}
+
+void DataItem::ChangeEndPoint(std::chrono::system_clock::time_point existingBeginPoint, std::chrono::system_clock::time_point newEndPoint)
+{
+	if (history.find(existingBeginPoint) == history.end())
+		return;
+
+	std::chrono::system_clock::time_point oldEndPoint = history[existingBeginPoint];
+	history[existingBeginPoint] = newEndPoint;
+
+	// calculate timespan changes (in seconds)
+	std::chrono::duration<int> newTimeSpan = std::chrono::duration_cast<std::chrono::duration<int>>
+		(newEndPoint - oldEndPoint);
+
+	this->elapsedTime += newTimeSpan.count();
+}
+
+void DataItem::AddNewRun(std::chrono::system_clock::time_point newBeginPoint, std::chrono::system_clock::time_point newEndPoint)
+{
+	if (this->history.find(newBeginPoint) != this->history.end())
+		return;
+
+	this->history[newBeginPoint] = newEndPoint;
+
+	// there is bound to be at least one item since we just added one
+	this->lastRunTime = (history.rbegin())->first;
+
+	// Set also to first time if needed
+	if (this->firstRunTime.time_since_epoch().count() == 0)
+		this->firstRunTime = (history.rbegin())->first;
+}
+
+void DataItem::AddNewRun(std::chrono::system_clock::time_point point)
+{
+	AddNewRun(point, point);
 }
 
 /*

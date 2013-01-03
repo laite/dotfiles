@@ -266,13 +266,13 @@ std::vector<DataItem> ConfigClass::GetSavedData()
 				{
 					long savedTime = std::stol(line.substr(_configDataNames[DATAITEM_FIRST_TIME].size() + 3));
 					std::chrono::duration<int> since(savedTime);
-					dataIter->firstTime = std::chrono::system_clock::time_point(since);
+					dataIter->firstRunTime = std::chrono::system_clock::time_point(since);
 				}
 				else if (_IsLineDbItem(line, DATAITEM_LAST_TIME))
 				{
 					long savedTime = std::stol(line.substr(_configDataNames[DATAITEM_LAST_TIME].size() + 3));
 					std::chrono::duration<int> since(savedTime);
-					dataIter->lastTime = std::chrono::system_clock::time_point(since);
+					dataIter->lastRunTime = std::chrono::system_clock::time_point(since);
 				}
 			}
 		}
@@ -395,10 +395,10 @@ void ConfigClass::_FetchDBConfig(DataBase *db)
 			dbConfig.push_back(_configDataNames[DATAITEM_GOAL] + " = " + std::to_string(dataIter->second.goal));
 			dbConfig.push_back(_configDataNames[DATAITEM_GOAL_FRAME] + " = " + std::to_string(dataIter->second.goalTimeFrame));
 
-			std::chrono::duration<int> dur = std::chrono::duration_cast<std::chrono::duration<int>>(dataIter->second.firstTime.time_since_epoch());
+			std::chrono::duration<int> dur = std::chrono::duration_cast<std::chrono::duration<int>>(dataIter->second.firstRunTime.time_since_epoch());
 			dbConfig.push_back(_configDataNames[DATAITEM_FIRST_TIME] + " = " + std::to_string(dur.count()));
 			
-			dur = std::chrono::duration_cast<std::chrono::duration<int>>(dataIter->second.lastTime.time_since_epoch());
+			dur = std::chrono::duration_cast<std::chrono::duration<int>>(dataIter->second.lastRunTime.time_since_epoch());
 			dbConfig.push_back(_configDataNames[DATAITEM_LAST_TIME] + " = " + std::to_string(dur.count()));
 		}
 	}

@@ -212,12 +212,7 @@ void MainWindow::_StartTracking(unsigned int selectedID)
 	// obtain reference to original item
 	_activeDataItem = &_db->GetItem(selectedID);
 
-	_timerBeginPoint = std::chrono::system_clock::now();
-	_activeDataItem->lastTime = _timerBeginPoint;
-
-	// Set also to first time if needed
-	if (_activeDataItem->firstTime.time_since_epoch().count() == 0)
-		_activeDataItem->firstTime = _timerBeginPoint;
+	_activeDataItem->AddNewRun(std::chrono::system_clock::now());
 
 	if (_activeDataItem->continuous)
 	{
@@ -238,11 +233,8 @@ void MainWindow::_StopTracking()
 	}
 	else if (_activeDataItem->continuous)
 	{
-		std::chrono::steady_clock::time_point endPoint = std::chrono::steady_clock::now();
-		std::chrono::duration<int> timeSpan = std::chrono::duration_cast<std::chrono::duration<int>>(endPoint -_timerBeginPoint);
+		_activeDataItem->ChangeEndPoint(_activeDataItem->lastRunTime, std::chrono::system_clock::now());
 
-		_activeDataItem->elapsedTime += timeSpan.count();
-		Global::Log.Add("Stopping timer after " + std::to_string(timeSpan.count()) + " seconds.");
 		_buttonStart.set_sensitive(true);
 		_buttonStop.set_sensitive(false);
 	}
@@ -308,8 +300,8 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 		tempValue = "unknown [NOT a good thing]";
 	_AddKeyValueToTextView("Time Frame: ", tempValue);
 
-	_AddKeyValueToTextView("First Time: ", _GetTimePointTextWithDaysAgo(dataItem.firstTime)); 
-	_AddKeyValueToTextView("Last Time: ", _GetTimePointTextWithDaysAgo(dataItem.lastTime)); 
+	_AddKeyValueToTextView("First Time: ", _GetTimePointTextWithDaysAgo(dataItem.firstRunTime)); 
+	_AddKeyValueToTextView("Last Time: ", _GetTimePointTextWithDaysAgo(dataItem.lastRunTime)); 
 
 	_AddKeyValueToTextView("\nDescription: ", dataItem.description);
 }

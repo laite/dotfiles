@@ -120,7 +120,6 @@ class MainWindow : public Gtk::Window
 
 		DataBase *_db;
 		DataItem *_activeDataItem;
-		std::chrono::system_clock::time_point _timerBeginPoint;
 };
 
 #endif // TIMETRACKER_WINDOW_H
