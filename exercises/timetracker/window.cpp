@@ -292,8 +292,8 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 	tempValue = "per " + Helpers::GiveTimeFrameType(dataItem.goalTimeFrame);
 	_AddKeyValueToTextView("Time Frame: ", tempValue);
 
-	_AddKeyValueToTextView("First Time: ", _GetTimePointTextWithDaysAgo(dataItem.firstRunTime)); 
-	_AddKeyValueToTextView("Last Time: ", _GetTimePointTextWithDaysAgo(dataItem.lastRunTime)); 
+	_AddKeyValueToTextView("First Time: ", _GetTimePointTextWithTimeAgo(dataItem.firstRunTime)); 
+	_AddKeyValueToTextView("Last Time: ", _GetTimePointTextWithTimeAgo(dataItem.lastRunTime)); 
 
 	_AddKeyValueToTextView("\nDescription: ", dataItem.description);
 }
@@ -305,7 +305,7 @@ void MainWindow::_AddKeyValueToTextView(const std::string key, const std::string
 	_statisticTextBuffer->insert_with_tag(_statisticTextBuffer->end(), value + " \n", _boldedTextTag);
 }
 
-std::string MainWindow::_GetTimePointTextWithDaysAgo(std::chrono::steady_clock::time_point &timePoint)
+std::string MainWindow::_GetTimePointTextWithTimeAgo(std::chrono::steady_clock::time_point &timePoint)
 {
 	std::chrono::system_clock::duration dtn = timePoint.time_since_epoch();
 
@@ -317,9 +317,9 @@ std::string MainWindow::_GetTimePointTextWithDaysAgo(std::chrono::steady_clock::
 
 	formattedString = ctime(&temp_t);
 	formattedString = formattedString.substr(0, formattedString.length() - 1); // remove \n from the end
-	std::chrono::duration<int,std::ratio<60*60*24> > timeAgo = std::chrono::duration_cast< std::chrono::duration<int,std::ratio<60*60*24> > >(std::chrono::system_clock::now() - timePoint);
+	std::chrono::duration<int> timeAgo = std::chrono::duration_cast< std::chrono::duration<int> >(std::chrono::system_clock::now() - timePoint);
 	
-	formattedString = formattedString + " (" + std::to_string(timeAgo.count()) + " days ago)";
+	formattedString = formattedString + " (" + Helpers::ParseShortTime(timeAgo.count()) + " ago)";
 
 	return formattedString;
 }
