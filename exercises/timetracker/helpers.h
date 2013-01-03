@@ -20,6 +20,8 @@ namespace Helpers
 
 	// this adds leading zero to single digits only, everything else is bypassed
 	extern std::string AddLeadingZero(std::string originalString);
+
+	extern std::string GiveTimeFrameType(int timeFrame);
 }
 
 namespace Global

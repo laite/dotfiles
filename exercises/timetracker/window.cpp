@@ -289,15 +289,7 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 		tempValue = "";
 
 	_AddKeyValueToTextView("Instances: ", std::to_string(dataItem.times) + tempValue);
-
-	if (dataItem.goalTimeFrame == Global::GOAL_TIMEFRAME_DAY)
-		tempValue = "per day";
-	else if (dataItem.goalTimeFrame == Global::GOAL_TIMEFRAME_WEEK)
-		tempValue = "per week";
-	else if (dataItem.goalTimeFrame == Global::GOAL_TIMEFRAME_MONTH)
-		tempValue = "per month";
-	else
-		tempValue = "unknown [NOT a good thing]";
+	tempValue = "per " + Helpers::GiveTimeFrameType(dataItem.goalTimeFrame);
 	_AddKeyValueToTextView("Time Frame: ", tempValue);
 
 	_AddKeyValueToTextView("First Time: ", _GetTimePointTextWithDaysAgo(dataItem.firstRunTime)); 
