@@ -21,7 +21,10 @@ struct AppOptions
 {
 	AppOptions();
 
+	// true: use hh:mm:ss instead of Xh Ymin Zs
 	bool useShortTimeFormat;
+	// true: use goalTimeFrame as a shortest 'hasBeen' when calculating averages
+	bool noFunnyAverages;
 	
 };
 

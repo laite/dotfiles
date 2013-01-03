@@ -302,7 +302,7 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 		tempValue = "per day";
 	else if (dataItem.goalTimeFrame == Global::GOAL_TIMEFRAME_WEEK)
 		tempValue = "per week";
-	else if (dataItem.goalTimeFrame == Global::GOAL_TIMEFRAME_WEEK)
+	else if (dataItem.goalTimeFrame == Global::GOAL_TIMEFRAME_MONTH)
 		tempValue = "per month";
 	else
 		tempValue = "unknown [NOT a good thing]";

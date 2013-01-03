@@ -99,6 +99,9 @@ void TreeData::PopulateRow(Gtk::TreeModel::iterator rowIter, const DataItem &dit
 	std::chrono::duration<double,std::ratio<60*60*24> > timeAgo = std::chrono::duration_cast< std::chrono::duration<double,std::ratio<60*60*24> > >(std::chrono::steady_clock::now() - ditem.firstTime);
 	double hasBeen = timeAgo.count(); // this is in days
 
+	if (Global::Config.GetAppOptions().noFunnyAverages)
+		hasBeen = std::max(hasBeen, static_cast<double>(ditem.GetSecondsFromTimeFrame()/(24*60*60)));
+
 	if (ditem.continuous)
 	{
 		row[_columns.columnElapsed] = Helpers::ParseShortTime(ditem.elapsedTime);
