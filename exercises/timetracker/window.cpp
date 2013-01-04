@@ -239,8 +239,6 @@ void MainWindow::_StopTracking()
 		_buttonStop.set_sensitive(false);
 	}
 
-	++_activeDataItem->times;
-
 	_db->UpdateItemStats(_activeDataItem->ID);
 	_treeData->UpdateRow(_treeData->GetRowIterFromID(_activeDataItem->ID));
 
@@ -286,12 +284,12 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 	_AddKeyValueToTextView("Type: ", tempValue);
 	
 	_AddKeyValueToTextView("Elapsed: ", Helpers::ParseShortTime(dataItem.elapsedTime));
-	if (dataItem.times != 0)
-		tempValue = std::string(" (about ") + Helpers::ParseShortTime(dataItem.elapsedTime/dataItem.times) + " on average)";
+	if (dataItem.GetTimes() != 0)
+		tempValue = std::string(" (about ") + Helpers::ParseShortTime(dataItem.elapsedTime/dataItem.GetTimes()) + " on average)";
 	else 
 		tempValue = "";
 
-	_AddKeyValueToTextView("Instances: ", std::to_string(dataItem.times) + tempValue);
+	_AddKeyValueToTextView("Instances: ", std::to_string(dataItem.GetTimes()) + tempValue);
 	tempValue = "per " + Helpers::GiveTimeFrameType(dataItem.goalTimeFrame);
 	_AddKeyValueToTextView("Time Frame: ", tempValue);
 

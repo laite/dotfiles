@@ -113,8 +113,8 @@ void TreeData::PopulateRow(Gtk::TreeModel::iterator rowIter, const DataItem &dat
 	}
 	else // dataItem !continuous
 	{
-		row[_columns.columnElapsed] = std::to_string(dataItem.times);
-		double average = (dataItem.times/(hasBeen)); // we get instances per day
+		row[_columns.columnElapsed] = std::to_string(dataItem.GetTimes());
+		double average = (dataItem.GetTimes()/(hasBeen)); // we get instances per day
 		average *= (1.0*dataItem.GetSecondsFromTimeFrame()/(24*60*60));
 		row[_columns.columnAverage] = Helpers::TruncateToString(average);
 		row[_columns.columnGoal] = std::to_string(dataItem.goal);

@@ -39,7 +39,6 @@ ConfigClass::ConfigClass(std::string configFile):
 
 	_configDataNames[DATAITEM_NAME] = "name";
 	_configDataNames[DATAITEM_DESCRIPTION] = "description";
-	_configDataNames[DATAITEM_TIMES] = "times";
 	_configDataNames[DATAITEM_CONTINUOUS] = "continuous";
 	_configDataNames[DATAITEM_INVERSE] = "inverse";
 	_configDataNames[DATAITEM_ELAPSED_TIME] = "elapsed_time";
@@ -246,8 +245,6 @@ std::vector<DataItem> ConfigClass::GetSavedData()
 					dataIter->name = line.substr(_configDataNames[DATAITEM_NAME].size() + 3);
 				else if (_IsLineDbItem(line, DATAITEM_DESCRIPTION))
 					dataIter->description = line.substr(_configDataNames[DATAITEM_DESCRIPTION].size() + 3);
-				else if (_IsLineDbItem(line, DATAITEM_TIMES))
-					dataIter->times = std::stoi(line.substr(_configDataNames[DATAITEM_TIMES].size() + 3));
 				else if (_IsLineDbItem(line, DATAITEM_CONTINUOUS))
 				{
 					std::string tempValue = line.substr(_configDataNames[DATAITEM_CONTINUOUS].size() + 3);
@@ -291,6 +288,11 @@ std::vector<DataItem> ConfigClass::GetSavedData()
 					long endTime = std::stol(value.substr(middlePoint+1));
 					std::chrono::duration<int> bSince(beginTime),eSince(endTime);
 					dataIter->AddNewRun(std::chrono::system_clock::time_point(bSince),std::chrono::system_clock::time_point(eSince));
+				}
+				else 
+				{
+					Global::Log.Add("ERROR! Unknown line in _rawDbConfig!");
+					Global::Log.Add("faulty line: " + line);
 				}
 			}
 		}
@@ -406,7 +408,6 @@ void ConfigClass::_FetchDBConfig(DataBase *db)
 			dbConfig.push_back(">> DataItem " + std::to_string(dataIter->second.ID));
 			dbConfig.push_back(_configDataNames[DATAITEM_NAME] + " = " + dataIter->second.name);
 			dbConfig.push_back(_configDataNames[DATAITEM_DESCRIPTION] + " = " + dataIter->second.description);
-			dbConfig.push_back(_configDataNames[DATAITEM_TIMES] + " = " + std::to_string(dataIter->second.times));
 			dbConfig.push_back(std::string(_configDataNames[DATAITEM_CONTINUOUS]) + " = " + (dataIter->second.continuous? "true" : "false"));
 			dbConfig.push_back(std::string(_configDataNames[DATAITEM_INVERSE]) + " = " + (dataIter->second.inverse? "true" : "false"));
 			dbConfig.push_back(_configDataNames[DATAITEM_ELAPSED_TIME] + " = " + std::to_string(dataIter->second.elapsedTime));

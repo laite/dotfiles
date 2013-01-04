@@ -66,7 +66,7 @@ void UniqueID::ReleaseID(unsigned int newlyReleasedID)
 
 DataItem::DataItem():
 	ID(0), name("[empty]"), description("[empty]"), percentage(0), continuous(false), inverse(false), 
-	times(0), elapsedTime(0), goal(0), goalTimeFrame(Global::GOAL_TIMEFRAME_DAY)
+	elapsedTime(0), goal(0), goalTimeFrame(Global::GOAL_TIMEFRAME_DAY)
 {
 
 }
@@ -96,7 +96,7 @@ void DataItem::CalculatePercentage()
 	{
 		// format for ratios here is: instances / day
 		supposedRatio = 1.0*cGoal / (1.0*GetSecondsFromTimeFrame() / (24*60*60));
-		workedRatio = 1.0*times / (1.0*hasBeen / (24*60*60));
+		workedRatio = 1.0*GetTimes() / (1.0*hasBeen / (24*60*60));
 	}
 
 	double result = (1.0*workedRatio) / supposedRatio;
@@ -152,6 +152,11 @@ void DataItem::AddNewRun(std::chrono::system_clock::time_point newBeginPoint, st
 void DataItem::AddNewRun(std::chrono::system_clock::time_point point)
 {
 	AddNewRun(point, point);
+}
+
+int DataItem::GetTimes() const
+{
+	return history.size();
 }
 
 /*

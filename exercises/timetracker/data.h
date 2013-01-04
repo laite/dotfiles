@@ -38,7 +38,6 @@ struct DataItem
 	int percentage; // [0..100], basically current/goal
 	bool continuous; // whether data is measured continuously (seconds) or by instances
 	bool inverse; // do we count to or from, default false
-	int times;
 
 	long elapsedTime; // elapsed time in seconds
 	long goal; // seconds per day OR instances per day, depending on item type (bool continuous)
@@ -56,6 +55,8 @@ struct DataItem
 
 	void CalculatePercentage();
 	long GetSecondsFromTimeFrame() const;
+
+	int GetTimes() const;
 };
 
 class DataBase 
