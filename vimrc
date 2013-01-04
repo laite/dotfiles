@@ -149,8 +149,9 @@ endif
 set directory=~/.vim/tmp/
 set backupdir=~/.vim/tmp/
 
-" don't save basic options with the session
+" don't save basic options or folds with the session
 set ssop-=options
+set ssop-=folds
 
 " Add highlighting for function definition in C++
 function! EnhanceCppSyntax()
