@@ -168,7 +168,7 @@ long DataItem::GetAveragePerTimeFrame() const
 
 long DataItem::GetAverageRunLength() const
 {
-	
+	return GetTotal()/GetTimes();
 }
 
 /*

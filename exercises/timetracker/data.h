@@ -56,7 +56,7 @@ struct DataItem
 	long GetSecondsFromTimeFrame() const;
 
 	int GetTimes() const; // returns number of runs (aka history.size())
-	long GetTotal() const; // returns elapsed time from history
+	long GetTotal() const; // returns elapsed time from history (in seconds)
 
 	long GetSecondsSinceFirstRun() const;
 	long GetAveragePerTimeFrame() const;
