@@ -12,13 +12,12 @@
 
 class DataItem;
 
-class NewDataItemDialog : public Gtk::Dialog
+class DataItemDialog : public Gtk::Dialog
 {
 	public:
-		NewDataItemDialog();
+		DataItemDialog();
 
-		int LaunchDialog();
-		DataItem GetItem();
+		int LaunchDialog(DataItem *);
 
 	private:
 
@@ -39,7 +38,9 @@ class NewDataItemDialog : public Gtk::Dialog
 		Gtk::ComboBoxText _goalType;
 		Gtk::ComboBoxText _goalTimeFrame;
 
-		DataItem _newItem;
+		void _FillDialogValues(DataItem&);
+
+		DataItem _dataItem;
 };
 
 #endif /* end DIALOGS_H */

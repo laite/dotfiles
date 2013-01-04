@@ -9,7 +9,7 @@
 #include "dialogs.h"
 #include "helpers.h"
 
-NewDataItemDialog::NewDataItemDialog():
+DataItemDialog::DataItemDialog():
 	_nameLabel("Name: "),
 	_descriptionLabel("Description: "),
 	_inverseButton("Inverse goal"),
@@ -80,9 +80,13 @@ NewDataItemDialog::NewDataItemDialog():
 	this->show_all_children();
 }
 
-int NewDataItemDialog::LaunchDialog()
+int DataItemDialog::LaunchDialog(DataItem *dataItem)
 {
-	DataItem dItem;
+	if (dataItem == NULL)
+		dataItem = &_dataItem;
+	else
+		_FillDialogValues(*dataItem);
+
 	int result = this->run();
 
 	if (result == Gtk::RESPONSE_OK)
@@ -90,38 +94,63 @@ int NewDataItemDialog::LaunchDialog()
 		std::string nameText = _nameEntry.get_text();
 		if (nameText.size() == 0)
 			nameText = "[empty]";
-		dItem.name = nameText;
+		dataItem->name = nameText;
 
 		std::string descriptionText = _descriptionEntry.get_text();
 		if (descriptionText.size() == 0)
 			descriptionText = "[empty]";
-		dItem.description = descriptionText;
+		dataItem->description = descriptionText;
 
-		dItem.inverse = _inverseButton.get_active();
+		dataItem->inverse = _inverseButton.get_active();
 
-		dItem.goal= _goalButton.get_value();
+		dataItem->goal= _goalButton.get_value();
 
 		// get_act..ber() returns -1 if nothing is active
-		dItem.goalTimeFrame = std::max(0, _goalTimeFrame.get_active_row_number());
+		dataItem->goalTimeFrame = std::max(0, _goalTimeFrame.get_active_row_number());
 
 		if (_goalType.get_active_text() == "instances")
-			dItem.continuous = false;
+			dataItem->continuous = false;
 		else
 		{
-			dItem.continuous = true;
+			dataItem->continuous = true;
 			if (_goalType.get_active_text() == "minutes")
-				dItem.goal *= 60;
+				dataItem->goal *= 60;
 			else if (_goalType.get_active_text() == "hours")
-				dItem.goal *= 60*60;
+				dataItem->goal *= 60*60;
 		}
 	}
-
-	_newItem = dItem;
 
 	return result;
 }
 
-DataItem NewDataItemDialog::GetItem()
+void DataItemDialog::_FillDialogValues(DataItem &dataItem)
 {
-	return _newItem;
+	_nameEntry.set_text(dataItem.name);
+	_descriptionEntry.set_text(dataItem.description);
+	_inverseButton.set_active(dataItem.inverse);
+
+	// clear all items since we don't allow changing status of 'continuous'
+	_goalType.remove_all();
+
+	if (dataItem.continuous)
+	{
+		_goalType.append("minutes");
+		_goalType.append("hours");
+		if (dataItem.goal >= 18000) { // greater than 5h shows as 'hours'
+			_goalButton.set_value(dataItem.goal/3600);
+			_goalType.set_active_text("hours");
+		}
+		else {
+			_goalButton.set_value(dataItem.goal/60);
+			_goalType.set_active_text("minutes");
+		}
+	}
+	else
+	{
+		_goalType.append("instances");
+		_goalButton.set_value(dataItem.goal);
+		_goalType.set_active_text("instances");
+	}
+	_goalTimeFrame.set_active(dataItem.goalTimeFrame);
+
 }

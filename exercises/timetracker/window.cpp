@@ -158,23 +158,30 @@ void MainWindow::_OnButtonStop()
 
 void MainWindow::_OnButtonNew()
 {
-	NewDataItemDialog dialog;
+	DataItemDialog dialog;
+	DataItem newItem;
 
-	if (dialog.LaunchDialog() == Gtk::RESPONSE_OK)
+	if (dialog.LaunchDialog(&newItem) == Gtk::RESPONSE_OK)
 	{
-		Global::Log.Add("NewItemDialog gives OK.");
-		DataItem newItem = dialog.GetItem();
+		Global::Log.Add("New Item - dialog gives OK.");
 		_db->AddItemToDataBase(newItem);
 		_treeData->AddRow(newItem, true);
 		_buttonStart.set_sensitive(1);
 		_buttonRemove.set_sensitive(1);
 	}
-
 }
 
 void MainWindow::_OnButtonEdit()
 {
+	DataItemDialog dialog;
+	unsigned int currentID = _treeData->GetSelectedID();
 
+	if (dialog.LaunchDialog(&_db->GetItem(currentID)) == Gtk::RESPONSE_OK)
+	{
+		_db->UpdateItemStats(currentID);
+		_treeData->UpdateRow(_treeData->GetRowIterFromID(currentID));
+		Global::Log.Add("Edited file successfully.");
+	}
 }
 
 void MainWindow::_OnButtonRemove()
