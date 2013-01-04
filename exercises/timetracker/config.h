@@ -25,6 +25,9 @@ struct AppOptions
 	bool useShortTimeFormat;
 	// true: use goalTimeFrame as a shortest 'hasBeen' when calculating averages
 	bool noFunnyAverages;
+
+	// true: save data automatically after each run
+	bool autoSave;
 	
 };
 

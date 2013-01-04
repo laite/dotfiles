@@ -249,6 +249,9 @@ void MainWindow::_StopTracking()
 
 	_UpdateStatistics(_db->GetItem(_treeData->GetSelectedID()));
 
+	if (Global::Config.GetAppOptions().autoSave)
+		Global::Config.SaveEverything(_db);
+
 }
 
 void MainWindow::_TreeViewSelectionChanged()
