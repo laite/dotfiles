@@ -22,21 +22,22 @@ class NewDataItemDialog : public Gtk::Dialog
 
 	private:
 
-		Gtk::HBox _nameRow;
+		Gtk::HBox _mainRow;
+		Gtk::VBox _titleColumn;
+		Gtk::VBox _widgetColumn;
 		Gtk::Label _nameLabel;
 		Gtk::Entry _nameEntry;
 
-		Gtk::HBox _descriptionRow;
 		Gtk::Label _descriptionLabel;
 		Gtk::Entry _descriptionEntry;
 
 		Gtk::CheckButton _inverseButton;
-		Gtk::CheckButton _continuousButton;
 
 		Gtk::HBox _goalRow;
-		Gtk::Label _goalLabel;
 		Gtk::SpinButton _goalButton;
-
+		Gtk::Label _goalLabel, _goalPerLabel;
+		Gtk::ComboBoxText _goalType;
+		Gtk::ComboBoxText _goalTimeFrame;
 
 		DataItem _newItem;
 };

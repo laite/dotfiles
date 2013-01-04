@@ -78,12 +78,10 @@ std::string Helpers::AddLeadingZero(std::string originalString)
 
 std::string Helpers::GiveTimeFrameType(int timeFrame)
 {
-	if (timeFrame == Global::GOAL_TIMEFRAME_DAY)
-		return "day";
-	else if (timeFrame == Global::GOAL_TIMEFRAME_WEEK)
-		return "week";
-	else if (timeFrame == Global::GOAL_TIMEFRAME_MONTH)
-		return "month";
+	std::vector<std::string> goalNames { "day", "week", "month"};
+
+	if (goalNames.size() > timeFrame)
+		return goalNames.at(timeFrame);
 	else
 		return "[unknown]";
 }

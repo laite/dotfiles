@@ -7,13 +7,14 @@
 
 #include "data.h"
 #include "dialogs.h"
+#include "helpers.h"
 
 NewDataItemDialog::NewDataItemDialog():
-	_nameLabel("Name "),
-	_descriptionLabel("Description "),
-	_inverseButton("Inverse"),
-	_continuousButton("Measure instances instead of time"),
-	_goalLabel("Goal (minutes per day)")
+	_nameLabel("Name: "),
+	_descriptionLabel("Description: "),
+	_inverseButton("Inverse goal"),
+	_goalLabel("Goal: "),
+	_goalPerLabel("In: ")
 {
 	Gtk::Box* dialogArea = this->get_content_area();
 	dialogArea->set_orientation(Gtk::ORIENTATION_VERTICAL);
@@ -24,20 +25,54 @@ NewDataItemDialog::NewDataItemDialog():
 	/*
 	 *  Widgets 
 	 */
-	
-	_nameRow.pack_start(_nameLabel);
-	_nameRow.pack_start(_nameEntry);
-	dialogArea->pack_start(_nameRow);
 
-	_descriptionRow.pack_start(_descriptionLabel);
-	_descriptionRow.pack_start(_descriptionEntry);
-	dialogArea->pack_start(_descriptionRow);
+	_titleColumn.set_spacing(5);
+	_widgetColumn.set_spacing(5);
 
-	_goalRow.pack_start(_goalLabel);
+	_nameLabel.set_alignment(0.0, 0.5);
+	_goalLabel.set_alignment(0.0, 0.5);
+	_goalPerLabel.set_alignment(0.0, 0.5);
+	_descriptionLabel.set_alignment(0.0, 0.5);
+
+	_nameLabel.set_margin_left(10);
+	_nameLabel.set_margin_right(10);
+	_goalLabel.set_margin_left(10);
+	_goalLabel.set_margin_right(10);
+	_goalPerLabel.set_margin_left(10);
+	_goalPerLabel.set_margin_right(10);
+	_descriptionLabel.set_margin_left(10);
+	_descriptionLabel.set_margin_right(10);
+
+
+	_titleColumn.pack_start(_nameLabel, true, true);
+	_widgetColumn.pack_start(_nameEntry, Gtk::PACK_EXPAND_PADDING);
+
+	_titleColumn.pack_start(_descriptionLabel, Gtk::PACK_EXPAND_PADDING);
+	_widgetColumn.pack_start(_descriptionEntry, Gtk::PACK_EXPAND_PADDING);
+
+	_titleColumn.pack_start(_goalLabel, Gtk::PACK_EXPAND_PADDING);
 	_goalRow.pack_start(_goalButton);
-	dialogArea->pack_start(_goalRow);
+	_goalRow.pack_start(_goalType);
 
-	dialogArea->pack_start(_continuousButton);
+	_widgetColumn.pack_start(_goalRow, Gtk::PACK_EXPAND_PADDING);
+	_titleColumn.pack_start(_goalPerLabel, Gtk::PACK_EXPAND_PADDING);
+	_widgetColumn.pack_start(_goalTimeFrame, Gtk::PACK_EXPAND_PADDING);
+
+	_mainRow.pack_start(_titleColumn, Gtk::PACK_SHRINK);
+	_mainRow.pack_start(_widgetColumn, Gtk::PACK_SHRINK);
+
+	dialogArea->pack_start(_mainRow);
+
+	_goalType.append("minutes");
+	_goalType.append("hours");
+	_goalType.append("instances");
+	_goalType.set_active(0);
+
+	_goalTimeFrame.append(Helpers::GiveTimeFrameType(Global::GOAL_TIMEFRAME_DAY));
+	_goalTimeFrame.append(Helpers::GiveTimeFrameType(Global::GOAL_TIMEFRAME_WEEK));
+	_goalTimeFrame.append(Helpers::GiveTimeFrameType(Global::GOAL_TIMEFRAME_MONTH));
+	_goalTimeFrame.set_active(0);
+
 	dialogArea->pack_start(_inverseButton);
 
 	this->add_button("OK", Gtk::RESPONSE_OK);
@@ -62,13 +97,23 @@ int NewDataItemDialog::LaunchDialog()
 			descriptionText = "[empty]";
 		dItem.description = descriptionText;
 
-		dItem.continuous = !_continuousButton.get_active();
 		dItem.inverse = _inverseButton.get_active();
 
 		dItem.goal= _goalButton.get_value();
 
-		if (dItem.continuous) // XXX : take note of TIMEFRAME once implemented
-			dItem.goal *= 60;
+		// get_act..ber() returns -1 if nothing is active
+		dItem.goalTimeFrame = std::max(0, _goalTimeFrame.get_active_row_number());
+
+		if (_goalType.get_active_text() == "instances")
+			dItem.continuous = false;
+		else
+		{
+			dItem.continuous = true;
+			if (_goalType.get_active_text() == "minutes")
+				dItem.goal *= 60;
+			else if (_goalType.get_active_text() == "hours")
+				dItem.goal *= 60*60;
+		}
 	}
 
 	_newItem = dItem;
