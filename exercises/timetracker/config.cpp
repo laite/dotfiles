@@ -46,6 +46,7 @@ ConfigClass::ConfigClass(std::string configFile):
 	_configDataNames[DATAITEM_GOAL_FRAME] = "goal_frame";
 	_configDataNames[DATAITEM_FIRST_TIME] = "first_time";
 	_configDataNames[DATAITEM_LAST_TIME] = "last_time";
+	_configDataNames[DATAITEM_HISTORY] = "history_item";
 
 	Global::Log.Add("Created ConfigClass.");
 }
@@ -63,7 +64,7 @@ ConfigClass::~ConfigClass()
  *  _GetSettingsFolder()
  *
  *  Return: 
- *  	"/home/USERNAME/.config/timetracker" or "."  (if there is no $HOME to be found)
+ *  	"/home/USERNAME/.config/laite/timetracker" or "."  (if there is no $HOME to be found)
  */
 
 std::string ConfigClass::_GetSettingsFolder()
@@ -74,7 +75,7 @@ std::string ConfigClass::_GetSettingsFolder()
 	if (tmp != NULL)
 	{
 		value = tmp;
-		value += "/.config/timetracker";
+		value += "/.config/laite/timetracker";
 	}
 
 	return value;
@@ -274,6 +275,22 @@ std::vector<DataItem> ConfigClass::GetSavedData()
 					std::chrono::duration<int> since(savedTime);
 					dataIter->lastRunTime = std::chrono::system_clock::time_point(since);
 				}
+				else if (_IsLineDbItem(line, DATAITEM_HISTORY))
+				{
+					// history is defined as "history_item = FROM/TO"
+					std::string value = line.substr(_configDataNames[DATAITEM_HISTORY].size() + 3);
+					std::size_t middlePoint = value.find('/');
+
+					if (middlePoint == std::string::npos) {
+						Global::Log.Add("ERROR! Can't parse history item!");
+						continue;
+					}
+
+					long beginTime = std::stol(value.substr(0, middlePoint));
+					long endTime = std::stol(value.substr(middlePoint+1));
+					std::chrono::duration<int> bSince(beginTime),eSince(endTime);
+					dataIter->AddNewRun(std::chrono::system_clock::time_point(bSince),std::chrono::system_clock::time_point(eSince));
+				}
 			}
 		}
 	}
@@ -395,11 +412,21 @@ void ConfigClass::_FetchDBConfig(DataBase *db)
 			dbConfig.push_back(_configDataNames[DATAITEM_GOAL] + " = " + std::to_string(dataIter->second.goal));
 			dbConfig.push_back(_configDataNames[DATAITEM_GOAL_FRAME] + " = " + std::to_string(dataIter->second.goalTimeFrame));
 
-			std::chrono::duration<int> dur = std::chrono::duration_cast<std::chrono::duration<int>>(dataIter->second.firstRunTime.time_since_epoch());
-			dbConfig.push_back(_configDataNames[DATAITEM_FIRST_TIME] + " = " + std::to_string(dur.count()));
+			std::chrono::duration<int> runTimeDuration = std::chrono::duration_cast<std::chrono::duration<int>>(dataIter->second.firstRunTime.time_since_epoch());
+			dbConfig.push_back(_configDataNames[DATAITEM_FIRST_TIME] + " = " + std::to_string(runTimeDuration.count()));
 			
-			dur = std::chrono::duration_cast<std::chrono::duration<int>>(dataIter->second.lastRunTime.time_since_epoch());
-			dbConfig.push_back(_configDataNames[DATAITEM_LAST_TIME] + " = " + std::to_string(dur.count()));
+			runTimeDuration = std::chrono::duration_cast<std::chrono::duration<int>>(dataIter->second.lastRunTime.time_since_epoch());
+			dbConfig.push_back(_configDataNames[DATAITEM_LAST_TIME] + " = " + std::to_string(runTimeDuration.count()));
+
+			// write history
+			typedef std::map<std::chrono::system_clock::time_point, std::chrono::system_clock::time_point> historyTypedef;
+			for (historyTypedef::const_iterator historyIter = dataIter->second.history.begin();
+					historyIter != dataIter->second.history.end(); ++historyIter)
+			{
+				std::chrono::duration<int> historyBeginPoint = std::chrono::duration_cast<std::chrono::duration<int>>(historyIter->first.time_since_epoch());
+				std::chrono::duration<int> historyEndPoint = std::chrono::duration_cast<std::chrono::duration<int>>(historyIter->second.time_since_epoch());
+				dbConfig.push_back(_configDataNames[DATAITEM_HISTORY] + " = " + std::to_string(historyBeginPoint.count()) + "/" + std::to_string(historyEndPoint.count()));
+			}
 		}
 	}
 
