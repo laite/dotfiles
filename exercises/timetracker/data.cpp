@@ -74,7 +74,7 @@ DataItem::DataItem():
 void DataItem::CalculatePercentage()
 {
 	long averageLength = GetAveragePerTimeFrame();
-	long supposedLength = goal*Helpers::GetTimeFrameModifier(goalTimeFrame);
+	long supposedLength = goal;
 
 	double result = (1.0*averageLength) / supposedLength;
 
