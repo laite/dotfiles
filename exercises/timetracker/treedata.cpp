@@ -96,27 +96,16 @@ void TreeData::PopulateRow(Gtk::TreeModel::iterator rowIter, const DataItem &dat
 	row[_columns.columnName] = dataItem.name;
 	row[_columns.columnPercentage] = dataItem.percentage;
 
-	std::chrono::duration<double,std::ratio<60*60*24> > timeAgo = std::chrono::duration_cast< std::chrono::duration<double,std::ratio<60*60*24> > >(std::chrono::steady_clock::now() - dataItem.firstRunTime);
-	double hasBeen = timeAgo.count(); // this is in days
-
-	if (Global::Config.GetAppOptions().noFunnyAverages)
-		hasBeen = std::max(hasBeen, static_cast<double>(dataItem.GetSecondsFromTimeFrame()/(24*60*60)));
-
 	if (dataItem.continuous)
 	{
-		row[_columns.columnElapsed] = Helpers::ParseShortTime(dataItem.elapsedTime);
-		long average = (dataItem.elapsedTime/hasBeen); // we get seconds per day
-		average *= (1.0*dataItem.GetSecondsFromTimeFrame()/(24*60*60)); // adapt to timeframe
-		row[_columns.columnAverage] = Helpers::ParseShortTime(average);
-	
+		row[_columns.columnElapsed] = Helpers::ParseShortTime(dataItem.GetTotal());
+		row[_columns.columnAverage] = Helpers::ParseShortTime(dataItem.GetAveragePerTimeFrame());
 		row[_columns.columnGoal] = Helpers::ParseShortTime(dataItem.goal);
 	}
 	else // dataItem !continuous
 	{
-		row[_columns.columnElapsed] = std::to_string(dataItem.GetTimes());
-		double average = (dataItem.GetTimes()/(hasBeen)); // we get instances per day
-		average *= (1.0*dataItem.GetSecondsFromTimeFrame()/(24*60*60));
-		row[_columns.columnAverage] = Helpers::TruncateToString(average);
+		row[_columns.columnElapsed] = std::to_string(dataItem.GetTotal());
+		row[_columns.columnAverage] = std::to_string(dataItem.GetAveragePerTimeFrame());
 		row[_columns.columnGoal] = std::to_string(dataItem.goal);
 	}
 }

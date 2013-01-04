@@ -39,7 +39,6 @@ struct DataItem
 	bool continuous; // whether data is measured continuously (seconds) or by instances
 	bool inverse; // do we count to or from, default false
 
-	long elapsedTime; // elapsed time in seconds
 	long goal; // seconds per day OR instances per day, depending on item type (bool continuous)
 	int goalTimeFrame; // GOAL_TIMEFRAME_DAY, GOAL_TIMEFRAME_WEEK or GOAL_TIMEFRAME_MONTH
 
@@ -56,7 +55,12 @@ struct DataItem
 	void CalculatePercentage();
 	long GetSecondsFromTimeFrame() const;
 
-	int GetTimes() const;
+	int GetTimes() const; // returns number of runs (aka history.size())
+	long GetTotal() const; // returns elapsed time from history
+
+	long GetSecondsSinceFirstRun() const;
+	long GetAveragePerTimeFrame() const;
+	long GetAverageRunLength() const;
 };
 
 class DataBase 

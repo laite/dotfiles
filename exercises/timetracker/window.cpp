@@ -230,6 +230,8 @@ void MainWindow::_StopTracking()
 {
 	if (!_activeDataItem) {
 		Global::Log.Add("CRITICAL! Stopping timer can't find _activeDataItem.");
+		_buttonStatusLabel.set_text("Something went very wrong :(");
+		return;
 	}
 	else if (_activeDataItem->continuous)
 	{
@@ -249,7 +251,6 @@ void MainWindow::_StopTracking()
 
 	if (Global::Config.GetAppOptions().autoSave)
 		Global::Config.SaveEverything(_db);
-
 }
 
 void MainWindow::_TreeViewSelectionChanged()
@@ -283,9 +284,9 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 	tempValue = (dataItem.continuous)? "Time" : "Instance";
 	_AddKeyValueToTextView("Type: ", tempValue);
 	
-	_AddKeyValueToTextView("Elapsed: ", Helpers::ParseShortTime(dataItem.elapsedTime));
+	_AddKeyValueToTextView("Elapsed: ", Helpers::ParseShortTime(dataItem.GetTotal()));
 	if (dataItem.GetTimes() != 0)
-		tempValue = std::string(" (about ") + Helpers::ParseShortTime(dataItem.elapsedTime/dataItem.GetTimes()) + " on average)";
+		tempValue = std::string(" (about ") + Helpers::ParseShortTime(dataItem.GetTotal()/dataItem.GetTimes()) + " on average)";
 	else 
 		tempValue = "";
 

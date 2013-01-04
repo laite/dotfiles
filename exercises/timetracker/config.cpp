@@ -41,7 +41,6 @@ ConfigClass::ConfigClass(std::string configFile):
 	_configDataNames[DATAITEM_DESCRIPTION] = "description";
 	_configDataNames[DATAITEM_CONTINUOUS] = "continuous";
 	_configDataNames[DATAITEM_INVERSE] = "inverse";
-	_configDataNames[DATAITEM_ELAPSED_TIME] = "elapsed_time";
 	_configDataNames[DATAITEM_GOAL] = "goal";
 	_configDataNames[DATAITEM_GOAL_FRAME] = "goal_frame";
 	_configDataNames[DATAITEM_FIRST_TIME] = "first_time";
@@ -255,8 +254,6 @@ std::vector<DataItem> ConfigClass::GetSavedData()
 					std::string tempValue = line.substr(_configDataNames[DATAITEM_INVERSE].size() + 3);
 					dataIter->inverse = (tempValue == "true"? 1 : 0);
 				}
-				else if (_IsLineDbItem(line, DATAITEM_ELAPSED_TIME))
-					dataIter->elapsedTime = std::stol(line.substr(_configDataNames[DATAITEM_ELAPSED_TIME].size() + 3));
 				else if (_IsLineDbItem(line, DATAITEM_GOAL))
 					dataIter->goal = std::stol(line.substr(_configDataNames[DATAITEM_GOAL].size() + 3));
 				else if (_IsLineDbItem(line, DATAITEM_GOAL_FRAME))
@@ -410,7 +407,6 @@ void ConfigClass::_FetchDBConfig(DataBase *db)
 			dbConfig.push_back(_configDataNames[DATAITEM_DESCRIPTION] + " = " + dataIter->second.description);
 			dbConfig.push_back(std::string(_configDataNames[DATAITEM_CONTINUOUS]) + " = " + (dataIter->second.continuous? "true" : "false"));
 			dbConfig.push_back(std::string(_configDataNames[DATAITEM_INVERSE]) + " = " + (dataIter->second.inverse? "true" : "false"));
-			dbConfig.push_back(_configDataNames[DATAITEM_ELAPSED_TIME] + " = " + std::to_string(dataIter->second.elapsedTime));
 			dbConfig.push_back(_configDataNames[DATAITEM_GOAL] + " = " + std::to_string(dataIter->second.goal));
 			dbConfig.push_back(_configDataNames[DATAITEM_GOAL_FRAME] + " = " + std::to_string(dataIter->second.goalTimeFrame));
 

@@ -66,40 +66,17 @@ void UniqueID::ReleaseID(unsigned int newlyReleasedID)
 
 DataItem::DataItem():
 	ID(0), name("[empty]"), description("[empty]"), percentage(0), continuous(false), inverse(false), 
-	elapsedTime(0), goal(0), goalTimeFrame(Global::GOAL_TIMEFRAME_DAY)
+	goal(0), goalTimeFrame(Global::GOAL_TIMEFRAME_DAY)
 {
 
 }
 
 void DataItem::CalculatePercentage()
 {
-	std::chrono::duration<int,std::ratio<1> > timeAgo = std::chrono::duration_cast< std::chrono::duration<int,std::ratio<1> > >(std::chrono::steady_clock::now() - firstRunTime);
-	
-	long hasBeen = timeAgo.count(); // this is in seconds
-	long worked = elapsedTime; // and so is this
-	long cGoal = goal;
-	double supposedRatio, workedRatio;
+	long averageLength = GetAveragePerTimeFrame();
+	long supposedLength = goal*Helpers::GetTimeFrameModifier(goalTimeFrame);
 
-	if ((cGoal == 0) || (hasBeen == 0))
-	{
-		Global::Log.Add("No cGoal or TimeSpent");
-		percentage = 0;
-		return;
-	}
-
-	if (continuous)
-	{
-		supposedRatio = 1.0*cGoal / (GetSecondsFromTimeFrame()); // calculate ratio to be 'percents of TIMEFRAME'
-		workedRatio = 1.0*worked / hasBeen; // and completed ratio
-	}
-	else
-	{
-		// format for ratios here is: instances / day
-		supposedRatio = 1.0*cGoal / (1.0*GetSecondsFromTimeFrame() / (24*60*60));
-		workedRatio = 1.0*GetTimes() / (1.0*hasBeen / (24*60*60));
-	}
-
-	double result = (1.0*workedRatio) / supposedRatio;
+	double result = (1.0*averageLength) / supposedLength;
 
 	if (inverse)
 		result = 2 - result;
@@ -107,16 +84,6 @@ void DataItem::CalculatePercentage()
 	result = std::min(std::max(result, 0.0), 1.0);
 
 	percentage = std::round(100*result);
-}
-
-long DataItem::GetSecondsFromTimeFrame() const
-{
-	if (goalTimeFrame == Global::GOAL_TIMEFRAME_WEEK)
-		return (7*24*60*60);
-	else if (goalTimeFrame == Global::GOAL_TIMEFRAME_MONTH)
-		return (30*24*60*60);
-	else
-		return (24*60*60); // use GOAL_TIMEFRAME_DAY also as a fallback
 }
 
 void DataItem::ChangeEndPoint(std::chrono::system_clock::time_point existingBeginPoint, std::chrono::system_clock::time_point newEndPoint)
@@ -130,8 +97,6 @@ void DataItem::ChangeEndPoint(std::chrono::system_clock::time_point existingBegi
 	// calculate timespan changes (in seconds)
 	std::chrono::duration<int> newTimeSpan = std::chrono::duration_cast<std::chrono::duration<int>>
 		(newEndPoint - oldEndPoint);
-
-	this->elapsedTime += newTimeSpan.count();
 }
 
 void DataItem::AddNewRun(std::chrono::system_clock::time_point newBeginPoint, std::chrono::system_clock::time_point newEndPoint)
@@ -157,6 +122,53 @@ void DataItem::AddNewRun(std::chrono::system_clock::time_point point)
 int DataItem::GetTimes() const
 {
 	return history.size();
+}
+
+long DataItem::GetTotal() const
+{
+	if (!continuous)
+		return history.size();
+	
+	typedef std::map<std::chrono::system_clock::time_point, std::chrono::system_clock::time_point> historyType;
+
+	long total = 0;
+	for (historyType::const_iterator historyIter = history.begin();
+			historyIter != history.end(); ++historyIter)
+	{
+		std::chrono::duration<long> difference = std::chrono::duration_cast< std::chrono::duration<long> >(historyIter->second - historyIter->first);
+		total += difference.count();
+	}
+
+	return total;
+}
+
+long DataItem::GetSecondsSinceFirstRun() const
+{
+	std::chrono::duration<double> timeAgo = std::chrono::duration_cast< std::chrono::duration<double> >(std::chrono::steady_clock::now() - firstRunTime);
+
+	return timeAgo.count();
+}
+
+long DataItem::GetAveragePerTimeFrame() const
+{
+	if (!continuous)
+		return GetTimes();
+
+	double hasBeenDays = static_cast<double>(GetSecondsSinceFirstRun())/(24*60*60);
+
+	// this makes sure we get average as *at least* dataitem's timeframe
+	if (Global::Config.GetAppOptions().noFunnyAverages)
+		hasBeenDays = std::max(hasBeenDays, static_cast<double>(Helpers::GetTimeFrameModifier(goalTimeFrame)));
+
+	long elapsedTime = GetTotal();
+
+	return elapsedTime/hasBeenDays;
+	
+}
+
+long DataItem::GetAverageRunLength() const
+{
+	
 }
 
 /*

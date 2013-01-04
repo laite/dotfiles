@@ -22,6 +22,7 @@ namespace Helpers
 	extern std::string AddLeadingZero(std::string originalString);
 
 	extern std::string GiveTimeFrameType(int timeFrame);
+	extern int GetTimeFrameModifier(int timeFrame);
 }
 
 namespace Global

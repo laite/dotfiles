@@ -86,3 +86,12 @@ std::string Helpers::GiveTimeFrameType(int timeFrame)
 		return "[unknown]";
 }
 
+int Helpers::GetTimeFrameModifier(int timeFrame)
+{
+	std::vector<int> modifiers { 1, 7, 30 };
+	
+	if (modifiers.size() > timeFrame)
+		return modifiers.at(timeFrame);
+	else
+		return 1;
+}
