@@ -23,8 +23,6 @@ struct AppOptions
 
 	// true: use hh:mm:ss instead of Xh Ymin Zs
 	bool useShortTimeFormat;
-	// true: use goalTimeFrame as a shortest 'hasBeen' when calculating averages
-	bool noFunnyAverages;
 
 	// true: save data automatically after each run
 	bool autoSave;

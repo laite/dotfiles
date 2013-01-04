@@ -156,14 +156,11 @@ long DataItem::GetAveragePerTimeFrame() const
 
 	double hasBeenDays = static_cast<double>(GetSecondsSinceFirstRun())/(24*60*60);
 
-	// this makes sure we get average as *at least* dataitem's timeframe
-	if (Global::Config.GetAppOptions().noFunnyAverages)
-		hasBeenDays = std::max(hasBeenDays, static_cast<double>(Helpers::GetTimeFrameModifier(goalTimeFrame)));
-
-	long elapsedTime = GetTotal();
-
-	return elapsedTime/hasBeenDays;
-	
+	// if first timeframe has not yet passed, we'll just give everything and call it an average
+	if (hasBeenDays < Helpers::GetTimeFrameModifier(goalTimeFrame))
+		return GetTotal();
+	else
+		return GetTotal()/hasBeenDays;
 }
 
 long DataItem::GetAverageRunLength() const

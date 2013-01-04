@@ -20,7 +20,7 @@
  */
 
 AppOptions::AppOptions():
-	useShortTimeFormat(false), noFunnyAverages(true),
+	useShortTimeFormat(false),
 	autoSave(true)
 {
 
