@@ -24,10 +24,8 @@ void TreeData::InitializeTreeView()
 {
 	_treeView->set_model(GetRefTreeModel());
 
+	_treeView->append_column("ID", Columns().columnID);
 	_treeView->append_column("Name", Columns().columnName);
-	_treeView->append_column("Total", Columns().columnTotal);
-	_treeView->append_column("Difference", Columns().columnDifference);
-	_treeView->append_column("Timeframe", Columns().columnTimeFrame);
 
 	//Display a progress bar instead of a decimal number:
 	Gtk::CellRendererProgress* cell = Gtk::manage(new Gtk::CellRendererProgress);
@@ -37,6 +35,9 @@ void TreeData::InitializeTreeView()
 		pColumn->add_attribute(cell->property_value(), Columns().columnPercentage);
 	_treeView->get_column(cols_count - 1)->set_expand(true);
 
+	_treeView->append_column("Difference", Columns().columnDifference);
+	_treeView->append_column("Timeframe", Columns().columnTimeFrame);
+	_treeView->append_column("Total", Columns().columnTotal);
 
 	// make all columns reorderable and resizable
 	std::vector<Gtk::TreeView::Column*> allColumns = _treeView->get_columns();
