@@ -6,7 +6,6 @@
  */
 
 #include <iostream>
-#include <ctime>
 #include <chrono>
 #include "log.h"
 #include "window.h"
@@ -225,7 +224,7 @@ void MainWindow::_StartTracking(unsigned int selectedID)
 	{
 		_buttonStart.set_sensitive(false);
 		_buttonStop.set_sensitive(true);
-		_buttonStatusLabel.set_text("Timer is running!");
+		Glib::signal_timeout().connect( sigc::mem_fun(*this, &MainWindow::_UpdateStatusLabel), 1000 );
 	}
 	else
 	{
@@ -251,9 +250,9 @@ void MainWindow::_StopTracking()
 	_db->UpdateItemStats(_activeDataItem->ID);
 	_treeData->UpdateRow(_treeData->GetRowIterFromID(_activeDataItem->ID));
 
-	_buttonStatusLabel.set_text("Everything seems stable.");
 	_activeDataItem = NULL; 
 
+	_UpdateStatusLabel();
 	_UpdateStatistics(_db->GetItem(_treeData->GetSelectedID()));
 
 	if (Global::Config.GetAppOptions().autoSave)
@@ -281,6 +280,21 @@ void MainWindow::_UpdateStartButtonText(bool continuous)
 		_buttonStart.set_label("Tick");
 	
 }
+
+bool MainWindow::_UpdateStatusLabel()
+{
+	// we only have non-NULL pointer to _activeDataItem when timer is running!
+	if (!_activeDataItem)
+	{
+		_buttonStatusLabel.set_text("All seems quite normal.");
+		return false; // returning false kills the timer
+	}
+
+	_buttonStatusLabel.set_text("Timer is running: " + Helpers::GetParsedSince(_activeDataItem->lastRunTime));
+
+	return true;
+}
+
 void MainWindow::_UpdateStatistics(DataItem &dataItem)
 {
 	std::string tempValue; // used for formatting some values
@@ -316,20 +330,9 @@ void MainWindow::_AddKeyValueToTextView(const std::string key, const std::string
 
 std::string MainWindow::_GetTimePointTextWithTimeAgo(std::chrono::steady_clock::time_point &timePoint)
 {
-	std::chrono::system_clock::duration dtn = timePoint.time_since_epoch();
-
-	if (dtn.count() == 0)
+	if (timePoint.time_since_epoch().count() == 0)
 		return "Never";
 
-	std::string formattedString;
-	std::time_t temp_t = std::chrono::system_clock::to_time_t (timePoint);
-
-	formattedString = ctime(&temp_t);
-	formattedString = formattedString.substr(0, formattedString.length() - 1); // remove \n from the end
-	std::chrono::duration<int> timeAgo = std::chrono::duration_cast< std::chrono::duration<int> >(std::chrono::system_clock::now() - timePoint);
-	
-	formattedString = formattedString + " (" + Helpers::ParseShortTime(timeAgo.count()) + " ago)";
-
-	return formattedString;
+	return Helpers::ParseLongTime(timePoint) + " (" + Helpers::ParseShortTime(Helpers::GetSecondsSince(timePoint)) + " ago)";
 }
 

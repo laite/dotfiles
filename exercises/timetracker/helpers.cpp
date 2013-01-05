@@ -5,6 +5,7 @@
  */
 
 #include "helpers.h"
+#include <ctime>
 
 std::string Helpers::ParseShortTime(long seconds)
 {
@@ -57,14 +58,24 @@ std::string Helpers::ParseShortTime(long seconds)
 			firstFound = std::min(firstFound, 5);
 		}
 		if ((seconds > 0) && (firstFound > 4)) {
-			helper += std::to_string(seconds) + "s ";
+			helper += std::to_string(seconds) + "s";
 		}
 	}
 
 	if (helper.size() == 0)
-		helper = "n/a";
+		helper = "0s";
+	else if (*helper.rbegin() == ' ') // remove trailing space
+		helper = helper.substr(0, helper.size()-1);
 
 	return helper;
+}
+
+std::string Helpers::ParseLongTime(std::chrono::system_clock::time_point timePoint)
+{
+	std::time_t temp = std::chrono::system_clock::to_time_t(timePoint);
+
+	std::string formattedString = ctime(&temp);
+	return formattedString.substr(0, formattedString.length() - 1); // remove \n from the end
 }
 
 std::string Helpers::TruncateToString(double number, unsigned int prec)
@@ -101,3 +112,16 @@ int Helpers::GetTimeFrameModifier(int timeFrame)
 	else
 		return 1;
 }
+
+std::string Helpers::GetParsedSince(std::chrono::system_clock::time_point then)
+{
+	return Helpers::ParseShortTime(Helpers::GetSecondsSince(then));
+}
+
+long Helpers::GetSecondsSince(std::chrono::system_clock::time_point then)
+{
+	std::chrono::duration<double> timeAgo = std::chrono::duration_cast< std::chrono::duration<double> >(std::chrono::steady_clock::now() - then);
+	
+	return timeAgo.count();
+}
+

@@ -59,6 +59,8 @@ class MainWindow : public Gtk::Window
 		void _StopTracking();
 		void _UpdateStartButtonText(bool continuous);
 
+		bool _UpdateStatusLabel();
+
 		/*
 		 *  Signal Handlers
 		 */
