@@ -11,6 +11,12 @@ std::string Helpers::ParseShortTime(long seconds)
 	std::string helper("");
 	int firstFound = 100;
 
+	if (seconds < 0)
+	{
+		seconds *= (-1);
+		helper += "-";
+	}
+
 	if (seconds > 365*24*60*60) {
 		helper += std::to_string(seconds/(365*24*60*60)) + "y ";
 		seconds %= (365*24*60*60);

@@ -24,10 +24,10 @@ class ModelColumns : public Gtk::TreeModel::ColumnRecord
 
 		Gtk::TreeModelColumn<unsigned int> columnID;
 		Gtk::TreeModelColumn<Glib::ustring> columnName;
+		Gtk::TreeModelColumn<Glib::ustring> columnDifference;
+		Gtk::TreeModelColumn<std::string> columnTimeFrame;
+		Gtk::TreeModelColumn<std::string> columnTotal;
 		Gtk::TreeModelColumn<int> columnPercentage;
-		Gtk::TreeModelColumn<std::string> columnElapsed;
-		Gtk::TreeModelColumn<std::string> columnAverage;
-		Gtk::TreeModelColumn<std::string> columnGoal;
 };
 
 

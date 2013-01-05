@@ -73,10 +73,7 @@ DataItem::DataItem():
 
 void DataItem::CalculatePercentage()
 {
-	long averageLength = GetAveragePerTimeFrame();
-	long supposedLength = goal;
-
-	double result = (1.0*averageLength) / supposedLength;
+	double result = (1.0*GetAveragePerTimeFrame()) / goal;
 
 	if (inverse)
 		result = 2 - result;
@@ -84,6 +81,14 @@ void DataItem::CalculatePercentage()
 	result = std::min(std::max(result, 0.0), 1.0);
 
 	percentage = std::round(100*result);
+}
+
+long DataItem::GetDifference() const
+{
+	if (inverse)
+		return goal - GetAveragePerTimeFrame();
+	else
+		return GetAveragePerTimeFrame() - goal;
 }
 
 void DataItem::ChangeEndPoint(std::chrono::system_clock::time_point existingBeginPoint, std::chrono::system_clock::time_point newEndPoint)

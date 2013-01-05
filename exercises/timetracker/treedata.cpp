@@ -24,11 +24,10 @@ void TreeData::InitializeTreeView()
 {
 	_treeView->set_model(GetRefTreeModel());
 
-	_treeView->append_column("ID", Columns().columnID);
 	_treeView->append_column("Name", Columns().columnName);
-	_treeView->append_column("Total", Columns().columnElapsed);
-	_treeView->append_column("Avg.", Columns().columnAverage);
-	_treeView->append_column("Goal", Columns().columnGoal);
+	_treeView->append_column("Total", Columns().columnTotal);
+	_treeView->append_column("Difference", Columns().columnDifference);
+	_treeView->append_column("Timeframe", Columns().columnTimeFrame);
 
 	//Display a progress bar instead of a decimal number:
 	Gtk::CellRendererProgress* cell = Gtk::manage(new Gtk::CellRendererProgress);
@@ -36,6 +35,8 @@ void TreeData::InitializeTreeView()
 	Gtk::TreeViewColumn* pColumn = _treeView->get_column(cols_count - 1);
 	if(pColumn)
 		pColumn->add_attribute(cell->property_value(), Columns().columnPercentage);
+	_treeView->get_column(cols_count - 1)->set_expand(true);
+
 
 	// make all columns reorderable and resizable
 	std::vector<Gtk::TreeView::Column*> allColumns = _treeView->get_columns();
@@ -98,16 +99,17 @@ void TreeData::PopulateRow(Gtk::TreeModel::iterator rowIter, const DataItem &dat
 
 	if (dataItem.continuous)
 	{
-		row[_columns.columnElapsed] = Helpers::ParseShortTime(dataItem.GetTotal());
-		row[_columns.columnAverage] = Helpers::ParseShortTime(dataItem.GetAveragePerTimeFrame());
-		row[_columns.columnGoal] = Helpers::ParseShortTime(dataItem.goal);
+		row[_columns.columnTotal] = Helpers::ParseShortTime(dataItem.GetTotal());
+		row[_columns.columnDifference] = Helpers::ParseShortTime(dataItem.GetDifference());
 	}
 	else // dataItem !continuous
 	{
-		row[_columns.columnElapsed] = std::to_string(dataItem.GetTotal());
-		row[_columns.columnAverage] = std::to_string(dataItem.GetAveragePerTimeFrame());
-		row[_columns.columnGoal] = std::to_string(dataItem.goal);
+		row[_columns.columnTotal] = std::to_string(dataItem.GetTotal());
+		row[_columns.columnDifference] = std::to_string(dataItem.GetDifference());
 	}
+
+	row[_columns.columnTimeFrame] = Helpers::GiveTimeFrameType(dataItem.goalTimeFrame);
+
 }
 
 void TreeData::AddRow(const DataItem &dataItem, bool rebuildRowMap)
@@ -174,8 +176,8 @@ ModelColumns::ModelColumns()
 {
 	add(columnID);
 	add(columnName);
-	add(columnElapsed);
-	add(columnAverage);
-	add(columnGoal);
+	add(columnDifference);
+	add(columnTotal);
+	add(columnTimeFrame);
 	add(columnPercentage);
 }
