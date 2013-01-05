@@ -64,8 +64,9 @@ std::string Helpers::ParseShortTime(long seconds)
 
 	if (helper.size() == 0)
 		helper = "0s";
-	else if (*helper.rbegin() == ' ') // remove trailing space
-		helper = helper.substr(0, helper.size()-1);
+	else // trim trailing whitespace
+		helper = helper.substr(0, helper.find_last_not_of(" ") + 1);
+	
 
 	return helper;
 }
