@@ -59,7 +59,7 @@ DataItemDialog::DataItemDialog():
 	_widgetColumn.pack_start(_goalTimeFrame, Gtk::PACK_EXPAND_PADDING);
 
 	_mainRow.pack_start(_titleColumn, Gtk::PACK_SHRINK);
-	_mainRow.pack_start(_widgetColumn, Gtk::PACK_SHRINK);
+	_mainRow.pack_start(_widgetColumn, Gtk::PACK_EXPAND_WIDGET);
 
 	dialogArea->pack_start(_mainRow);
 
