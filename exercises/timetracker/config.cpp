@@ -21,7 +21,9 @@
 
 AppOptions::AppOptions():
 	useShortTimeFormat(false),
-	autoSave(true)
+	autoSave(true),
+	useCustomDateTimeFormat(true),
+	customDateTimeFormat("%d.%m.%Y %H:%M")
 {
 
 }

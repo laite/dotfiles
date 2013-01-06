@@ -24,6 +24,10 @@ struct AppOptions
 	// true: use hh:mm:ss instead of Xh Ymin Zs
 	bool useShortTimeFormat;
 
+	// true: use customTimeFormat for parsing date
+	bool useCustomDateTimeFormat;
+	std::string customDateTimeFormat;
+
 	// true: save data automatically after each run
 	bool autoSave;
 	

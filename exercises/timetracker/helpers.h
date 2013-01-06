@@ -18,6 +18,8 @@ namespace Helpers
 {
 	extern std::string ParseLongTime(std::chrono::system_clock::time_point timePoint);
 	extern std::string ParseShortTime(long seconds);
+	extern std::string ParseCustomDateTime(std::time_t *timePoint);
+
 	extern std::string TruncateToString(double number, unsigned int prec = 2);
 
 	// this adds leading zero to single digits only, everything else is bypassed

@@ -71,12 +71,55 @@ std::string Helpers::ParseShortTime(long seconds)
 	return helper;
 }
 
+std::string Helpers::ParseCustomDateTime(std::time_t *timePoint)
+{
+	std::string resultString("");
+	std::string timeFormat = Global::Config.GetAppOptions().customDateTimeFormat;
+
+	struct std::tm *timeInfo;
+	timeInfo = localtime ( timePoint );
+
+	bool hasFirst = 0;
+	for (std::string::const_iterator character = timeFormat.begin();
+			character != timeFormat.end(); ++character)
+	{
+		if (*character == '%')
+			hasFirst = ((hasFirst)? 0 : 1);
+		else if (hasFirst)
+		{
+			hasFirst = 0;
+			if (*character == 'd')
+				resultString += std::to_string(timeInfo->tm_mday);
+			if (*character == 'm')
+				resultString += std::to_string(1+timeInfo->tm_mon);
+			if (*character == 'Y')
+				resultString += std::to_string(1900+timeInfo->tm_year);
+			if (*character == 'H')
+				resultString += Helpers::AddLeadingZero(std::to_string(timeInfo->tm_hour));
+			if (*character == 'M')
+				resultString += Helpers::AddLeadingZero(std::to_string(timeInfo->tm_min));
+		}
+		else
+			resultString += *character;
+	}
+
+	return resultString;
+}
+
 std::string Helpers::ParseLongTime(std::chrono::system_clock::time_point timePoint)
 {
-	std::time_t temp = std::chrono::system_clock::to_time_t(timePoint);
+	std::time_t time_tPoint = std::chrono::system_clock::to_time_t(timePoint);
+	std::string formattedString;
 
-	std::string formattedString = ctime(&temp);
-	return formattedString.substr(0, formattedString.length() - 1); // remove \n from the end
+	if (Global::Config.GetAppOptions().useCustomDateTimeFormat)
+		formattedString = Helpers::ParseCustomDateTime(&time_tPoint);
+	else
+	{
+		formattedString = ctime(&time_tPoint);
+		formattedString = formattedString.substr(0, formattedString.length() - 1); // remove \n from the end
+	}
+
+	return formattedString;
 }
 
 std::string Helpers::TruncateToString(double number, unsigned int prec)
