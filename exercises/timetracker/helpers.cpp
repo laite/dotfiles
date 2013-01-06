@@ -92,6 +92,8 @@ std::string Helpers::ParseCustomDateTime(std::time_t *timePoint)
 				resultString += std::to_string(timeInfo->tm_mday);
 			if (*character == 'm')
 				resultString += std::to_string(1+timeInfo->tm_mon);
+			if (*character == 'y')
+				resultString += std::to_string(timeInfo->tm_year%100);
 			if (*character == 'Y')
 				resultString += std::to_string(1900+timeInfo->tm_year);
 			if (*character == 'H')
@@ -137,7 +139,7 @@ std::string Helpers::AddLeadingZero(std::string originalString)
 		return originalString;
 }
 
-std::string Helpers::GiveTimeFrameType(int timeFrame)
+std::string Helpers::GetTimeFrameTypeName(int timeFrame)
 {
 	std::vector<std::string> goalNames { "day", "week", "month"};
 

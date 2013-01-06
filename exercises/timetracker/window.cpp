@@ -305,34 +305,37 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 	tempValue = (dataItem.continuous)? "Time" : "Instance";
 	_AddKeyValueToTextView("Type: ", tempValue);
 	
-	_AddKeyValueToTextView("Elapsed: ", Helpers::ParseShortTime(dataItem.GetTotal()));
-	if (dataItem.GetTimes() != 0)
+	if (dataItem.continuous)
+	{
+		_AddKeyValueToTextView("Total Time: ", Helpers::ParseShortTime(dataItem.GetTotal()));
+		_AddKeyValueToTextView("Average: ", Helpers::ParseShortTime(dataItem.GetAveragePerTimeFrame()), " per " + Helpers::GetTimeFrameTypeName(dataItem.goalTimeFrame));
+	}
+	else
+		_AddKeyValueToTextView("Average: ", std::to_string(dataItem.GetAveragePerTimeFrame()), " per " + Helpers::GetTimeFrameTypeName(dataItem.goalTimeFrame));
+
+	if ((dataItem.GetTimes() != 0) && (dataItem.continuous))
 		tempValue = std::string(" (about ") + Helpers::ParseShortTime(dataItem.GetTotal()/dataItem.GetTimes()) + " on average)";
 	else 
 		tempValue = "";
+	_AddKeyValueToTextView("Instances: ", std::to_string(dataItem.GetTimes()), tempValue);
 
-	_AddKeyValueToTextView("Instances: ", std::to_string(dataItem.GetTimes()) + tempValue);
-	tempValue = "per " + Helpers::GiveTimeFrameType(dataItem.goalTimeFrame);
+	tempValue = "per " + Helpers::GetTimeFrameTypeName(dataItem.goalTimeFrame);
 	_AddKeyValueToTextView("Time Frame: ", tempValue);
 
-	_AddKeyValueToTextView("First Time: ", _GetTimePointTextWithTimeAgo(dataItem.firstRunTime)); 
-	_AddKeyValueToTextView("Last Time: ", _GetTimePointTextWithTimeAgo(dataItem.lastRunTime)); 
+	if (dataItem.firstRunTime.time_since_epoch().count() != 0)
+		_AddKeyValueToTextView("First Time: ", Helpers::ParseLongTime(dataItem.firstRunTime), " (" + Helpers::GetParsedSince(dataItem.firstRunTime) + " ago)");
+	if (dataItem.lastRunTime.time_since_epoch().count() != 0)
+	_AddKeyValueToTextView("Last Time: ", Helpers::ParseLongTime(dataItem.lastRunTime), " (" + Helpers::GetParsedSince(dataItem.lastRunTime) + " ago)");
 
 	_AddKeyValueToTextView("\nDescription: ", dataItem.description);
 }
 
 
-void MainWindow::_AddKeyValueToTextView(const std::string key, const std::string value)
+void MainWindow::_AddKeyValueToTextView(const std::string key, const std::string value, const std::string suffix)
 {
 	_statisticTextBuffer->insert(_statisticTextBuffer->end(), key);
-	_statisticTextBuffer->insert_with_tag(_statisticTextBuffer->end(), value + " \n", _boldedTextTag);
+	_statisticTextBuffer->insert_with_tag(_statisticTextBuffer->end(), value, _boldedTextTag);
+	_statisticTextBuffer->insert(_statisticTextBuffer->end(), " " + suffix + "\n");
 }
 
-std::string MainWindow::_GetTimePointTextWithTimeAgo(std::chrono::steady_clock::time_point &timePoint)
-{
-	if (timePoint.time_since_epoch().count() == 0)
-		return "Never";
-
-	return Helpers::ParseLongTime(timePoint) + " (" + Helpers::ParseShortTime(Helpers::GetSecondsSince(timePoint)) + " ago)";
-}
 

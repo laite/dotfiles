@@ -68,9 +68,9 @@ DataItemDialog::DataItemDialog():
 	_goalType.append("instances");
 	_goalType.set_active(0);
 
-	_goalTimeFrame.append(Helpers::GiveTimeFrameType(Global::GOAL_TIMEFRAME_DAY));
-	_goalTimeFrame.append(Helpers::GiveTimeFrameType(Global::GOAL_TIMEFRAME_WEEK));
-	_goalTimeFrame.append(Helpers::GiveTimeFrameType(Global::GOAL_TIMEFRAME_MONTH));
+	_goalTimeFrame.append(Helpers::GetTimeFrameTypeName(Global::GOAL_TIMEFRAME_DAY));
+	_goalTimeFrame.append(Helpers::GetTimeFrameTypeName(Global::GOAL_TIMEFRAME_WEEK));
+	_goalTimeFrame.append(Helpers::GetTimeFrameTypeName(Global::GOAL_TIMEFRAME_MONTH));
 	_goalTimeFrame.set_active(0);
 
 	dialogArea->pack_start(_inverseButton);

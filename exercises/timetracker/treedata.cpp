@@ -109,7 +109,7 @@ void TreeData::PopulateRow(Gtk::TreeModel::iterator rowIter, const DataItem &dat
 		row[_columns.columnDifference] = std::to_string(dataItem.GetDifference());
 	}
 
-	row[_columns.columnTimeFrame] = Helpers::GiveTimeFrameType(dataItem.goalTimeFrame);
+	row[_columns.columnTimeFrame] = Helpers::GetTimeFrameTypeName(dataItem.goalTimeFrame);
 
 }
 

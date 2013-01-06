@@ -52,8 +52,7 @@ class MainWindow : public Gtk::Window
 		 */
 
 		void _UpdateStatistics(DataItem&);
-		void _AddKeyValueToTextView(const std::string, std::string);
-		std::string _GetTimePointTextWithTimeAgo(std::chrono::steady_clock::time_point&);
+		void _AddKeyValueToTextView(const std::string, std::string, const std::string suffix="");
 		
 		void _StartTracking(unsigned int);
 		void _StopTracking();

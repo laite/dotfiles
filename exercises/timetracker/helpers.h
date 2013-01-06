@@ -25,7 +25,7 @@ namespace Helpers
 	// this adds leading zero to single digits only, everything else is bypassed
 	extern std::string AddLeadingZero(std::string originalString);
 
-	extern std::string GiveTimeFrameType(int timeFrame);
+	extern std::string GetTimeFrameTypeName(int timeFrame);
 	extern int GetTimeFrameModifier(int timeFrame);
 
 	extern std::string GetParsedSince(std::chrono::system_clock::time_point);
