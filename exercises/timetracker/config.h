@@ -31,6 +31,12 @@ struct AppOptions
 	// true: save data automatically after each run
 	bool autoSave;
 	
+	// true: run external command periodically
+	bool useBell;
+	// command to run
+	std::string bellCommand;
+	// period in seconds
+	long bellPeriod;
 };
 
 class ConfigClass

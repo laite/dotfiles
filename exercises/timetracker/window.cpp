@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <chrono>
+#include <cstdlib>
 #include "log.h"
 #include "window.h"
 #include "data.h" // need DataBase class implementation
@@ -291,6 +292,12 @@ bool MainWindow::_UpdateStatusLabel()
 	}
 
 	_buttonStatusLabel.set_text("Timer is running: " + Helpers::GetParsedSince(_activeDataItem->lastRunTime));
+
+	if (Global::Config.GetAppOptions().useBell)
+	{
+		if ((Helpers::GetSecondsSince(_activeDataItem->lastRunTime) % Global::Config.GetAppOptions().bellPeriod) == 0)
+			system(Global::Config.GetAppOptions().bellCommand.c_str());
+	}
 
 	return true;
 }

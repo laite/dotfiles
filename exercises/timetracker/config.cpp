@@ -23,7 +23,10 @@ AppOptions::AppOptions():
 	useShortTimeFormat(false),
 	autoSave(true),
 	useCustomDateTimeFormat(true),
-	customDateTimeFormat("%d.%m.%Y %H:%M")
+	customDateTimeFormat("%d.%m.%Y %H:%M"),
+	useBell(true),
+	bellPeriod(900), // 15 minutes by default
+	bellCommand("mplayer ~/workspace/c++/gtkmm/timetracker/bell.mp3 -volume 40 &")
 {
 
 }
