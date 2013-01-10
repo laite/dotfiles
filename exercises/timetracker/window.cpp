@@ -20,7 +20,9 @@ MainWindow::MainWindow(DataBase *d):
 	_mainVBox(Gtk::ORIENTATION_VERTICAL),
 	_contentVBox(Gtk::ORIENTATION_VERTICAL),
 	_buttonQuit("Quit"), _buttonNew("New"), _buttonRemove("Remove"), _buttonStart("Start"), _buttonStop("Stop"),
-	_buttonEdit("Edit"), _buttonStatusLabel("Everything seems to be fine.")
+	_buttonEdit("Edit"), 
+	_prefImage(Gtk::Stock::PREFERENCES, Gtk::ICON_SIZE_BUTTON),
+	_buttonStatusLabel("Everything seems to be fine.")
 {
 
 	set_title("TimeTracker/laite");
@@ -74,10 +76,15 @@ MainWindow::MainWindow(DataBase *d):
 	_buttonBox.pack_start(_buttonRemove, Gtk::PACK_SHRINK);
 	_buttonBox.pack_start(_buttonQuit, Gtk::PACK_SHRINK);
 
+	_buttonPreferences.set_image(_prefImage);
+	_buttonPreferences.set_margin_right(5);
+	_buttonRowBox.pack_start(_buttonPreferences, false, false);
+
 	_buttonRowBox.pack_start(_buttonStatusLabel, false, false);
 	_buttonRowBox.pack_start(_buttonBox, true, true);
 	
 	_buttonBox.set_border_width(5);
+	_buttonRowBox.set_border_width(5);
 	_buttonBox.set_layout(Gtk::BUTTONBOX_END);
 
 	/*
@@ -103,6 +110,7 @@ MainWindow::MainWindow(DataBase *d):
 	 */
 	
 	_buttonQuit.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonQuit) );
+	_buttonPreferences.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonPreferences) );
 	_buttonNew.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonNew) );
 	_buttonEdit.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonEdit) );
 	_buttonRemove.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonRemove) );
@@ -207,6 +215,12 @@ void MainWindow::_OnButtonRemove()
 			_buttonRemove.set_sensitive(0);
 		}
 	}
+}
+
+void MainWindow::_OnButtonPreferences()
+{
+	PreferencesDialog pref;
+	pref.LaunchDialog();
 }
 
 void MainWindow::_OnButtonQuit()

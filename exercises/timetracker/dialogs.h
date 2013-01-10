@@ -43,4 +43,44 @@ class DataItemDialog : public Gtk::Dialog
 		DataItem _dataItem;
 };
 
+class PreferencesDialog : public Gtk::Dialog 
+{
+	public:
+
+		PreferencesDialog();
+
+		int LaunchDialog();
+
+	private:
+		
+		/*
+		 *  Private Methods
+		 */
+
+		void _FillDialogValues();
+		
+		/*
+		 *  Widgets in dialog
+		 */
+		
+		Gtk::CheckButton _useShortTimeFormatButton;
+
+		Gtk::CheckButton _useCustomDateTimeButton;
+		Gtk::Label _customDateTimeLabel;
+		Gtk::Entry _customDateTimeFormatEntry;
+
+		Gtk::CheckButton _autoSaveButton;
+
+		// these here define 'default' values for new items
+		// they can later be changed on 'item settings'
+		Gtk::CheckButton _useBellButton;
+		Gtk::Entry _bellCommandEntry;
+		Gtk::SpinButton _bellPeriodButton;
+
+		/*
+		 *  Other private members
+		 */
+		
+};
+
 #endif /* end DIALOGS_H */

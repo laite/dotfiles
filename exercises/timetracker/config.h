@@ -60,7 +60,8 @@ class ConfigClass
 
 		void ChangeFileName(std::string newName);
 
-		AppOptions GetAppOptions();
+		const AppOptions& GetAppOptions() const;
+		AppOptions& SetAppOptions();
 
 	private:
 		

@@ -70,6 +70,7 @@ class MainWindow : public Gtk::Window
 		void _OnButtonStart();
 		void _OnButtonStop();
 		void _OnButtonQuit();
+		void _OnButtonPreferences();
 
 		void _TreeViewSelectionChanged();
 
@@ -112,6 +113,8 @@ class MainWindow : public Gtk::Window
 		Gtk::Button _buttonRemove;
 		Gtk::Button _buttonStart;
 		Gtk::Button _buttonStop;
+		Gtk::Button _buttonPreferences;
+		Gtk::Image _prefImage;
 
 		Gtk::Label _buttonStatusLabel;
 

@@ -436,7 +436,12 @@ void ConfigClass::_FetchDBConfig(DataBase *db)
 	_rawDbConfig = dbConfig;
 }
 
-AppOptions ConfigClass::GetAppOptions()
+AppOptions& ConfigClass::SetAppOptions()
+{
+	return _appOptions;
+}
+
+const AppOptions& ConfigClass::GetAppOptions() const
 {
 	return _appOptions;
 }

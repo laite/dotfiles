@@ -8,6 +8,7 @@
 #include "data.h"
 #include "dialogs.h"
 #include "helpers.h"
+#include "config.h"
 
 DataItemDialog::DataItemDialog():
 	_nameLabel("Name: "),
@@ -153,4 +154,66 @@ void DataItemDialog::_FillDialogValues(DataItem &dataItem)
 	}
 	_goalTimeFrame.set_active(dataItem.goalTimeFrame);
 
+}
+
+
+/*
+ *  PreferencesDialog
+ */
+
+PreferencesDialog::PreferencesDialog():
+	_useShortTimeFormatButton("Use short time format"),
+	_autoSaveButton("Autosave"),
+	_useCustomDateTimeButton("Use custom date/time format"),
+	_customDateTimeLabel("Format:"),
+	_useBellButton("Run external commands periodically")
+{
+	Gtk::Box* dialogArea = this->get_content_area();
+	dialogArea->set_orientation(Gtk::ORIENTATION_VERTICAL);
+	dialogArea->set_spacing(5);
+
+	dialogArea->pack_start(_useShortTimeFormatButton);
+	dialogArea->pack_start(_useCustomDateTimeButton);
+	dialogArea->pack_start(_customDateTimeFormatEntry);
+	dialogArea->pack_start(_autoSaveButton);
+	dialogArea->pack_start(_useBellButton);
+	dialogArea->pack_start(_bellCommandEntry);
+	dialogArea->pack_start(_bellPeriodButton);
+	
+	_bellPeriodButton.set_adjustment(Gtk::Adjustment::create(15.0, 1.0, 120.0, 1.0, 10.0));
+
+	this->add_button("OK", Gtk::RESPONSE_OK);
+	this->add_button("Cancel", Gtk::RESPONSE_CANCEL);
+	this->show_all_children();
+}
+
+void PreferencesDialog::_FillDialogValues()
+{
+	_useShortTimeFormatButton.set_active(Global::Config.GetAppOptions().useShortTimeFormat);
+	_useCustomDateTimeButton.set_active(Global::Config.GetAppOptions().useCustomDateTimeFormat);
+	_customDateTimeFormatEntry.set_text(Global::Config.GetAppOptions().customDateTimeFormat);
+	_autoSaveButton.set_active(Global::Config.GetAppOptions().autoSave);
+	_useBellButton.set_active(Global::Config.GetAppOptions().useBell);
+	_bellCommandEntry.set_text(Global::Config.GetAppOptions().bellCommand);
+	_bellPeriodButton.set_value(Global::Config.GetAppOptions().bellPeriod);
+}
+
+int PreferencesDialog::LaunchDialog()
+{
+	_FillDialogValues();
+
+	int result = this->run();
+
+	if (result == Gtk::RESPONSE_OK)
+	{
+		Global::Config.SetAppOptions().useShortTimeFormat = _useShortTimeFormatButton.get_active();
+		Global::Config.SetAppOptions().useCustomDateTimeFormat = _useCustomDateTimeButton.get_active();
+		Global::Config.SetAppOptions().customDateTimeFormat = _customDateTimeFormatEntry.get_text();
+		Global::Config.SetAppOptions().autoSave = _autoSaveButton.get_active();
+		Global::Config.SetAppOptions().useBell = _useBellButton.get_active();
+		Global::Config.SetAppOptions().bellCommand = _bellCommandEntry.get_text();
+		Global::Config.SetAppOptions().bellPeriod = _bellPeriodButton.get_value();
+	}
+
+	return result;
 }
