@@ -14,7 +14,9 @@ hi Cursor       guifg=white guibg=#d8896a
 " basic view formatting
 hi Normal       gui=none guifg=black   guibg=#f0f0f0
 hi NonText      gui=none guifg=#999999 guibg=#dddddd
-hi TabLineFill	gui=none guifg=black   guibg=#dddddd
+hi TabLine    	gui=none guifg=#666666 guibg=#f0f0f0
+hi TabLineSel   gui=bold guifg=black   guibg=#f0f0f0
+hi TabLineFill	gui=none guifg=black   guibg=#f0f0f0
 hi LineNr 		gui=none guifg=#999999 guibg=#dddddd 
 hi FoldColumn	gui=none guifg=#999999 guibg=#f0f0f0
 
