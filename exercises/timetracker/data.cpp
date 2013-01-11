@@ -156,18 +156,20 @@ long DataItem::GetSecondsSinceFirstRun() const
 
 long DataItem::GetAveragePerTimeFrame() const
 {
-	if (!continuous)
-		return GetTimes();
+	long totalAmount = GetTimes();
+
+	if (continuous)
+		totalAmount = GetTotal();
 
 	double hasBeenDays = static_cast<double>(GetSecondsSinceFirstRun())/(24*60*60);
 
 	// if first timeframe has not yet passed, we'll just give everything and call it an average
 	if (hasBeenDays < Helpers::GetTimeFrameModifier(goalTimeFrame))
-		return GetTotal();
+		return totalAmount;
 	else
 	{
 		double hasBeenTimeFrames = hasBeenDays/Helpers::GetTimeFrameModifier(goalTimeFrame);
-		return GetTotal()/hasBeenTimeFrames;
+		return totalAmount/hasBeenTimeFrames;
 	}
 }
 
