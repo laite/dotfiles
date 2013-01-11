@@ -165,7 +165,10 @@ long DataItem::GetAveragePerTimeFrame() const
 	if (hasBeenDays < Helpers::GetTimeFrameModifier(goalTimeFrame))
 		return GetTotal();
 	else
-		return GetTotal()/hasBeenDays;
+	{
+		double hasBeenTimeFrames = hasBeenDays/Helpers::GetTimeFrameModifier(goalTimeFrame);
+		return GetTotal()/hasBeenTimeFrames;
+	}
 }
 
 long DataItem::GetAverageRunLength() const
