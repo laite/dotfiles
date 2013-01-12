@@ -55,6 +55,7 @@ class ConfigClass
 		 */
 		
 		std::vector<DataItem> GetSavedData();
+		bool GetSavedOptions();
 		void SaveEverything(DataBase *db);
 		void LoadConfig();
 
@@ -65,11 +66,18 @@ class ConfigClass
 
 	private:
 		
-		// Data item type names' indices
+		// Data item type names' indices start from index 100
 		enum { 
-			DATAITEM_NAME, DATAITEM_DESCRIPTION, DATAITEM_TIMES, DATAITEM_CONTINUOUS, DATAITEM_INVERSE,
+			DATAITEM_NAME = 100, DATAITEM_DESCRIPTION, DATAITEM_TIMES, DATAITEM_CONTINUOUS, DATAITEM_INVERSE,
 			DATAITEM_ELAPSED_TIME, DATAITEM_GOAL, DATAITEM_GOAL_FRAME, DATAITEM_FIRST_TIME, DATAITEM_LAST_TIME,
 			DATAITEM_HISTORY
+		};
+
+		// AppOptions names' indices start from place 200 and go up
+		enum {
+			APPOPTION_USE_SHORT_TIME_FORMAT = 200, APPOPTION_USE_CUSTOM_DATETIME_FORMAT,
+			APPOPTION_CUSTOM_DATETIME_FORMAT, APPOPTION_AUTOSAVE, APPOPTION_BELL_COMMAND, 
+			APPOPTION_BELL_PERIOD, APPOPTION_USE_BELL
 		};
 
 		/*

@@ -52,6 +52,14 @@ ConfigClass::ConfigClass(std::string configFile):
 	_configDataNames[DATAITEM_LAST_TIME] = "last_time";
 	_configDataNames[DATAITEM_HISTORY] = "history_item";
 
+	_configDataNames[APPOPTION_USE_SHORT_TIME_FORMAT] = "use_short_time_format";
+	_configDataNames[APPOPTION_USE_CUSTOM_DATETIME_FORMAT] = "use_custom_datetime_format";
+	_configDataNames[APPOPTION_CUSTOM_DATETIME_FORMAT] = "custom_datetime_format";
+	_configDataNames[APPOPTION_AUTOSAVE] = "autosave";
+	_configDataNames[APPOPTION_USE_BELL] = "use_bell";
+	_configDataNames[APPOPTION_BELL_COMMAND] = "bell_command";
+	_configDataNames[APPOPTION_BELL_PERIOD] = "bell_period";
+
 	Global::Log.Add("Created ConfigClass.");
 }
 
@@ -216,6 +224,60 @@ void ConfigClass::_WriteConfigFile()
 	Global::Log.Add("Saved " + _configFileFullName);
 }
 
+
+/*
+ *  GetSavedOptions()
+ *
+ *  Does:
+ *  	Sets application options according to _rawAppConfig
+ *  Return:
+ *  	Bool: True if file was found and settings were successfully set
+ */
+
+bool ConfigClass::GetSavedOptions()
+{
+
+	if (_rawAppConfig.size() == 0)
+		return false;
+
+	for (std::vector<std::string>::iterator lineIter = _rawAppConfig.begin();
+			lineIter != _rawAppConfig.end(); ++lineIter)
+	{
+		std::string line = *lineIter;
+
+		if (_IsLineDbItem(line, APPOPTION_USE_SHORT_TIME_FORMAT))
+		{
+			std::string tempValue = line.substr(_configDataNames[APPOPTION_USE_SHORT_TIME_FORMAT].size() + 3);
+			_appOptions.useShortTimeFormat = (tempValue == "true"? 1 : 0);
+		}
+		else if (_IsLineDbItem(line, APPOPTION_USE_CUSTOM_DATETIME_FORMAT))
+		{
+			std::string tempValue = line.substr(_configDataNames[APPOPTION_USE_CUSTOM_DATETIME_FORMAT].size() + 3);
+			_appOptions.useCustomDateTimeFormat = (tempValue == "true"? 1 : 0);
+		}
+		else if (_IsLineDbItem(line, APPOPTION_CUSTOM_DATETIME_FORMAT))
+			_appOptions.customDateTimeFormat = line.substr(_configDataNames[APPOPTION_CUSTOM_DATETIME_FORMAT].size() + 3);
+		else if (_IsLineDbItem(line, APPOPTION_AUTOSAVE))
+		{
+			std::string tempValue = line.substr(_configDataNames[APPOPTION_AUTOSAVE].size() + 3);
+			_appOptions.autoSave = (tempValue == "true"? 1 : 0);
+		}
+		else if (_IsLineDbItem(line, APPOPTION_USE_BELL))
+		{
+			std::string tempValue = line.substr(_configDataNames[APPOPTION_USE_BELL].size() + 3);
+			_appOptions.useBell = (tempValue == "true"? 1 : 0);
+		}
+		else if (_IsLineDbItem(line, APPOPTION_BELL_PERIOD))
+			_appOptions.bellPeriod = std::stol(line.substr(_configDataNames[APPOPTION_BELL_PERIOD].size() + 3));
+		else if (_IsLineDbItem(line, APPOPTION_BELL_COMMAND))
+			_appOptions.bellCommand = line.substr(_configDataNames[APPOPTION_BELL_COMMAND].size() + 3);
+	}
+
+	Global::Log.Add("GetSavedOptions: success");
+
+	return true;
+}
+
 /*
  * 	GetSavedData()
  *
@@ -333,7 +395,6 @@ void ConfigClass::SaveEverything(DataBase *db)
 {
 	_BuildConfigFile(db);
 	_WriteConfigFile();
-
 }
 
 /*
@@ -347,8 +408,9 @@ void ConfigClass::LoadConfig()
 {
 	_ReadConfigFile();
 	_ParseConfigFile();
-}
 
+	GetSavedOptions();
+}
 
 /*
  * ChangeFileName()
@@ -379,11 +441,14 @@ void ConfigClass::_FetchAppConfig()
 
 	std::vector<std::string> appConfig;
 
-
 	// App Configs go here
 	appConfig.push_back("[Application]");
-	appConfig.push_back("example_key = this");
-
+	appConfig.push_back(_configDataNames[APPOPTION_USE_SHORT_TIME_FORMAT] + " = " + Helpers::GetBooleanString(_appOptions.useShortTimeFormat));
+	appConfig.push_back(_configDataNames[APPOPTION_USE_CUSTOM_DATETIME_FORMAT] + " = " + Helpers::GetBooleanString(_appOptions.useCustomDateTimeFormat));
+	appConfig.push_back(_configDataNames[APPOPTION_CUSTOM_DATETIME_FORMAT] + " = " + _appOptions.customDateTimeFormat);
+	appConfig.push_back(_configDataNames[APPOPTION_USE_BELL] + " = " + Helpers::GetBooleanString(_appOptions.useBell));
+	appConfig.push_back(_configDataNames[APPOPTION_BELL_COMMAND] + " = " + _appOptions.bellCommand);
+	appConfig.push_back(_configDataNames[APPOPTION_BELL_PERIOD] + " = " + std::to_string(_appOptions.bellPeriod));
 
 	_rawAppConfig = appConfig;
 }
@@ -410,8 +475,8 @@ void ConfigClass::_FetchDBConfig(DataBase *db)
 			dbConfig.push_back(">> DataItem " + std::to_string(dataIter->second.ID));
 			dbConfig.push_back(_configDataNames[DATAITEM_NAME] + " = " + dataIter->second.name);
 			dbConfig.push_back(_configDataNames[DATAITEM_DESCRIPTION] + " = " + dataIter->second.description);
-			dbConfig.push_back(std::string(_configDataNames[DATAITEM_CONTINUOUS]) + " = " + (dataIter->second.continuous? "true" : "false"));
-			dbConfig.push_back(std::string(_configDataNames[DATAITEM_INVERSE]) + " = " + (dataIter->second.inverse? "true" : "false"));
+			dbConfig.push_back(std::string(_configDataNames[DATAITEM_CONTINUOUS]) + " = " + Helpers::GetBooleanString(dataIter->second.continuous));
+			dbConfig.push_back(std::string(_configDataNames[DATAITEM_INVERSE]) + " = " + Helpers::GetBooleanString(dataIter->second.inverse));
 			dbConfig.push_back(_configDataNames[DATAITEM_GOAL] + " = " + std::to_string(dataIter->second.goal));
 			dbConfig.push_back(_configDataNames[DATAITEM_GOAL_FRAME] + " = " + std::to_string(dataIter->second.goalTimeFrame));
 

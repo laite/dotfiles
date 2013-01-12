@@ -30,6 +30,8 @@ namespace Helpers
 
 	extern std::string GetParsedSince(std::chrono::system_clock::time_point);
 	extern long GetSecondsSince(std::chrono::system_clock::time_point);
+
+	extern std::string GetBooleanString(bool value);
 }
 
 namespace Global

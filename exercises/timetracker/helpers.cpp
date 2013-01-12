@@ -170,4 +170,7 @@ long Helpers::GetSecondsSince(std::chrono::system_clock::time_point then)
 	
 	return timeAgo.count();
 }
-
+std::string Helpers::GetBooleanString(bool value)
+{
+	return ((value)? "true" : "false");
+}
