@@ -57,10 +57,12 @@ struct DataItem
 
 	int GetTimes() const; // returns number of runs (aka history.size())
 	long GetTotal() const; // returns elapsed time from history (in seconds)
+	std::string GetGoalString() const;
 
 	long GetDifference() const;
 	long GetSecondsSinceFirstRun() const;
 	long GetAveragePerTimeFrame() const;
+	std::string GetAveragePerTimeFrameString() const;
 	long GetAverageRunLength() const;
 };
 

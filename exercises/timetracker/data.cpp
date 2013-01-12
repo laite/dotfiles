@@ -170,6 +170,22 @@ long DataItem::GetAveragePerTimeFrame() const
 	}
 }
 
+std::string DataItem::GetAveragePerTimeFrameString() const
+{
+	if (continuous)
+		return Helpers::ParseShortTime(GetAveragePerTimeFrame());
+	else
+		return std::to_string(GetAveragePerTimeFrame());
+}
+
+std::string DataItem::GetGoalString() const
+{
+	if (continuous)
+		return Helpers::ParseShortTime(goal);
+	else
+		return std::to_string(goal);
+}
+
 long DataItem::GetAverageRunLength() const
 {
 	return GetTotal()/GetTimes();

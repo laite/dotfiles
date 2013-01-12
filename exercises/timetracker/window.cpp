@@ -322,17 +322,13 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 	_statisticTextBuffer->erase(_statisticTextBuffer->begin(), _statisticTextBuffer->end());
 
 	_AddKeyValueToTextView("Name: ", dataItem.name);
-
-	tempValue = (dataItem.continuous)? "Time" : "Instance";
-	_AddKeyValueToTextView("Type: ", tempValue);
+	_AddKeyValueToTextView("Type: ", (dataItem.continuous)? "Time" : "Instance");
 	
 	if (dataItem.continuous)
-	{
 		_AddKeyValueToTextView("Total Time: ", Helpers::ParseShortTime(dataItem.GetTotal()));
-		_AddKeyValueToTextView("Average: ", Helpers::ParseShortTime(dataItem.GetAveragePerTimeFrame()), " per " + Helpers::GetTimeFrameTypeName(dataItem.goalTimeFrame));
-	}
-	else
-		_AddKeyValueToTextView("Average: ", std::to_string(dataItem.GetAveragePerTimeFrame()), " per " + Helpers::GetTimeFrameTypeName(dataItem.goalTimeFrame));
+
+	tempValue = dataItem.GetAveragePerTimeFrameString(), " per " + Helpers::GetTimeFrameTypeName(dataItem.goalTimeFrame);
+	_AddKeyValueToTextView("Average: ", tempValue, " (goal: " + dataItem.GetGoalString() + ")");
 
 	if ((dataItem.GetTimes() != 0) && (dataItem.continuous))
 		tempValue = std::string(" (about ") + Helpers::ParseShortTime(dataItem.GetTotal()/dataItem.GetTimes()) + " on average)";
@@ -350,7 +346,6 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 
 	_AddKeyValueToTextView("\nDescription: ", dataItem.description);
 }
-
 
 void MainWindow::_AddKeyValueToTextView(const std::string key, const std::string value, const std::string suffix)
 {
