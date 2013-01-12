@@ -75,7 +75,10 @@ class PreferencesDialog : public Gtk::Dialog
 		// they can later be changed on 'item settings'
 		Gtk::CheckButton _useBellButton;
 		Gtk::Entry _bellCommandEntry;
+
+		Gtk::HBox _bellPeriodBox;
 		Gtk::SpinButton _bellPeriodButton;
+		Gtk::Label _bellPeriodLabel;
 
 		/*
 		 *  Other private members
