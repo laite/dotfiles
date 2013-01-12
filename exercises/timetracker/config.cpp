@@ -271,6 +271,12 @@ bool ConfigClass::GetSavedOptions()
 			_appOptions.bellPeriod = std::stol(line.substr(_configDataNames[APPOPTION_BELL_PERIOD].size() + 3));
 		else if (_IsLineDbItem(line, APPOPTION_BELL_COMMAND))
 			_appOptions.bellCommand = line.substr(_configDataNames[APPOPTION_BELL_COMMAND].size() + 3);
+		else 
+		{
+			Global::Log.Add("ERROR! Unknown line in _rawAppConfig!");
+			Global::Log.Add("faulty line: " + line);
+		}
+
 	}
 
 	Global::Log.Add("GetSavedOptions: success");
