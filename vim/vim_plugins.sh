@@ -22,5 +22,8 @@ git clone https://github.com/ervandew/supertab.git ~/.vim/bundle/supertab
 # SnipMate
 git clone https://github.com/msanders/snipmate.vim.git ~/.vim/bundle/snipmate.vim
 
+# Surround
+git clone https://github.com/tpope/vim-surround.git ~/.vim/bundle/vim-surround
+
 # Also install all the pretty colors
 unzip vimColorSamplePack.zip -d ~/.vim
