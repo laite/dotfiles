@@ -25,6 +25,8 @@ set ignorecase smartcase 		" ignore case on lowcase-searches
 set number 						" row numbers
 set scrolloff=10 				" always +- 10 rows in sight
 set sidescrolloff=5				" always +- 5 columns
+set linebreak
+set showbreak=\ ->\ 
 
 set listchars=extends:>,precedes:<
 
