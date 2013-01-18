@@ -83,12 +83,12 @@ void DataItem::CalculatePercentage()
 	percentage = std::round(100*result);
 }
 
-long DataItem::GetDifference() const
+long DataItem::GetSurplus() const
 {
-	if (inverse)
-		return goal - GetAveragePerTimeFrame();
-	else
-		return GetAveragePerTimeFrame() - goal;
+	double hasBeenTimeFrames = static_cast<double>(GetSecondsSinceFirstRun())/(Helpers::GetTimeFrameModifier(goalTimeFrame)*24*60*60);
+	long result = (goal*hasBeenTimeFrames)-GetTotal();
+
+	return ((inverse)? (result) : (-result));
 }
 
 void DataItem::ChangeEndPoint(std::chrono::system_clock::time_point existingBeginPoint, std::chrono::system_clock::time_point newEndPoint)

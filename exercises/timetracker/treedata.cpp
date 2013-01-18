@@ -35,7 +35,7 @@ void TreeData::InitializeTreeView()
 		pColumn->add_attribute(cell->property_value(), Columns().columnPercentage);
 	_treeView->get_column(cols_count - 1)->set_expand(true);
 
-	_treeView->append_column("Difference", Columns().columnDifference);
+	_treeView->append_column("Surplus", Columns().columnSurplus);
 	_treeView->append_column("Timeframe", Columns().columnTimeFrame);
 	_treeView->append_column("Total", Columns().columnTotal);
 
@@ -101,12 +101,12 @@ void TreeData::PopulateRow(Gtk::TreeModel::iterator rowIter, const DataItem &dat
 	if (dataItem.continuous)
 	{
 		row[_columns.columnTotal] = Helpers::ParseShortTime(dataItem.GetTotal());
-		row[_columns.columnDifference] = Helpers::ParseShortTime(dataItem.GetDifference());
+		row[_columns.columnSurplus] = Helpers::ParseShortTime(dataItem.GetSurplus());
 	}
 	else // dataItem !continuous
 	{
 		row[_columns.columnTotal] = std::to_string(dataItem.GetTotal());
-		row[_columns.columnDifference] = std::to_string(dataItem.GetDifference());
+		row[_columns.columnSurplus] = std::to_string(dataItem.GetSurplus());
 	}
 
 	row[_columns.columnTimeFrame] = Helpers::GetTimeFrameTypeName(dataItem.goalTimeFrame);
@@ -138,7 +138,7 @@ void TreeData::UpdateRow(Gtk::TreeModel::iterator rowIter)
 	PopulateRow(rowIter, ditem);
 }
 
-ModelColumns& TreeData::Columns()
+MainTreeColumns& TreeData::Columns()
 {
 	return _columns;
 }
@@ -170,14 +170,14 @@ void TreeData::_RebuildRowMap()
 
 
 /*
- *  ModelColumns
+ *  MainTreeColumns
  */
 
-ModelColumns::ModelColumns()
+MainTreeColumns::MainTreeColumns()
 {
 	add(columnID);
 	add(columnName);
-	add(columnDifference);
+	add(columnSurplus);
 	add(columnTotal);
 	add(columnTimeFrame);
 	add(columnPercentage);

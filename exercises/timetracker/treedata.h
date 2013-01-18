@@ -16,15 +16,15 @@ class DataItem;
  *  Model Columns
  */
 
-class ModelColumns : public Gtk::TreeModel::ColumnRecord
+class MainTreeColumns : public Gtk::TreeModel::ColumnRecord
 {
 	public:
 
-		ModelColumns();
+		MainTreeColumns();
 
 		Gtk::TreeModelColumn<unsigned int> columnID;
 		Gtk::TreeModelColumn<Glib::ustring> columnName;
-		Gtk::TreeModelColumn<Glib::ustring> columnDifference;
+		Gtk::TreeModelColumn<Glib::ustring> columnSurplus;
 		Gtk::TreeModelColumn<std::string> columnTimeFrame;
 		Gtk::TreeModelColumn<std::string> columnTotal;
 		Gtk::TreeModelColumn<int> columnPercentage;
@@ -52,7 +52,7 @@ class TreeData
 		void PopulateRow(Gtk::TreeModel::iterator, const DataItem&);
 		void PopulateTreeModel();
 		
-		ModelColumns& Columns();
+		MainTreeColumns& Columns();
 		Glib::RefPtr<Gtk::ListStore>& GetRefTreeModel();
 		Glib::RefPtr<Gtk::TreeSelection>& GetRefTreeSelection();
 
@@ -74,7 +74,7 @@ class TreeData
 		Glib::RefPtr<Gtk::ListStore> _refTreeModel;
 		Glib::RefPtr<Gtk::TreeSelection> _refTreeSelection;
 		std::map<unsigned int, Gtk::TreeModel::iterator> _rowMap;
-		ModelColumns _columns;
+		MainTreeColumns _columns;
 };
 
 #endif /* end TREEDATA_H */

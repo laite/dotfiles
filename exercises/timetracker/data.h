@@ -43,7 +43,7 @@ struct DataItem
 	int goalTimeFrame; // GOAL_TIMEFRAME_DAY, GOAL_TIMEFRAME_WEEK or GOAL_TIMEFRAME_MONTH
 
 	std::chrono::system_clock::time_point firstRunTime; // time of first run
-	std::chrono::system_clock::time_point lastRunTime; // time of first run
+	std::chrono::system_clock::time_point lastRunTime; // time of last run
 
 	std::map<std::chrono::system_clock::time_point, std::chrono::system_clock::time_point> history;
 
@@ -59,7 +59,7 @@ struct DataItem
 	long GetTotal() const; // returns elapsed time from history (in seconds)
 	std::string GetGoalString() const;
 
-	long GetDifference() const;
+	long GetSurplus() const;
 	long GetSecondsSinceFirstRun() const;
 	long GetAveragePerTimeFrame() const;
 	std::string GetAveragePerTimeFrameString() const;
