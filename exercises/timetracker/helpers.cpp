@@ -2,6 +2,8 @@
  * helpers.cpp	
  * (c) Markus Klinga
  * 
+ * See short descriptions of functions in helpers.h
+ * 
  */
 
 #include "helpers.h"
@@ -174,3 +176,16 @@ std::string Helpers::GetBooleanString(bool value)
 {
 	return ((value)? "true" : "false");
 }
+
+bool Helpers::ReadBoolFromString(std::string sourceString)
+{
+	return ((sourceString == "true")? true : false);
+}
+
+std::chrono::system_clock::time_point Helpers::ReadTimePointFromString(std::string sourceString)
+{
+	long savedTime = std::stol(sourceString);
+	std::chrono::duration<int> since(savedTime);
+	return std::chrono::system_clock::time_point(since);
+}
+

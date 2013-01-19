@@ -51,6 +51,7 @@ ConfigClass::ConfigClass(std::string configFile):
 	_configDataNames[DATAITEM_FIRST_TIME] = "first_time";
 	_configDataNames[DATAITEM_LAST_TIME] = "last_time";
 	_configDataNames[DATAITEM_HISTORY] = "history_item";
+	_configDataNames[DATAITEM_FIXED_GOAL] = "fixed_goal";
 
 	_configDataNames[APPOPTION_USE_SHORT_TIME_FORMAT] = "use_short_time_format";
 	_configDataNames[APPOPTION_USE_CUSTOM_DATETIME_FORMAT] = "use_custom_datetime_format";
@@ -318,31 +319,19 @@ std::vector<DataItem> ConfigClass::GetSavedData()
 				else if (_IsLineDbItem(line, DATAITEM_DESCRIPTION))
 					dataIter->description = line.substr(_configDataNames[DATAITEM_DESCRIPTION].size() + 3);
 				else if (_IsLineDbItem(line, DATAITEM_CONTINUOUS))
-				{
-					std::string tempValue = line.substr(_configDataNames[DATAITEM_CONTINUOUS].size() + 3);
-					dataIter->continuous = (tempValue == "true"? 1 : 0);
-				}
+					dataIter->continuous = Helpers::ReadBoolFromString(line.substr(_configDataNames[DATAITEM_CONTINUOUS].size() + 3));
 				else if (_IsLineDbItem(line, DATAITEM_INVERSE))
-				{
-					std::string tempValue = line.substr(_configDataNames[DATAITEM_INVERSE].size() + 3);
-					dataIter->inverse = (tempValue == "true"? 1 : 0);
-				}
+					dataIter->inverse = Helpers::ReadBoolFromString(line.substr(_configDataNames[DATAITEM_INVERSE].size() + 3));
+				else if (_IsLineDbItem(line, DATAITEM_FIXED_GOAL))
+					dataIter->fixedGoal = Helpers::ReadBoolFromString(line.substr(_configDataNames[DATAITEM_FIXED_GOAL].size() + 3));
 				else if (_IsLineDbItem(line, DATAITEM_GOAL))
 					dataIter->goal = std::stol(line.substr(_configDataNames[DATAITEM_GOAL].size() + 3));
 				else if (_IsLineDbItem(line, DATAITEM_GOAL_FRAME))
 					dataIter->goalTimeFrame = std::stoi(line.substr(_configDataNames[DATAITEM_GOAL_FRAME].size() + 3));
 				else if (_IsLineDbItem(line, DATAITEM_FIRST_TIME))
-				{
-					long savedTime = std::stol(line.substr(_configDataNames[DATAITEM_FIRST_TIME].size() + 3));
-					std::chrono::duration<int> since(savedTime);
-					dataIter->firstRunTime = std::chrono::system_clock::time_point(since);
-				}
+					dataIter->firstRunTime = Helpers::ReadTimePointFromString(line.substr(_configDataNames[DATAITEM_FIRST_TIME].size() + 3));
 				else if (_IsLineDbItem(line, DATAITEM_LAST_TIME))
-				{
-					long savedTime = std::stol(line.substr(_configDataNames[DATAITEM_LAST_TIME].size() + 3));
-					std::chrono::duration<int> since(savedTime);
-					dataIter->lastRunTime = std::chrono::system_clock::time_point(since);
-				}
+					dataIter->lastRunTime = Helpers::ReadTimePointFromString(line.substr(_configDataNames[DATAITEM_LAST_TIME].size() + 3));
 				else if (_IsLineDbItem(line, DATAITEM_HISTORY))
 				{
 					// history is defined as "history_item = FROM/TO"
@@ -483,6 +472,7 @@ void ConfigClass::_FetchDBConfig(DataBase *db)
 			dbConfig.push_back(_configDataNames[DATAITEM_DESCRIPTION] + " = " + dataIter->second.description);
 			dbConfig.push_back(std::string(_configDataNames[DATAITEM_CONTINUOUS]) + " = " + Helpers::GetBooleanString(dataIter->second.continuous));
 			dbConfig.push_back(std::string(_configDataNames[DATAITEM_INVERSE]) + " = " + Helpers::GetBooleanString(dataIter->second.inverse));
+			dbConfig.push_back(std::string(_configDataNames[DATAITEM_FIXED_GOAL]) + " = " + Helpers::GetBooleanString(dataIter->second.fixedGoal));
 			dbConfig.push_back(_configDataNames[DATAITEM_GOAL] + " = " + std::to_string(dataIter->second.goal));
 			dbConfig.push_back(_configDataNames[DATAITEM_GOAL_FRAME] + " = " + std::to_string(dataIter->second.goalTimeFrame));
 
