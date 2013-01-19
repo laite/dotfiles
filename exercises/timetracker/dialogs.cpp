@@ -133,13 +133,22 @@ void DataItemDialog::_FillDialogValues(DataItem &dataItem)
 	_descriptionEntry.set_text(dataItem.description);
 	_inverseButton.set_active(dataItem.inverse);
 
-	// clear all items since we don't allow changing status of 'continuous'
-	_goalType.remove_all();
+	// we don't allow changing status of 'continuous'
+	// for items that already have history
+	if (dataItem.GetTotal() != 0)
+	{
+		_goalType.remove_all();
+		if (dataItem.continuous)
+		{
+			_goalType.append("minutes");
+			_goalType.append("hours");
+		}
+		else
+			_goalType.append("instances");
+	}
 
 	if (dataItem.continuous)
 	{
-		_goalType.append("minutes");
-		_goalType.append("hours");
 		if (dataItem.goal >= 18000) { // greater than 5h shows as 'hours'
 			_goalButton.set_value(dataItem.goal/3600);
 			_goalType.set_active_text("hours");
@@ -151,7 +160,6 @@ void DataItemDialog::_FillDialogValues(DataItem &dataItem)
 	}
 	else
 	{
-		_goalType.append("instances");
 		_goalButton.set_value(dataItem.goal);
 		_goalType.set_active_text("instances");
 	}

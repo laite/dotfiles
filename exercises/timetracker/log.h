@@ -15,7 +15,7 @@ class LogClass
 {
 	public:
 
-		void Add(std::string);
+		void Add(std::string, bool debugOnly = true);
 		void DumpHistory(std::ostream &output = std::cout);
 
 	private:

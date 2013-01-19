@@ -75,8 +75,12 @@ void DataItem::CalculatePercentage()
 {
 	double result = (1.0*GetAveragePerTimeFrame()) / goal;
 
+	Global::Log.Add("Initial result in percentage: " + std::to_string(result));
 	if (inverse)
-		result = 2 - result;
+	{
+		int inverseFrom = (fixedGoal)? 1 : 2;
+		result = inverseFrom - result;
+	}
 
 	result = std::min(std::max(result, 0.0), 1.0);
 
