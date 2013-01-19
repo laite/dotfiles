@@ -96,7 +96,7 @@ struct DataItem
 	long GetTotal() const;
 
 	// return item as parsed string (depending on 'continuous')
-	std::string GetParsedStringFromDataType(long) const;
+	std::string GetParsedStringFromDataType(double) const;
 
 	// return surplus in seconds/instances
 	long GetSurplus() const;

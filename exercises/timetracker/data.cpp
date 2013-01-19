@@ -184,12 +184,12 @@ double DataItem::GetAveragePerTimeFrame() const
 	}
 }
 
-std::string DataItem::GetParsedStringFromDataType(long item) const
+std::string DataItem::GetParsedStringFromDataType(double item) const
 {
 	if (continuous)
 		return Helpers::ParseShortTime(item);
 	else
-		return std::to_string(item);
+		return Helpers::TruncateToString(item);
 }
 
 long DataItem::GetAverageRunLength() const
