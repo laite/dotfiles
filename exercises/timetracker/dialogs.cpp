@@ -21,7 +21,7 @@ DataItemDialog::DataItemDialog():
 	dialogArea->set_orientation(Gtk::ORIENTATION_VERTICAL);
 	dialogArea->set_spacing(5);
 
-	_goalButton.set_adjustment(Gtk::Adjustment::create(45.0, 1.0, 770.0, 1.0, 10.0));
+	_goalButton.set_adjustment(Gtk::Adjustment::create(45.0, 0.0, 770.0, 1.0, 10.0));
 	
 	/*
 	 *  Widgets 
@@ -109,8 +109,6 @@ int DataItemDialog::LaunchDialog(DataItem *dataItem)
 
 		// get_act..ber() returns -1 if nothing is active
 		dataItem->goalTimeFrame = std::max(0, _goalTimeFrame.get_active_row_number());
-
-		dataItem->fixedGoal = (dataItem->goalTimeFrame == Global::GOAL_TIMEFRAME_NONE)? true : false;
 
 		if (_goalType.get_active_text() == "instances")
 			dataItem->continuous = false;

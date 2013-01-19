@@ -55,13 +55,10 @@ struct DataItem
 	// do we count to or from, default false
 	bool inverse;
 
-	// if true, goal doesn't change after any time, no goalTimeFrame is necessary
-	bool fixedGoal;
-
 	// seconds per day OR instances per day, depending on item type (bool continuous)
 	long goal;
 
-	// GOAL_TIMEFRAME_DAY, GOAL_TIMEFRAME_WEEK or GOAL_TIMEFRAME_MONTH
+	// GOAL_TIMEFRAME_DAY, GOAL_TIMEFRAME_WEEK or GOAL_TIMEFRAME_MONTH for timebased, GOAL_TIMEFRAME_NONE for fixed goal
 	int goalTimeFrame;
 
 	// time of first run
@@ -76,6 +73,9 @@ struct DataItem
 	/*
 	 *  Methods
 	 */
+
+	// returns true if goalTimeFrame is GOAL_TIMEFRAME_NONE
+	bool HasFixedGoal() const;
 	
 	// this is just a helper that calls function below with same value twice as parametres
 	void AddNewRun(std::chrono::system_clock::time_point);

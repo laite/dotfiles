@@ -66,39 +66,45 @@ void UniqueID::ReleaseID(unsigned int newlyReleasedID)
 
 DataItem::DataItem():
 	ID(0), name("[empty]"), description("[empty]"), percentage(0), continuous(false), inverse(false), 
-	fixedGoal(false), goal(0), goalTimeFrame(Global::GOAL_TIMEFRAME_DAY)
+	goal(0), goalTimeFrame(Global::GOAL_TIMEFRAME_DAY)
 {
 
 }
 
 void DataItem::CalculatePercentage()
 {
+	if (goal == 0) {
+		percentage = 100;
+		return;
+	}
+
 	double result = (1.0*GetAveragePerTimeFrame()) / goal;
 
-	Global::Log.Add("Initial result in percentage: " + std::to_string(result));
 	if (inverse)
-	{
-		int inverseFrom = (fixedGoal)? 1 : 2;
-		result = inverseFrom - result;
-	}
+		result = (HasFixedGoal()? 1 : 2) - result;
 
 	result = std::min(std::max(result, 0.0), 1.0);
 
 	percentage = std::round(100*result);
 }
 
+bool DataItem::HasFixedGoal() const
+{
+	return (goalTimeFrame == Global::GOAL_TIMEFRAME_NONE);
+}
+
 long DataItem::GetSurplus() const
 {
 	double hasBeenTimeFrames;
 	
-	if (fixedGoal)
+	if (HasFixedGoal())
 		hasBeenTimeFrames = 1;
 	else
 		hasBeenTimeFrames = static_cast<double>(GetSecondsSinceFirstRun())/(Helpers::GetTimeFrameModifier(goalTimeFrame)*24*60*60);
 
-	long result = (goal*hasBeenTimeFrames)-GetTotal();
+	long result = GetTotal()-(goal*hasBeenTimeFrames);
 
-	return ((inverse)? (result) : (-result));
+	return ((inverse)? (-result) : (result));
 }
 
 void DataItem::ChangeEndPoint(std::chrono::system_clock::time_point existingBeginPoint, std::chrono::system_clock::time_point newEndPoint)
@@ -167,7 +173,7 @@ long DataItem::GetSecondsSinceFirstRun() const
 double DataItem::GetAveragePerTimeFrame() const
 {
 	// with fixed goals we don't care about time frames
-	if (fixedGoal)
+	if (HasFixedGoal())
 		return GetTotal();
 
 	long totalAmount = (continuous)? GetTotal() : GetTimes();
