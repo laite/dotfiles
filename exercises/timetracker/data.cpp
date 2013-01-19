@@ -154,7 +154,7 @@ long DataItem::GetSecondsSinceFirstRun() const
 	return timeAgo.count();
 }
 
-long DataItem::GetAveragePerTimeFrame() const
+double DataItem::GetAveragePerTimeFrame() const
 {
 	long totalAmount = (continuous)? GetTotal() : GetTimes();
 

@@ -61,7 +61,7 @@ struct DataItem
 
 	long GetSurplus() const;
 	long GetSecondsSinceFirstRun() const;
-	long GetAveragePerTimeFrame() const;
+	double GetAveragePerTimeFrame() const;
 	std::string GetAveragePerTimeFrameString() const;
 	long GetAverageRunLength() const;
 };
