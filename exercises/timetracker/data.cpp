@@ -85,7 +85,13 @@ void DataItem::CalculatePercentage()
 
 long DataItem::GetSurplus() const
 {
-	double hasBeenTimeFrames = static_cast<double>(GetSecondsSinceFirstRun())/(Helpers::GetTimeFrameModifier(goalTimeFrame)*24*60*60);
+	double hasBeenTimeFrames;
+	
+	if (fixedGoal)
+		hasBeenTimeFrames = 1;
+	else
+		hasBeenTimeFrames = static_cast<double>(GetSecondsSinceFirstRun())/(Helpers::GetTimeFrameModifier(goalTimeFrame)*24*60*60);
+
 	long result = (goal*hasBeenTimeFrames)-GetTotal();
 
 	return ((inverse)? (result) : (-result));

@@ -3,7 +3,6 @@
  * (c) Markus Klinga
  * 
  * See short descriptions of functions in helpers.h
- * 
  */
 
 #include "helpers.h"
@@ -143,7 +142,7 @@ std::string Helpers::AddLeadingZero(std::string originalString)
 
 std::string Helpers::GetTimeFrameTypeName(int timeFrame)
 {
-	std::vector<std::string> goalNames { "day", "week", "month"};
+	std::vector<std::string> goalNames { "day", "week", "month", "none"};
 
 	if (goalNames.size() > timeFrame)
 		return goalNames.at(timeFrame);
@@ -153,7 +152,7 @@ std::string Helpers::GetTimeFrameTypeName(int timeFrame)
 
 int Helpers::GetTimeFrameModifier(int timeFrame)
 {
-	std::vector<int> modifiers { 1, 7, 30 };
+	std::vector<int> modifiers { 1, 7, 30, 0 };
 	
 	if (modifiers.size() > timeFrame)
 		return modifiers.at(timeFrame);

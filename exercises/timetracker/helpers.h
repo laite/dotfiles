@@ -55,7 +55,7 @@ namespace Helpers
 
 namespace Global
 {
-	enum { GOAL_TIMEFRAME_DAY, GOAL_TIMEFRAME_WEEK, GOAL_TIMEFRAME_MONTH };
+	enum { GOAL_TIMEFRAME_DAY, GOAL_TIMEFRAME_WEEK, GOAL_TIMEFRAME_MONTH, GOAL_TIMEFRAME_NONE };
 
 	extern bool debugMode;
 	extern ConfigClass Config;

@@ -72,6 +72,7 @@ DataItemDialog::DataItemDialog():
 	_goalTimeFrame.append(Helpers::GetTimeFrameTypeName(Global::GOAL_TIMEFRAME_DAY));
 	_goalTimeFrame.append(Helpers::GetTimeFrameTypeName(Global::GOAL_TIMEFRAME_WEEK));
 	_goalTimeFrame.append(Helpers::GetTimeFrameTypeName(Global::GOAL_TIMEFRAME_MONTH));
+	_goalTimeFrame.append(Helpers::GetTimeFrameTypeName(Global::GOAL_TIMEFRAME_NONE));
 	_goalTimeFrame.set_active(0);
 
 	dialogArea->pack_start(_inverseButton);
@@ -108,6 +109,8 @@ int DataItemDialog::LaunchDialog(DataItem *dataItem)
 
 		// get_act..ber() returns -1 if nothing is active
 		dataItem->goalTimeFrame = std::max(0, _goalTimeFrame.get_active_row_number());
+
+		dataItem->fixedGoal = (dataItem->goalTimeFrame == Global::GOAL_TIMEFRAME_NONE)? true : false;
 
 		if (_goalType.get_active_text() == "instances")
 			dataItem->continuous = false;
