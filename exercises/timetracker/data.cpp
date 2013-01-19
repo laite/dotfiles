@@ -156,6 +156,10 @@ long DataItem::GetSecondsSinceFirstRun() const
 
 double DataItem::GetAveragePerTimeFrame() const
 {
+	// with fixed goals we don't care about time frames
+	if (fixedGoal)
+		return GetTotal();
+
 	long totalAmount = (continuous)? GetTotal() : GetTimes();
 
 	double hasBeenDays = static_cast<double>(GetSecondsSinceFirstRun())/(24*60*60);
@@ -170,20 +174,12 @@ double DataItem::GetAveragePerTimeFrame() const
 	}
 }
 
-std::string DataItem::GetAveragePerTimeFrameString() const
+std::string DataItem::GetParsedStringFromDataType(long item) const
 {
 	if (continuous)
-		return Helpers::ParseShortTime(GetAveragePerTimeFrame());
+		return Helpers::ParseShortTime(item);
 	else
-		return std::to_string(GetAveragePerTimeFrame());
-}
-
-std::string DataItem::GetGoalString() const
-{
-	if (continuous)
-		return Helpers::ParseShortTime(goal);
-	else
-		return std::to_string(goal);
+		return std::to_string(item);
 }
 
 long DataItem::GetAverageRunLength() const

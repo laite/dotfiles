@@ -277,7 +277,6 @@ bool ConfigClass::GetSavedOptions()
 			Global::Log.Add("ERROR! Unknown line in _rawAppConfig!");
 			Global::Log.Add("faulty line: " + line);
 		}
-
 	}
 
 	Global::Log.Add("GetSavedOptions: success");

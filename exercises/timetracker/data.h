@@ -32,38 +32,83 @@ class UniqueID
 struct DataItem 
 {
 	DataItem();
-	unsigned int ID; // unique identifier in DataBase, only created when dataItem is put in db
-	std::string name; // short name of data item
-	std::string description; // longer definition
-	int percentage; // [0..100], basically current/goal
-	bool continuous; // whether data is measured continuously (seconds) or by instances
-	bool inverse; // do we count to or from, default false
+	
+	/*
+	 *  Variables
+	 */
+	
+	// unique identifier in DataBase, only created when dataItem is put in dataBase
+	unsigned int ID;
 
-	bool fixedGoal; // if true, goal doesn't change after any time, no goalTimeFrame necessary
-	long goal; // seconds per day OR instances per day, depending on item type (bool continuous)
-	int goalTimeFrame; // GOAL_TIMEFRAME_DAY, GOAL_TIMEFRAME_WEEK or GOAL_TIMEFRAME_MONTH
+	// short name of data item
+	std::string name;
 
-	std::chrono::system_clock::time_point firstRunTime; // time of first run
-	std::chrono::system_clock::time_point lastRunTime; // time of last run
+	// longer definition
+	std::string description;
 
+	// [0..100], basically current/goal
+	int percentage;
+
+	// whether data is measured continuously (seconds) or by instances
+	bool continuous;
+
+	// do we count to or from, default false
+	bool inverse;
+
+	// if true, goal doesn't change after any time, no goalTimeFrame is necessary
+	bool fixedGoal;
+
+	// seconds per day OR instances per day, depending on item type (bool continuous)
+	long goal;
+
+	// GOAL_TIMEFRAME_DAY, GOAL_TIMEFRAME_WEEK or GOAL_TIMEFRAME_MONTH
+	int goalTimeFrame;
+
+	// time of first run
+	std::chrono::system_clock::time_point firstRunTime;
+
+	// time of last run
+	std::chrono::system_clock::time_point lastRunTime;
+
+	// history holds all runs' begin- and endpoints
 	std::map<std::chrono::system_clock::time_point, std::chrono::system_clock::time_point> history;
-
+	
+	/*
+	 *  Methods
+	 */
+	
 	// this is just a helper that calls function below with same value twice as parametres
 	void AddNewRun(std::chrono::system_clock::time_point);
+
+	// adds new run to history (for instance-based dataitems both timepoints must be same)
 	void AddNewRun(std::chrono::system_clock::time_point, std::chrono::system_clock::time_point);
+
+	// change end point of an existing history item
 	void ChangeEndPoint(std::chrono::system_clock::time_point, std::chrono::system_clock::time_point);
 
+	// update internal variable 'percentage'
 	void CalculatePercentage();
-	long GetSecondsFromTimeFrame() const;
 
-	int GetTimes() const; // returns number of runs (aka history.size())
-	long GetTotal() const; // returns elapsed time from history (in seconds)
-	std::string GetGoalString() const;
+	// returns number of runs (aka history.size())
+	int GetTimes() const;
 
+	// returns elapsed time from history (in seconds) for continuous, instances for !continuous
+	long GetTotal() const;
+
+	// return item as parsed string (depending on 'continuous')
+	std::string GetParsedStringFromDataType(long) const;
+
+	// return surplus in seconds/instances
 	long GetSurplus() const;
+
+	// get seconds elapsed since first run
 	long GetSecondsSinceFirstRun() const;
+
+	// get average elapsed time/instances within time range
+	// if fixedGoal is true, return GetTotal()
 	double GetAveragePerTimeFrame() const;
-	std::string GetAveragePerTimeFrameString() const;
+
+	// returns average run in seconds
 	long GetAverageRunLength() const;
 };
 

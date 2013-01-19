@@ -327,8 +327,8 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 	if (dataItem.continuous)
 		_AddKeyValueToTextView("Total Time: ", Helpers::ParseShortTime(dataItem.GetTotal()));
 
-	tempValue = dataItem.GetAveragePerTimeFrameString(), " per " + Helpers::GetTimeFrameTypeName(dataItem.goalTimeFrame);
-	_AddKeyValueToTextView("Average: ", tempValue, " (goal: " + dataItem.GetGoalString() + ")");
+	tempValue = dataItem.GetParsedStringFromDataType(dataItem.GetAveragePerTimeFrame()), " per " + Helpers::GetTimeFrameTypeName(dataItem.goalTimeFrame);
+	_AddKeyValueToTextView("Average: ", tempValue, " (goal: " + dataItem.GetParsedStringFromDataType(dataItem.goal) + ")");
 
 	if ((dataItem.GetTimes() != 0) && (dataItem.continuous))
 		tempValue = std::string(" (about ") + Helpers::ParseShortTime(dataItem.GetTotal()/dataItem.GetTimes()) + " on average)";
