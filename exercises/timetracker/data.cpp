@@ -66,7 +66,7 @@ void UniqueID::ReleaseID(unsigned int newlyReleasedID)
 
 DataItem::DataItem():
 	ID(0), name("[empty]"), description("[empty]"), percentage(0), continuous(false), inverse(false), 
-	goal(0), goalTimeFrame(Global::GOAL_TIMEFRAME_DAY)
+	fixedGoal(false), goal(0), goalTimeFrame(Global::GOAL_TIMEFRAME_DAY)
 {
 
 }

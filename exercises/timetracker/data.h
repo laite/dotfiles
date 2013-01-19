@@ -39,6 +39,7 @@ struct DataItem
 	bool continuous; // whether data is measured continuously (seconds) or by instances
 	bool inverse; // do we count to or from, default false
 
+	bool fixedGoal; // if true, goal doesn't change after any time, no goalTimeFrame necessary
 	long goal; // seconds per day OR instances per day, depending on item type (bool continuous)
 	int goalTimeFrame; // GOAL_TIMEFRAME_DAY, GOAL_TIMEFRAME_WEEK or GOAL_TIMEFRAME_MONTH
 
