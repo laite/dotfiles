@@ -67,10 +67,11 @@ class MainWindow : public Gtk::Window
 		void _OnButtonNew();
 		void _OnButtonRemove();
 		void _OnButtonEdit();
-		void _OnButtonStart();
-		void _OnButtonStop();
 		void _OnButtonQuit();
 		void _OnButtonPreferences();
+
+		bool _OnMenuButton(GdkEventButton*);
+		void _OnLaunchButton();
 
 		void _TreeViewSelectionChanged();
 
@@ -102,21 +103,24 @@ class MainWindow : public Gtk::Window
 		Glib::RefPtr<Gtk::TextBuffer::Tag> _boldedTextTag;
 
 		/*
-		 *  Buttons
+		 *  Statusline and button
 		 */
 
 		Gtk::HBox _buttonRowBox;
 		Gtk::ButtonBox _buttonBox;
-		Gtk::Button _buttonQuit;
-		Gtk::Button _buttonNew;
-		Gtk::Button _buttonEdit;
-		Gtk::Button _buttonRemove;
-		Gtk::Button _buttonStart;
-		Gtk::Button _buttonStop;
-		Gtk::Button _buttonPreferences;
+		Gtk::Button _menuButton;
+		Gtk::Button _launchButton;
 		Gtk::Image _prefImage;
 
 		Gtk::Label _buttonStatusLabel;
+		
+		/*
+		 *  Menu
+		 */
+
+		Glib::RefPtr<Gtk::UIManager> _UIManager;
+		Glib::RefPtr<Gtk::ActionGroup> _UIActionGroup;
+		Gtk::Menu* _popupMenu;
 
 		/*
 		 *  Other members

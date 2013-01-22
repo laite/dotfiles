@@ -15,14 +15,14 @@
 #include "treedata.h"
 #include "dialogs.h"
 
-MainWindow::MainWindow(DataBase *d): 
-	_db(d), // main database
-	_mainVBox(Gtk::ORIENTATION_VERTICAL),
-	_contentVBox(Gtk::ORIENTATION_VERTICAL),
-	_buttonQuit("Quit"), _buttonNew("New"), _buttonRemove("Remove"), _buttonStart("Start"), _buttonStop("Stop"),
-	_buttonEdit("Edit"), 
-	_prefImage(Gtk::Stock::PREFERENCES, Gtk::ICON_SIZE_BUTTON),
-	_buttonStatusLabel("Everything seems to be fine.")
+MainWindow::MainWindow(DataBase *d)
+	: _db(d) // main database (pointer)
+	, _mainVBox(Gtk::ORIENTATION_VERTICAL)
+	, _contentVBox(Gtk::ORIENTATION_VERTICAL)
+	, _prefImage("/home/laite/.config/laite/timetracker/timetracker32.png")
+	, _buttonStatusLabel("Everything seems to be fine.")
+	, _launchButton("Start")
+	, _activeDataItem(NULL)
 {
 
 	set_title("TimeTracker/laite");
@@ -32,7 +32,49 @@ MainWindow::MainWindow(DataBase *d):
 	/*
 	 *  Containers and widgets
 	 *
-	 *  contentVBox
+	 *  Popup menu
+	 */
+
+	_UIActionGroup = Gtk::ActionGroup::create();
+
+	_UIActionGroup->add( Gtk::Action::create("ContextMenu", "Context Menu"));
+	_UIActionGroup->add( Gtk::Action::create("ContextNew", "New"), sigc::mem_fun(*this, &MainWindow::_OnButtonNew) );
+	_UIActionGroup->add( Gtk::Action::create("ContextEdit", "Edit"), sigc::mem_fun(*this, &MainWindow::_OnButtonEdit) );
+	_UIActionGroup->add( Gtk::Action::create("ContextRemove", "Remove"), sigc::mem_fun(*this, &MainWindow::_OnButtonNew) );
+	_UIActionGroup->add( Gtk::Action::create("ContextPreferences", "Preferences"), sigc::mem_fun(*this, &MainWindow::_OnButtonPreferences) );
+	_UIActionGroup->add( Gtk::Action::create("ContextQuit", "Quit"), sigc::mem_fun(*this, &MainWindow::_OnButtonQuit) );
+
+	_UIManager = Gtk::UIManager::create();
+	_UIManager->insert_action_group(_UIActionGroup);
+	add_accel_group(_UIManager->get_accel_group());
+
+	Glib::ustring ui_info =
+		"<ui>"
+		"  <popup name='PopupMenu'>"
+		"    <menuitem action='ContextNew'/>"
+		"    <menuitem action='ContextEdit'/>"
+		"    <menuitem action='ContextRemove'/>"
+        "    <separator/>"
+		"    <menuitem action='ContextPreferences'/>"
+        "    <separator/>"
+		"    <menuitem action='ContextQuit'/>"
+		"  </popup>"
+		"</ui>";
+
+	try {
+		_UIManager->add_ui_from_string(ui_info);
+	}
+	catch(const Glib::Error& ex) {
+		Global::Log.Add("ERROR! " + ex.what());
+	}
+
+	_popupMenu = dynamic_cast<Gtk::Menu*>(
+			_UIManager->get_widget("/PopupMenu")); 
+	if(!_popupMenu)
+		g_warning("Menu creation failed!");
+
+	/*
+	 *  ContentVBox
 	 */
 	
 	_treeViewScrollWindow.add(_treeView);
@@ -66,23 +108,18 @@ MainWindow::MainWindow(DataBase *d):
 	_statisticTextView.set_wrap_mode(Gtk::WRAP_WORD);
 
 	/*
-	 *  Buttons
+	 *  Statusline and buttons
 	 */
 
-	_buttonBox.pack_start(_buttonStart, Gtk::PACK_SHRINK);
-	_buttonBox.pack_start(_buttonStop, Gtk::PACK_SHRINK);
-	_buttonBox.pack_start(_buttonNew, Gtk::PACK_SHRINK);
-	_buttonBox.pack_start(_buttonEdit, Gtk::PACK_SHRINK);
-	_buttonBox.pack_start(_buttonRemove, Gtk::PACK_SHRINK);
-	_buttonBox.pack_start(_buttonQuit, Gtk::PACK_SHRINK);
+	_menuButton.set_image(_prefImage);
+	_buttonStatusLabel.set_alignment(0.5, 0.5);
 
-	_buttonPreferences.set_image(_prefImage);
-	_buttonPreferences.set_margin_right(5);
-	_buttonRowBox.pack_start(_buttonPreferences, false, false);
+	_buttonBox.pack_start(_launchButton, Gtk::PACK_SHRINK);
 
-	_buttonRowBox.pack_start(_buttonStatusLabel, false, false);
-	_buttonRowBox.pack_start(_buttonBox, true, true);
-	
+	_buttonRowBox.pack_start(_menuButton, false, false);
+	_buttonRowBox.pack_start(_buttonStatusLabel, true, true);
+	_buttonRowBox.pack_start(_buttonBox, false, false);
+
 	_buttonBox.set_border_width(5);
 	_buttonRowBox.set_border_width(5);
 	_buttonBox.set_layout(Gtk::BUTTONBOX_END);
@@ -103,18 +140,11 @@ MainWindow::MainWindow(DataBase *d):
 	_treeData->InitializeTreeView();
 	_treeData->PopulateTreeModel();
 
-	_buttonStop.set_sensitive(false); // disable stop button by default
-	
 	/*
 	 *  Add signals
 	 */
-	_buttonQuit.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonQuit) );
-	_buttonPreferences.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonPreferences) );
-	_buttonNew.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonNew) );
-	_buttonEdit.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonEdit) );
-	_buttonRemove.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonRemove) );
-	_buttonStart.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonStart) );
-	_buttonStop.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonStop) );
+	_menuButton.signal_button_press_event().connect( sigc::mem_fun(*this, &MainWindow::_OnMenuButton), false);
+	_launchButton.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnLaunchButton), false);
 
 	_treeData->GetRefTreeSelection()->signal_changed().connect(sigc::mem_fun(*this, &MainWindow::_TreeViewSelectionChanged));
 
@@ -128,8 +158,7 @@ MainWindow::MainWindow(DataBase *d):
 	}
 	else
 	{
-		_buttonStart.set_sensitive(0);
-		_buttonRemove.set_sensitive(0);
+		_launchButton.set_sensitive(0);
 	}
 	
 	/*
@@ -148,22 +177,24 @@ MainWindow::~MainWindow()
 	Global::Log.Add("Killing MainWindow");
 }
 
-void MainWindow::_OnButtonStart()
+void MainWindow::_OnLaunchButton()
 {
-	int selectedID = _treeData->GetSelectedID();
-
-	// See if there's an ID, and that it exists in _db
-	if ((selectedID == 0) || (!_db->IsIn(selectedID))) {
-		Global::Log.Add("* ERROR * Can not find item with ID = " + std::to_string(selectedID));
-		return;
+	if (_activeDataItem) // if we are currently tracking
+	{
+		_StopTracking();
 	}
+	else
+	{
+		int selectedID = _treeData->GetSelectedID();
 
-	_StartTracking(selectedID);
-}
+		// See if there's an ID, and that it exists in _db
+		if ((selectedID == 0) || (!_db->IsIn(selectedID))) {
+			Global::Log.Add("* ERROR * Can not find item with ID = " + std::to_string(selectedID));
+			return;
+		}
 
-void MainWindow::_OnButtonStop()
-{
-	_StopTracking();
+		_StartTracking(selectedID);
+	}
 }
 
 void MainWindow::_OnButtonNew()
@@ -176,8 +207,7 @@ void MainWindow::_OnButtonNew()
 		Global::Log.Add("New Item - dialog gives OK.");
 		_db->AddItemToDataBase(newItem);
 		_treeData->AddRow(newItem, true);
-		_buttonStart.set_sensitive(1);
-		_buttonRemove.set_sensitive(1);
+		_launchButton.set_sensitive(1);
 	}
 }
 
@@ -213,10 +243,17 @@ void MainWindow::_OnButtonRemove()
 		_treeData->DeleteRow(_treeData->GetSelectedRowIter());
 		if (_db->GetSize() == 0)
 		{
-			_buttonStart.set_sensitive(0);
-			_buttonRemove.set_sensitive(0);
+			_launchButton.set_sensitive(0);
 		}
 	}
+}
+
+bool MainWindow::_OnMenuButton(GdkEventButton* event)
+{ 
+	if(_popupMenu)
+		_popupMenu->popup(event->button, event->time);
+
+	return true; //It has been handled.
 }
 
 void MainWindow::_OnButtonPreferences()
@@ -239,8 +276,7 @@ void MainWindow::_StartTracking(unsigned int selectedID)
 
 	if (_activeDataItem->continuous)
 	{
-		_buttonStart.set_sensitive(false);
-		_buttonStop.set_sensitive(true);
+		_UpdateStartButtonText(1);
 		Glib::signal_timeout().connect( sigc::mem_fun(*this, &MainWindow::_UpdateStatusLabel), 1000 );
 	}
 	else
@@ -260,8 +296,7 @@ void MainWindow::_StopTracking()
 	{
 		_activeDataItem->ChangeEndPoint(_activeDataItem->lastRunTime, std::chrono::system_clock::now());
 
-		_buttonStart.set_sensitive(true);
-		_buttonStop.set_sensitive(false);
+		_UpdateStartButtonText(1);
 	}
 
 	_db->UpdateItemStats(_activeDataItem->ID);
@@ -291,11 +326,17 @@ void MainWindow::_TreeViewSelectionChanged()
 
 void MainWindow::_UpdateStartButtonText(bool continuous)
 {
-	if (continuous)
-		_buttonStart.set_label("Start");
+	if (_activeDataItem)
+	{
+		_launchButton.set_label("Stop");
+	}
 	else
-		_buttonStart.set_label("Tick");
-	
+	{
+		if (continuous)
+			_launchButton.set_label("Start");
+		else
+			_launchButton.set_label("Tick");
+	}
 }
 
 bool MainWindow::_UpdateStatusLabel()

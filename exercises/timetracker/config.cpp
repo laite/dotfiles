@@ -16,7 +16,9 @@
 
 
 /*
+ *
  *  AppOptions
+ *
  */
 
 AppOptions::AppOptions()
@@ -30,12 +32,14 @@ AppOptions::AppOptions()
 	, defaultWindowSize(800, 450)
 	, panedPosition(255)
 {
-
+	Global::Log.Add("Initialized AppOptions.");
 }
 
 
 /*
+ *
  *  ConfigClass
+ *
  */
 
 
