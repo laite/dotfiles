@@ -19,14 +19,15 @@
  *  AppOptions
  */
 
-AppOptions::AppOptions():
-	useShortTimeFormat(false),
-	autoSave(true),
-	useCustomDateTimeFormat(true),
-	customDateTimeFormat("%d.%m.%Y %H:%M"),
-	useBell(true),
-	bellPeriod(900), // 15 minutes by default
-	bellCommand("mplayer ~/workspace/c++/gtkmm/timetracker/bell.mp3 -volume 40 &")
+AppOptions::AppOptions()
+	: useShortTimeFormat(false)
+	, autoSave(true)
+	, useCustomDateTimeFormat(true)
+	, customDateTimeFormat("%d.%m.%Y %H:%M")
+	, useBell(true)
+	, bellPeriod(900) // 15 minutes by default
+	, bellCommand("mplayer ~/workspace/c++/gtkmm/timetracker/bell.mp3 -volume 40 &")
+	, defaultWindowSize(800, 450)
 {
 
 }
@@ -60,6 +61,8 @@ ConfigClass::ConfigClass(std::string configFile):
 	_configDataNames[APPOPTION_USE_BELL] = "use_bell";
 	_configDataNames[APPOPTION_BELL_COMMAND] = "bell_command";
 	_configDataNames[APPOPTION_BELL_PERIOD] = "bell_period";
+	_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_X] = "default_window_size_x";
+	_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_Y] = "default_window_size_y";
 
 	Global::Log.Add("Created ConfigClass.");
 }
@@ -272,6 +275,10 @@ bool ConfigClass::GetSavedOptions()
 			_appOptions.bellPeriod = std::stol(line.substr(_configDataNames[APPOPTION_BELL_PERIOD].size() + 3));
 		else if (_IsLineDbItem(line, APPOPTION_BELL_COMMAND))
 			_appOptions.bellCommand = line.substr(_configDataNames[APPOPTION_BELL_COMMAND].size() + 3);
+		else if (_IsLineDbItem(line, APPOPTION_DEFAULT_WINDOW_SIZE_X))
+			_appOptions.defaultWindowSize.first = std::stoi(line.substr(_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_X].size() + 3));
+		else if (_IsLineDbItem(line, APPOPTION_DEFAULT_WINDOW_SIZE_Y))
+			_appOptions.defaultWindowSize.second = std::stoi(line.substr(_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_Y].size() + 3));
 		else 
 		{
 			Global::Log.Add("ERROR! Unknown line in _rawAppConfig!");
@@ -441,6 +448,8 @@ void ConfigClass::_FetchAppConfig()
 	appConfig.push_back(_configDataNames[APPOPTION_USE_BELL] + " = " + Helpers::GetBooleanString(_appOptions.useBell));
 	appConfig.push_back(_configDataNames[APPOPTION_BELL_COMMAND] + " = " + _appOptions.bellCommand);
 	appConfig.push_back(_configDataNames[APPOPTION_BELL_PERIOD] + " = " + std::to_string(_appOptions.bellPeriod));
+	appConfig.push_back(_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_X] + " = " + std::to_string(_appOptions.defaultWindowSize.first));
+	appConfig.push_back(_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_Y] + " = " + std::to_string(_appOptions.defaultWindowSize.second));
 
 	_rawAppConfig = appConfig;
 }

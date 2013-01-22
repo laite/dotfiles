@@ -54,11 +54,14 @@ int main(int argc, char *argv[])
 	Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, applicationName);
 
 	DataBase db;
-	MainWindow window(&db);
 
-	Global::Log.Add("Init ready, launching window.");
-
-	app->run(window);
+	// Run mainwindow in its own scope, so it gets destroyed before saving settings
+	{
+		MainWindow window(&db);
+	
+		Global::Log.Add("Init ready, launching window.");
+		app->run(window);
+	}
 
 	Global::Config.SaveEverything(&db);
 

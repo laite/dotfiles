@@ -27,7 +27,7 @@ MainWindow::MainWindow(DataBase *d):
 
 	set_title("TimeTracker/laite");
 	set_border_width(5);
-	set_default_size(800, 450);
+	set_default_size(Global::Config.GetAppOptions().defaultWindowSize.first, Global::Config.GetAppOptions().defaultWindowSize.second);
 
 	/*
 	 *  Containers and widgets
@@ -108,7 +108,6 @@ MainWindow::MainWindow(DataBase *d):
 	/*
 	 *  Add signals
 	 */
-	
 	_buttonQuit.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonQuit) );
 	_buttonPreferences.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonPreferences) );
 	_buttonNew.signal_clicked().connect( sigc::mem_fun(*this, &MainWindow::_OnButtonNew) );
@@ -143,6 +142,8 @@ MainWindow::MainWindow(DataBase *d):
 
 MainWindow::~MainWindow()
 {
+	Global::Config.SetAppOptions().defaultWindowSize.first = this->get_width();
+	Global::Config.SetAppOptions().defaultWindowSize.second = this->get_height();
 	Global::Log.Add("Killing MainWindow");
 }
 

@@ -37,6 +37,9 @@ struct AppOptions
 	std::string bellCommand;
 	// period in seconds
 	long bellPeriod;
+
+	// Window default size
+	std::pair<int, int> defaultWindowSize;
 };
 
 class ConfigClass
@@ -77,7 +80,8 @@ class ConfigClass
 		enum {
 			APPOPTION_USE_SHORT_TIME_FORMAT = 200, APPOPTION_USE_CUSTOM_DATETIME_FORMAT,
 			APPOPTION_CUSTOM_DATETIME_FORMAT, APPOPTION_AUTOSAVE, APPOPTION_BELL_COMMAND, 
-			APPOPTION_BELL_PERIOD, APPOPTION_USE_BELL
+			APPOPTION_BELL_PERIOD, APPOPTION_USE_BELL, APPOPTION_DEFAULT_WINDOW_SIZE_X,
+			APPOPTION_DEFAULT_WINDOW_SIZE_Y
 		};
 
 		/*
