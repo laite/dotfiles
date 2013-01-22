@@ -43,7 +43,7 @@ MainWindow::MainWindow(DataBase *d):
 
 	_contentVPaned.add1(_treeViewScrollWindow);
 	_contentVPaned.add2(_textViewScrollWindow);
-	_contentVPaned.set_position(225);
+	_contentVPaned.set_position(Global::Config.GetAppOptions().panedPosition);
 
 	_contentVBox.pack_start(_contentVPaned, true, true);
 	
@@ -144,6 +144,7 @@ MainWindow::~MainWindow()
 {
 	Global::Config.SetAppOptions().defaultWindowSize.first = this->get_width();
 	Global::Config.SetAppOptions().defaultWindowSize.second = this->get_height();
+	Global::Config.SetAppOptions().panedPosition = _contentVPaned.get_position();
 	Global::Log.Add("Killing MainWindow");
 }
 

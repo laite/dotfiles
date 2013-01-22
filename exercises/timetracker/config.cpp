@@ -28,6 +28,7 @@ AppOptions::AppOptions()
 	, bellPeriod(900) // 15 minutes by default
 	, bellCommand("mplayer ~/workspace/c++/gtkmm/timetracker/bell.mp3 -volume 40 &")
 	, defaultWindowSize(800, 450)
+	, panedPosition(255)
 {
 
 }
@@ -63,6 +64,7 @@ ConfigClass::ConfigClass(std::string configFile):
 	_configDataNames[APPOPTION_BELL_PERIOD] = "bell_period";
 	_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_X] = "default_window_size_x";
 	_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_Y] = "default_window_size_y";
+	_configDataNames[APPOPTION_PANED_POSITION] = "paned_position";
 
 	Global::Log.Add("Created ConfigClass.");
 }
@@ -279,6 +281,8 @@ bool ConfigClass::GetSavedOptions()
 			_appOptions.defaultWindowSize.first = std::stoi(line.substr(_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_X].size() + 3));
 		else if (_IsLineDbItem(line, APPOPTION_DEFAULT_WINDOW_SIZE_Y))
 			_appOptions.defaultWindowSize.second = std::stoi(line.substr(_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_Y].size() + 3));
+		else if (_IsLineDbItem(line, APPOPTION_PANED_POSITION))
+			_appOptions.panedPosition = std::stoi(line.substr(_configDataNames[APPOPTION_PANED_POSITION].size() + 3));
 		else 
 		{
 			Global::Log.Add("ERROR! Unknown line in _rawAppConfig!");
@@ -450,6 +454,7 @@ void ConfigClass::_FetchAppConfig()
 	appConfig.push_back(_configDataNames[APPOPTION_BELL_PERIOD] + " = " + std::to_string(_appOptions.bellPeriod));
 	appConfig.push_back(_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_X] + " = " + std::to_string(_appOptions.defaultWindowSize.first));
 	appConfig.push_back(_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_Y] + " = " + std::to_string(_appOptions.defaultWindowSize.second));
+	appConfig.push_back(_configDataNames[APPOPTION_PANED_POSITION] + " = " + std::to_string(_appOptions.panedPosition));
 
 	_rawAppConfig = appConfig;
 }
