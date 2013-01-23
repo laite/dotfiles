@@ -40,7 +40,7 @@ MainWindow::MainWindow(DataBase *d)
 	_UIActionGroup->add( Gtk::Action::create("ContextMenu", "Context Menu"));
 	_UIActionGroup->add( Gtk::Action::create("ContextNew", "New"), sigc::mem_fun(*this, &MainWindow::_OnButtonNew) );
 	_UIActionGroup->add( Gtk::Action::create("ContextEdit", "Edit"), sigc::mem_fun(*this, &MainWindow::_OnButtonEdit) );
-	_UIActionGroup->add( Gtk::Action::create("ContextRemove", "Remove"), sigc::mem_fun(*this, &MainWindow::_OnButtonNew) );
+	_UIActionGroup->add( Gtk::Action::create("ContextRemove", "Remove"), sigc::mem_fun(*this, &MainWindow::_OnButtonRemove) );
 	_UIActionGroup->add( Gtk::Action::create("ContextPreferences", "Preferences"), sigc::mem_fun(*this, &MainWindow::_OnButtonPreferences) );
 	_UIActionGroup->add( Gtk::Action::create("ContextQuit", "Quit"), sigc::mem_fun(*this, &MainWindow::_OnButtonQuit) );
 
