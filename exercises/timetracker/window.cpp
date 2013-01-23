@@ -38,11 +38,11 @@ MainWindow::MainWindow(DataBase *d)
 	_UIActionGroup = Gtk::ActionGroup::create();
 
 	_UIActionGroup->add( Gtk::Action::create("ContextMenu", "Context Menu"));
-	_UIActionGroup->add( Gtk::Action::create("ContextNew", "New"), sigc::mem_fun(*this, &MainWindow::_OnButtonNew) );
-	_UIActionGroup->add( Gtk::Action::create("ContextEdit", "Edit"), sigc::mem_fun(*this, &MainWindow::_OnButtonEdit) );
-	_UIActionGroup->add( Gtk::Action::create("ContextRemove", "Remove"), sigc::mem_fun(*this, &MainWindow::_OnButtonRemove) );
-	_UIActionGroup->add( Gtk::Action::create("ContextPreferences", "Preferences"), sigc::mem_fun(*this, &MainWindow::_OnButtonPreferences) );
-	_UIActionGroup->add( Gtk::Action::create("ContextQuit", "Quit"), sigc::mem_fun(*this, &MainWindow::_OnButtonQuit) );
+	_UIActionGroup->add( Gtk::Action::create("ContextNew", "New"), sigc::mem_fun(*this, &MainWindow::_LaunchNew) );
+	_UIActionGroup->add( Gtk::Action::create("ContextEdit", "Edit"), sigc::mem_fun(*this, &MainWindow::_LaunchEdit) );
+	_UIActionGroup->add( Gtk::Action::create("ContextRemove", "Remove"), sigc::mem_fun(*this, &MainWindow::_LaunchRemove) );
+	_UIActionGroup->add( Gtk::Action::create("ContextPreferences", "Preferences"), sigc::mem_fun(*this, &MainWindow::_LaunchPreferences) );
+	_UIActionGroup->add( Gtk::Action::create("ContextQuit", "Quit"), sigc::mem_fun(*this, &MainWindow::_LaunchQuit) );
 
 	_UIManager = Gtk::UIManager::create();
 	_UIManager->insert_action_group(_UIActionGroup);
@@ -197,7 +197,7 @@ void MainWindow::_OnLaunchButton()
 	}
 }
 
-void MainWindow::_OnButtonNew()
+void MainWindow::_LaunchNew()
 {
 	DataItemDialog dialog;
 	DataItem newItem;
@@ -211,7 +211,7 @@ void MainWindow::_OnButtonNew()
 	}
 }
 
-void MainWindow::_OnButtonEdit()
+void MainWindow::_LaunchEdit()
 {
 	DataItemDialog dialog;
 	unsigned int currentID = _treeData->GetSelectedID();
@@ -224,7 +224,7 @@ void MainWindow::_OnButtonEdit()
 	}
 }
 
-void MainWindow::_OnButtonRemove()
+void MainWindow::_LaunchRemove()
 {
 	if (_treeData->GetSelectedID() == 0)
 		return; // return if nothing is selected
@@ -256,13 +256,13 @@ bool MainWindow::_OnMenuButton(GdkEventButton* event)
 	return true; //It has been handled.
 }
 
-void MainWindow::_OnButtonPreferences()
+void MainWindow::_LaunchPreferences()
 {
 	PreferencesDialog pref;
 	pref.LaunchDialog();
 }
 
-void MainWindow::_OnButtonQuit()
+void MainWindow::_LaunchQuit()
 {
 	hide();
 }

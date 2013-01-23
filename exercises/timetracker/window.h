@@ -64,11 +64,11 @@ class MainWindow : public Gtk::Window
 		 *  Signal Handlers
 		 */
 		
-		void _OnButtonNew();
-		void _OnButtonRemove();
-		void _OnButtonEdit();
-		void _OnButtonQuit();
-		void _OnButtonPreferences();
+		void _LaunchNew();
+		void _LaunchRemove();
+		void _LaunchEdit();
+		void _LaunchQuit();
+		void _LaunchPreferences();
 
 		bool _OnMenuButton(GdkEventButton*);
 		void _OnLaunchButton();
