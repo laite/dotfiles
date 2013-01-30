@@ -281,6 +281,7 @@ void MainWindow::_StartTracking(unsigned int selectedID)
 	}
 	else
 	{
+		// 'tick' ends instantly
 		_StopTracking();
 	}
 }
@@ -292,20 +293,21 @@ void MainWindow::_StopTracking()
 		_buttonStatusLabel.set_text("Something went very wrong :(");
 		return;
 	}
-	else if (_activeDataItem->continuous)
-	{
-		_activeDataItem->ChangeEndPoint(_activeDataItem->lastRunTime, std::chrono::system_clock::now());
 
-		_UpdateStartButtonText(1);
-	}
+	// set endpoint for continuous items
+	if (_activeDataItem->continuous)
+		_activeDataItem->ChangeEndPoint(_activeDataItem->lastRunTime, std::chrono::system_clock::now());
 
 	_db->UpdateItemStats(_activeDataItem->ID);
 	_treeData->UpdateRow(_treeData->GetRowIterFromID(_activeDataItem->ID));
 
 	_activeDataItem = NULL; 
 
-	_UpdateStatusLabel();
+	// we update these according to what is currently
+	// selected, not necessarily (but might be) same as _activeDataItem
+	_UpdateStartButtonText(_db->GetItem(_treeData->GetSelectedID()).continuous);
 	_UpdateStatistics(_db->GetItem(_treeData->GetSelectedID()));
+	_UpdateStatusLabel();
 
 	if (Global::Config.GetAppOptions().autoSave)
 		Global::Config.SaveEverything(_db);
