@@ -6,7 +6,7 @@
 
 #include "query.h"
 
-const std::string DATAFILE("data");
+const std::string DATAFILE("papintytar.txt");
 
 int main()
 {
@@ -15,8 +15,8 @@ int main()
 	t.read_file(f);
 	f.close();
 
-	Query q("fiery"), q2("beautiful"), q3("her");
-	Query final = (q & q2) | q3;
+	Query q("vain"), q2("näytti"), q3("Hän");
+	Query final = (q | q2) & q3;
 
 	std::set<TextQuery::line_no> s = final.eval(t);
 
