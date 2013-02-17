@@ -22,6 +22,12 @@ git clone https://github.com/ervandew/supertab.git ~/.vim/bundle/supertab
 # SnipMate
 git clone https://github.com/msanders/snipmate.vim.git ~/.vim/bundle/snipmate.vim
 
+# Vimple
+git clone https://github.com/dahu/vimple.git ~/.vim/bundle/vimple
+
+# Buffalo
+git clone https://github.com/Raimondi/vim-buffalo.git ~/.vim/bundle/vim-buffalo
+
 # Surround
 git clone https://github.com/tpope/vim-surround.git ~/.vim/bundle/vim-surround
 

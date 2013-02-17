@@ -69,8 +69,6 @@ nnoremap n :set hlsearch<CR>n
 nnoremap N :set hlsearch<CR>N
 " use <c-p> immediately on the command line
 nnoremap <C-p> :<C-p>
-" switchin' buffers fast
-nnoremap <Leader>l :ls<CR>:b<space>
 
 " insert mode mappings
 inoremap <C-U> <C-G>u<C-U>
@@ -151,6 +149,9 @@ else
 	let g:SuperTabMappingForward = '<C-@>'
 	let g:SuperTabMappingBackward = '<S-C-@>'
 endif
+
+" buffalo
+let buffalo_autoaccept = 1
 
 set directory=~/.vim/tmp/
 set backupdir=~/.vim/tmp/
