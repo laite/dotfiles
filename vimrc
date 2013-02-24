@@ -11,7 +11,7 @@ set shortmess+=I				" hide start screen
 set backspace=indent,eol,start 	" allow backspacing over everything in insert mode
 set t_Co=256					" use 256 colors
 set backup						" keep a backup file
-set history=100					" keep 50 lines of command line history
+set history=200					" keep 200 lines of command line history
 set ruler						" show the cursor position all the time
 set showcmd						" display incomplete commands
 set incsearch					" do incremental searching
@@ -23,7 +23,7 @@ set smartindent					" start new lines indented
 set nowrap						" don't wrap long lines
 set ignorecase smartcase 		" ignore case on lowcase-searches
 set number 						" row numbers
-set scrolloff=10 				" always +- 10 rows in sight
+set scrolloff=5 				" always +- 5 rows in sight
 set sidescrolloff=5				" always +- 5 columns
 set linebreak
 set showbreak=\ ->\ 
