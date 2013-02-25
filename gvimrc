@@ -6,6 +6,10 @@ set guioptions=agit
 set guicursor+=a:blinkon0
 set mousehide		" Hide the mouse when typing text
 
+" set initial size of gvim
+set lines=40
+set columns=140
+
 " we presume that gvim is mostly for coding
 " whereas vim is all-around editor
 set foldcolumn=3
@@ -58,7 +62,7 @@ if exists("+showtabline")
       let i = i + 1
     endwhile
     let s .= '%T%#TabLineFill#%='
-    let s .= (tabpagenr('$') > 1 ? '%999XX' : 'X')
+    "let s .= (tabpagenr('$') > 1 ? '%999XX' : 'X')
     return s
   endfunction
   set tabline=%!MyTabLine()
