@@ -46,6 +46,8 @@ cnoreabbrev vhelp belowright vert help
 " make ctrl-p and ctrl-n behave like Up/Down-keys on command line
 cnoremap <C-p> <Up>
 cnoremap <C-n> <Down>
+" add helpful path expander - command on active buffer
+cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 " normal mode mappings
 nnoremap <silent> <F3> :TagbarToggle<CR>
