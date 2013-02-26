@@ -55,6 +55,8 @@ nnoremap <silent> <Leader>ä :nohl<CR>
 " create empty lines and return to normal mode
 nnoremap <Leader>o o<Esc>
 nnoremap <Leader>O O<Esc>
+nnoremap <Leader><Leader>o o<ESC>kO<ESC>j
+
 " delete into abyss with öd<motion>
 nnoremap <Leader>d "_d
 " treat c-h as real backspace also in normal mode
