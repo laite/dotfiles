@@ -77,6 +77,9 @@ nnoremap <C-p> :<C-p>
 nnoremap ä `
 nnoremap ää ``
 nnoremap Ä %
+vnoremap ä `
+vnoremap ää ``
+vnoremap Ä %
 
 " insert mode mappings
 inoremap <C-U> <C-G>u<C-U>
