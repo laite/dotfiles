@@ -74,8 +74,9 @@ nnoremap N :set hlsearch<CR>N
 " use <c-p> immediately on the command line
 nnoremap <C-p> :<C-p>
 " make some use for 'ä'
-nnoremap ä %
-nnoremap Ä &
+nnoremap ä `
+nnoremap ää ``
+nnoremap Ä %
 
 " insert mode mappings
 inoremap <C-U> <C-G>u<C-U>
