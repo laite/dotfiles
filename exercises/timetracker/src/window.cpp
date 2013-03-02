@@ -371,7 +371,10 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 	 */
 	
 	_AddKeyValueToTextView("Name: ", dataItem.name);
-	_AddKeyValueToTextView("Type: ", (dataItem.continuous)? "Time" : "Instance");
+	tempValue = (dataItem.continuous)? "Time" : "Instance";
+	if (dataItem.inverse)
+		tempValue += " (Inversed)";
+	_AddKeyValueToTextView("Type: ", tempValue);
 	
 	/*
 	 *  Total
@@ -392,8 +395,8 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 	 */
 	
 	tempValue = dataItem.GetParsedStringFromDataType(dataItem.GetSurplus());
-	if (dataItem.GetSurplus() > 0)
-		_AddKeyValueToTextView("Surplus: ", tempValue, " (" + Helpers::TruncateToString(1.0*dataItem.GetSurplus()/(1.0*dataItem.goal/Helpers::GetTimeFrameModifier(dataItem.goalTimeFrame))) + " days)");
+	if ((dataItem.GetSurplus() > 0 && !dataItem.inverse) || (dataItem.GetSurplus() < 0 && dataItem.inverse))
+		_AddKeyValueToTextView("Surplus: ", tempValue, " (" + Helpers::TruncateToString(std::abs(1.0*dataItem.GetSurplus()/(1.0*dataItem.goal/Helpers::GetTimeFrameModifier(dataItem.goalTimeFrame)))) + " days)");
 	else
 		_AddKeyValueToTextView("Surplus: ", tempValue);
 	

@@ -99,7 +99,7 @@ struct DataItem
 	std::string GetParsedStringFromDataType(double) const;
 
 	// return surplus in seconds/instances
-	long GetSurplus() const;
+	double GetSurplus() const;
 
 	// get seconds elapsed since first run
 	long GetSecondsSinceFirstRun() const;

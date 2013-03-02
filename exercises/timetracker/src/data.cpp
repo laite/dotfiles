@@ -93,7 +93,7 @@ bool DataItem::HasFixedGoal() const
 	return (goalTimeFrame == Global::GOAL_TIMEFRAME_NONE);
 }
 
-long DataItem::GetSurplus() const
+double DataItem::GetSurplus() const
 {
 	double hasBeenTimeFrames;
 	
@@ -102,7 +102,7 @@ long DataItem::GetSurplus() const
 	else
 		hasBeenTimeFrames = static_cast<double>(GetSecondsSinceFirstRun())/(Helpers::GetTimeFrameModifier(goalTimeFrame)*24*60*60);
 
-	long result = GetTotal()-(goal*hasBeenTimeFrames);
+	double result = 1.0*GetTotal()-(goal*hasBeenTimeFrames);
 
 	return ((inverse)? (-result) : (result));
 }

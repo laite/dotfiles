@@ -98,16 +98,8 @@ void TreeData::PopulateRow(Gtk::TreeModel::iterator rowIter, const DataItem &dat
 	row[_columns.columnName] = dataItem.name;
 	row[_columns.columnPercentage] = dataItem.percentage;
 
-	if (dataItem.continuous)
-	{
-		row[_columns.columnTotal] = Helpers::ParseShortTime(dataItem.GetTotal());
-		row[_columns.columnSurplus] = Helpers::ParseShortTime(dataItem.GetSurplus());
-	}
-	else // dataItem !continuous
-	{
-		row[_columns.columnTotal] = std::to_string(dataItem.GetTotal());
-		row[_columns.columnSurplus] = std::to_string(dataItem.GetSurplus());
-	}
+	row[_columns.columnTotal] = dataItem.GetParsedStringFromDataType(dataItem.GetTotal());
+	row[_columns.columnSurplus] = dataItem.GetParsedStringFromDataType(dataItem.GetSurplus());
 
 	row[_columns.columnTimeFrame] = Helpers::GetTimeFrameTypeName(dataItem.goalTimeFrame);
 
