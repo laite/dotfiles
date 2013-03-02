@@ -16,6 +16,7 @@ set foldcolumn=3
 set foldmethod=syntax
 set foldnestmax=2
 set foldminlines=1
+set foldlevel=99
 
 set showtabline=2
 
