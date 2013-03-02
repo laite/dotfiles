@@ -391,7 +391,7 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 	 *  Surplus
 	 */
 	
-	tempValue = Helpers::ParseShortTime(dataItem.GetSurplus());
+	tempValue = dataItem.GetParsedStringFromDataType(dataItem.GetSurplus());
 	if (dataItem.GetSurplus() > 0)
 		_AddKeyValueToTextView("Surplus: ", tempValue, " (" + Helpers::TruncateToString(1.0*dataItem.GetSurplus()/(1.0*dataItem.goal/Helpers::GetTimeFrameModifier(dataItem.goalTimeFrame))) + " days)");
 	else
