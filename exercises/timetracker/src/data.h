@@ -55,7 +55,7 @@ struct DataItem
 	// do we count to or from, default false
 	bool inverse;
 
-	// seconds per day OR instances per day, depending on item type (bool continuous)
+	// seconds per timeframe OR instances per timeframe, depending on item type (bool continuous)
 	long goal;
 
 	// GOAL_TIMEFRAME_DAY, GOAL_TIMEFRAME_WEEK or GOAL_TIMEFRAME_MONTH for timebased, GOAL_TIMEFRAME_NONE for fixed goal

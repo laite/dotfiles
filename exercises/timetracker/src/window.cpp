@@ -365,30 +365,68 @@ void MainWindow::_UpdateStatistics(DataItem &dataItem)
 {
 	std::string tempValue; // used for formatting some values
 	_statisticTextBuffer->erase(_statisticTextBuffer->begin(), _statisticTextBuffer->end());
-
+	
+	/*
+	 *  Name & Type
+	 */
+	
 	_AddKeyValueToTextView("Name: ", dataItem.name);
 	_AddKeyValueToTextView("Type: ", (dataItem.continuous)? "Time" : "Instance");
 	
+	/*
+	 *  Total
+	 */
+	
 	if (dataItem.continuous)
 		_AddKeyValueToTextView("Total Time: ", Helpers::ParseShortTime(dataItem.GetTotal()));
-
+	
+	/*
+	 *  Average
+	 */
+	
 	tempValue = dataItem.GetParsedStringFromDataType(dataItem.GetAveragePerTimeFrame()), " per " + Helpers::GetTimeFrameTypeName(dataItem.goalTimeFrame);
 	_AddKeyValueToTextView("Average: ", tempValue, " (goal: " + dataItem.GetParsedStringFromDataType(dataItem.goal) + ")");
-
+	
+	/*
+	 *  Surplus
+	 */
+	
+	tempValue = Helpers::ParseShortTime(dataItem.GetSurplus());
+	if (dataItem.GetSurplus() > 0)
+		_AddKeyValueToTextView("Surplus: ", tempValue, " (" + Helpers::TruncateToString(1.0*dataItem.GetSurplus()/(1.0*dataItem.goal/Helpers::GetTimeFrameModifier(dataItem.goalTimeFrame))) + " days)");
+	else
+		_AddKeyValueToTextView("Surplus: ", tempValue);
+	
+	/*
+	 *  Instances / avg per instance
+	 */
+	
 	if ((dataItem.GetTimes() != 0) && (dataItem.continuous))
 		tempValue = std::string(" (about ") + Helpers::ParseShortTime(dataItem.GetTotal()/dataItem.GetTimes()) + " on average)";
 	else 
 		tempValue = "";
 	_AddKeyValueToTextView("Instances: ", std::to_string(dataItem.GetTimes()), tempValue);
-
+	
+	/*
+	 *  Time frame
+	 */
+	
 	tempValue = "per " + Helpers::GetTimeFrameTypeName(dataItem.goalTimeFrame);
 	_AddKeyValueToTextView("Time Frame: ", tempValue);
-
+	
+	/*
+	 *  First time and last time
+	 */
+	
 	if (dataItem.firstRunTime.time_since_epoch().count() != 0)
 		_AddKeyValueToTextView("First Time: ", Helpers::ParseLongTime(dataItem.firstRunTime), " (" + Helpers::GetParsedSince(dataItem.firstRunTime) + " ago)");
 	if (dataItem.lastRunTime.time_since_epoch().count() != 0)
 	_AddKeyValueToTextView("Last Time: ", Helpers::ParseLongTime(dataItem.lastRunTime), " (" + Helpers::GetParsedSince(dataItem.lastRunTime) + " ago)");
-
+	
+	/*
+	 *  Description
+	 */
+	
 	_AddKeyValueToTextView("\nDescription: ", dataItem.description);
 }
 
