@@ -19,6 +19,9 @@ class Playback
 		void StartPlayback();
 		void StopPlayback();
 
+		const std::string GetTitle() const;
+		const std::string GetArtist() const;
+
 		const gint64 GetPosition() const { return sound.GetPosition(); }
 		const gint64 GetLength() const { return sound.GetLength(); }
 

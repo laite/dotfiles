@@ -44,9 +44,11 @@ bool MainWindow::on_timer()
 {
 	if (playback.IsPlaying())
 	{
+		std::string title = playback.GetTitle();
+		std::string artist = playback.GetArtist();
 		gint64 cur = playback.GetPosition();
 		gint64 total = playback.GetLength();
-		m_label.set_text("Playing: " + std::to_string(static_cast<int>(round(cur/1000000000.0))) + "/" + std::to_string(static_cast<int>(round(total/1000000000.0))));
+		m_label.set_text("Playing: " + title + " by " + artist + " " + std::to_string(static_cast<int>(round(cur/1000000000.0))) + "/" + std::to_string(static_cast<int>(round(total/1000000000.0))));
 	}
 	else
 	{

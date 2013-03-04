@@ -17,7 +17,7 @@ Playback::Playback(Library *l)
 
 void Playback::StartPlayback()
 {
-	Glib::ustring song = library->GetCurrentSong();
+	Glib::ustring song = library->GetCurrentSongPath();
 	sound.StartPlaying(song);
 	_playing = true;
 }
@@ -59,3 +59,12 @@ bool Playback::BusWatch(const Glib::RefPtr<Gst::Bus>& bus, const Glib::RefPtr<Gs
 	return true; 
 }
 
+const std::string Playback::GetTitle() const
+{
+	return library->GetTitle();
+}
+
+const std::string Playback::GetArtist() const
+{
+	return library->GetArtist();
+}

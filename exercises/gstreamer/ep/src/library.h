@@ -9,6 +9,8 @@
 
 #include <string>
 #include <vector>
+#include <fileref.h>
+#include <tag.h>
 
 class Library 
 {
@@ -20,7 +22,11 @@ class Library
 
 		void FirstSong();
 		void NextSong();
-		std::string GetCurrentSong() const;
+
+		const std::string GetTitle() const;
+		const std::string GetArtist() const;
+
+		const std::string GetCurrentSongPath() const;
 		std::vector<std::string>::size_type GetLibrarySize() const { return _filelist.size(); }
 
 	private:

@@ -68,7 +68,7 @@ void Library::NextSong()
 		std::cout << "End of playlist" << std::endl;
 }
 
-std::string Library::GetCurrentSong() const
+const std::string Library::GetCurrentSongPath() const
 {
 	std::string result("");
 
@@ -78,3 +78,36 @@ std::string Library::GetCurrentSong() const
 	return result;
 }
 
+const std::string Library::GetTitle() const
+{
+	std::string result("");
+
+	if (_filelist.size() > _index)
+	{
+		TagLib::FileRef file(_filelist.at(_index).c_str());
+		if (!file.isNull() && file.tag())
+		{
+			TagLib::Tag *tag = file.tag();
+			result = tag->title().to8Bit();
+		}
+	}
+
+	return result;
+}
+
+const std::string Library::GetArtist() const
+{
+	std::string result("");
+
+	if (_filelist.size() > _index)
+	{
+		TagLib::FileRef file(_filelist.at(_index).c_str());
+		if (!file.isNull() && file.tag())
+		{
+			TagLib::Tag *tag = file.tag();
+			result = tag->artist().to8Bit();
+		}
+	}
+
+	return result;
+}
