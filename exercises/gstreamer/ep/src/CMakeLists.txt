@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 find_package(Boost 1.49.0 COMPONENTS system filesystem)
-find_library(TAGLIB_LIB tag PATH /usr/lib/i386-linux-gnu/)
+find_library(TAGLIB_LIB tag)
 
 include_directories(${GTKMM_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} /usr/include/taglib/)
 link_directories(${GTKMM_LIBRARY_DIRS}${Boost_LIBRARY_DIRS})
