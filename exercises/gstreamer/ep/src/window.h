@@ -16,6 +16,7 @@
 #include "library.h"
 #include "playback.h"
 #include "playlist.h"
+#include "engine.h"
 
 class MainWindow : public Gtk::Window
 {
@@ -41,9 +42,8 @@ class MainWindow : public Gtk::Window
 
 	private:
 
-		Playback playback;
-		Library library;
-		Playlist defaultPlaylist;
+		Engine player;
+		Playback *playback;
 
 		sigc::connection labelTimer;
 		

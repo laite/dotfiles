@@ -15,6 +15,11 @@ Playback::Playback()
 	backendBus->add_watch(sigc::mem_fun(*this, &Playback::BusWatch));
 }
 
+Playback::~Playback()
+{
+	StopPlayback();
+}
+
 void Playback::StartPlayback()
 {
 	Glib::ustring song = activePlaylist->GetCurrentSongPath();

@@ -12,15 +12,8 @@ MainWindow::MainWindow()
 	, m_nextSong("Next Song")
 	, m_loadButton("Load Folder")
 	, m_label("Click to play!")
+	, playback(NULL)
 {
-
-	// TODO: create separate Engine class
-	playback.SetActivePlaylist(&defaultPlaylist);
-	
-	/*
-	 *  Window thingies
-	 */
-	
 	set_border_width(10);
 
 	m_button.signal_clicked().connect(sigc::mem_fun(*this,
@@ -40,6 +33,8 @@ MainWindow::MainWindow()
 	this->add(m_box);
 
 	this->show_all();
+
+	playback = player.GetPlayback();
 }
 
 MainWindow::~MainWindow()
@@ -49,12 +44,12 @@ MainWindow::~MainWindow()
 
 bool MainWindow::on_timer()
 {
-	if (playback.IsPlaying())
+	if (playback->IsPlaying())
 	{
-		std::string title = playback.GetTitle();
-		std::string artist = playback.GetArtist();
-		gint64 cur = playback.GetPosition();
-		gint64 total = playback.GetLength();
+		std::string title = playback->GetTitle();
+		std::string artist = playback->GetArtist();
+		gint64 cur = playback->GetPosition();
+		gint64 total = playback->GetLength();
 		m_label.set_text("Playing: " + title + " by " + artist + " " + std::to_string(static_cast<int>(round(cur/1000000000.0))) + "/" + std::to_string(static_cast<int>(round(total/1000000000.0))));
 	}
 	else
@@ -66,18 +61,18 @@ bool MainWindow::on_timer()
 
 void MainWindow::on_button_clicked()
 {
-	if (playback.IsPlaying())
+	if (playback->IsPlaying())
 	{
 		if (labelTimer)
 		{
 			m_label.set_text("Stopped");
 			labelTimer.disconnect();
 		}
-		playback.StopPlayback();
+		playback->StopPlayback();
 	}
 	else
 	{
-		playback.StartPlayback();
+		playback->StartPlayback();
 		if (!labelTimer)
 			labelTimer = Glib::signal_timeout().connect(sigc::mem_fun(*this, &MainWindow::on_timer), 1000);
 	}
@@ -85,11 +80,11 @@ void MainWindow::on_button_clicked()
 
 void MainWindow::on_nextSong_clicked()
 {
-	if (playback.IsPlaying())
-		playback.StopPlayback();
+	if (playback->IsPlaying())
+		playback->StopPlayback();
 
-	playback.NextSong();
-	playback.StartPlayback();
+	playback->NextSong();
+	playback->StartPlayback();
 }
 
 void MainWindow::on_loadButton_clicked()
@@ -110,14 +105,7 @@ void MainWindow::on_loadButton_clicked()
 		{
 			std::string folderName = dialog.get_filename();
 			std::cout << "Loading folder " << folderName << std::endl;
-			library.LoadFolder(folderName);
-			// generate song list from whole library for now
-			std::vector<Song> *wholeLibrary = library.GetSongs();
-
-			for (std::vector<Song>::iterator songiter = wholeLibrary->begin();
-					songiter != wholeLibrary->end(); ++songiter)
-				defaultPlaylist.AddSong(&(*songiter));
-
+			player.AddFolderToLibrary(folderName);
 			break;
 		}
 		default:

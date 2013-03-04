@@ -10,6 +10,8 @@ add_executable(
 	ep
 	backend.cpp
 	backend.h
+	engine.cpp
+	engine.h
 	library.cpp
 	library.h
 	main.cpp

@@ -16,6 +16,7 @@ class Playback
 	public:
 
 		Playback();
+		~Playback();
 
 		void SetActivePlaylist(Playlist *p) { activePlaylist = p; }
 

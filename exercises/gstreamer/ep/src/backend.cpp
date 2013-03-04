@@ -15,7 +15,7 @@ Sound::Sound()
 
 Sound::~Sound()
 {
-	StopPlaying();
+	//StopPlaying();
 }
 
 Glib::RefPtr<Gst::Bus> Sound::GetBus() const
