@@ -10,10 +10,14 @@
 
 class Sound
 {
-	public:
+	friend class Playback;
+
+	private:
 
 		Sound();
 		~Sound();
+
+		static Gst::Format GST_FORMAT;
 
 		void StartPlaying(Glib::ustring uri);
 		void StopPlaying();
@@ -22,10 +26,6 @@ class Sound
 		const gint64 GetLength() const;
 
 		Glib::RefPtr<Gst::Bus> GetBus() const;
-
-		static Gst::Format GST_FORMAT;
-
-	private:
 
 		Glib::RefPtr<Gst::Element> m_playbin;
 };
