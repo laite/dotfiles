@@ -7,16 +7,15 @@
 #include "library.h"
 #include <boost/filesystem.hpp>
 
-namespace fs = boost::filesystem;
-
 Library::Library()
-	: _index(0)
 {
 
 }
 
 void Library::LoadFolder(std::string s)
 {
+	namespace fs = boost::filesystem;
+
 	fs::path p(s);
 
 	if (!fs::is_directory(p))
@@ -46,68 +45,11 @@ void Library::LoadFolder(std::string s)
 		if (newFiles.size())
 		{
 			std::sort(newFiles.begin(), newFiles.end());
-			std::cout << "Replaced filelist with " << newFiles.size() << " items." << std::endl;
-			_filelist = newFiles;
-			FirstSong(); // reset _index
+			std::cout << "Replaced library with " << newFiles.size() << " items." << std::endl;
+
+			for (std::vector<std::string>::iterator iter = newFiles.begin();
+					iter != newFiles.end(); ++iter)
+				songs.push_back(Song(*iter));
 		}
 	}
-}
-
-void Library::FirstSong()
-{
-	_index = 0;
-}
-
-void Library::NextSong()
-{
-	if (_index < (_filelist.size()-1))
-		++_index;
-	else if (_wrap)
-		_index = 0;
-	else
-		std::cout << "End of playlist" << std::endl;
-}
-
-const std::string Library::GetCurrentSongPath() const
-{
-	std::string result("");
-
-	if (_filelist.size() > _index)
-		result = _filelist.at(_index);
-
-	return result;
-}
-
-const std::string Library::GetTitle() const
-{
-	std::string result("");
-
-	if (_filelist.size() > _index)
-	{
-		TagLib::FileRef file(_filelist.at(_index).c_str());
-		if (!file.isNull() && file.tag())
-		{
-			TagLib::Tag *tag = file.tag();
-			result = tag->title().to8Bit();
-		}
-	}
-
-	return result;
-}
-
-const std::string Library::GetArtist() const
-{
-	std::string result("");
-
-	if (_filelist.size() > _index)
-	{
-		TagLib::FileRef file(_filelist.at(_index).c_str());
-		if (!file.isNull() && file.tag())
-		{
-			TagLib::Tag *tag = file.tag();
-			result = tag->artist().to8Bit();
-		}
-	}
-
-	return result;
 }

@@ -9,12 +9,15 @@
 
 #include "backend.h"
 #include "library.h"
+#include "playlist.h"
 
 class Playback 
 {
 	public:
 
-		explicit Playback(Library *l);
+		Playback();
+
+		void SetActivePlaylist(Playlist *p) { activePlaylist = p; }
 
 		void StartPlayback();
 		void StopPlayback();
@@ -36,7 +39,7 @@ class Playback
 		Sound sound;
 		Glib::RefPtr<Gst::Bus> backendBus;
 
-		Library *library;
+		Playlist *activePlaylist;
 
 		bool _playing;
 		

@@ -12,6 +12,19 @@
 #include <fileref.h>
 #include <tag.h>
 
+class Song 
+{
+	public:
+
+		Song(std::string s): uri(s) { }
+
+		const std::string GetUri() const { return uri; }
+
+	private:
+
+		std::string uri;
+};
+
 class Library 
 {
 	public:
@@ -20,21 +33,11 @@ class Library
 
 		void LoadFolder(std::string);
 
-		void FirstSong();
-		void NextSong();
-
-		const std::string GetTitle() const;
-		const std::string GetArtist() const;
-
-		const std::string GetCurrentSongPath() const;
-		std::vector<std::string>::size_type GetLibrarySize() const { return _filelist.size(); }
+		std::vector<Song> *GetSongs() { return &songs;}
 
 	private:
 
-		std::vector<std::string>::size_type _index;
-		std::vector<std::string> _filelist;
-		
-		bool _wrap; // do we repeat from beginning
+		std::vector<Song> songs;
 };
 
 #endif /* end LIBRARY_H */

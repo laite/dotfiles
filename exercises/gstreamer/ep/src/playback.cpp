@@ -6,9 +6,9 @@
 
 #include "playback.h"
 
-Playback::Playback(Library *l)
-	: library(l)
-	, _playing(false)
+Playback::Playback()
+	: _playing(false)
+	, activePlaylist(NULL)
 {
 	// get bus watch from backend
 	backendBus= sound.GetBus();
@@ -17,7 +17,7 @@ Playback::Playback(Library *l)
 
 void Playback::StartPlayback()
 {
-	Glib::ustring song = library->GetCurrentSongPath();
+	Glib::ustring song = activePlaylist->GetCurrentSongPath();
 	sound.StartPlaying(song);
 	_playing = true;
 }
@@ -34,7 +34,7 @@ void Playback::StopPlayback()
 
 void Playback::NextSong()
 {
-	library->NextSong();
+	activePlaylist->NextSong();
 }
 
 bool Playback::BusWatch(const Glib::RefPtr<Gst::Bus>& bus, const Glib::RefPtr<Gst::Message>& message)
@@ -61,10 +61,10 @@ bool Playback::BusWatch(const Glib::RefPtr<Gst::Bus>& bus, const Glib::RefPtr<Gs
 
 const std::string Playback::GetTitle() const
 {
-	return library->GetTitle();
+	return activePlaylist->GetTitle();
 }
 
 const std::string Playback::GetArtist() const
 {
-	return library->GetArtist();
+	return activePlaylist->GetArtist();
 }

@@ -12,8 +12,15 @@ MainWindow::MainWindow()
 	, m_nextSong("Next Song")
 	, m_loadButton("Load Folder")
 	, m_label("Click to play!")
-	, playback(&library)
 {
+
+	// TODO: create separate Engine class
+	playback.SetActivePlaylist(&defaultPlaylist);
+	
+	/*
+	 *  Window thingies
+	 */
+	
 	set_border_width(10);
 
 	m_button.signal_clicked().connect(sigc::mem_fun(*this,
@@ -104,6 +111,13 @@ void MainWindow::on_loadButton_clicked()
 			std::string folderName = dialog.get_filename();
 			std::cout << "Loading folder " << folderName << std::endl;
 			library.LoadFolder(folderName);
+			// generate song list from whole library for now
+			std::vector<Song> *wholeLibrary = library.GetSongs();
+
+			for (std::vector<Song>::iterator songiter = wholeLibrary->begin();
+					songiter != wholeLibrary->end(); ++songiter)
+				defaultPlaylist.AddSong(&(*songiter));
+
 			break;
 		}
 		default:
