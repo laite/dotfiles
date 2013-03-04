@@ -28,6 +28,9 @@ git clone https://github.com/dahu/vimple.git ~/.vim/bundle/vimple
 # Buffalo
 git clone https://github.com/Raimondi/vim-buffalo.git ~/.vim/bundle/vim-buffalo
 
+# a.vim
+git clone https://github.com/vim-scripts/a.vim.git ~/.vim/bundle/a.vim
+
 # Surround
 git clone https://github.com/tpope/vim-surround.git ~/.vim/bundle/vim-surround
 

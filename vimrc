@@ -39,7 +39,8 @@ set foldminlines=1
 let mapleader = "ö"
 map <S-Insert> <MiddleMouse>
 map! <S-Insert> <MiddleMouse>
-map <F4> :sp %:p:s,.h$,.X123X,:s,.cpp$,.h,:s,.X123X$,.cpp,<CR>
+map <Leader>h :A<CR>
+map <F4> :AS<CR>
 
 " commandline mappings
 cnoreabbrev vhelp belowright vert help
