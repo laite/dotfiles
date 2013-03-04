@@ -62,6 +62,10 @@ void Library::NextSong()
 {
 	if (_index < (_filelist.size()-1))
 		++_index;
+	else if (_wrap)
+		_index = 0;
+	else
+		std::cout << "End of playlist" << std::endl;
 }
 
 std::string Library::GetCurrentSong() const

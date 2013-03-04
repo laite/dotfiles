@@ -12,27 +12,24 @@ class Sound
 {
 	public:
 
-		Sound(Library *l);
+		Sound();
 		~Sound();
 
-		void start_playing();
-		void stop_playing();
+		void StartPlaying(Glib::ustring uri);
+		void StopPlaying();
 
-		gint64 get_position();
-		gint64 get_length();
-		bool is_playing() const { return _playback_on; }
+		const gint64 GetPosition() const;
+		const gint64 GetLength() const;
 
 		static Gst::Format GST_FORMAT;
 
+		// TODO: move bus to Playback
 		bool bus_watch(const Glib::RefPtr<Gst::Bus>& bus, const Glib::RefPtr<Gst::Message>& message);
+
 	private:
 
 		Glib::RefPtr<Gst::Element> m_playbin;
 		Glib::RefPtr<Gst::Bus> m_bus;
-
-		Library *_library;
-
-		bool _playback_on;
 };
 
 #endif /* end BACKEND_H */

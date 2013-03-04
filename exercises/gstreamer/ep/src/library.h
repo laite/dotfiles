@@ -28,6 +28,7 @@ class Library
 		std::vector<std::string>::size_type _index;
 		std::vector<std::string> _filelist;
 		
+		bool _wrap; // do we repeat from beginning
 };
 
 #endif /* end LIBRARY_H */

@@ -11,6 +11,8 @@ add_executable(ep
 	library.cpp
 	library.h
 	main.cpp
+	playback.cpp
+	playback.h
 	window.cpp
 	window.h
 	)

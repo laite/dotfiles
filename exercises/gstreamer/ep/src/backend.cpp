@@ -8,9 +8,7 @@
 
 Gst::Format Sound::GST_FORMAT = Gst::FORMAT_TIME;
 
-Sound::Sound(Library *l)
-	: _playback_on(false)
-	, _library(l)
+Sound::Sound()
 {
 	m_playbin = Gst::ElementFactory::create_element("playbin2", "play");
 	m_bus = m_playbin->get_bus();
@@ -23,8 +21,7 @@ Sound::Sound(Library *l)
 
 Sound::~Sound()
 {
-	if (_playback_on)
-		stop_playing();
+	StopPlaying();
 }
 
 bool Sound::bus_watch(const Glib::RefPtr<Gst::Bus>& bus, const Glib::RefPtr<Gst::Message>& message)
@@ -34,13 +31,13 @@ bool Sound::bus_watch(const Glib::RefPtr<Gst::Bus>& bus, const Glib::RefPtr<Gst:
 		case Gst::MESSAGE_EOS:
 			{
 				std::cout << "End of stream reached." << std::endl;
-				stop_playing();
+				StopPlaying();
 				break;
 			}
 		case Gst::MESSAGE_ERROR:
 			{
 				std::cout << "ERROR in stream!" << std::endl;
-				stop_playing();
+				StopPlaying();
 				break;
 			}
 		default:
@@ -49,10 +46,8 @@ bool Sound::bus_watch(const Glib::RefPtr<Gst::Bus>& bus, const Glib::RefPtr<Gst:
 	return true; 
 }
 
-void Sound::start_playing()
+void Sound::StartPlaying(Glib::ustring uri)
 {
-	Glib::ustring uri = _library->GetCurrentSong();
-
 	if (uri == "")
 	{
 		std::cerr << "No song available from the library!" << std::endl;
@@ -67,21 +62,19 @@ void Sound::start_playing()
 	m_playbin->set_property("uri", uri);
 	m_playbin->set_property("volume", 0.05);
 	m_playbin->set_state(Gst::STATE_PLAYING);
-	_playback_on = true;
 
 	double vol; 
 	m_playbin->get_property("volume", vol);
 	std::cout << "vol: " << vol << std::endl;
 }
 
-void Sound::stop_playing()
+void Sound::StopPlaying()
 {
 	std::cout << "Stopping playback." << std::endl;
-	_playback_on = false;
 	m_playbin->set_state(Gst::STATE_NULL);
 }
 
-gint64 Sound::get_position()
+const gint64 Sound::GetPosition() const
 {
 	gint64 position;
 	m_playbin->query_position(Sound::GST_FORMAT, position);
@@ -89,7 +82,7 @@ gint64 Sound::get_position()
 	return position;
 }
 
-gint64 Sound::get_length()
+const gint64 Sound::GetLength() const
 {
 	gint64 length;
 	m_playbin->query_duration(Sound::GST_FORMAT, length);

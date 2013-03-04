@@ -12,7 +12,7 @@ MainWindow::MainWindow()
 	, m_nextSong("Next Song")
 	, m_loadButton("Load Folder")
 	, m_label("Click to play!")
-	, sound(&library)
+	, playback(&library)
 {
 	set_border_width(10);
 
@@ -42,10 +42,10 @@ MainWindow::~MainWindow()
 
 bool MainWindow::on_timer()
 {
-	if (sound.is_playing())
+	if (playback.IsPlaying())
 	{
-		gint64 cur = sound.get_position();
-		gint64 total = sound.get_length();
+		gint64 cur = playback.GetPosition();
+		gint64 total = playback.GetLength();
 		m_label.set_text("Playing: " + std::to_string(static_cast<int>(round(cur/1000000000.0))) + "/" + std::to_string(static_cast<int>(round(total/1000000000.0))));
 	}
 	else
@@ -57,18 +57,18 @@ bool MainWindow::on_timer()
 
 void MainWindow::on_button_clicked()
 {
-	if (sound.is_playing())
+	if (playback.IsPlaying())
 	{
 		if (labelTimer)
 		{
 			m_label.set_text("Stopped");
 			labelTimer.disconnect();
 		}
-		sound.stop_playing();
+		playback.StopPlayback();
 	}
 	else
 	{
-		sound.start_playing();
+		playback.StartPlayback();
 		if (!labelTimer)
 			labelTimer = Glib::signal_timeout().connect(sigc::mem_fun(*this, &MainWindow::on_timer), 1000);
 	}
@@ -76,11 +76,11 @@ void MainWindow::on_button_clicked()
 
 void MainWindow::on_nextSong_clicked()
 {
-	if (sound.is_playing())
-		sound.stop_playing();
+	if (playback.IsPlaying())
+		playback.StopPlayback();
 
-	library.NextSong();
-	sound.start_playing();
+	playback.NextSong();
+	playback.StartPlayback();
 }
 
 void MainWindow::on_loadButton_clicked()

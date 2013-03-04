@@ -14,6 +14,7 @@
 
 #include "backend.h"
 #include "library.h"
+#include "playback.h"
 
 class MainWindow : public Gtk::Window
 {
@@ -39,7 +40,7 @@ class MainWindow : public Gtk::Window
 
 	private:
 
-		Sound sound;
+		Playback playback;
 		Library library;
 
 		sigc::connection labelTimer;
