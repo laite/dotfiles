@@ -11,12 +11,6 @@ Gst::Format Sound::GST_FORMAT = Gst::FORMAT_TIME;
 Sound::Sound()
 {
 	m_playbin = Gst::ElementFactory::create_element("playbin2", "play");
-	m_bus = m_playbin->get_bus();
-
-	guint bus_result = m_bus->add_watch(sigc::mem_fun(*this,
-								&Sound::bus_watch));
-
-	std::cout << "bus_result: " << bus_result << std::endl;
 }
 
 Sound::~Sound()
@@ -24,26 +18,9 @@ Sound::~Sound()
 	StopPlaying();
 }
 
-bool Sound::bus_watch(const Glib::RefPtr<Gst::Bus>& bus, const Glib::RefPtr<Gst::Message>& message)
+Glib::RefPtr<Gst::Bus> Sound::GetBus() const
 {
-	switch (message->get_message_type())
-	{
-		case Gst::MESSAGE_EOS:
-			{
-				std::cout << "End of stream reached." << std::endl;
-				StopPlaying();
-				break;
-			}
-		case Gst::MESSAGE_ERROR:
-			{
-				std::cout << "ERROR in stream!" << std::endl;
-				StopPlaying();
-				break;
-			}
-		default:
-			break;
-	}
-	return true; 
+	return m_playbin->get_bus();
 }
 
 void Sound::StartPlaying(Glib::ustring uri)

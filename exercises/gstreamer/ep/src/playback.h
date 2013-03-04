@@ -28,7 +28,11 @@ class Playback
 
 	private:
 
+		bool BusWatch(const Glib::RefPtr<Gst::Bus>&, const Glib::RefPtr<Gst::Message>&);
+
 		Sound sound;
+		Glib::RefPtr<Gst::Bus> backendBus;
+
 		Library *library;
 
 		bool _playing;
