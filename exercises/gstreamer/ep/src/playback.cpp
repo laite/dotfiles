@@ -64,12 +64,7 @@ bool Playback::BusWatch(const Glib::RefPtr<Gst::Bus>& bus, const Glib::RefPtr<Gs
 	return true; 
 }
 
-const std::string Playback::GetTitle() const
+const Song* Playback::GetCurrentSong() const
 {
-	return activePlaylist->GetTitle();
-}
-
-const std::string Playback::GetArtist() const
-{
-	return activePlaylist->GetArtist();
+	return activePlaylist->GetCurrentSong();
 }

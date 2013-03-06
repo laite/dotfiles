@@ -5,6 +5,7 @@
  */
 
 #include "library.h"
+#include "song.h"
 #include <boost/filesystem.hpp>
 
 Library::Library()
@@ -49,7 +50,9 @@ void Library::LoadFolder(std::string s)
 
 			for (std::vector<std::string>::iterator iter = newFiles.begin();
 					iter != newFiles.end(); ++iter)
-				songs.push_back(Song(*iter));
+				{
+					songs.push_back(Song(*iter));
+				}
 		}
 	}
 }

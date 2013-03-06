@@ -12,18 +12,7 @@
 #include <fileref.h>
 #include <tag.h>
 
-class Song 
-{
-	public:
-
-		Song(std::string s): uri(s) { }
-
-		const std::string GetUri() const { return uri; }
-
-	private:
-
-		std::string uri;
-};
+#include "song.h"
 
 class Library 
 {

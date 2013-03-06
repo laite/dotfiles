@@ -9,21 +9,23 @@
 
 #include <vector>
 #include "library.h"
+#include "song.h"
 
 class Playlist 
 {
 	public:
 
+		typedef std::vector<Song*>::size_type playlist_index;
 		Playlist();
 
 		void FirstSong();
 		void NextSong();
 
-		const std::string GetTitle() const;
-		const std::string GetArtist() const;
+		const Song *GetCurrentSong() const { return GetSong(_index); }
+		const Song *GetSong(playlist_index index) const;
 
 		const std::string GetCurrentSongPath() const;
-		std::vector<std::string>::size_type GetLibrarySize() const { return songlist.size(); }
+		playlist_index GetLibrarySize() const { return songlist.size(); }
 
 		void AddSong(Song *s) { songlist.push_back(s); }
 
@@ -31,7 +33,7 @@ class Playlist
 
 		std::vector<Song*> songlist;
 
-		std::vector<Song*>::size_type _index;
+		playlist_index _index;
 		bool _wrap;
 		
 };

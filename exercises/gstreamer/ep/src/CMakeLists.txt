@@ -19,6 +19,8 @@ add_executable(
 	playback.h
 	playlist.cpp
 	playlist.h
+	song.cpp
+	song.h
 	window.cpp
 	window.h
 )

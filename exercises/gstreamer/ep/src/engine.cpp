@@ -24,9 +24,8 @@ void Engine::AddFolderToLibrary(std::string s)
 	// generate song list from whole library for now
 	std::vector<Song> *wholeLibrary = library.GetSongs();
 
-	for (std::vector<Song>::iterator songiter = wholeLibrary->begin();
-			songiter != wholeLibrary->end(); ++songiter)
-		_playlists.at(0)->AddSong(&(*songiter));
+	for (std::vector<Song>::size_type i = 0; i != wholeLibrary->size(); ++i)
+		_playlists.at(0)->AddSong(&wholeLibrary->at(i));
 
 }
 

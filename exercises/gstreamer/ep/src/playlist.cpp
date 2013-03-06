@@ -37,36 +37,8 @@ const std::string Playlist::GetCurrentSongPath() const
 	return result;
 }
 
-const std::string Playlist::GetTitle() const
+const Song *Playlist::GetSong(Playlist::playlist_index index) const
 {
-	std::string result("");
-
-	if (songlist.size() > _index)
-	{
-		TagLib::FileRef file(songlist.at(_index)->GetUri().c_str());
-		if (!file.isNull() && file.tag())
-		{
-			TagLib::Tag *tag = file.tag();
-			result = tag->title().to8Bit();
-		}
-	}
-
-	return result;
+	return songlist.at(index);
 }
 
-const std::string Playlist::GetArtist() const
-{
-	std::string result("");
-
-	if (songlist.size() > _index)
-	{
-		TagLib::FileRef file(songlist.at(_index)->GetUri().c_str());
-		if (!file.isNull() && file.tag())
-		{
-			TagLib::Tag *tag = file.tag();
-			result = tag->artist().to8Bit();
-		}
-	}
-
-	return result;
-}
