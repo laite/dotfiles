@@ -28,13 +28,15 @@ class Playback
 		const gint64 GetPosition() const { return sound.GetPosition(); }
 		const gint64 GetLength() const { return sound.GetLength(); }
 
-		void NextSong();
+		bool NextSong();
 
 		const bool IsPlaying() const { return _playing; }
 
 	private:
 
 		bool BusWatch(const Glib::RefPtr<Gst::Bus>&, const Glib::RefPtr<Gst::Message>&);
+
+		void EndOfStream();
 
 		Sound sound;
 		Glib::RefPtr<Gst::Bus> backendBus;

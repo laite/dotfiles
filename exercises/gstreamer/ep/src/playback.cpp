@@ -39,9 +39,16 @@ void Playback::StopPlayback()
 	_playing = false;
 }
 
-void Playback::NextSong()
+bool Playback::NextSong()
 {
-	activePlaylist->NextSong();
+	return activePlaylist->NextSong();
+}
+
+void Playback::EndOfStream()
+{
+	StopPlayback();
+	if (NextSong())
+		StartPlayback();
 }
 
 bool Playback::BusWatch(const Glib::RefPtr<Gst::Bus>& bus, const Glib::RefPtr<Gst::Message>& message)
@@ -51,7 +58,7 @@ bool Playback::BusWatch(const Glib::RefPtr<Gst::Bus>& bus, const Glib::RefPtr<Gs
 		case Gst::MESSAGE_EOS:
 			{
 				std::cout << "End of stream reached." << std::endl;
-				StopPlayback();
+				EndOfStream();
 				break;
 			}
 		case Gst::MESSAGE_ERROR:
