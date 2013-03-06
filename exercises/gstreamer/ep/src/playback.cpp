@@ -22,19 +22,21 @@ Playback::~Playback()
 
 void Playback::StartPlayback()
 {
-	Glib::ustring song = activePlaylist->GetCurrentSongPath();
-	sound.StartPlaying(song);
+	if (_playing)
+		StopPlayback();
+
+	Glib::ustring uri = activePlaylist->GetCurrentSong()->GetUri();
+	sound.StartPlaying(uri);
 	_playing = true;
 }
 
 void Playback::StopPlayback()
 {
-	if (_playing)
-	{
-		sound.StopPlaying();
-		_playing = false;
-	}
+	if (!_playing)
+		return;
 
+	sound.StopPlaying();
+	_playing = false;
 }
 
 void Playback::NextSong()

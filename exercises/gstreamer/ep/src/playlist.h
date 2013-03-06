@@ -18,14 +18,18 @@ class Playlist
 		typedef std::vector<Song*>::size_type playlist_index;
 		Playlist();
 
-		void FirstSong();
-		void NextSong();
+		bool SelectSong(playlist_index);
+
+		void FirstSong() { SelectSong(0); }
+		bool PreviousSong() { return SelectSong(_index - 1); }
+		bool NextSong() { return SelectSong(_index + 1); }
 
 		const Song *GetCurrentSong() const { return GetSong(_index); }
+
+		// returns NULL if index is out of bounds
 		const Song *GetSong(playlist_index index) const;
 
-		const std::string GetCurrentSongPath() const;
-		playlist_index GetLibrarySize() const { return songlist.size(); }
+		playlist_index GetSize() const { return songlist.size(); }
 
 		void AddSong(Song *s) { songlist.push_back(s); }
 
