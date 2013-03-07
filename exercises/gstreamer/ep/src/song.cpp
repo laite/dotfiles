@@ -18,7 +18,7 @@ Song::Song(Glib::ustring address)
 		_title = tag->title().to8Bit();
 	}
 	else
-		std::cout << "No tag found! " << uri << std::endl;
+		Global::Log.Add("No tag found! " + uri);
 }
 
 const std::string Song::Query(Glib::ustring querytext) const

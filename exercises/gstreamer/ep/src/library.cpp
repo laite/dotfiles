@@ -26,7 +26,7 @@ void Library::LoadFolder(std::string s)
 	}
 	else
 	{
-		std::cout << "p is indeed a directory." << std::endl;
+		Global::Log.Add("p is indeed a directory.");
 		std::vector<fs::path> files;
 		std::copy(fs::directory_iterator(p), fs::directory_iterator(), std::back_inserter(files));
 
@@ -46,7 +46,7 @@ void Library::LoadFolder(std::string s)
 		if (newFiles.size())
 		{
 			std::sort(newFiles.begin(), newFiles.end());
-			std::cout << "Replaced library with " << newFiles.size() << " items." << std::endl;
+			Global::Log.Add("Replaced library with " + std::to_string(newFiles.size()) + " items.");
 
 			for (std::vector<std::string>::iterator iter = newFiles.begin();
 					iter != newFiles.end(); ++iter)

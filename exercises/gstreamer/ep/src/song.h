@@ -11,6 +11,8 @@
 #include <fileref.h>
 #include <tag.h>
 
+#include "global.h"
+
 class Song 
 {
 	public:

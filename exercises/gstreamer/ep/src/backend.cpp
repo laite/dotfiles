@@ -35,19 +35,19 @@ void Sound::StartPlaying(Glib::ustring uri)
 		uri = "file://" + uri;
 	}
 
-	std::cout << "Starting playback." << std::endl;
+	Global::Log.Add("Starting playback.");
 	m_playbin->set_property("uri", uri);
 	m_playbin->set_property("volume", 0.05);
 	m_playbin->set_state(Gst::STATE_PLAYING);
 
 	double vol; 
 	m_playbin->get_property("volume", vol);
-	std::cout << "vol: " << vol << std::endl;
+	Global::Log.Add("vol: " + std::to_string(vol));
 }
 
 void Sound::StopPlaying()
 {
-	std::cout << "Stopping playback." << std::endl;
+	Global::Log.Add("Stopping playback.");
 	m_playbin->set_state(Gst::STATE_NULL);
 }
 

@@ -8,6 +8,7 @@
 #include "global.h"
 
 bool Global::debugMode = true;
+LogClass Global::Log;
 
 int main(int argc, char* argv[]) 
 {

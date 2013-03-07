@@ -39,7 +39,7 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
-	std::cout << "Goodbye!" << std::endl;
+	Global::Log.Add("Goodbye!");
 }
 
 bool MainWindow::on_timer()
@@ -103,13 +103,13 @@ void MainWindow::on_loadButton_clicked()
 		case (Gtk::RESPONSE_OK):
 		{
 			std::string folderName = dialog.get_filename();
-			std::cout << "Loading folder " << folderName << std::endl;
+			Global::Log.Add("Loading folder " + folderName);
 			player.AddFolderToLibrary(folderName);
 			break;
 		}
 		default:
 		{
-			std::cout << "Cancelling whole deal." << std::endl;
+			Global::Log.Add("Cancelling whole deal.");
 			break;
 		}
 		

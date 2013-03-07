@@ -57,13 +57,13 @@ bool Playback::BusWatch(const Glib::RefPtr<Gst::Bus>& bus, const Glib::RefPtr<Gs
 	{
 		case Gst::MESSAGE_EOS:
 			{
-				std::cout << "End of stream reached." << std::endl;
+				Global::Log.Add("End of stream reached.");
 				EndOfStream();
 				break;
 			}
 		case Gst::MESSAGE_ERROR:
 			{
-				std::cout << "ERROR in stream!" << std::endl;
+				Global::Log.Add("ERROR in stream!");
 				StopPlayback();
 				break;
 			}

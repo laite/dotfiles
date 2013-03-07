@@ -13,6 +13,7 @@
 #include <tag.h>
 
 #include "song.h"
+#include "global.h"
 
 class Library 
 {
