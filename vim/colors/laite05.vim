@@ -20,7 +20,7 @@ hi TabLineFill	gui=none guifg=black   guibg=#f0f0f0
 hi LineNr 		gui=none guifg=#999999 guibg=#dddddd 
 hi FoldColumn	gui=none guifg=#999999 guibg=#f0f0f0
 
-hi StatusLine   gui=none guibg=#c8c9da guifg=#333333
+hi StatusLine   gui=none guibg=#9899ea guifg=#333333
 hi StatusLineNC gui=none guibg=#bbbbbb guifg=white
 hi VertSplit    gui=none guibg=#333333 guifg=#999999
 hi Folded		gui=none guibg=#dddddd guifg=#999999
