@@ -12,6 +12,8 @@ add_executable(
 	backend.h
 	engine.cpp
 	engine.h
+	global.cpp
+	global.h
 	library.cpp
 	library.h
 	main.cpp

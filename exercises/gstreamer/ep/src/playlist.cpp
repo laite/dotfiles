@@ -7,7 +7,7 @@
 #include "playlist.h"
 
 Playlist::Playlist()
-	: _index(0)
+	: _currentSong(0)
 {
 
 }
@@ -22,10 +22,12 @@ const Song *Playlist::GetSong(Playlist::playlist_index index) const
 
 bool Playlist::SelectSong(playlist_index newIndex)
 {
+	int repeat = Global::options.GetAppOptions().repeatMode;
+
 	if (newIndex < songlist.size())
-		_index = newIndex;
-	else if (newIndex == songlist.size() && _wrap) // wrap around the list
-		_index = 0;
+		_currentSong = newIndex;
+	else if ((newIndex == songlist.size()) && (repeat == AppOptions::REPEAT_ALL)) // wrap around the list
+		_currentSong = 0;
 	else
 		return false;
 

@@ -10,6 +10,7 @@
 #include <vector>
 #include "library.h"
 #include "song.h"
+#include "global.h"
 
 class Playlist 
 {
@@ -21,10 +22,10 @@ class Playlist
 		bool SelectSong(playlist_index);
 
 		void FirstSong() { SelectSong(0); }
-		bool PreviousSong() { return SelectSong(_index - 1); }
-		bool NextSong() { return SelectSong(_index + 1); }
+		bool PreviousSong() { return SelectSong(_currentSong - 1); }
+		bool NextSong() { return SelectSong(_currentSong + 1); }
 
-		const Song *GetCurrentSong() const { return GetSong(_index); }
+		const Song *GetCurrentSong() const { return GetSong(_currentSong); }
 
 		// returns NULL if index is out of bounds
 		const Song *GetSong(playlist_index index) const;
@@ -37,9 +38,7 @@ class Playlist
 
 		std::vector<Song*> songlist;
 
-		playlist_index _index;
-		bool _wrap;
-		
+		playlist_index _currentSong;
 };
 
 

@@ -5,10 +5,12 @@
 
 #include "backend.h"
 #include "window.h"
+#include "global.h"
+
+bool Global::debugMode = true;
 
 int main(int argc, char* argv[]) 
 {
-
 	Gst::init(); 
 
 	Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(argc, argv, "org.gtkmm.ep");
