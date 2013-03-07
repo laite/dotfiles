@@ -23,9 +23,11 @@ const Song *Playlist::GetSong(Playlist::playlist_index index) const
 bool Playlist::SelectSong(playlist_index newIndex)
 {
 	if (newIndex < songlist.size())
-		return (( _index = newIndex ));
+		_index = newIndex;
 	else if (newIndex == songlist.size() && _wrap) // wrap around the list
-		return (( _index = 0 ));
+		_index = 0;
 	else
 		return false;
+
+	return true;
 }
