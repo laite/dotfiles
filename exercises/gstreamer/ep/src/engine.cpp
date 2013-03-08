@@ -16,16 +16,3 @@ Engine::Engine()
 	playback.SetActivePlaylist(_playlists.at(_currentPlaylist));
 }
 
-void Engine::AddFolderToLibrary(std::string s)
-{
-	// TODO: add instead of replace
-	library.LoadFolder(s);
-
-	// generate song list from whole library for now
-	std::vector<Song> *wholeLibrary = library.GetSongs();
-
-	for (std::vector<Song>::size_type i = 0; i != wholeLibrary->size(); ++i)
-		_playlists.at(0)->AddSong(&wholeLibrary->at(i));
-
-}
-

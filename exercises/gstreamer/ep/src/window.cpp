@@ -34,7 +34,8 @@ MainWindow::MainWindow()
 
 	this->show_all();
 
-	playback = player.GetPlayback();
+	playback = Global::player.GetPlayback();
+	playback->Init();
 }
 
 MainWindow::~MainWindow()
@@ -104,7 +105,9 @@ void MainWindow::on_loadButton_clicked()
 		{
 			std::string folderName = dialog.get_filename();
 			Global::Log.Add("Loading folder " + folderName);
-			player.AddFolderToLibrary(folderName);
+			Global::player.GetLibrary()->LoadFolder(folderName);
+			Global::Log.Add("Sending query to current playlist");
+			Global::player.GetCurrentPlaylist()->AddQuery("*");
 			break;
 		}
 		default:

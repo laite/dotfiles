@@ -17,8 +17,9 @@ class Engine
 
 		Engine();
 
-		void AddFolderToLibrary(std::string s);
 		Playback *GetPlayback() { return &playback; }
+		Playlist *GetCurrentPlaylist() { return _playlists[_currentPlaylist]; }
+		Library *GetLibrary() { return &library; }
 
 	private:
 

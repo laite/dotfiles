@@ -10,14 +10,20 @@ Playback::Playback()
 	: _playing(false)
 	, activePlaylist(NULL)
 {
-	// get bus watch from backend
-	backendBus= sound.GetBus();
-	backendBus->add_watch(sigc::mem_fun(*this, &Playback::BusWatch));
+
 }
 
 Playback::~Playback()
 {
 	StopPlayback();
+}
+
+void Playback::Init()
+{
+	sound.CreatePlaybin();
+	// get bus watch from backend
+	backendBus = sound.GetBus();
+	backendBus->add_watch(sigc::mem_fun(*this, &Playback::BusWatch));
 }
 
 void Playback::StartPlayback()

@@ -18,6 +18,8 @@ class Sound
 		Sound();
 		~Sound();
 
+		void CreatePlaybin();
+
 		static Gst::Format GST_FORMAT;
 
 		void StartPlaying(Glib::ustring uri);

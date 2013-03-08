@@ -8,6 +8,10 @@
 #define PLAYLIST_H
 
 #include <vector>
+#include <string>
+#include <iostream>
+#include <fstream>
+
 #include "library.h"
 #include "song.h"
 #include "global.h"
@@ -18,6 +22,9 @@ class Playlist
 
 		typedef std::vector<Song*>::size_type playlist_index;
 		Playlist();
+
+		void LoadFromFile(std::string&);
+		void SaveToFile(std::string&) const;
 
 		bool SelectSong(playlist_index);
 
@@ -30,13 +37,14 @@ class Playlist
 		// returns NULL if index is out of bounds
 		const Song *GetSong(playlist_index index) const;
 
-		playlist_index GetSize() const { return songlist.size(); }
+		playlist_index GetSize() const { return _songlist.size(); }
 
-		void AddSong(Song *s) { songlist.push_back(s); }
+		void AddSong(Song *s) { _songlist.push_back(s); }
+		void AddQuery(std::string);
 
 	private:
 
-		std::vector<Song*> songlist;
+		std::vector<Song*> _songlist;
 
 		playlist_index _currentSong;
 };

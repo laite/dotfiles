@@ -18,6 +18,8 @@ class Playback
 		Playback();
 		~Playback();
 
+		void Init();
+
 		void SetActivePlaylist(Playlist *p) { activePlaylist = p; }
 
 		void StartPlayback();
@@ -44,7 +46,6 @@ class Playback
 		Playlist *activePlaylist;
 
 		bool _playing;
-		
 };
 
 

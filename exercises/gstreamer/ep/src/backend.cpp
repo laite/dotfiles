@@ -10,12 +10,17 @@ Gst::Format Sound::GST_FORMAT = Gst::FORMAT_TIME;
 
 Sound::Sound()
 {
-	m_playbin = Gst::ElementFactory::create_element("playbin2", "play");
+	
 }
 
 Sound::~Sound()
 {
 	//StopPlaying();
+}
+
+void Sound::CreatePlaybin()
+{
+	m_playbin = Gst::ElementFactory::create_element("playbin2", "play");
 }
 
 Glib::RefPtr<Gst::Bus> Sound::GetBus() const

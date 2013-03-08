@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 
+class Engine;
+
 struct AppOptions
 {
 	// repeat mode
@@ -27,13 +29,18 @@ class Options
 		Options();
 		~Options();
 
-		const AppOptions& GetAppOptions() const { return appOptions; }
-		AppOptions& SetAppOptions() { return appOptions; }
+		void LoadOptions(std::string file = "");
+		void SaveOptions();
 
+		const AppOptions& GetAppOptions() const { return _appOptions; }
+		AppOptions& SetAppOptions() { return _appOptions; }
+
+		std::string GetSettingsFolder();
+		
 	private:
 
-		AppOptions appOptions;
-		
+		AppOptions _appOptions;
+
 };
 
 class LogClass 
@@ -49,6 +56,8 @@ class LogClass
 
 namespace Global
 {
+	extern Engine player;
+
 	extern Options options;
 	extern LogClass Log;
 

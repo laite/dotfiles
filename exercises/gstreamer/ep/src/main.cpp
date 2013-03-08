@@ -9,6 +9,7 @@
 
 bool Global::debugMode = true;
 LogClass Global::Log;
+Engine Global::player;
 
 int main(int argc, char* argv[]) 
 {

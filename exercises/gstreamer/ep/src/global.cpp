@@ -10,14 +10,49 @@ Options Global::options;
 
 Options::Options()
 {
-	// TODO: Load Options
-	appOptions.repeatMode = AppOptions::REPEAT_ALL;
+	_appOptions.repeatMode = AppOptions::REPEAT_ALL;
 }
 
 Options::~Options()
 {
-	// TODO: Save options here
+
 }
+
+void Options::LoadOptions(std::string file)
+{
+	std::string configFile = GetSettingsFolder() + "/";
+
+	if (file == "")
+		configFile += "config";
+	else
+		configFile += file;
+
+}
+
+void Options::SaveOptions()
+{
+	
+}
+
+std::string Options::GetSettingsFolder()
+{
+	std::string value(".");
+	char const* tmp = getenv("HOME");
+
+	if (tmp != NULL)
+	{
+		value = tmp;
+		value += "/.config/laite/timetracker";
+	}
+
+	return value;
+}
+
+
+/*
+ *  LogClass
+ */
+
 
 void LogClass::Add(std::string message, bool debugOnly)
 {

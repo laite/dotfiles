@@ -43,7 +43,6 @@ class MainWindow : public Gtk::Window
 
 	private:
 
-		Engine player;
 		Playback *playback;
 
 		sigc::connection labelTimer;
