@@ -13,35 +13,7 @@
 #include <vector>
 
 class Engine;
-
-struct AppOptions
-{
-	// repeat mode
-	enum { REPEAT_NONE, REPEAT_ONE, REPEAT_ALL };
-	int repeatMode;
-
-};
-
-class Options 
-{
-	public:
-
-		Options();
-		~Options();
-
-		void LoadOptions(std::string file = "");
-		void SaveOptions();
-
-		const AppOptions& GetAppOptions() const { return _appOptions; }
-		AppOptions& SetAppOptions() { return _appOptions; }
-
-		std::string GetSettingsFolder();
-		
-	private:
-
-		AppOptions _appOptions;
-
-};
+class Options;
 
 class LogClass 
 {

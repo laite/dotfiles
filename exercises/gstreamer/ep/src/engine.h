@@ -19,7 +19,7 @@ class Engine
 		Engine();
 
 		Playback *GetPlayback() { return &playback; }
-		Library *GetLibrary() { return &library; }
+		Library  *GetLibrary() { return &library; }
 
 		Playlist *GetCurrentPlaylist() { return _playlists[_currentPlaylist]; }
 

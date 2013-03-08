@@ -7,6 +7,7 @@
 #include "playlist.h"
 #include "global.h"
 #include "engine.h"
+#include "config.h"
 
 Playlist::Playlist()
 	: _currentSong(0)
