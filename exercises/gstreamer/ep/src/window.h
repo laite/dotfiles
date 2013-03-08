@@ -12,12 +12,7 @@
 #include <iostream>
 #include <string>
 
-#include "backend.h"
-#include "library.h"
-#include "playback.h"
-#include "playlist.h"
-#include "engine.h"
-#include "global.h"
+class Playback;
 
 class MainWindow : public Gtk::Window
 {

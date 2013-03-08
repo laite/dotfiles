@@ -5,6 +5,9 @@
  */
 
 #include "window.h"
+#include "global.h"
+#include "engine.h"
+#include "playback.h"
 
 MainWindow::MainWindow()
 	: m_box(Gtk::ORIENTATION_VERTICAL)

@@ -5,6 +5,7 @@
  */
 
 #include "song.h"
+#include "global.h"
 
 Song::Song(Glib::ustring address)
 	: uri(address)

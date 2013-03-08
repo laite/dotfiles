@@ -6,6 +6,7 @@
 #include "backend.h"
 #include "window.h"
 #include "global.h"
+#include "engine.h"
 
 bool Global::debugMode = true;
 LogClass Global::Log;

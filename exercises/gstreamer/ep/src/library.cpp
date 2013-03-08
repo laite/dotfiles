@@ -6,6 +6,7 @@
 
 #include "library.h"
 #include "song.h"
+#include "global.h"
 #include <boost/filesystem.hpp>
 
 Library::Library()

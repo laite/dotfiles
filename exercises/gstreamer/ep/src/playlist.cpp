@@ -5,6 +5,7 @@
  */
 
 #include "playlist.h"
+#include "global.h"
 #include "engine.h"
 
 Playlist::Playlist()

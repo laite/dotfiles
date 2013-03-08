@@ -5,6 +5,7 @@
  */
 
 #include "backend.h"
+#include "global.h"
 
 Gst::Format Sound::GST_FORMAT = Gst::FORMAT_TIME;
 

@@ -8,7 +8,6 @@
 #define PLAYBACK_H
 
 #include "backend.h"
-#include "library.h"
 #include "playlist.h"
 
 class Playback 

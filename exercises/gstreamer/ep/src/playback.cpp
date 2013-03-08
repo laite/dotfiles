@@ -5,6 +5,7 @@
  */
 
 #include "playback.h"
+#include "global.h"
 
 Playback::Playback()
 	: _playing(false)

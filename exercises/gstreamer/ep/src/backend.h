@@ -6,9 +6,6 @@
 #include <iostream>
 #include <string>
 
-#include "library.h"
-#include "global.h"
-
 class Sound
 {
 	friend class Playback;

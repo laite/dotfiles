@@ -12,9 +12,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "library.h"
 #include "song.h"
-#include "global.h"
 
 class Playlist 
 {
