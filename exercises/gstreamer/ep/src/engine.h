@@ -13,13 +13,18 @@
 
 class Engine 
 {
+	typedef std::vector<Playlist*>::size_type playlist_index;
 	public:
 
 		Engine();
 
 		Playback *GetPlayback() { return &playback; }
-		Playlist *GetCurrentPlaylist() { return _playlists[_currentPlaylist]; }
 		Library *GetLibrary() { return &library; }
+
+		Playlist *GetCurrentPlaylist() { return _playlists[_currentPlaylist]; }
+
+		// there is no boundary checking here
+		Playlist *GetPlaylist(playlist_index index) { return _playlists[index]; }
 
 	private:
 
@@ -33,7 +38,7 @@ class Engine
 		std::vector<Playlist*> _playlists;
 
 		// index of currently active playlist
-		std::vector<Playlist*>::size_type _currentPlaylist;
+		playlist_index _currentPlaylist;
 		
 };
 

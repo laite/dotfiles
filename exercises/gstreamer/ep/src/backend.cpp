@@ -7,8 +7,6 @@
 #include "backend.h"
 #include "global.h"
 
-Gst::Format Sound::GST_FORMAT = Gst::FORMAT_TIME;
-
 Sound::Sound()
 {
 	
@@ -60,7 +58,9 @@ void Sound::StopPlaying()
 const gint64 Sound::GetPosition() const
 {
 	gint64 position;
-	m_playbin->query_position(Sound::GST_FORMAT, position);
+	Gst::Format gst_format = Gst::FORMAT_TIME;
+
+	m_playbin->query_position(gst_format, position);
 
 	return position;
 }
@@ -68,7 +68,8 @@ const gint64 Sound::GetPosition() const
 const gint64 Sound::GetLength() const
 {
 	gint64 length;
-	m_playbin->query_duration(Sound::GST_FORMAT, length);
+	Gst::Format gst_format = Gst::FORMAT_TIME;
+	m_playbin->query_duration(gst_format, length);
 
 	return length;
 }
