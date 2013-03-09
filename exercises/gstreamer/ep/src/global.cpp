@@ -26,3 +26,39 @@ void LogClass::Add(std::string message, bool debugOnly)
 	_history.push_back(fullMessage);
 	
 }
+
+
+/*
+ *  UniqueNumber
+ */
+
+UniqueNumber::UniqueNumber()
+	: _lastNumber(0)
+	, _amountOfNumbers(0)
+{
+	
+}
+
+unsigned int UniqueNumber::GenerateNumber()
+{
+	unsigned int newNumber;
+
+	// if there is released numbers, we give one of them
+	if (_releasedNumbers.size() > 0)
+	{
+		newNumber = _releasedNumbers.front();
+		_releasedNumbers.pop();
+	}
+	else
+	{
+		// otherwise we return next number available
+		newNumber = ++_lastNumber;
+	}
+
+	return newNumber;
+}
+
+void UniqueNumber::ReleaseNumber(unsigned int num)
+{
+	_releasedNumbers.push(num);
+}

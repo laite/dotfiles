@@ -10,10 +10,24 @@
 #include <chrono>
 #include <iostream>
 #include <string>
-#include <vector>
+#include <queue>
 
 class Engine;
 class Options;
+
+class UniqueNumber
+{
+	public:
+		UniqueNumber();
+		unsigned int GenerateNumber();
+		void ReleaseNumber(unsigned int);
+
+	private:
+
+		unsigned int _lastNumber;
+		std::queue<unsigned int> _releasedNumbers;
+		unsigned int _amountOfNumbers;
+};
 
 class LogClass 
 {

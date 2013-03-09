@@ -12,7 +12,7 @@ Engine::Engine()
 	if (!_playlists.size())
 		_playlists.push_back(new Playlist);
 
-	// TODO: save active playlist on exit, restore here
+	// TODO: save active playlist index on exit, restore here
 	playback.SetActivePlaylist(_playlists.at(_currentPlaylist));
 }
 

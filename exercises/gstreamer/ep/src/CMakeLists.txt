@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 2.6)
 
-find_package(Boost 1.49.0 COMPONENTS system filesystem signals)
-find_library(TAGLIB_LIB tag)
+find_package(Boost 1.49.0 COMPONENTS system filesystem signals REQUIRED)
+find_library(TAGLIB_LIB tag REQUIRED)
 
 include_directories(${GTKMM_INCLUDE_DIRS} ${Boost_INCLUDE_DIRS} /usr/include/taglib/)
-link_directories(${GTKMM_LIBRARY_DIRS}${Boost_LIBRARY_DIRS})
+link_directories(${GTKMM_LIBRARY_DIRS} ${Boost_LIBRARY_DIRS})
 
 add_executable(
 	ep
