@@ -14,7 +14,7 @@ MainWindow::MainWindow()
 	, m_button("Play/Stop")
 	, m_nextSong("Next Song")
 	, m_loadButton("Load Folder")
-	, m_label("Click to play!")
+	, _label("Click to play!")
 	, playback(NULL)
 {
 	set_border_width(10);
@@ -29,7 +29,7 @@ MainWindow::MainWindow()
 				&MainWindow::on_loadButton_clicked));
 
 	// Widgets
-	m_box.pack_start(m_label, true, true);
+	m_box.pack_start(_label.GetWidget(), true, true);
 	m_box.pack_start(m_button, true, true);
 	m_box.pack_start(m_nextSong, true, true);
 	m_box.pack_start(m_loadButton, true, true);
@@ -53,11 +53,11 @@ bool MainWindow::on_timer()
 		Glib::ustring query = playback->GetCurrentSong()->Query("Playing %t by %a");
 		gint64 cur = playback->GetPosition();
 		gint64 total = playback->GetLength();
-		m_label.set_text(query + " " + std::to_string(static_cast<int>(round(cur/1000000000.0))) + "/" + std::to_string(static_cast<int>(round(total/1000000000.0))));
+		_label.GetWidget().set_text(query + " " + std::to_string(static_cast<int>(round(cur/1000000000.0))) + "/" + std::to_string(static_cast<int>(round(total/1000000000.0))));
 	}
 	else
 	{
-		m_label.set_text("Stopped.");
+		_label.GetWidget().set_text("Stopped.");
 	}
 	return true;
 }
@@ -68,7 +68,7 @@ void MainWindow::on_button_clicked()
 	{
 		if (labelTimer)
 		{
-			m_label.set_text("Stopped");
+			_label.GetWidget().set_text("Stopped");
 			labelTimer.disconnect();
 		}
 		playback->StopPlayback();

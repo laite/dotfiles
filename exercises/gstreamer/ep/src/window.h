@@ -12,6 +12,8 @@
 #include <iostream>
 #include <string>
 
+#include "widget.h"
+
 class Playback;
 
 class MainWindow : public Gtk::Window
@@ -34,14 +36,13 @@ class MainWindow : public Gtk::Window
 		Gtk::Button m_button;
 		Gtk::Button m_loadButton;
 		Gtk::Button m_nextSong;
-		Gtk::Label m_label;
+		InfoLabel _label;
 
 	private:
 
 		Playback *playback;
 
 		sigc::connection labelTimer;
-		
 };
 
 #endif /* end WINDOW_H */
