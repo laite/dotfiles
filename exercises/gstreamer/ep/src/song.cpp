@@ -24,6 +24,7 @@ Song::Song(Glib::ustring address)
 
 const std::string Song::Query(Glib::ustring querytext) const
 {
+	// TODO: Handle query
 	return (_title + " by " + _artist);
 
 }

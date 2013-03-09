@@ -50,14 +50,11 @@ bool MainWindow::on_timer()
 {
 	if (playback->IsPlaying())
 	{
-		Glib::ustring query = playback->GetCurrentSong()->Query("Playing %t by %a");
-		gint64 cur = playback->GetPosition();
-		gint64 total = playback->GetLength();
-		_label.GetWidget().set_text(query + " " + std::to_string(static_cast<int>(round(cur/1000000000.0))) + "/" + std::to_string(static_cast<int>(round(total/1000000000.0))));
+		_label.SetInfoText("%a - %t - %p", playback->GetCurrentSong());
 	}
 	else
 	{
-		_label.GetWidget().set_text("Stopped.");
+		_label.SetInfoText("Stopped.");
 	}
 	return true;
 }
@@ -68,7 +65,7 @@ void MainWindow::on_button_clicked()
 	{
 		if (labelTimer)
 		{
-			_label.GetWidget().set_text("Stopped");
+			_label.SetInfoText("Stopped");
 			labelTimer.disconnect();
 		}
 		playback->StopPlayback();
