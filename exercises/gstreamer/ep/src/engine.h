@@ -8,12 +8,17 @@
 #define ENGINE_H
 
 #include <string>
+#include <boost/signal.hpp>
+
 #include "playback.h"
 #include "library.h"
+#include "global.h"
 
 class Engine 
 {
 	typedef std::vector<Playlist*>::size_type playlist_index;
+	typedef boost::signal<void ()>::slot_function_type cb_type;
+
 	public:
 
 		Engine();
@@ -25,6 +30,9 @@ class Engine
 
 		// there is no boundary checking here
 		Playlist *GetPlaylist(playlist_index index) { return _playlists[index]; }
+
+		int HookToEvent(Global::EVENT, cb_type cb);
+		bool UnhookFromEvent(Global::EVENT, int);
 
 	private:
 

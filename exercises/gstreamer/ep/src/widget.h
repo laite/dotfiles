@@ -30,9 +30,14 @@ class InfoLabel
 
 	private:
 
+		// actual label
 		Gtk::Label _label;
 
+		// playback reference
 		Playback *playback;
+
+		// keep label up
+		void _UpdateText();
 };
 
 

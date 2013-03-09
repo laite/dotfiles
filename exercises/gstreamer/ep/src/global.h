@@ -34,6 +34,9 @@ namespace Global
 	extern LogClass Log;
 
 	extern bool debugMode;
+
+
+	enum EVENT { E_SONG_CHANGED, E_PLAYBACK_SECOND };
 }
 
 #endif /* end GLOBAL_H */

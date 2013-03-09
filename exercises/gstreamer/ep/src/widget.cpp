@@ -4,14 +4,25 @@
  * 
  */
 
+#include <boost/bind.hpp>
+
 #include "widget.h"
 #include "global.h"
 #include "engine.h"
+
+
+void InfoLabel::_UpdateText()
+{
+	Global::Log.Add("update!");
+}
 
 InfoLabel::InfoLabel(std::string s)
 	: _label(s)
 {
 	playback = Global::player.GetPlayback();
+
+	// Hook to event
+	Global::player.HookToEvent(Global::EVENT::E_PLAYBACK_SECOND, boost::bind(&InfoLabel::_UpdateText, this));
 }
 
 void InfoLabel::SetInfoText(std::string format, const Song* song)
@@ -27,3 +38,4 @@ void InfoLabel::SetInfoText(std::string format, const Song* song)
 
 	_label.set_text(query);
 }
+
