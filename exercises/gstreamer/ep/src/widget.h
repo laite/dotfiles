@@ -13,6 +13,9 @@
 #include "song.h"
 #include "playback.h"
 
+// TODO: Make BaseWidget class
+// That could also handle hooks (keep account, that is)
+
 class InfoLabel 
 {
 	public:

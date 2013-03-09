@@ -16,12 +16,46 @@ Engine::Engine()
 	playback.SetActivePlaylist(_playlists.at(_currentPlaylist));
 }
 
-int Engine::HookToEvent(Global::EVENT, Engine::cb_type cb)
+
+/*
+ *  Event
+ */
+
+
+Event::Event(Global::EVENT e)
 {
-	// TODO: handle actual hook
+	_event = e; 
 }
 
-bool Engine::UnhookFromEvent(Global::EVENT, int)
+Event::Event(const Event &rhs)
 {
-	
+	// we cannot copy _signal due to its nature
+	_event = rhs._event;
+}
+
+boost::signals::connection Event::Connect(boost::signal<void ()>::slot_function_type cb_type)
+{
+	Global::Log.Add("Made a connection!");
+	return _signal.connect(cb_type);
+}
+
+/*
+ *  EventHandler
+ */
+
+EventHandler::EventHandler()
+{
+	_events.insert(std::make_pair(Global::EVENT::E_PLAYBACK_SECOND, Event(Global::EVENT::E_PLAYBACK_SECOND)));
+}
+
+boost::signals::connection EventHandler::AddHook(Global::EVENT e, EventHandler::cb_type cb)
+{
+	/*
+	 *  we return empty (disconnected) connection if
+	 *  event is not found in map (this _really_ shouldn't happen) 
+	 */
+	if (_events.find(e) == _events.end())
+		return boost::signals::connection();
+
+	return _events.at(e).Connect(cb);
 }

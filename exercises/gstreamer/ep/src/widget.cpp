@@ -22,7 +22,7 @@ InfoLabel::InfoLabel(std::string s)
 	playback = Global::player.GetPlayback();
 
 	// Hook to event
-	Global::player.HookToEvent(Global::EVENT::E_PLAYBACK_SECOND, boost::bind(&InfoLabel::_UpdateText, this));
+	Global::player.Hook(Global::EVENT::E_PLAYBACK_SECOND, boost::bind(&InfoLabel::_UpdateText, this));
 }
 
 void InfoLabel::SetInfoText(std::string format, const Song* song)
