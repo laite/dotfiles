@@ -45,7 +45,9 @@ boost::signals::connection Event::Connect(boost::signal<void ()>::slot_function_
 
 EventHandler::EventHandler()
 {
-	_events.insert(std::make_pair(Global::EVENT::E_PLAYBACK_SECOND, Event(Global::EVENT::E_PLAYBACK_SECOND)));
+	// Create events of everything in Global::EVENT
+	for (int i = 0; i != (Global::EVENT::E_LAST - 1); ++i)
+		_events.insert(std::make_pair(static_cast<Global::EVENT>(i), Event(static_cast<Global::EVENT>(i))));
 }
 
 boost::signals::connection EventHandler::AddHook(Global::EVENT e, EventHandler::cb_type cb)

@@ -49,8 +49,9 @@ namespace Global
 
 	extern bool debugMode;
 
-
-	enum EVENT { E_SONG_CHANGED, E_PLAYBACK_SECOND };
+	// Do not change starting point (zero) or add anything after E_LAST
+	// E_LAST is just a placeholder for last item
+	enum EVENT { E_SONG_CHANGED = 0, E_PLAYBACK_SECOND, E_LAST };
 }
 
 #endif /* end GLOBAL_H */
