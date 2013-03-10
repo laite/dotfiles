@@ -43,9 +43,17 @@ void Event::Disconnect(const boost::signals::connection &connection)
 {
 	_signal.disconnect(connection);
 }
+
+void Event::Trigger()
+{
+	_signal();
+}
+
+
 /*
  *  EventHandler
  */
+
 
 EventHandler::EventHandler()
 {
@@ -73,4 +81,12 @@ bool EventHandler::RemoveHook(const Global::EVENT e, const boost::signals::conne
 
 	_events.at(e).Disconnect(connectionID);
 	return true;
+}
+
+void EventHandler::Trigger(Global::EVENT e)
+{
+	if (_events.find(e) == _events.end())
+		return;
+
+	_events.at(e).Trigger();
 }

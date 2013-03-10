@@ -26,6 +26,8 @@ class Event
 		boost::signals::connection Connect(boost::signal<void ()>::slot_function_type cb_type);
 		void Disconnect(const boost::signals::connection&);
 
+		void Trigger();
+
 	private:
 
 		boost::signal<void ()> _signal;
@@ -43,6 +45,8 @@ class EventHandler
 
 		boost::signals::connection AddHook(Global::EVENT, cb_type cb);
 		bool RemoveHook(const Global::EVENT, const boost::signals::connection&);
+
+		void Trigger(Global::EVENT);
 
 	private:
 
