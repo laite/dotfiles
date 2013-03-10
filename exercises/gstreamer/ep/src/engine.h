@@ -61,6 +61,7 @@ class Engine
 	public:
 
 		Engine();
+		~Engine();
 
 		Playback *GetPlayback() { return &playback; }
 		Library  *GetLibrary() { return &library; }

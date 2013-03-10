@@ -16,6 +16,11 @@ Engine::Engine()
 	playback.SetActivePlaylist(_playlists.at(_currentPlaylist));
 }
 
+Engine::~Engine()
+{
+	Global::Log.Add("Shutting down engine.");
+}
+
 
 /*
  *  Event
@@ -40,6 +45,7 @@ boost::signals::connection Event::Connect(boost::signal<void ()>::slot_function_
 
 void Event::Disconnect(const boost::signals::connection &connection)
 {
+	Global::Log.Add("Disconnecting Hook");
 	_signal.disconnect(connection);
 }
 

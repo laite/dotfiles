@@ -7,16 +7,28 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 
+#include <boost/signal.hpp>
 #include <gtkmm.h>
 #include <string>
+#include <map>
 
 #include "song.h"
 #include "playback.h"
+#include "global.h"
 
-// TODO: Make BaseWidget class
-// That could also handle hooks (keep account, that is)
+class BaseWidget 
+{
+	public:
 
-class InfoLabel 
+		BaseWidget();
+		~BaseWidget();
+
+	protected:
+
+		std::map<Global::EVENT, boost::signals::connection> _hooks;
+};
+
+class InfoLabel : public BaseWidget
 {
 	public:
 

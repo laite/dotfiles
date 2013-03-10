@@ -11,18 +11,45 @@
 #include "engine.h"
 
 
+/*
+ *  BaseWidget
+ */
+
+
+BaseWidget::BaseWidget()
+{
+	
+}
+
+BaseWidget::~BaseWidget()
+{
+	if (_hooks.size() > 0)
+	{
+		typedef std::map<Global::EVENT, boost::signals::connection>::iterator hookIter;
+		for (hookIter iter = _hooks.begin(); iter != _hooks.end(); ++iter)
+			Global::player.Unhook(iter->first, iter->second);
+	}
+}
+
+
+/*
+ *  InfoLabel
+ */
+
+
 InfoLabel::InfoLabel(std::string s)
 	: _label(s)
 {
 	playback = Global::player.GetPlayback();
 
 	// Hook to event
-	Global::player.Hook(Global::EVENT::E_PLAYBACK_SECOND, boost::bind(&InfoLabel::_UpdateText, this));
+	boost::signals::connection c = Global::player.Hook(Global::EVENT::E_PLAYBACK_SECOND, boost::bind(&InfoLabel::_UpdateText, this));
+	_hooks[Global::EVENT::E_PLAYBACK_SECOND] = c;
 }
 
 InfoLabel::~InfoLabel()
 {
-	// TODO: Unhook everything
+
 }
 
 void InfoLabel::SetInfoText(std::string format, const Song* song)
