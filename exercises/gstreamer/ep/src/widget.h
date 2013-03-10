@@ -21,6 +21,7 @@ class InfoLabel
 	public:
 
 		InfoLabel(std::string);
+		~InfoLabel();
 
 		Gtk::Label& GetWidget() { return _label; }
 

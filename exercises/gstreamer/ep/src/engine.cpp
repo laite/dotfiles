@@ -35,7 +35,6 @@ Event::Event(const Event &rhs)
 
 boost::signals::connection Event::Connect(boost::signal<void ()>::slot_function_type cb_type)
 {
-	Global::Log.Add("Made a connection!");
 	return _signal.connect(cb_type);
 }
 
@@ -58,7 +57,7 @@ void Event::Trigger()
 EventHandler::EventHandler()
 {
 	// Create events of everything in Global::EVENT
-	for (int i = 0; i != (Global::EVENT::E_LAST - 1); ++i)
+	for (int i = 0; i != Global::EVENT::E_LAST; ++i)
 		_events.insert(std::make_pair(static_cast<Global::EVENT>(i), Event(static_cast<Global::EVENT>(i))));
 }
 

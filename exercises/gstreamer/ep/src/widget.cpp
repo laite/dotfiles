@@ -11,11 +11,6 @@
 #include "engine.h"
 
 
-void InfoLabel::_UpdateText()
-{
-	Global::Log.Add("update!");
-}
-
 InfoLabel::InfoLabel(std::string s)
 	: _label(s)
 {
@@ -23,6 +18,11 @@ InfoLabel::InfoLabel(std::string s)
 
 	// Hook to event
 	Global::player.Hook(Global::EVENT::E_PLAYBACK_SECOND, boost::bind(&InfoLabel::_UpdateText, this));
+}
+
+InfoLabel::~InfoLabel()
+{
+	// TODO: Unhook everything
 }
 
 void InfoLabel::SetInfoText(std::string format, const Song* song)
@@ -37,5 +37,10 @@ void InfoLabel::SetInfoText(std::string format, const Song* song)
 	query += " " + std::to_string(static_cast<int>(round(cur/1000000000.0))) + "/" + std::to_string(static_cast<int>(round(total/1000000000.0)));
 
 	_label.set_text(query);
+}
+
+void InfoLabel::_UpdateText()
+{
+	Global::Log.Add("update!");
 }
 

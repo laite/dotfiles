@@ -73,6 +73,8 @@ class Engine
 		boost::signals::connection Hook(Global::EVENT e, cb_type cb) { return _eventHandler.AddHook(e, cb); }
 		bool Unhook(const Global::EVENT e, const boost::signals::connection &con) { return _eventHandler.RemoveHook(e, con); }
 
+		void TriggerEvent(Global::EVENT e) { _eventHandler.Trigger(e); }
+
 	private:
 
 		// the main library of player
