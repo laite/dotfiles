@@ -24,6 +24,7 @@ class Event
 		Event(const Event &rhs);
 
 		boost::signals::connection Connect(boost::signal<void ()>::slot_function_type cb_type);
+		void Disconnect(const boost::signals::connection&);
 
 	private:
 
@@ -41,6 +42,7 @@ class EventHandler
 		EventHandler();
 
 		boost::signals::connection AddHook(Global::EVENT, cb_type cb);
+		bool RemoveHook(const Global::EVENT, const boost::signals::connection&);
 
 	private:
 
@@ -65,7 +67,7 @@ class Engine
 		Playlist *GetPlaylist(playlist_index index) { return _playlists[index]; }
 
 		boost::signals::connection Hook(Global::EVENT e, cb_type cb) { return _eventHandler.AddHook(e, cb); }
-		bool UnhookFromEvent(Global::EVENT, boost::signals::connection);
+		bool Unhook(const Global::EVENT e, const boost::signals::connection &con) { return _eventHandler.RemoveHook(e, con); }
 
 	private:
 

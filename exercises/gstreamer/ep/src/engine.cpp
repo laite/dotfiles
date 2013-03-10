@@ -39,6 +39,10 @@ boost::signals::connection Event::Connect(boost::signal<void ()>::slot_function_
 	return _signal.connect(cb_type);
 }
 
+void Event::Disconnect(const boost::signals::connection &connection)
+{
+	_signal.disconnect(connection);
+}
 /*
  *  EventHandler
  */
@@ -60,4 +64,13 @@ boost::signals::connection EventHandler::AddHook(Global::EVENT e, EventHandler::
 		return boost::signals::connection();
 
 	return _events.at(e).Connect(cb);
+}
+
+bool EventHandler::RemoveHook(const Global::EVENT e, const boost::signals::connection &connectionID)
+{
+	if (_events.find(e) == _events.end())
+		return false;
+
+	_events.at(e).Disconnect(connectionID);
+	return true;
 }
