@@ -23,6 +23,8 @@ class BaseWidget
 		BaseWidget();
 		~BaseWidget();
 
+		virtual Gtk::Label& GetWidget() = 0;
+
 	protected:
 
 		std::map<Global::EVENT, boost::signals::connection> _hooks;
