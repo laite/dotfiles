@@ -27,6 +27,9 @@ class BaseWidget
 
 	protected:
 
+		typedef boost::signal<void ()>::slot_function_type cb_type;
+		void AddEventHook(Global::EVENT e, cb_type cb);
+
 		std::map<Global::EVENT, boost::signals::connection> _hooks;
 };
 

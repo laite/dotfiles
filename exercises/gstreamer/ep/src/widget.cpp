@@ -31,6 +31,12 @@ BaseWidget::~BaseWidget()
 	}
 }
 
+void BaseWidget::AddEventHook(Global::EVENT e, BaseWidget::cb_type cb)
+{
+	// Hook to event
+	boost::signals::connection c = Global::player.Hook(e, cb);
+	_hooks[e] = c;
+}
 
 /*
  *  InfoLabel
@@ -42,9 +48,7 @@ InfoLabel::InfoLabel(std::string s)
 {
 	playback = Global::player.GetPlayback();
 
-	// Hook to event
-	boost::signals::connection c = Global::player.Hook(Global::EVENT::E_PLAYBACK_SECOND, boost::bind(&InfoLabel::_UpdateText, this));
-	_hooks[Global::EVENT::E_PLAYBACK_SECOND] = c;
+	AddEventHook(Global::EVENT::E_PLAYBACK_SECOND, boost::bind(&InfoLabel::_UpdateText, this));
 }
 
 InfoLabel::~InfoLabel()
