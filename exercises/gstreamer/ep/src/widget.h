@@ -94,5 +94,13 @@ class PlayPauseButton : public PlaybackButton
 		void Press();
 };
 
+class NextButton : public PlaybackButton 
+{
+	public:
+
+		NextButton();
+		void Press();
+};
+
 
 #endif /* end WIDGET_H */

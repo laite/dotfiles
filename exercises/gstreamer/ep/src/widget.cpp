@@ -119,3 +119,23 @@ void PlayPauseButton::Press()
 	else
 		playback->StartPlayback();
 }
+
+/*
+ *  Next Button
+ */
+
+NextButton::NextButton()
+{
+	_button.set_label("Next");
+}
+
+void NextButton::Press()
+{
+	Global::Log.Add("<Next>");
+
+	if (playback->IsPlaying())
+		playback->StopPlayback();
+
+	playback->NextSong();
+	playback->StartPlayback();
+}
