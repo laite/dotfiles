@@ -47,9 +47,12 @@ class InfoLabel : public BaseWidget
 
 		// this function uses songpointer to find info about it
 		// by default, widget shows information about current song
-		void SetInfoText(std::string, const Song* = NULL);
+		void SetInfoText(std::string = "", const Song* = NULL);
 
 	private:
+
+		// format for label
+		std::string _format;
 
 		// actual label
 		Gtk::Label _label;

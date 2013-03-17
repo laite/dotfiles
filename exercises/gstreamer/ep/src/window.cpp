@@ -14,7 +14,7 @@ MainWindow::MainWindow()
 	, m_button("Play/Stop")
 	, m_nextSong("Next Song")
 	, m_loadButton("Load Folder")
-	, _label("Click to play!")
+	, _label("%a - %t - %p")
 	, playback(NULL)
 {
 	set_border_width(10);

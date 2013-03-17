@@ -44,9 +44,11 @@ void BaseWidget::AddEventHook(Global::EVENT e, BaseWidget::cb_type cb)
 
 
 InfoLabel::InfoLabel(std::string s)
-	: _label(s)
 {
+	_format = s;
 	playback = Global::player.GetPlayback();
+
+	SetInfoText(s);
 
 	AddEventHook(Global::EVENT::E_PLAYBACK_SECOND, boost::bind(&InfoLabel::_UpdateText, this));
 }
@@ -58,20 +60,32 @@ InfoLabel::~InfoLabel()
 
 void InfoLabel::SetInfoText(std::string format, const Song* song)
 {
+	// if we're given a format for this function, we'll keep using that from now on
+	if (format != "")
+		_format = format;
+
 	if (!song)
 		song = playback->GetCurrentSong();
 
-	// TODO: grab all non-song related items from format before sending to ->Query()
-	Glib::ustring query = song->Query(format);
-	gint64 cur = playback->GetPosition();
-	gint64 total = playback->GetLength();
-	query += " " + std::to_string(static_cast<int>(round(cur/1000000000.0))) + "/" + std::to_string(static_cast<int>(round(total/1000000000.0)));
+	Glib::ustring query(_format);
+	
+	// GetCurrentSong might also return NULL in which case there is not necessarily
+	// a song to get information from
+	if (song)
+	{
+		// TODO: grab all non-song related items from format before sending to ->Query()
+		query = song->Query(_format);
+		gint64 cur = playback->GetPosition();
+		gint64 total = playback->GetLength();
+		query += " " + std::to_string(static_cast<int>(round(cur/1000000000.0))) + "/" + std::to_string(static_cast<int>(round(total/1000000000.0)));
+	}
 
 	_label.set_text(query);
 }
 
 void InfoLabel::_UpdateText()
 {
+	SetInfoText();
 	Global::Log.Add("update!");
 }
 
