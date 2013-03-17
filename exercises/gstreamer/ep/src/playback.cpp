@@ -6,6 +6,7 @@
 
 #include "playback.h"
 #include "global.h"
+#include "engine.h"
 
 Playback::Playback()
 	: _playing(false)
@@ -24,7 +25,7 @@ void Playback::Init()
 	sound.CreatePlaybin();
 	// get bus watch from backend
 	backendBus = sound.GetBus();
-	backendBus->add_watch(sigc::mem_fun(*this, &Playback::BusWatch));
+	backendBus->add_watch(sigc::mem_fun(*this, &Playback::_BusWatch));
 }
 
 void Playback::StartPlayback()
@@ -35,6 +36,9 @@ void Playback::StartPlayback()
 	Glib::ustring uri = activePlaylist->GetCurrentSong()->GetUri();
 	sound.StartPlaying(uri);
 	_playing = true;
+
+	if (!playTimer)
+		playTimer = Glib::signal_timeout().connect(sigc::mem_fun(*this, &Playback::_OnPlaybackTimer), 1000);
 }
 
 void Playback::StopPlayback()
@@ -44,6 +48,8 @@ void Playback::StopPlayback()
 
 	sound.StopPlaying();
 	_playing = false;
+	if (playTimer)
+		playTimer.disconnect();
 }
 
 bool Playback::NextSong()
@@ -51,21 +57,21 @@ bool Playback::NextSong()
 	return activePlaylist->NextSong();
 }
 
-void Playback::EndOfStream()
+void Playback::_EndOfStream()
 {
 	StopPlayback();
 	if (NextSong())
 		StartPlayback();
 }
 
-bool Playback::BusWatch(const Glib::RefPtr<Gst::Bus>& bus, const Glib::RefPtr<Gst::Message>& message)
+bool Playback::_BusWatch(const Glib::RefPtr<Gst::Bus>& bus, const Glib::RefPtr<Gst::Message>& message)
 {
 	switch (message->get_message_type())
 	{
 		case Gst::MESSAGE_EOS:
 			{
 				Global::Log.Add("End of stream reached.");
-				EndOfStream();
+				_EndOfStream();
 				break;
 			}
 		case Gst::MESSAGE_ERROR:
@@ -84,3 +90,12 @@ const Song* Playback::GetCurrentSong() const
 {
 	return activePlaylist->GetCurrentSong();
 }
+
+bool Playback::_OnPlaybackTimer()
+{
+	if (_playing)
+		Global::player.TriggerEvent(Global::EVENT::E_PLAYBACK_SECOND);
+
+	return true;
+}
+

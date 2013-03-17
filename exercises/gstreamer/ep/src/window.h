@@ -28,7 +28,6 @@ class MainWindow : public Gtk::Window
 		//Signal handlers:
 		void on_button_clicked();
 		void on_nextSong_clicked();
-		bool on_timer();
 		void on_loadButton_clicked();
 
 		//Member widgets:
@@ -41,8 +40,6 @@ class MainWindow : public Gtk::Window
 	private:
 
 		Playback *playback;
-
-		sigc::connection labelTimer;
 };
 
 #endif /* end WINDOW_H */

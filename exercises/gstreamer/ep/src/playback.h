@@ -35,9 +35,11 @@ class Playback
 
 	private:
 
-		bool BusWatch(const Glib::RefPtr<Gst::Bus>&, const Glib::RefPtr<Gst::Message>&);
+		bool _BusWatch(const Glib::RefPtr<Gst::Bus>&, const Glib::RefPtr<Gst::Message>&);
 
-		void EndOfStream();
+		bool _OnPlaybackTimer();
+
+		void _EndOfStream();
 
 		Sound sound;
 		Glib::RefPtr<Gst::Bus> backendBus;
@@ -45,6 +47,9 @@ class Playback
 		Playlist *activePlaylist;
 
 		bool _playing;
+
+		// connection to timer that ticks every one second when playback is on
+		sigc::connection playTimer;
 };
 
 

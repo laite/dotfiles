@@ -46,38 +46,12 @@ MainWindow::~MainWindow()
 	Global::Log.Add("Goodbye!");
 }
 
-bool MainWindow::on_timer()
-{
-	// TODO: Create timer in Engine for triggering PLAYBACK_SECOND
-	if (playback->IsPlaying())
-	{
-		_label.SetInfoText("%a - %t - %p", playback->GetCurrentSong());
-		Global::player.TriggerEvent(Global::EVENT::E_PLAYBACK_SECOND);
-	}
-	else
-	{
-		_label.SetInfoText("Stopped.");
-	}
-	return true;
-}
-
 void MainWindow::on_button_clicked()
 {
 	if (playback->IsPlaying())
-	{
-		if (labelTimer)
-		{
-			_label.SetInfoText("Stopped");
-			labelTimer.disconnect();
-		}
 		playback->StopPlayback();
-	}
 	else
-	{
 		playback->StartPlayback();
-		if (!labelTimer)
-			labelTimer = Glib::signal_timeout().connect(sigc::mem_fun(*this, &MainWindow::on_timer), 1000);
-	}
 }
 
 void MainWindow::on_nextSong_clicked()
