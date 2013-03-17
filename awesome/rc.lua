@@ -87,6 +87,23 @@ end
 -- {{{ Wibox
 mytextclock = awful.widget.textclock({ align = "right" }, "<span color='" .. theme.fg_normal .. "'>%a %d.%m.%Y,</span><span weight=\"bold\"> %H:%M  </span>")
 
+gmb_box = widget({ type = "textbox" })
+gmb_box.align = "center"
+gmb_box.width = "1920"
+
+mytimer = timer({ timeout = 5 })
+mytimer:add_signal("timeout", function() 
+	local line, last = ""
+	local f = assert (io.popen ("cat /home/laite/.config/awesome/np_gmb"))
+	  
+	for line in f:lines() do last = line end -- there *really* shouldn't be more than one line in file
+	f:close()
+	-- plain & breaks textbox
+	gmb_box.text = string.gsub(last, "&", "&amp;")
+end)
+
+mytimer:start()
+
 -- Create a systray
 mysystray = widget({ type = "systray" })
 
@@ -178,7 +195,7 @@ for s = 1, screen.count() do
         --mylayoutbox[s],
         mytextclock,
         s == 1 and mysystray or nil,
-        --mytasklist[s],
+		gmb_box,
         layout = awful.widget.layout.horizontal.rightleft
     }
 end
