@@ -11,16 +11,12 @@
 
 MainWindow::MainWindow()
 	: m_box(Gtk::ORIENTATION_VERTICAL)
-	, m_button("Play/Stop")
 	, m_nextSong("Next Song")
 	, m_loadButton("Load Folder")
 	, _label("%a - %t - %p")
 	, playback(NULL)
 {
 	set_border_width(10);
-
-	m_button.signal_clicked().connect(sigc::mem_fun(*this,
-				&MainWindow::on_button_clicked));
 
 	m_nextSong.signal_clicked().connect(sigc::mem_fun(*this,
 				&MainWindow::on_nextSong_clicked));
@@ -30,7 +26,7 @@ MainWindow::MainWindow()
 
 	// Widgets
 	m_box.pack_start(_label.GetWidget(), true, true);
-	m_box.pack_start(m_button, true, true);
+	m_box.pack_start(_playpauseButton.GetWidget(), true, true);
 	m_box.pack_start(m_nextSong, true, true);
 	m_box.pack_start(m_loadButton, true, true);
 	this->add(m_box);
@@ -44,14 +40,6 @@ MainWindow::MainWindow()
 MainWindow::~MainWindow()
 {
 	Global::Log.Add("Goodbye!");
-}
-
-void MainWindow::on_button_clicked()
-{
-	if (playback->IsPlaying())
-		playback->StopPlayback();
-	else
-		playback->StartPlayback();
 }
 
 void MainWindow::on_nextSong_clicked()

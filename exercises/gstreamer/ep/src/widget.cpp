@@ -86,6 +86,36 @@ void InfoLabel::SetInfoText(std::string format, const Song* song)
 void InfoLabel::_UpdateText()
 {
 	SetInfoText();
-	Global::Log.Add("update!");
 }
 
+
+/*
+ *  Playback Buttons
+ */
+
+PlaybackButton::PlaybackButton()
+{
+	playback = Global::player.GetPlayback();
+	_button.signal_clicked().connect( sigc::mem_fun(*this,
+				              &PlaybackButton::Press) );
+}
+
+
+/*
+ *  PlayPause Button
+ */
+
+PlayPauseButton::PlayPauseButton()
+{
+	_button.set_label("Play");
+}
+
+void PlayPauseButton::Press()
+{
+	Global::Log.Add("<PlayPause>");
+
+	if (playback->IsPlaying())
+		playback->StopPlayback();
+	else
+		playback->StartPlayback();
+}

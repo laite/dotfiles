@@ -26,15 +26,14 @@ class MainWindow : public Gtk::Window
 	protected:
 
 		//Signal handlers:
-		void on_button_clicked();
 		void on_nextSong_clicked();
 		void on_loadButton_clicked();
 
 		//Member widgets:
 		Gtk::VBox m_box;
-		Gtk::Button m_button;
 		Gtk::Button m_loadButton;
 		Gtk::Button m_nextSong;
+		PlayPauseButton _playpauseButton;
 		InfoLabel _label;
 
 	private:

@@ -23,7 +23,7 @@ class BaseWidget
 		BaseWidget();
 		~BaseWidget();
 
-		virtual Gtk::Label& GetWidget() = 0;
+		virtual Gtk::Widget& GetWidget() = 0;
 
 	protected:
 
@@ -62,6 +62,36 @@ class InfoLabel : public BaseWidget
 
 		// keep label up
 		void _UpdateText();
+};
+
+
+/*
+ *  Playback Buttons
+ */
+
+class PlaybackButton : public BaseWidget
+{
+	public:
+
+		PlaybackButton();
+
+		Gtk::Button& GetWidget() { return _button; }
+
+		virtual void Press() = 0;
+
+	protected:
+
+		Gtk::Button _button;
+
+		Playback *playback;
+};
+
+class PlayPauseButton : public PlaybackButton 
+{
+	public:
+
+		PlayPauseButton();
+		void Press();
 };
 
 
