@@ -22,15 +22,16 @@ MainWindow::MainWindow()
 
 	// Widgets
 	m_box.pack_start(_label.GetWidget(), true, true);
+	m_box.pack_start(_previousButton.GetWidget(), true, true);
 	m_box.pack_start(_playpauseButton.GetWidget(), true, true);
 	m_box.pack_start(_nextButton.GetWidget(), true, true);
 	m_box.pack_start(m_loadButton, true, true);
 	this->add(m_box);
 
-	this->show_all();
-
 	playback = Global::player.GetPlayback();
 	playback->Init();
+
+	this->show_all();
 }
 
 MainWindow::~MainWindow()

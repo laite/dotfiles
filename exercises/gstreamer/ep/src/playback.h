@@ -30,6 +30,7 @@ class Playback
 		const gint64 GetLength() const { return sound.GetLength(); }
 
 		bool NextSong();
+		bool PreviousSong();
 
 		const bool IsPlaying() const { return _playing; }
 

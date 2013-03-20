@@ -37,7 +37,7 @@ class InfoLabel : public BaseWidget
 {
 	public:
 
-		InfoLabel(std::string);
+		explicit InfoLabel(std::string);
 		~InfoLabel();
 
 		Gtk::Label& GetWidget() { return _label; }
@@ -82,11 +82,13 @@ class PlaybackButton : public BaseWidget
 	protected:
 
 		Gtk::Button _button;
+		Gtk::Image _image;
 
+		// TODO: could/should this be static?
 		Playback *playback;
 };
 
-class PlayPauseButton : public PlaybackButton 
+class PlayPauseButton : public PlaybackButton
 {
 	public:
 
@@ -94,12 +96,42 @@ class PlayPauseButton : public PlaybackButton
 		void Press();
 };
 
-class NextButton : public PlaybackButton 
+class NextButton : public PlaybackButton
 {
 	public:
 
 		NextButton();
 		void Press();
+};
+
+class PreviousButton : public PlaybackButton
+{
+	public:
+
+		PreviousButton();
+		void Press();
+};
+
+
+/*
+ *  Playback Controls
+ */
+
+class PlaybackControls : public BaseWidget
+{
+	public:
+
+		PlaybackControls();
+		Gtk::Box& GetWidget() { return _widget; }
+
+	private:
+
+		Gtk::Box _widget;
+
+		PreviousButton _prev;
+		NextButton _next;
+		PlayPauseButton _playpause;
+		
 };
 
 

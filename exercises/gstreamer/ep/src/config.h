@@ -15,6 +15,8 @@ struct AppOptions
 	enum { REPEAT_NONE, REPEAT_ONE, REPEAT_ALL };
 	int repeatMode;
 
+	// do playback buttons have labels
+	bool playbackButtonLabels;
 };
 
 class Options 

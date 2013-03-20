@@ -12,6 +12,7 @@ Options Global::options;
 Options::Options()
 {
 	_appOptions.repeatMode = AppOptions::REPEAT_ALL;
+	_appOptions.playbackButtonLabels = false;
 }
 
 Options::~Options()
@@ -43,7 +44,7 @@ std::string Options::GetSettingsFolder()
 	if (tmp != NULL)
 	{
 		value = tmp;
-		value += "/.config/laite/timetracker";
+		value += "/.config/laite/ep";
 	}
 
 	return value;

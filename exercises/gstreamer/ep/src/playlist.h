@@ -27,6 +27,7 @@ class Playlist
 		bool SelectSong(playlist_index);
 
 		void FirstSong() { SelectSong(0); }
+
 		bool PreviousSong() { return SelectSong(_currentSong - 1); }
 		bool NextSong() { return SelectSong(_currentSong + 1); }
 

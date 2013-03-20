@@ -52,6 +52,11 @@ void Playback::StopPlayback()
 		playTimer.disconnect();
 }
 
+bool Playback::PreviousSong()
+{
+	return activePlaylist->PreviousSong();
+}
+
 bool Playback::NextSong()
 {
 	return activePlaylist->NextSong();

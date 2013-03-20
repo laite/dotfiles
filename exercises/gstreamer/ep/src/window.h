@@ -33,6 +33,7 @@ class MainWindow : public Gtk::Window
 		Gtk::VBox m_box;
 		Gtk::Button m_loadButton;
 		NextButton _nextButton;
+		PreviousButton _previousButton;
 		PlayPauseButton _playpauseButton;
 		InfoLabel _label;
 
