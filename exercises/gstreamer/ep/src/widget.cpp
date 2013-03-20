@@ -123,6 +123,24 @@ void PlayPauseButton::Press()
 		playback->StartPlayback();
 }
 
+
+/*
+ *  Pause Button
+ */
+
+PauseButton::PauseButton()
+{
+	_button.set_label((Global::options.GetAppOptions().playbackButtonLabels)? "Pause" : "");
+	_image.set(Gtk::Stock::MEDIA_PAUSE, Gtk::ICON_SIZE_MENU);
+}
+
+void PauseButton::Press()
+{
+	Global::Log.Add("<Pause>");
+
+	playback->PausePlayback();
+}
+
 /*
  *  Next Button
  */
@@ -175,6 +193,7 @@ PlaybackControls::PlaybackControls(Gtk::Orientation orientation)
 {
 	_widget.pack_start(_prev.GetWidget(), true, true);
 	_widget.pack_start(_playpause.GetWidget(), true, true);
+	_widget.pack_start(_pause.GetWidget(), true, true);
 	_widget.pack_start(_next.GetWidget(), true, true);
 }
 

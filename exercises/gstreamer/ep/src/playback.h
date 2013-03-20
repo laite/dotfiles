@@ -24,6 +24,10 @@ class Playback
 		void StartPlayback();
 		void StopPlayback();
 
+		// this switches states between PAUSED and PLAYING
+		// if current state is neither, function does nothing
+		void PausePlayback();
+
 		const Song *GetCurrentSong() const;
 
 		const gint64 GetPosition() const { return sound.GetPosition(); }
@@ -47,6 +51,7 @@ class Playback
 
 		Playlist *activePlaylist;
 
+		// _playing is true also when state is paused
 		bool _playing;
 
 		// connection to timer that ticks every one second when playback is on

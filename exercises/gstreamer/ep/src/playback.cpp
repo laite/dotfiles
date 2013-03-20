@@ -52,6 +52,23 @@ void Playback::StopPlayback()
 		playTimer.disconnect();
 }
 
+void Playback::PausePlayback()
+{
+	Gst::State state = sound.GetState();
+
+	switch (state)
+	{
+		case Gst::STATE_PLAYING:
+			sound.PausePlaying();
+			break;
+		case Gst::STATE_PAUSED:
+			sound.ResumePlaying();
+			break;
+		default:
+			break;
+	}
+}
+
 bool Playback::PreviousSong()
 {
 	return activePlaylist->PreviousSong();

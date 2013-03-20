@@ -55,6 +55,26 @@ void Sound::StopPlaying()
 	m_playbin->set_state(Gst::STATE_NULL);
 }
 
+void Sound::ResumePlaying()
+{
+	Global::Log.Add("Resuming playback.");
+	m_playbin->set_state(Gst::STATE_PLAYING);
+}
+
+void Sound::PausePlaying()
+{
+	Global::Log.Add("Pausing playback.");
+	m_playbin->set_state(Gst::STATE_PAUSED);
+}
+
+Gst::State Sound::GetState() const
+{
+	Gst::State state, pending;
+	m_playbin->get_state(state, pending, Gst::CLOCK_TIME_NONE);
+
+	return state;
+}
+
 const gint64 Sound::GetPosition() const
 {
 	gint64 position;

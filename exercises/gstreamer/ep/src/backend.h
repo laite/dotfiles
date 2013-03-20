@@ -25,6 +25,13 @@ class Sound
 		// sets playbin state to Gst::STATE_NULL
 		void StopPlaying();
 
+		// set playbin state to Gst::STATE_PAUSED
+		void PausePlaying();
+
+		// set playbin state to Gst::STATE_PLAYING
+		void ResumePlaying();
+
+		Gst::State GetState() const;
 		const gint64 GetPosition() const;
 		const gint64 GetLength() const;
 
