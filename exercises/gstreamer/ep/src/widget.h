@@ -96,11 +96,27 @@ class PlayPauseButton : public PlaybackButton
 		void Press();
 };
 
+class PlayButton : public PlaybackButton
+{
+	public:
+
+		PlayButton();
+		void Press();
+};
+
 class PauseButton : public PlaybackButton
 {
 	public:
 
 		PauseButton();
+		void Press();
+};
+
+class StopButton : public PlaybackButton
+{
+	public:
+
+		StopButton();
 		void Press();
 };
 
@@ -138,8 +154,10 @@ class PlaybackControls : public BaseWidget
 
 		PreviousButton _prev;
 		NextButton _next;
-		PauseButton _pause;
 		PlayPauseButton _playpause;
+		PlayButton _play;
+		PauseButton _pause;
+		StopButton _stop;
 };
 
 

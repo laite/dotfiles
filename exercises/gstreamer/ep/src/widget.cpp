@@ -117,6 +117,7 @@ void PlayPauseButton::Press()
 {
 	Global::Log.Add("<PlayPause>");
 
+	// TODO: handle image change through a system hook instead of this
 	if (playback->IsPlaying())
 	{
 		playback->StopPlayback();
@@ -129,6 +130,39 @@ void PlayPauseButton::Press()
 	}
 }
 
+/*
+ *  Play Button
+ */
+
+PlayButton::PlayButton()
+{
+	_button.set_label((Global::options.GetAppOptions().playbackButtonLabels)? "Play" : "");
+	_image.set(Gtk::Stock::MEDIA_PLAY, Gtk::ICON_SIZE_MENU);
+}
+
+void PlayButton::Press()
+{
+	Global::Log.Add("<Play>");
+
+	playback->StartPlayback();
+}
+
+/*
+ *  Stop Button
+ */
+
+StopButton::StopButton()
+{
+	_button.set_label((Global::options.GetAppOptions().playbackButtonLabels)? "Stop" : "");
+	_image.set(Gtk::Stock::MEDIA_STOP, Gtk::ICON_SIZE_MENU);
+}
+
+void StopButton::Press()
+{
+	Global::Log.Add("<Stop>");
+
+	playback->StopPlayback();
+}
 
 /*
  *  Pause Button
@@ -200,6 +234,8 @@ PlaybackControls::PlaybackControls(Gtk::Orientation orientation)
 	_widget.pack_start(_prev.GetWidget(), true, true);
 	_widget.pack_start(_playpause.GetWidget(), true, true);
 	_widget.pack_start(_pause.GetWidget(), true, true);
+	_widget.pack_start(_play.GetWidget(), true, true);
+	_widget.pack_start(_stop.GetWidget(), true, true);
 	_widget.pack_start(_next.GetWidget(), true, true);
 }
 
