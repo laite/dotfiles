@@ -170,8 +170,8 @@ void PreviousButton::Press()
  *  Playback Controls
  */
 
-PlaybackControls::PlaybackControls()
-	: _widget(Gtk::ORIENTATION_HORIZONTAL)
+PlaybackControls::PlaybackControls(Gtk::Orientation orientation)
+	: _widget(orientation)
 {
 	_widget.pack_start(_prev.GetWidget(), true, true);
 	_widget.pack_start(_playpause.GetWidget(), true, true);

@@ -121,7 +121,7 @@ class PlaybackControls : public BaseWidget
 {
 	public:
 
-		PlaybackControls();
+		explicit PlaybackControls(Gtk::Orientation orientation = Gtk::ORIENTATION_HORIZONTAL);
 		Gtk::Box& GetWidget() { return _widget; }
 
 	private:
@@ -131,7 +131,6 @@ class PlaybackControls : public BaseWidget
 		PreviousButton _prev;
 		NextButton _next;
 		PlayPauseButton _playpause;
-		
 };
 
 
