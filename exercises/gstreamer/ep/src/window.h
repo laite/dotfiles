@@ -32,9 +32,7 @@ class MainWindow : public Gtk::Window
 		//Member widgets:
 		Gtk::VBox m_box;
 		Gtk::Button m_loadButton;
-		NextButton _nextButton;
-		PreviousButton _previousButton;
-		PlayPauseButton _playpauseButton;
+		PlaybackControls _playbackControls;
 		InfoLabel _label;
 
 	private:
