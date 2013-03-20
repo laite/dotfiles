@@ -118,9 +118,15 @@ void PlayPauseButton::Press()
 	Global::Log.Add("<PlayPause>");
 
 	if (playback->IsPlaying())
+	{
 		playback->StopPlayback();
+		_image.set(Gtk::Stock::MEDIA_PLAY, Gtk::ICON_SIZE_MENU);
+	}
 	else
+	{
 		playback->StartPlayback();
+		_image.set(Gtk::Stock::MEDIA_PAUSE, Gtk::ICON_SIZE_MENU);
+	}
 }
 
 
