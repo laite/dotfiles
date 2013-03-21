@@ -67,6 +67,7 @@ void Sound::PausePlaying()
 	m_playbin->set_state(Gst::STATE_PAUSED);
 }
 
+// TODO: take care of pending states (Gst::STATE_VOID_PENDING)
 Gst::State Sound::GetState() const
 {
 	Gst::State state, pending;
@@ -77,6 +78,9 @@ Gst::State Sound::GetState() const
 
 const gint64 Sound::GetPosition() const
 {
+	if (GetState() == Gst::STATE_NULL)
+		return 0;
+
 	gint64 position;
 	Gst::Format gst_format = Gst::FORMAT_TIME;
 
@@ -87,6 +91,9 @@ const gint64 Sound::GetPosition() const
 
 const gint64 Sound::GetLength() const
 {
+	if (GetState() == Gst::STATE_NULL)
+		return 0;
+
 	gint64 length;
 	Gst::Format gst_format = Gst::FORMAT_TIME;
 	m_playbin->query_duration(gst_format, length);
