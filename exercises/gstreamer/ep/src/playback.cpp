@@ -81,16 +81,6 @@ void Playback::PausePlayback()
 	}
 }
 
-bool Playback::PreviousSong()
-{
-	return activePlaylist->PreviousSong();
-}
-
-bool Playback::NextSong()
-{
-	return activePlaylist->NextSong();
-}
-
 void Playback::_EndOfStream()
 {
 	StopPlayback();

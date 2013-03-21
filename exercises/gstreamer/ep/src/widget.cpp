@@ -208,10 +208,9 @@ void NextButton::Press()
 {
 	Global::Log.Add("<Next>");
 	bool isNextSong = playback->NextSong();
-	bool isCurrentlyPlaying = playback->IsPlaying();
+	bool isCurrentlyPlaying = (playback->GetState() == Gst::STATE_PLAYING);
 
-	if (isCurrentlyPlaying)
-		playback->StopPlayback();
+	playback->StopPlayback();
 
 	if ((isNextSong) && (isCurrentlyPlaying))
 		playback->StartPlayback();
@@ -231,10 +230,9 @@ void PreviousButton::Press()
 {
 	Global::Log.Add("<Previous>");
 	bool isPreviousSong = playback->PreviousSong();
-	bool isCurrentlyPlaying = playback->IsPlaying();
+	bool isCurrentlyPlaying = (playback->GetState() == Gst::STATE_PLAYING);
 
-	if (isCurrentlyPlaying)
-		playback->StopPlayback();
+	playback->StopPlayback();
 
 	if ((isPreviousSong) && (isCurrentlyPlaying))
 		playback->StartPlayback();
