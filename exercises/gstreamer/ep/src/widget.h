@@ -159,8 +159,6 @@ class PlaybackControls : public BaseWidget
 		PreviousButton _prev;
 		NextButton _next;
 		PlayPauseButton _playpause;
-		PlayButton _play;
-		PauseButton _pause;
 		StopButton _stop;
 };
 

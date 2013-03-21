@@ -243,8 +243,6 @@ PlaybackControls::PlaybackControls(Gtk::Orientation orientation)
 {
 	_widget.pack_start(_prev.GetWidget(), true, true);
 	_widget.pack_start(_playpause.GetWidget(), true, true);
-	_widget.pack_start(_pause.GetWidget(), true, true);
-	_widget.pack_start(_play.GetWidget(), true, true);
 	_widget.pack_start(_stop.GetWidget(), true, true);
 	_widget.pack_start(_next.GetWidget(), true, true);
 }
