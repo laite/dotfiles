@@ -17,7 +17,13 @@ Playback::Playback()
 
 Playback::~Playback()
 {
-	StopPlayback();
+	if (_playing)
+	{
+		sound.StopPlaying();
+		_playing = false;
+		if (playTimer)
+			playTimer.disconnect();
+	}
 }
 
 void Playback::Init()
@@ -39,6 +45,8 @@ void Playback::StartPlayback()
 
 	if (!playTimer)
 		playTimer = Glib::signal_timeout().connect(sigc::mem_fun(*this, &Playback::_OnPlaybackTimer), 1000);
+
+	Global::player.TriggerEvent(Global::EVENT::E_PLAYBACK_STATUS_CHANGED);
 }
 
 void Playback::StopPlayback()
@@ -50,6 +58,8 @@ void Playback::StopPlayback()
 	_playing = false;
 	if (playTimer)
 		playTimer.disconnect();
+
+	Global::player.TriggerEvent(Global::EVENT::E_PLAYBACK_STATUS_CHANGED);
 }
 
 void Playback::PausePlayback()
@@ -60,9 +70,11 @@ void Playback::PausePlayback()
 	{
 		case Gst::STATE_PLAYING:
 			sound.PausePlaying();
+			Global::player.TriggerEvent(Global::EVENT::E_PLAYBACK_STATUS_CHANGED);
 			break;
 		case Gst::STATE_PAUSED:
 			sound.ResumePlaying();
+			Global::player.TriggerEvent(Global::EVENT::E_PLAYBACK_STATUS_CHANGED);
 			break;
 		default:
 			break;

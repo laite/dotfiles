@@ -94,6 +94,10 @@ class PlayPauseButton : public PlaybackButton
 
 		PlayPauseButton();
 		void Press();
+
+	private:
+
+		void _UpdateIcon();
 };
 
 class PlayButton : public PlaybackButton

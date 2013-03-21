@@ -111,22 +111,32 @@ PlayPauseButton::PlayPauseButton()
 {
 	_button.set_label((Global::options.GetAppOptions().playbackButtonLabels)? "Play/Pause" : "");
 	_image.set(Gtk::Stock::MEDIA_PLAY, Gtk::ICON_SIZE_MENU);
+
+	AddEventHook(Global::EVENT::E_PLAYBACK_STATUS_CHANGED, boost::bind(&PlayPauseButton::_UpdateIcon, this));
 }
 
 void PlayPauseButton::Press()
 {
 	Global::Log.Add("<PlayPause>");
 
-	// TODO: handle image change through a system hook instead of this
-	if (playback->IsPlaying())
-	{
-		playback->StopPlayback();
-		_image.set(Gtk::Stock::MEDIA_PLAY, Gtk::ICON_SIZE_MENU);
-	}
-	else
-	{
+	if (playback->GetState() == Gst::STATE_NULL)
 		playback->StartPlayback();
-		_image.set(Gtk::Stock::MEDIA_PAUSE, Gtk::ICON_SIZE_MENU);
+	else
+		playback->PausePlayback();
+}
+
+void PlayPauseButton::_UpdateIcon()
+{
+	Gst::State state = playback->GetState();
+
+	switch (state)
+	{
+		case Gst::STATE_PLAYING:
+			_image.set(Gtk::Stock::MEDIA_PAUSE, Gtk::ICON_SIZE_MENU);
+			break;
+		default:
+			_image.set(Gtk::Stock::MEDIA_PLAY, Gtk::ICON_SIZE_MENU);
+			break;
 	}
 }
 

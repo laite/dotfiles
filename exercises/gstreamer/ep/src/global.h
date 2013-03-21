@@ -51,7 +51,20 @@ namespace Global
 
 	// Do not change starting point (zero) or add anything after E_LAST
 	// E_LAST is just a placeholder for last item
-	enum EVENT { E_SONG_CHANGED = 0, E_PLAYBACK_SECOND, E_LAST };
+	// Cause of each event in comment
+	enum EVENT {
+		// when currently focused song changes
+		E_SONG_CHANGED = 0,
+
+		// triggered each second music is actually playing
+		E_PLAYBACK_SECOND,
+
+		// when playback is started/stopped/paused
+		E_PLAYBACK_STATUS_CHANGED,
+
+		// placeholder, never triggered
+		E_LAST
+	};
 }
 
 #endif /* end GLOBAL_H */

@@ -30,6 +30,7 @@ class Playback
 
 		const Song *GetCurrentSong() const;
 
+		Gst::State GetState() const { return sound.GetState(); }
 		const gint64 GetPosition() const { return sound.GetPosition(); }
 		const gint64 GetLength() const { return sound.GetLength(); }
 
