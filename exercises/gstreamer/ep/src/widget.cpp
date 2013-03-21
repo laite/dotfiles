@@ -51,7 +51,10 @@ InfoLabel::InfoLabel(std::string s)
 
 	SetInfoText(s);
 
+	// TODO: only hook to playback_second if it's necessary
 	AddEventHook(Global::EVENT::E_PLAYBACK_SECOND, boost::bind(&InfoLabel::_UpdateText, this));
+
+	AddEventHook(Global::EVENT::E_SONG_CHANGED, boost::bind(&InfoLabel::_UpdateText, this));
 }
 
 InfoLabel::~InfoLabel()
@@ -204,11 +207,13 @@ NextButton::NextButton()
 void NextButton::Press()
 {
 	Global::Log.Add("<Next>");
+	bool isNextSong = playback->NextSong();
+	bool isCurrentlyPlaying = playback->IsPlaying();
 
-	if (playback->IsPlaying())
+	if (isCurrentlyPlaying)
 		playback->StopPlayback();
 
-	if (playback->NextSong())
+	if ((isNextSong) && (isCurrentlyPlaying))
 		playback->StartPlayback();
 }
 
@@ -225,11 +230,13 @@ PreviousButton::PreviousButton()
 void PreviousButton::Press()
 {
 	Global::Log.Add("<Previous>");
+	bool isPreviousSong = playback->PreviousSong();
+	bool isCurrentlyPlaying = playback->IsPlaying();
 
-	if (playback->IsPlaying())
+	if (isCurrentlyPlaying)
 		playback->StopPlayback();
 
-	if (playback->PreviousSong())
+	if ((isPreviousSong) && (isCurrentlyPlaying))
 		playback->StartPlayback();
 }
 

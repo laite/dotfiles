@@ -34,6 +34,7 @@ bool Playlist::SelectSong(playlist_index newIndex)
 	else
 		return false;
 
+	Global::player.TriggerEvent(Global::EVENT::E_SONG_CHANGED);
 	return true;
 }
 
