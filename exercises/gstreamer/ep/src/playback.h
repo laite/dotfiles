@@ -41,13 +41,17 @@ class Playback
 		const Song *GetCurrentSong() const;
 
 		// Some Getters
-		Gst::State GetState() const { return sound.GetState(); }
 		const gint64 GetPosition() const { return sound.GetPosition(); }
 		const gint64 GetLength() const { return sound.GetLength(); }
 
 		// Select next/previous song from active playlist
 		bool NextSong() { return activePlaylist->NextSong(); }
 		bool PreviousSong() { return activePlaylist->PreviousSong(); }
+
+		// Check for specific status
+		bool IsPlaying() { return (sound.GetState() == Gst::STATE_PLAYING); }
+		bool IsPaused() { return (sound.GetState() == Gst::STATE_PAUSED); }
+		bool IsStopped() { return (sound.GetState() == Gst::STATE_NULL); }
 
 	private:
 

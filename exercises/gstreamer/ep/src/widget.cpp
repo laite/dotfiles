@@ -122,7 +122,7 @@ void PlayPauseButton::Press()
 {
 	Global::Log.Add("<PlayPause>");
 
-	if (playback->GetState() == Gst::STATE_NULL)
+	if (playback->IsStopped())
 		playback->StartPlayback();
 	else
 		playback->PausePlayback();
@@ -130,17 +130,10 @@ void PlayPauseButton::Press()
 
 void PlayPauseButton::_UpdateIcon()
 {
-	Gst::State state = playback->GetState();
-
-	switch (state)
-	{
-		case Gst::STATE_PLAYING:
-			_image.set(Gtk::Stock::MEDIA_PAUSE, Gtk::ICON_SIZE_MENU);
-			break;
-		default:
-			_image.set(Gtk::Stock::MEDIA_PLAY, Gtk::ICON_SIZE_MENU);
-			break;
-	}
+	if (playback->IsPlaying())
+		_image.set(Gtk::Stock::MEDIA_PAUSE, Gtk::ICON_SIZE_MENU);
+	else
+		_image.set(Gtk::Stock::MEDIA_PLAY, Gtk::ICON_SIZE_MENU);
 }
 
 /*
@@ -207,12 +200,12 @@ NextButton::NextButton()
 void NextButton::Press()
 {
 	Global::Log.Add("<Next>");
-	bool isNextSong = playback->NextSong();
-	bool isCurrentlyPlaying = (playback->GetState() == Gst::STATE_PLAYING);
+	bool hasNextSong = playback->NextSong();
+	bool isCurrentlyPlaying = playback->IsPlaying();
 
 	playback->StopPlayback();
 
-	if ((isNextSong) && (isCurrentlyPlaying))
+	if ((hasNextSong) && (isCurrentlyPlaying))
 		playback->StartPlayback();
 }
 
@@ -229,12 +222,12 @@ PreviousButton::PreviousButton()
 void PreviousButton::Press()
 {
 	Global::Log.Add("<Previous>");
-	bool isPreviousSong = playback->PreviousSong();
-	bool isCurrentlyPlaying = (playback->GetState() == Gst::STATE_PLAYING);
+	bool hasPreviousSong = playback->PreviousSong();
+	bool isCurrentlyPlaying = playback->IsPlaying();
 
 	playback->StopPlayback();
 
-	if ((isPreviousSong) && (isCurrentlyPlaying))
+	if ((hasPreviousSong) && (isCurrentlyPlaying))
 		playback->StartPlayback();
 }
 

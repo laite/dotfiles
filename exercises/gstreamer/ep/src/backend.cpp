@@ -27,6 +27,7 @@ Glib::RefPtr<Gst::Bus> Sound::GetBus() const
 	return m_playbin->get_bus();
 }
 
+// TODO: separate song loading and play-starting
 void Sound::StartPlaying(Glib::ustring uri)
 {
 	if (uri == "")
@@ -91,6 +92,7 @@ const gint64 Sound::GetPosition() const
 
 const gint64 Sound::GetLength() const
 {
+	// TODO: there should be length even when not playing
 	if (GetState() == Gst::STATE_NULL)
 		return 0;
 
