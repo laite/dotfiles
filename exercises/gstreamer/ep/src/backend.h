@@ -18,18 +18,18 @@ class Sound
 		// init gstreamer with creating simple playbin2
 		void CreatePlaybin();
 
-		// StartPlaying takes full path of file as parameter
+		// LoadSong takes full path of file as parameter
 		// (without file://)
-		void StartPlaying(Glib::ustring uri);
+		void LoadSong(Glib::ustring uri);
+
+		// Start playing the loaded song
+		void StartPlaying();
 
 		// sets playbin state to Gst::STATE_NULL
 		void StopPlaying();
 
 		// set playbin state to Gst::STATE_PAUSED
 		void PausePlaying();
-
-		// set playbin state to Gst::STATE_PLAYING
-		void ResumePlaying();
 
 		Gst::State GetState() const;
 		const gint64 GetPosition() const;

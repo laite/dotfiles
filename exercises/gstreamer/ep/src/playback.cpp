@@ -9,18 +9,17 @@
 #include "engine.h"
 
 Playback::Playback()
-	: _playing(false)
-	, activePlaylist(NULL)
+	: activePlaylist(NULL)
+	, _lastUri("")
 {
 
 }
 
 Playback::~Playback()
 {
-	if (_playing)
+	if (!IsStopped())
 	{
 		sound.StopPlaying();
-		_playing = false;
 		if (playTimer)
 			playTimer.disconnect();
 	}
@@ -34,14 +33,25 @@ void Playback::Init()
 	backendBus->add_watch(sigc::mem_fun(*this, &Playback::_BusWatch));
 }
 
-void Playback::StartPlayback()
+void Playback::LoadSong()
 {
-	if (_playing)
+	if (!IsStopped())
 		StopPlayback();
 
 	Glib::ustring uri = activePlaylist->GetCurrentSong()->GetUri();
-	sound.StartPlaying(uri);
-	_playing = true;
+	_lastUri = uri;
+	sound.LoadSong(uri);
+	Global::Log.Add("Loaded song: " + _lastUri);
+}
+
+void Playback::StartPlayback()
+{
+	if (activePlaylist->GetCurrentSong()->GetUri() != _lastUri)
+		LoadSong();
+	else if (!IsStopped())
+		StopPlayback();
+
+	sound.StartPlaying();
 
 	if (!playTimer)
 		playTimer = Glib::signal_timeout().connect(sigc::mem_fun(*this, &Playback::_OnPlaybackTimer), 1000);
@@ -51,11 +61,10 @@ void Playback::StartPlayback()
 
 void Playback::StopPlayback()
 {
-	if (!_playing)
+	if (IsStopped())
 		return;
 
 	sound.StopPlaying();
-	_playing = false;
 	if (playTimer)
 		playTimer.disconnect();
 
@@ -73,12 +82,32 @@ void Playback::PausePlayback()
 			Global::player.TriggerEvent(Global::EVENT::E_PLAYBACK_STATUS_CHANGED);
 			break;
 		case Gst::STATE_PAUSED:
-			sound.ResumePlaying();
+			sound.StartPlaying();
 			Global::player.TriggerEvent(Global::EVENT::E_PLAYBACK_STATUS_CHANGED);
 			break;
 		default:
 			break;
 	}
+}
+
+bool Playback::NextSong()
+{
+	bool hasNext = activePlaylist->NextSong();
+
+	if (hasNext)
+		LoadSong();
+
+	return hasNext;
+}
+
+bool Playback::PreviousSong()
+{
+	bool hasPrevious = activePlaylist->PreviousSong();
+
+	if (hasPrevious)
+		LoadSong();
+
+	return hasPrevious;
 }
 
 void Playback::_EndOfStream()
@@ -117,7 +146,7 @@ const Song* Playback::GetCurrentSong() const
 
 bool Playback::_OnPlaybackTimer()
 {
-	if (_playing)
+	if (IsPlaying())
 		Global::player.TriggerEvent(Global::EVENT::E_PLAYBACK_SECOND);
 
 	return true;

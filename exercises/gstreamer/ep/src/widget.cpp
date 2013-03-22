@@ -200,8 +200,8 @@ NextButton::NextButton()
 void NextButton::Press()
 {
 	Global::Log.Add("<Next>");
-	bool hasNextSong = playback->NextSong();
 	bool isCurrentlyPlaying = playback->IsPlaying();
+	bool hasNextSong = playback->NextSong();
 
 	playback->StopPlayback();
 
@@ -222,8 +222,8 @@ PreviousButton::PreviousButton()
 void PreviousButton::Press()
 {
 	Global::Log.Add("<Previous>");
-	bool hasPreviousSong = playback->PreviousSong();
 	bool isCurrentlyPlaying = playback->IsPlaying();
+	bool hasPreviousSong = playback->PreviousSong();
 
 	playback->StopPlayback();
 

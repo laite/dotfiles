@@ -20,6 +20,8 @@ Sound::~Sound()
 void Sound::CreatePlaybin()
 {
 	m_playbin = Gst::ElementFactory::create_element("playbin2", "play");
+	// TODO: proper method for volume (widget, config)
+	m_playbin->set_property("volume", 0.05);
 }
 
 Glib::RefPtr<Gst::Bus> Sound::GetBus() const
@@ -27,8 +29,7 @@ Glib::RefPtr<Gst::Bus> Sound::GetBus() const
 	return m_playbin->get_bus();
 }
 
-// TODO: separate song loading and play-starting
-void Sound::StartPlaying(Glib::ustring uri)
+void Sound::LoadSong(Glib::ustring uri)
 {
 	if (uri == "")
 	{
@@ -36,30 +37,21 @@ void Sound::StartPlaying(Glib::ustring uri)
 		return;
 	}
 	else
-	{
 		uri = "file://" + uri;
-	}
 
-	Global::Log.Add("Starting playback.");
 	m_playbin->set_property("uri", uri);
-	m_playbin->set_property("volume", 0.05);
-	m_playbin->set_state(Gst::STATE_PLAYING);
+}
 
-	double vol; 
-	m_playbin->get_property("volume", vol);
-	Global::Log.Add("vol: " + std::to_string(vol));
+void Sound::StartPlaying()
+{
+	Global::Log.Add("Starting playback.");
+	m_playbin->set_state(Gst::STATE_PLAYING);
 }
 
 void Sound::StopPlaying()
 {
 	Global::Log.Add("Stopping playback.");
 	m_playbin->set_state(Gst::STATE_NULL);
-}
-
-void Sound::ResumePlaying()
-{
-	Global::Log.Add("Resuming playback.");
-	m_playbin->set_state(Gst::STATE_PLAYING);
 }
 
 void Sound::PausePlaying()
