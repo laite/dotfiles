@@ -120,8 +120,6 @@ PlayPauseButton::PlayPauseButton()
 
 void PlayPauseButton::Press()
 {
-	Global::Log.Add("<PlayPause>");
-
 	if (playback->IsStopped())
 		playback->StartPlayback();
 	else
@@ -148,8 +146,6 @@ PlayButton::PlayButton()
 
 void PlayButton::Press()
 {
-	Global::Log.Add("<Play>");
-
 	playback->StartPlayback();
 }
 
@@ -165,8 +161,6 @@ StopButton::StopButton()
 
 void StopButton::Press()
 {
-	Global::Log.Add("<Stop>");
-
 	playback->StopPlayback();
 }
 
@@ -182,8 +176,6 @@ PauseButton::PauseButton()
 
 void PauseButton::Press()
 {
-	Global::Log.Add("<Pause>");
-
 	playback->PausePlayback();
 }
 
@@ -199,14 +191,7 @@ NextButton::NextButton()
 
 void NextButton::Press()
 {
-	Global::Log.Add("<Next>");
-	bool isCurrentlyPlaying = playback->IsPlaying();
-	bool hasNextSong = playback->NextSong();
-
-	playback->StopPlayback();
-
-	if ((hasNextSong) && (isCurrentlyPlaying))
-		playback->StartPlayback();
+	playback->NextSong();
 }
 
 /*
@@ -221,14 +206,7 @@ PreviousButton::PreviousButton()
 
 void PreviousButton::Press()
 {
-	Global::Log.Add("<Previous>");
-	bool isCurrentlyPlaying = playback->IsPlaying();
-	bool hasPreviousSong = playback->PreviousSong();
-
-	playback->StopPlayback();
-
-	if ((hasPreviousSong) && (isCurrentlyPlaying))
-		playback->StartPlayback();
+	playback->PreviousSong();
 }
 
 

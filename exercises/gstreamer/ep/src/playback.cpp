@@ -35,6 +35,7 @@ void Playback::Init()
 
 void Playback::LoadSong()
 {
+	// we can't load a new song unless stream is stopped
 	if (!IsStopped())
 		StopPlayback();
 
@@ -46,6 +47,8 @@ void Playback::LoadSong()
 
 void Playback::StartPlayback()
 {
+	Global::Log.Add("<Start Playback>");
+
 	if (activePlaylist->GetCurrentSong()->GetUri() != _lastUri)
 		LoadSong();
 	else if (!IsStopped())
@@ -61,6 +64,8 @@ void Playback::StartPlayback()
 
 void Playback::StopPlayback()
 {
+	Global::Log.Add("<Stop playback>");
+
 	if (IsStopped())
 		return;
 
@@ -74,6 +79,7 @@ void Playback::StopPlayback()
 void Playback::PausePlayback()
 {
 	Gst::State state = sound.GetState();
+	Global::Log.Add("<Pause playback>");
 
 	switch (state)
 	{
@@ -90,31 +96,38 @@ void Playback::PausePlayback()
 	}
 }
 
-bool Playback::NextSong()
+void Playback::NextSong()
 {
+	Global::Log.Add("<Next song>");
+	bool isCurrentlyPlaying = IsPlaying();
 	bool hasNext = activePlaylist->NextSong();
 
 	if (hasNext)
-		LoadSong();
-
-	return hasNext;
+	{
+		LoadSong(); // LoadSong makes sure playback is stopped
+		if (isCurrentlyPlaying)
+			StartPlayback();
+	}
 }
 
-bool Playback::PreviousSong()
+void Playback::PreviousSong()
 {
+	Global::Log.Add("<Previous song>");
+	bool isCurrentlyPlaying = IsPlaying();
 	bool hasPrevious = activePlaylist->PreviousSong();
 
 	if (hasPrevious)
-		LoadSong();
-
-	return hasPrevious;
+	{
+		LoadSong(); // LoadSong makes sure playback is stopped
+		if (isCurrentlyPlaying)
+			StartPlayback();
+	}
 }
 
 void Playback::_EndOfStream()
 {
 	StopPlayback();
-	if (NextSong())
-		StartPlayback();
+	NextSong();
 }
 
 bool Playback::_BusWatch(const Glib::RefPtr<Gst::Bus>& bus, const Glib::RefPtr<Gst::Message>& message)

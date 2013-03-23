@@ -50,8 +50,8 @@ class Playback
 		const gint64 GetLength() const { return sound.GetLength(); }
 
 		// Select next/previous song from active playlist
-		bool NextSong();
-		bool PreviousSong();
+		void NextSong();
+		void PreviousSong();
 
 		// Check for specific status
 		bool IsPlaying() { return (sound.GetState() == Gst::STATE_PLAYING); }
