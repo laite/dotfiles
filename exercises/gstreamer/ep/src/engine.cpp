@@ -5,19 +5,13 @@
  */
 
 #include "engine.h"
-std::string filename = "/home/laite/.config/laite/ep/list000.m3u";
+#include "config.h"
 
 Engine::Engine()
 	: _currentPlaylist(0)
 {
-	// TODO: Load program settings here
-	// (playlists, library and all that)
-
 	if (!_playlists.size())
-	{
 		_playlists.push_back(new Playlist);
-
-	}
 
 	// TODO: save active playlist index on exit, restore here
 	playback.SetActivePlaylist(_playlists.at(_currentPlaylist));
@@ -27,9 +21,24 @@ Engine::~Engine()
 {
 	Global::Log.Add("Shutting down engine.");
 
+	//	TODO: move this somewhere else
 //	for (std::vector<Playlist*>::const_iterator playlistIter = _playlists.begin();
 //			playlistIter != _playlists.end(); ++playlistIter)
 //		(*playlistIter)->SaveToFile(filename);
+}
+
+void Engine::LoadConfig()
+{
+	Global::options.LoadOptions();
+	
+	// Load all playlists from respective files
+	for (std::vector<Playlist*>::iterator plIter = _playlists.begin();
+			plIter != _playlists.end(); ++plIter)
+	{
+		//Global::Log.Add((*plIter)->GetUri());
+		(*plIter)->LoadFromFile((*plIter)->GetUri());
+	}
+
 }
 
 

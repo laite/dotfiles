@@ -13,6 +13,7 @@
 
 Playlist::Playlist()
 	: _currentSong(0)
+	, _uri("/home/laite/.config/laite/ep/list000.m3u")
 {
 
 }
@@ -63,8 +64,11 @@ void Playlist::SaveToFile(std::string &file) const
 	outFile.close();
 }
 
-void Playlist::LoadFromFile(std::string &file)
+void Playlist::LoadFromFile(const std::string file)
 {
+	if (file == "")
+		return;
+
 	std::ifstream inFile(file.c_str());
 	std::vector<std::string> files;
 	std::string line;
@@ -76,7 +80,8 @@ void Playlist::LoadFromFile(std::string &file)
 
 	for (std::vector<std::string>::iterator iter = files.begin(); iter != files.end(); ++iter)
 	{
-		// TODO: Load here
+		// We add song from file to our Library
+		// and put its unique ID to playlist
 		unsigned int i = Global::player.GetLibrary()->AddSingleSong(*iter);
 		_songlist.push_back(i);
 	}

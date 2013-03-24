@@ -25,13 +25,8 @@ class MainWindow : public Gtk::Window
 
 	protected:
 
-		//Signal handlers:
-		void on_nextSong_clicked();
-		void on_loadButton_clicked();
-
 		//Member widgets:
 		Gtk::VBox m_box;
-		Gtk::Button m_loadButton;
 		PlaybackControls _playbackControls;
 		InfoLabel _label;
 

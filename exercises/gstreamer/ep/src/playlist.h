@@ -24,7 +24,7 @@ class Playlist
 		~Playlist();
 
 		// File operations
-		void LoadFromFile(std::string&);
+		void LoadFromFile(const std::string);
 		void SaveToFile(std::string&) const;
 
 		// Change active song on playlist
@@ -43,6 +43,8 @@ class Playlist
 		const Song* GetSong(playlist_index index) const;
 
 		const playlist_index GetSize() const { return _songlist.size(); }
+		const Glib::ustring GetName() const { return _name; }
+		const Glib::ustring GetUri() const { return _uri; }
 
 		// add single song to the end of playlist
 		void AddSong(unsigned int song) { _songlist.push_back(song); }

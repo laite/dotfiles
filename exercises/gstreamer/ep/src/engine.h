@@ -63,6 +63,8 @@ class Engine
 		Engine();
 		~Engine();
 
+		void LoadConfig();
+
 		Playback *GetPlayback() { return &playback; }
 		Library  *GetLibrary() { return &library; }
 
