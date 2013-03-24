@@ -55,9 +55,11 @@ void MainWindow::on_loadButton_clicked()
 		{
 			std::string folderName = dialog.get_filename();
 			Global::Log.Add("Loading folder " + folderName);
-			Global::player.GetLibrary()->LoadFolder(folderName);
+			//Global::player.GetLibrary()->LoadFolder(folderName);
+std::string filename = "/home/laite/.config/laite/ep/list000.m3u";
+			Global::player.GetCurrentPlaylist()->LoadFromFile(filename);
 			Global::Log.Add("Sending query to current playlist");
-			Global::player.GetCurrentPlaylist()->AddQuery("*");
+			//Global::player.GetCurrentPlaylist()->AddQuery("*");
 			break;
 		}
 		default:

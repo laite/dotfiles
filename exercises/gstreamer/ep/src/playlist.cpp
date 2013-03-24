@@ -4,6 +4,8 @@
  * 
  */
 
+#include <stdexcept>
+
 #include "playlist.h"
 #include "global.h"
 #include "engine.h"
@@ -15,10 +17,15 @@ Playlist::Playlist()
 
 }
 
+Playlist::~Playlist()
+{
+	
+}
+
 const Song *Playlist::GetSong(Playlist::playlist_index index) const
 {
 	if (index < _songlist.size())
-		return _songlist[index];
+		return Global::player.GetLibrary()->GetSong(_songlist.at(index));
 	else
 		return NULL;
 }
@@ -40,6 +47,7 @@ bool Playlist::SelectSong(playlist_index newIndex)
 
 void Playlist::SaveToFile(std::string &file) const
 {
+	// TODO: make sure path to file exists, create if necessary
 	std::ofstream outFile(file.c_str());
 
 	if (!outFile)
@@ -48,25 +56,34 @@ void Playlist::SaveToFile(std::string &file) const
 		return;
 	}
 
-	typedef std::vector<Song*>::const_iterator playlist_iter;
+	typedef std::vector<unsigned int>::const_iterator playlist_iter;
 	for (playlist_iter iter = _songlist.begin(); iter != _songlist.end(); ++iter)
-		outFile << (*iter)->GetUri() << std::endl;
+		outFile << Global::player.GetLibrary()->GetSong(*iter)->GetUri() << std::endl;
 
 	outFile.close();
 }
 
 void Playlist::LoadFromFile(std::string &file)
 {
-	
+	std::ifstream inFile(file.c_str());
+	std::vector<std::string> files;
+	std::string line;
+
+	while (std::getline(inFile, line))
+		files.push_back(line);
+
+	inFile.close();
+
+	for (std::vector<std::string>::iterator iter = files.begin(); iter != files.end(); ++iter)
+	{
+		// TODO: Load here
+		unsigned int i = Global::player.GetLibrary()->AddSingleSong(*iter);
+		_songlist.push_back(i);
+	}
 }
 
 void Playlist::AddQuery(std::string query)
 {
-	// TODO: Just get everything for now
-
-	std::vector<Song> *wholeLibrary = Global::player.GetLibrary()->GetSongs();
-
-	for (std::vector<Song>::size_type i = 0; i != wholeLibrary->size(); ++i)
-		AddSong(&wholeLibrary->at(i));
+	// TODO: Proper query from library
 }
 

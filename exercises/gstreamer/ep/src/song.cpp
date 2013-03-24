@@ -13,6 +13,7 @@ Song::Song(Glib::ustring address)
 	TagLib::FileRef file(uri.c_str());
 	if (!file.isNull() && file.tag())
 	{
+		// TODO: Make sure values are properly formatted Glib::ustring (utf-8)
 		TagLib::Tag *tag = file.tag();
 		_artist = tag->artist().to8Bit();
 		_album = tag->album().to8Bit();

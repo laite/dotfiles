@@ -9,6 +9,73 @@
 #include "global.h"
 #include <boost/filesystem.hpp>
 
+
+/*
+ *  UniqueNumber
+ */
+
+UniqueNumber::UniqueNumber()
+	: _lastNumber(0)
+	, _amountOfNumbers(0)
+{
+	
+}
+
+unsigned int UniqueNumber::GenerateNumber()
+{
+	unsigned int newNumber;
+
+	// if there is released numbers, we give one of them
+	if (_releasedNumbers.size() > 0)
+	{
+		newNumber = _releasedNumbers.front();
+		_releasedNumbers.pop();
+	}
+	else
+	{
+		// otherwise we return next number available
+		newNumber = ++_lastNumber;
+	}
+
+	return newNumber;
+}
+
+void UniqueNumber::ReleaseNumber(unsigned int num)
+{
+	_releasedNumbers.push(num);
+}
+
+
+/*
+ *  Songlist
+ */
+
+Songlist::Songlist()
+{
+	
+}
+
+unsigned int Songlist::_AddSong(Song s)
+{
+	unsigned int newID = _ID.GenerateNumber();
+	_songs.insert(std::make_pair(newID, s));
+
+	return newID;
+}
+
+const Song* Songlist::_GetSong(unsigned int wanted) const
+{
+	if (_songs.find(wanted) != _songs.end())
+		return &_songs.at(wanted);
+	else
+		return NULL;
+}
+
+/*
+ *  Library
+ */
+
+
 Library::Library()
 {
 
@@ -52,8 +119,17 @@ void Library::LoadFolder(std::string s)
 			for (std::vector<std::string>::iterator iter = newFiles.begin();
 					iter != newFiles.end(); ++iter)
 				{
-					songs.push_back(Song(*iter));
+					_songs._AddSong(Song(*iter));
 				}
 		}
 	}
 }
+
+unsigned int Library::AddSingleSong(std::string filename)
+{
+	// TODO: check that file really exists
+	// TODO: check that song is not in library already
+
+	return _songs._AddSong(Song(filename));
+}
+

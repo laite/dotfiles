@@ -19,33 +19,51 @@ class Playlist
 	public:
 
 		typedef std::vector<Song*>::size_type playlist_index;
-		Playlist();
 
+		Playlist();
+		~Playlist();
+
+		// File operations
 		void LoadFromFile(std::string&);
 		void SaveToFile(std::string&) const;
 
+		// Change active song on playlist
+		// TODO: trigger
 		bool SelectSong(playlist_index);
 
+		// Some helpers for SelectSong
 		void FirstSong() { SelectSong(0); }
-
 		bool PreviousSong() { return SelectSong(_currentSong - 1); }
 		bool NextSong() { return SelectSong(_currentSong + 1); }
 
-		const Song *GetCurrentSong() const { return GetSong(_currentSong); }
+		// return pointer to currently active song
+		const Song* GetCurrentSong() const { return GetSong(_currentSong); }
 
 		// returns NULL if index is out of bounds
-		const Song *GetSong(playlist_index index) const;
+		const Song* GetSong(playlist_index index) const;
 
-		playlist_index GetSize() const { return _songlist.size(); }
+		const playlist_index GetSize() const { return _songlist.size(); }
 
-		void AddSong(Song *s) { _songlist.push_back(s); }
+		// add single song to the end of playlist
+		void AddSong(unsigned int song) { _songlist.push_back(song); }
+
+		// Query songs from library and add matching to playlist
 		void AddQuery(std::string);
 
 	private:
 
-		std::vector<Song*> _songlist;
+		// list of all songs playlist holds
+		// (unique song ID's)
+		std::vector<unsigned int> _songlist;
 
+		// index of currently active song [0..n[
 		playlist_index _currentSong;
+
+		// name of playlist (shows to user)
+		Glib::ustring _name;
+
+		// filepath of playlist
+		Glib::ustring _uri;
 };
 
 
