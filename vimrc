@@ -22,11 +22,11 @@ set shiftwidth=4				" number of spaces for (auto)indent
 set smartindent					" start new lines indented
 set nowrap						" don't wrap long lines
 set ignorecase smartcase 		" ignore case on lowcase-searches
-set number 						" row numbers
 set scrolloff=5 				" always +- 5 rows in sight
 set sidescrolloff=5				" always +- 5 columns
 set linebreak
 set showbreak=\ ->\ 
+set relativenumber				" use relative numbers by default
 
 set listchars=extends:>,precedes:<
 
@@ -139,6 +139,17 @@ endfunction
 
 " define motion 'numbers' in external file
 source $HOME/.numbermaps.vim
+
+" add quick way to toggle between normal and relative line numbers
+function! NumberToggle()
+	if(&relativenumber == 1)
+		set number
+	else
+		set relativenumber
+	endif
+endfunc
+
+nnoremap <C-n> :call NumberToggle()<cr>
 
 """ Plugins """
 
