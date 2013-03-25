@@ -11,7 +11,7 @@ Engine::Engine()
 	: _currentPlaylist(0)
 {
 	if (!_playlists.size())
-		_playlists.push_back(new Playlist);
+		_playlists.push_back(new Playlist(_playlistID.GenerateNumber()));
 
 	// TODO: save active playlist index on exit, restore here
 	playback.SetActivePlaylist(_playlists.at(_currentPlaylist));

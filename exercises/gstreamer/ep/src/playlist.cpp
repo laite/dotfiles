@@ -11,12 +11,12 @@
 #include "engine.h"
 #include "config.h"
 
-Playlist::Playlist()
+Playlist::Playlist(unsigned int ID)
 	: _currentSong(0)
-	, _uri("/home/laite/.config/laite/ep/list000.m3u")
+	, _ID(ID)
+	, _uri("/home/laite/.config/laite/ep/list" + std::to_string(_ID) + ".m3u")
 {
-	// TODO give separate uris for playlists
-
+	Global::Log.Add("Create playlist: " + std::to_string(_ID));
 }
 
 Playlist::~Playlist()

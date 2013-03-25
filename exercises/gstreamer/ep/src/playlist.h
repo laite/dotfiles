@@ -20,7 +20,7 @@ class Playlist
 
 		typedef std::vector<Song*>::size_type playlist_index;
 
-		Playlist();
+		Playlist(unsigned int);
 		~Playlist();
 
 		// File operations
@@ -63,6 +63,9 @@ class Playlist
 
 		// name of playlist (shows to user)
 		Glib::ustring _name;
+
+		// unique playlist id
+		unsigned int _ID;
 
 		// filepath of playlist
 		Glib::ustring _uri;

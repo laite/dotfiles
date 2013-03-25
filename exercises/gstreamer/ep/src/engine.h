@@ -90,6 +90,9 @@ class Engine
 		// all playlists
 		std::vector<Playlist*> _playlists;
 
+		// keep track of playlists through unique ID (can change between sessions)
+		UniqueNumber _playlistID;
+
 		// index of currently active playlist
 		playlist_index _currentPlaylist;
 		

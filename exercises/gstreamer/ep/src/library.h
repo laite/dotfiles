@@ -38,6 +38,7 @@ class Songlist
 
 		Songlist();
 
+		// TODO: remember to release unique id when adding removeSong
 		unsigned int _AddSong(Song);
 		const Song* _GetSong(unsigned int) const;
 
