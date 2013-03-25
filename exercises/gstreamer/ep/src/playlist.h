@@ -25,7 +25,7 @@ class Playlist
 
 		// File operations
 		void LoadFromFile(const std::string);
-		void SaveToFile(std::string&) const;
+		void SaveToFile(const std::string) const;
 
 		// Change active song on playlist
 		// TODO: trigger

@@ -30,9 +30,6 @@ class MainWindow : public Gtk::Window
 		PlaybackControls _playbackControls;
 		InfoLabel _label;
 
-	private:
-
-		Playback *playback;
 };
 
 #endif /* end WINDOW_H */

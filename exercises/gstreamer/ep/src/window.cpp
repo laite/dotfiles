@@ -12,17 +12,17 @@
 MainWindow::MainWindow()
 	: m_box(Gtk::ORIENTATION_VERTICAL)
 	, _label("%a - %t - %p")
-	, playback(NULL)
 {
 	set_border_width(10);
+
+	// TODO: Create Layout class which would return Gtk::Box
+	// aka. the whole layout
 
 	// Widgets
 	m_box.pack_start(_label.GetWidget(), true, true);
 	m_box.pack_start(_playbackControls.GetWidget(), true, true);
+
 	this->add(m_box);
-
-	playback = Global::player.GetPlayback();
-
 	this->show_all();
 }
 

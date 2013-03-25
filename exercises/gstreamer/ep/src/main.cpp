@@ -7,10 +7,12 @@
 #include "window.h"
 #include "global.h"
 #include "engine.h"
+#include "config.h"
 
 bool Global::debugMode = true;
 LogClass Global::Log;
 Engine Global::player;
+Options Global::options;
 
 int main(int argc, char* argv[]) 
 {

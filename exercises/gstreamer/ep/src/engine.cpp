@@ -20,11 +20,6 @@ Engine::Engine()
 Engine::~Engine()
 {
 	Global::Log.Add("Shutting down engine.");
-
-	//	TODO: move this somewhere else
-//	for (std::vector<Playlist*>::const_iterator playlistIter = _playlists.begin();
-//			playlistIter != _playlists.end(); ++playlistIter)
-//		(*playlistIter)->SaveToFile(filename);
 }
 
 void Engine::LoadConfig()
@@ -32,13 +27,20 @@ void Engine::LoadConfig()
 	Global::options.LoadOptions();
 	
 	// Load all playlists from respective files
-	for (std::vector<Playlist*>::iterator plIter = _playlists.begin();
-			plIter != _playlists.end(); ++plIter)
+	for (std::vector<Playlist*>::iterator playlistIter = _playlists.begin();
+			playlistIter != _playlists.end(); ++playlistIter)
 	{
-		//Global::Log.Add((*plIter)->GetUri());
-		(*plIter)->LoadFromFile((*plIter)->GetUri());
+		//Global::Log.Add((*playlistIter)->GetUri());
+		(*playlistIter)->LoadFromFile((*playlistIter)->GetUri());
 	}
+}
 
+void Engine::SaveConfig()
+{
+	// Save all the playlists
+	for (std::vector<Playlist*>::const_iterator playlistIter = _playlists.begin();
+			playlistIter != _playlists.end(); ++playlistIter)
+		(*playlistIter)->SaveToFile((*playlistIter)->GetUri());
 }
 
 
@@ -65,7 +67,6 @@ boost::signals::connection Event::Connect(boost::signal<void ()>::slot_function_
 
 void Event::Disconnect(const boost::signals::connection &connection)
 {
-	Global::Log.Add("Disconnecting Hook");
 	_signal.disconnect(connection);
 }
 

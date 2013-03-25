@@ -15,6 +15,7 @@ Playlist::Playlist()
 	: _currentSong(0)
 	, _uri("/home/laite/.config/laite/ep/list000.m3u")
 {
+	// TODO give separate uris for playlists
 
 }
 
@@ -46,7 +47,7 @@ bool Playlist::SelectSong(playlist_index newIndex)
 	return true;
 }
 
-void Playlist::SaveToFile(std::string &file) const
+void Playlist::SaveToFile(const std::string file) const
 {
 	// TODO: make sure path to file exists, create if necessary
 	std::ofstream outFile(file.c_str());

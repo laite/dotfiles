@@ -7,8 +7,6 @@
 #include "config.h"
 #include "global.h"
 
-Options Global::options;
-
 Options::Options()
 {
 	_appOptions.repeatMode = AppOptions::REPEAT_ALL;

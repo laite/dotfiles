@@ -223,39 +223,3 @@ PlaybackControls::PlaybackControls(Gtk::Orientation orientation)
 	_widget.pack_start(_next.GetWidget(), true, true);
 }
 
-
-/*
-TODO : add load button sometime
-void MainWindow::on_loadButton_clicked()
-{
-	// create FileChooserDialog and read its result to member variable _folderName
-	Gtk::FileChooserDialog dialog("Please choose a folder", Gtk::FILE_CHOOSER_ACTION_SELECT_FOLDER);
-	dialog.set_transient_for(*this);
-
-	// add response buttons
-	dialog.add_button(Gtk::Stock::CANCEL, Gtk::RESPONSE_CANCEL);
-	dialog.add_button(Gtk::Stock::OPEN, Gtk::RESPONSE_OK);
-
-	int result = dialog.run();
-
-	switch (result)
-	{
-		case (Gtk::RESPONSE_OK):
-		{
-			std::string folderName = dialog.get_filename();
-			Global::Log.Add("Loading folder " + folderName);
-			//Global::player.GetLibrary()->LoadFolder(folderName);
-			Global::Log.Add("Sending query to current playlist");
-			//Global::player.GetCurrentPlaylist()->AddQuery("*");
-			break;
-		}
-		default:
-		{
-			Global::Log.Add("Cancelling whole deal.");
-			break;
-		}
-		
-	}
-}
-
-*/
