@@ -8,14 +8,20 @@
 
 #include "harkka.h"
 
-const int PALVELUPISTEET = 3;
+// palvelupisteiden (jonojen) määrä kaupassa
+const int PALVELUPISTEET = 1;
 
-// todennäköisyydet per kierros
-const double OSTOS_SUORITETTU = 0.2; 
-const double UUSI_ASIAKAS = 0.2;
+// todennäköisyydet per kierros (/100)
+const double OSTOS_SUORITETTU = 8;
+const double UUSI_ASIAKAS = 20;
+
+// kokonaisaika (kierrosta, ~10s reaaliaikaa)
+const int KOKONAISAIKA = 100;
 
 /*
+ *
  *  Kauppa class
+ *
  */
 
 Kauppa::Kauppa()
@@ -29,12 +35,12 @@ unsigned Kauppa::AnnaLyhinJono()
 	if (palveluPisteet.size() < 1)
 		throw std::runtime_error("Ei ainuttakaan palvelupistettä!");
 
-	unsigned palvelupisteID = (*palveluPisteet.begin()).GetID();
-	unsigned asiakasmaara = (*palveluPisteet.begin()).AsiakkaitaJonossa();
+	unsigned palvelupisteID;
+	int asiakasmaara = -1;
 
-	for (palvelupisteIter ppIter = palveluPisteet.begin() + 1; ppIter != palveluPisteet.end(); ++ppIter)
+	for (palvelupisteIter ppIter = palveluPisteet.begin(); ppIter != palveluPisteet.end(); ++ppIter)
 	{
-		if ((*ppIter).AsiakkaitaJonossa() < asiakasmaara)
+		if (((*ppIter).AsiakkaitaJonossa() < asiakasmaara) || (asiakasmaara == -1))
 		{
 			asiakasmaara = (*ppIter).AsiakkaitaJonossa();
 			palvelupisteID = (*ppIter).GetID();
@@ -44,20 +50,89 @@ unsigned Kauppa::AnnaLyhinJono()
 	return palvelupisteID;
 }
 
+unsigned Kauppa::AsiakkaitaYhteensa()
+{
+	unsigned asiakkaita = 0;
+	for (palvelupisteIter ppIter = palveluPisteet.begin(); ppIter != palveluPisteet.end(); ++ppIter)
+		asiakkaita += (*ppIter).AsiakkaitaJonossa();
+
+	return asiakkaita;
+}
+
 void Kauppa::UusiAsiakas()
 {
 	// Uusi asiakas valitsee aina lyhimmän jonon
 	unsigned jonoID = this->AnnaLyhinJono();
 
 	palveluPisteet.at(jonoID).LisaaAsiakasJonoon();
+}
 
+void Kauppa::TarkistaSietokyvyt()
+{
+	for (palvelupisteIter ppIter = palveluPisteet.begin(); ppIter != palveluPisteet.end(); ++ppIter)
+		(*ppIter).LaskeAsiakkaidenSietokyvyt();
+}
+
+void Kauppa::TarkistaOstostapahtumat()
+{
+	for (palvelupisteIter ppIter = palveluPisteet.begin(); ppIter != palveluPisteet.end(); ++ppIter)
+	{
+		if (rand()%100 < OSTOS_SUORITETTU)
+			(*ppIter).PoistaAsiakas();
+	}
 }
 
 /*
- *  Palvelupiste class
+ *
+ * Palvelupiste class
+ *
  */
 
+void Palvelupiste::PoistaAsiakas()
+{
+	if (asiakkaat.size() == 0)
+		return;
 
+	asiakkaat.erase(asiakkaat.begin());
+	std::cout << "Asiakas jonossa " << ID << " suoritti ostoksensa." << std::endl;
+}
+
+void Palvelupiste::LaskeAsiakkaidenSietokyvyt()
+{
+	if (asiakkaat.size() == 0)
+		return;
+
+	std::vector<Asiakas> edelleenJonossa;
+
+	for (std::vector<Asiakas>::iterator asiakasIter = asiakkaat.begin(); asiakasIter != asiakkaat.end(); ++asiakasIter)
+	{
+		// Asiakkaan sietokyky laskee sitä enemmän, mitä enemmän jonossa on ihmisiä
+		(*asiakasIter).LaskeSietokykya(rand()%(this->AsiakkaitaJonossa()));
+		if ((*asiakasIter).GetSietokyky() < 0)
+			std::cout << "Asiakas jonossa " << ID << " kyllästyi odottamaan!" << std::endl;
+		else
+			edelleenJonossa.push_back(*asiakasIter);
+	}
+
+	asiakkaat = edelleenJonossa;
+}
+
+/*
+ *
+ * Asiakas Class
+ *
+ */
+
+void Asiakas::LaskeSietokykya(unsigned lasku)
+{
+	sietokyky -= lasku;
+}
+
+/* 
+ *
+ * Main Function
+ *
+ */
 
 int main(int argc, char **argv)
 {
@@ -65,14 +140,18 @@ int main(int argc, char **argv)
 
 	Kauppa r_kioski;
 
-	r_kioski.UusiAsiakas();
-	r_kioski.UusiAsiakas();
+	int t = 0;
+	while (++t != KOKONAISAIKA)
+	{
+		r_kioski.TarkistaOstostapahtumat();
 
-	std::cout << r_kioski.AnnaLyhinJono() << std::endl;
-	r_kioski.UusiAsiakas();
-	r_kioski.UusiAsiakas();
+		r_kioski.TarkistaSietokyvyt();
 
-	std::cout << r_kioski.AnnaLyhinJono() << std::endl;
+		if (rand()%100 < UUSI_ASIAKAS)
+			r_kioski.UusiAsiakas();
+
+		std::cout << "Kierros " << t << ": " << r_kioski.AsiakkaitaYhteensa() << " asiakasta." << std::endl;
+	}
 
 	return 0;
 }

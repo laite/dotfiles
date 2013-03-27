@@ -19,7 +19,11 @@ class Asiakas
 {
 	public:
 
-		Asiakas() { sietokyky = 20+rand()%100; std::cout << "Uusi asiakas! Sietokyky: " << sietokyky << std::endl; }
+		Asiakas() { sietokyky = 10+rand()%50; std::cout << "Uusi asiakas! Sietokyky: " << sietokyky << std::endl; }
+
+		const int GetSietokyky() const { return sietokyky; }
+
+		void LaskeSietokykya(unsigned);
 
 	private:
 
@@ -35,8 +39,10 @@ class Palvelupiste
 		const int GetID() const { return ID; }
 
 		void LisaaAsiakasJonoon() { asiakkaat.push_back(Asiakas()); std::cout << "Asiakas lisätty jonoon " << ID << std::endl; }
-		void PoistaAsiakas() { asiakkaat.erase(asiakkaat.begin()); }
+		void PoistaAsiakas();
 		unsigned int AsiakkaitaJonossa() { return asiakkaat.size(); }
+
+		void LaskeAsiakkaidenSietokyvyt();
 
 	private:
 
@@ -56,7 +62,12 @@ class Kauppa
 
 		unsigned AnnaLyhinJono();
 
+		unsigned AsiakkaitaYhteensa();
+
 		void UusiAsiakas();
+		void TarkistaOstostapahtumat();
+
+		void TarkistaSietokyvyt();
 
 	private:
 
