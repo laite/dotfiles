@@ -48,6 +48,9 @@ namespace Global
 		// when playback is started/stopped/paused
 		E_PLAYBACK_STATUS_CHANGED,
 
+		// when active playlist has been changed
+		E_PLAYLIST_CHANGED,
+
 		// placeholder, never triggered
 		E_LAST
 	};

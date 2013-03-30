@@ -181,7 +181,7 @@ class PlaylistViewerColumns : public Gtk::TreeModel::ColumnRecord
 		Gtk::TreeModelColumn<Glib::ustring> columnTitle;
 };
 
-class PlaylistViewer
+class PlaylistViewer : public BaseWidget
 {
 	public:
 
@@ -190,6 +190,8 @@ class PlaylistViewer
 		Gtk::Widget& GetWidget() { return _treeView; }
 
 	private:
+
+		void _UpdateContents();
 
 		PlaylistViewerColumns _columns;
 

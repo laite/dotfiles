@@ -238,6 +238,7 @@ PlaylistViewerColumns::PlaylistViewerColumns()
 
 PlaylistViewer::PlaylistViewer()
 {
+	_treeModel = Gtk::ListStore::create(_columns);
 	_treeView.set_model(_treeModel);
 
 	_treeView.append_column("Track", _columns.columnTrack);
@@ -251,4 +252,19 @@ PlaylistViewer::PlaylistViewer()
 		(*columnIter)->set_reorderable();
 		(*columnIter)->set_resizable();
 	}
+
+	// Hook to playlist_change so we always show active playlist items here
+	AddEventHook(Global::EVENT::E_SONG_CHANGED, boost::bind(&PlaylistViewer::_UpdateContents, this));
+
+	// initialize contents
+	_UpdateContents();
+}
+
+void PlaylistViewer::_UpdateContents()
+{
+	Gtk::TreeModel::iterator iter = _treeModel->append();
+	Gtk::TreeModel::Row row = (*iter);
+
+	row[_columns.columnTrack] = 1;
+	row[_columns.columnTitle] = "title";
 }
