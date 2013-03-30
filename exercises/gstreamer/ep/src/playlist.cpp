@@ -4,6 +4,9 @@
  * 
  */
 
+// TODO: take care of deleting unused playlists (might become a problem between sessions,
+// when playlist's IDs change)
+
 #include <stdexcept>
 
 #include "playlist.h"

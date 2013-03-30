@@ -223,3 +223,32 @@ PlaybackControls::PlaybackControls(Gtk::Orientation orientation)
 	_widget.pack_start(_next.GetWidget(), true, true);
 }
 
+
+/*
+ *  Playlist view
+ */
+
+PlaylistViewerColumns::PlaylistViewerColumns()
+{
+	add(columnTrack);
+	add(columnArtist);
+	add(columnAlbum);
+	add(columnTitle);
+}
+
+PlaylistViewer::PlaylistViewer()
+{
+	_treeView.set_model(_treeModel);
+
+	_treeView.append_column("Track", _columns.columnTrack);
+	_treeView.append_column("Title", _columns.columnTitle);
+
+	// make all columns reorderable and resizable
+	std::vector<Gtk::TreeView::Column*> allColumns = _treeView.get_columns();
+	for (std::vector<Gtk::TreeView::Column*>::iterator columnIter = allColumns.begin();
+			columnIter != allColumns.end(); ++columnIter)
+	{
+		(*columnIter)->set_reorderable();
+		(*columnIter)->set_resizable();
+	}
+}

@@ -21,6 +21,7 @@ MainWindow::MainWindow()
 	// Widgets
 	m_box.pack_start(_label.GetWidget(), true, true);
 	m_box.pack_start(_playbackControls.GetWidget(), true, true);
+	m_box.pack_start(_playlistView.GetWidget(), true, true);
 
 	this->add(m_box);
 	this->show_all();

@@ -163,4 +163,40 @@ class PlaybackControls : public BaseWidget
 };
 
 
+/*
+ *  Playlist View
+ */
+
+class PlaylistViewerColumns : public Gtk::TreeModel::ColumnRecord
+{
+	friend class PlaylistViewer;
+
+	private:
+
+		PlaylistViewerColumns();
+
+		Gtk::TreeModelColumn<unsigned int> columnTrack;
+		Gtk::TreeModelColumn<Glib::ustring> columnArtist;
+		Gtk::TreeModelColumn<Glib::ustring> columnAlbum;
+		Gtk::TreeModelColumn<Glib::ustring> columnTitle;
+};
+
+class PlaylistViewer
+{
+	public:
+
+		PlaylistViewer();
+
+		Gtk::Widget& GetWidget() { return _treeView; }
+
+	private:
+
+		PlaylistViewerColumns _columns;
+
+		Gtk::TreeView _treeView;
+		
+		Glib::RefPtr<Gtk::ListStore> _treeModel;
+		Glib::RefPtr<Gtk::TreeSelection> _refTreeSelection;
+};
+
 #endif /* end WIDGET_H */

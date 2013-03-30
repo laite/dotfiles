@@ -33,7 +33,7 @@ void Sound::LoadSong(Glib::ustring uri)
 {
 	if (uri == "")
 	{
-		std::cerr << "No song available from the library!" << std::endl;
+		Global::Log.Add("No song available from the library!", false);
 		return;
 	}
 	else

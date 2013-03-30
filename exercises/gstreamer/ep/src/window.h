@@ -29,6 +29,7 @@ class MainWindow : public Gtk::Window
 		Gtk::VBox m_box;
 		PlaybackControls _playbackControls;
 		InfoLabel _label;
+		PlaylistViewer _playlistView;
 
 };
 
