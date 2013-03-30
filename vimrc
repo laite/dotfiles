@@ -196,8 +196,8 @@ if has("autocmd")
   filetype plugin indent on
 
   " remember folding
-  au BufWinLeave * silent! mkview
-  au BufWinEnter * silent! loadview
+  "au BufWinLeave * silent! mkview
+  "au BufWinEnter * silent! loadview
 
   " hide search highlighting when entering insert mode
   " new search through / or ? returns hls, as do letters n and N
