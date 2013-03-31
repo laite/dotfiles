@@ -16,6 +16,8 @@
 #include "playback.h"
 #include "global.h"
 
+class Playlist;
+
 class BaseWidget 
 {
 	public:
@@ -187,16 +189,35 @@ class PlaylistViewer : public BaseWidget
 
 		PlaylistViewer();
 
-		Gtk::Widget& GetWidget() { return _treeView; }
+		Gtk::Widget& GetWidget() { return _scrollBox; }
 
 	private:
 
+		/*
+		 *  Methods
+		 */
+		
+		// Redraw data
 		void _UpdateContents();
 
+		
+		/*
+		 *  Members
+		 */
+
+		// reference to playlist showing
+		Playlist *_playlist;
+		
+		// All columns (including hidden ones)
 		PlaylistViewerColumns _columns;
 
+		// scrollbox for treeview
+		Gtk::ScrolledWindow _scrollBox;
+
+		// actual treeview
 		Gtk::TreeView _treeView;
 		
+		// underlying model and selection
 		Glib::RefPtr<Gtk::ListStore> _treeModel;
 		Glib::RefPtr<Gtk::TreeSelection> _refTreeSelection;
 };

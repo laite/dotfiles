@@ -10,6 +10,7 @@
 #include "global.h"
 #include "engine.h"
 #include "config.h"
+#include "library.h"
 
 
 /*
@@ -238,6 +239,9 @@ PlaylistViewerColumns::PlaylistViewerColumns()
 
 PlaylistViewer::PlaylistViewer()
 {
+	_scrollBox.add(_treeView);
+	_scrollBox.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC); //Only show the scrollbars when they are necessary:
+
 	_treeModel = Gtk::ListStore::create(_columns);
 	_treeView.set_model(_treeModel);
 
@@ -262,9 +266,23 @@ PlaylistViewer::PlaylistViewer()
 
 void PlaylistViewer::_UpdateContents()
 {
-	Gtk::TreeModel::iterator iter = _treeModel->append();
-	Gtk::TreeModel::Row row = (*iter);
+	typedef std::vector<unsigned int> plType;
 
-	row[_columns.columnTrack] = 1;
-	row[_columns.columnTitle] = "title";
+	_playlist = Global::player.GetCurrentPlaylist();
+	Library *lib = Global::player.GetLibrary();
+
+	_treeModel->clear();
+
+	if (!_playlist)
+		return;
+
+	plType playlistIDs = _playlist->GetAllSongIDs();
+	for (plType::iterator plIter = playlistIDs.begin(); plIter != playlistIDs.end(); ++plIter)
+	{
+		Gtk::TreeModel::iterator iter = _treeModel->append();
+		Gtk::TreeModel::Row row = (*iter);
+
+		row[_columns.columnTrack] = 1;
+		row[_columns.columnTitle] = lib->GetSong(*plIter)->Query("this");
+	}
 }

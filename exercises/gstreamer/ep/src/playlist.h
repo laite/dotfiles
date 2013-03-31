@@ -42,6 +42,9 @@ class Playlist
 		// returns NULL if index is out of bounds
 		const Song* GetSong(playlist_index index) const;
 
+		// return vector (song ID) reference
+		const std::vector<unsigned int>& GetAllSongIDs() const { return _songlist; }
+
 		const playlist_index GetSize() const { return _songlist.size(); }
 		const Glib::ustring GetName() const { return _name; }
 		const Glib::ustring GetUri() const { return _uri; }
