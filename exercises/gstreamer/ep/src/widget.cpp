@@ -245,6 +245,8 @@ PlaylistViewer::PlaylistViewer()
 	_treeModel = Gtk::ListStore::create(_columns);
 	_treeView.set_model(_treeModel);
 
+	_treeView.append_column("Artist", _columns.columnArtist);
+	_treeView.append_column("Album", _columns.columnAlbum);
 	_treeView.append_column("Track", _columns.columnTrack);
 	_treeView.append_column("Title", _columns.columnTitle);
 
@@ -269,7 +271,7 @@ void PlaylistViewer::_UpdateContents()
 	typedef std::vector<unsigned int> plType;
 
 	_playlist = Global::player.GetCurrentPlaylist();
-	Library *lib = Global::player.GetLibrary();
+	Library *libraryPointer = Global::player.GetLibrary();
 
 	_treeModel->clear();
 
@@ -282,7 +284,9 @@ void PlaylistViewer::_UpdateContents()
 		Gtk::TreeModel::iterator iter = _treeModel->append();
 		Gtk::TreeModel::Row row = (*iter);
 
-		row[_columns.columnTrack] = 1;
-		row[_columns.columnTitle] = lib->GetSong(*plIter)->Query("this");
+		row[_columns.columnTrack] = libraryPointer->GetSong(*plIter)->GetTrack();
+		row[_columns.columnTitle] = libraryPointer->GetSong(*plIter)->GetTitle();
+		row[_columns.columnArtist] = libraryPointer->GetSong(*plIter)->GetArtist();
+		row[_columns.columnAlbum] = libraryPointer->GetSong(*plIter)->GetAlbum();
 	}
 }

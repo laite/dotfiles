@@ -14,6 +14,7 @@ MainWindow::MainWindow()
 	, _label("%a - %t - %p")
 {
 	set_border_width(5);
+	set_default_size(800, 600);
 
 	m_box.set_homogeneous(false);
 
