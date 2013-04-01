@@ -127,8 +127,16 @@ void Library::LoadFolder(std::string s)
 
 unsigned int Library::AddSingleSong(std::string filename)
 {
-	// TODO: check that file really exists
 	// TODO: check that song is not in library already
+
+	namespace fs = boost::filesystem;
+
+	fs::path p(filename);
+
+	if (!fs::exists(p))
+		throw std::invalid_argument("ERROR: AddSingleSong has filename that doesn't seem to exist!");
+	else if (!fs::is_regular_file(p))
+		throw std::invalid_argument("ERROR: AddSingleSong has non-regular file!");
 
 	return _songs._AddSong(Song(filename));
 }

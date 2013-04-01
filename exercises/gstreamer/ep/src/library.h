@@ -55,6 +55,7 @@ class Library
 		void LoadFolder(std::string);
 
 		// AddSingleSong returns added song's ID
+		// throws std::invalid_argument if file can't be found
 		unsigned int AddSingleSong(std::string);
 
 		const Song* GetSong(unsigned int ID) { return _songs._GetSong(ID); }

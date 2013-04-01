@@ -86,7 +86,18 @@ void Playlist::LoadFromFile(const std::string file)
 	{
 		// We add song from file to our Library
 		// and put its unique ID to playlist
-		unsigned int i = Global::player.GetLibrary()->AddSingleSong(*iter);
+		unsigned int i;
+
+		try
+		{
+			i = Global::player.GetLibrary()->AddSingleSong(*iter);
+		}
+		catch (std::invalid_argument e)
+		{
+			Global::Log.Add(e.what(), false);
+			continue; // jump to next item, this one was bad
+		}
+
 		_songlist.push_back(i);
 	}
 }
