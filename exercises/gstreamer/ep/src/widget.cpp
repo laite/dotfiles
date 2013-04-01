@@ -239,6 +239,29 @@ PlaylistViewerColumns::PlaylistViewerColumns()
 
 PlaylistViewer::PlaylistViewer()
 {
+	_Init();
+}
+
+PlaylistViewer::PlaylistViewer(PlaylistViewer::PLAYLIST_TYPE plType, Playlist *staticList)
+	: _playlistType(plType)
+{
+	if (_playlistType == PLAYLIST_TYPE::PL_STATIC_LIST)
+	{
+		if (staticList != NULL)
+			_playlist = staticList;
+		else
+		{
+			// If we are not given explicit playlist, we switch to active!
+			_playlistType == PLAYLIST_TYPE::PL_ACTIVE_LIST;
+			Global::Log.Add("WARNING: Could not create static playlist viewer, *staticList was NULL pointer! (switched to active list instead)", false);
+		}
+	}
+
+	_Init();
+}
+
+void PlaylistViewer::_Init()
+{
 	_scrollBox.add(_treeView);
 	_scrollBox.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC); //Only show the scrollbars when they are necessary:
 
@@ -259,8 +282,8 @@ PlaylistViewer::PlaylistViewer()
 		(*columnIter)->set_resizable();
 	}
 
-	// Hook to playlist_change so we always show active playlist items here
-	AddEventHook(Global::EVENT::E_SONG_CHANGED, boost::bind(&PlaylistViewer::_UpdateContents, this));
+	// Hook to playlist_change so we always show correct items here
+	AddEventHook(Global::EVENT::E_PLAYLIST_CHANGED, boost::bind(&PlaylistViewer::_UpdateContents, this));
 
 	// initialize contents
 	_UpdateContents();
@@ -270,7 +293,9 @@ void PlaylistViewer::_UpdateContents()
 {
 	typedef std::vector<unsigned int> plType;
 
-	_playlist = Global::player.GetCurrentPlaylist();
+	if (_playlistType != PLAYLIST_TYPE::PL_STATIC_LIST)
+		_playlist = Global::player.GetCurrentPlaylist();
+
 	Library *libraryPointer = Global::player.GetLibrary();
 
 	_treeModel->clear();
