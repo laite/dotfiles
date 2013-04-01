@@ -24,9 +24,36 @@ Song::Song(Glib::ustring address)
 		Global::Log.Add("No tag found! " + uri);
 }
 
-const std::string Song::Query(Glib::ustring querytext) const
+const Glib::ustring Song::Query(Glib::ustring querytext) const
 {
-	// TODO: Handle query
-	return (_title + " by " + _artist);
+	Glib::ustring result("");
+	Glib::ustring::iterator character;
+	bool hasFirst = false;
 
+	for (character = querytext.begin(); character != querytext.end(); ++character)
+	{
+		if ((*character == '%') || (hasFirst))
+		{
+			if (hasFirst)
+			{
+				hasFirst = false;
+				if (*character == 'a')
+					result += _artist;
+				else if (*character == 'l')
+					result += _album;
+				else if (*character == 't')
+					result += _title;
+				else if (*character == 'n')
+					result += std::to_string(_track);
+				else
+					result += '%' + *character;
+			}
+			else
+				hasFirst = true;
+		}
+		else
+			result += *character;
+	}
+
+	return result;
 }

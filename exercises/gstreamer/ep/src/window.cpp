@@ -11,7 +11,7 @@
 
 MainWindow::MainWindow()
 	: m_box(Gtk::ORIENTATION_VERTICAL, 5)
-	, _label("%a - %t - %p")
+	, _label("%a [%l] %n. %t")
 {
 	set_border_width(5);
 	set_default_size(800, 600);

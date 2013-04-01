@@ -20,20 +20,20 @@ class Song
 		const std::string GetUri() const { return uri; }
 
 		const unsigned int GetTrack() const { return _track; }
-		const std::string GetArtist() const { return _artist; }
-		const std::string GetAlbum() const { return _album; }
-		const std::string GetTitle() const { return _title; }
+		const Glib::ustring GetArtist() const { return _artist; }
+		const Glib::ustring GetAlbum() const { return _album; }
+		const Glib::ustring GetTitle() const { return _title; }
 
-		const std::string Query(Glib::ustring) const;
+		const Glib::ustring Query(Glib::ustring) const;
 
 
 	private:
 
-		std::string uri;
+		Glib::ustring uri;
 		unsigned int _track;
-		std::string _artist;
-		std::string _album;
-		std::string _title;
+		Glib::ustring _artist;
+		Glib::ustring _album;
+		Glib::ustring _title;
 };
 
 
