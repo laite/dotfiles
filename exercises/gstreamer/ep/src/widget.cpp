@@ -336,6 +336,9 @@ void PlaylistViewer::_SongChanged()
 	// and select active song from playlist
 	Gtk::TreeModel::Row row = _treeModel->children()[index];
 	if(row)
+	{
+		_refTreeSelection->unselect_all();
 		_refTreeSelection->select(row);
+	}
 
 }
