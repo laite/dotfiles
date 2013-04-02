@@ -281,6 +281,8 @@ void PlaylistViewer::_Init()
 		(*columnIter)->set_resizable();
 	}
 
+	_refTreeSelection = _treeView.get_selection();
+
 	// Hook to playlist_change so we always show correct items here
 	AddEventHook(Global::EVENT::E_PLAYLIST_CHANGED, boost::bind(&PlaylistViewer::_UpdateContents, this));
 	AddEventHook(Global::EVENT::E_SONG_CHANGED, boost::bind(&PlaylistViewer::_SongChanged, this));
@@ -314,9 +316,18 @@ void PlaylistViewer::_UpdateContents()
 		row[_columns.columnArtist] = libraryPointer->GetSong(*plIter)->GetArtist();
 		row[_columns.columnAlbum] = libraryPointer->GetSong(*plIter)->GetAlbum();
 	}
+
+	_SongChanged();
 }
 
 void PlaylistViewer::_SongChanged()
 {
-	Global::Log.Add("Song has been changed, -playlistViewer");
+	// select active song from playlist
+	Playlist::playlist_index index = _playlist->GetCurrentSongIndex();
+	if (_treeModel->children().size() <= index)
+		return;
+
+	Gtk::TreeModel::Row row = _treeModel->children()[index];
+	if(row)
+		_refTreeSelection->select(row);
 }
