@@ -17,6 +17,7 @@
 #include "global.h"
 
 class Playlist;
+class Library;
 
 class BaseWidget 
 {
@@ -233,6 +234,9 @@ class PlaylistViewer : public BaseWidget
 
 		// reference to playlist showing
 		Playlist *_playlist;
+
+		// reference to library
+		Library *_library;
 		
 		// All columns (including hidden ones)
 		PlaylistViewerColumns _columns;

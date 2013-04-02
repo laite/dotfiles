@@ -238,6 +238,7 @@ PlaylistViewerColumns::PlaylistViewerColumns()
 }
 
 PlaylistViewer::PlaylistViewer()
+	: _playlistType(PLAYLIST_TYPE::PL_ACTIVE_LIST)
 {
 	_Init();
 }
@@ -246,13 +247,13 @@ PlaylistViewer::PlaylistViewer(Playlist *staticList)
 {
 	if (staticList != NULL)
 	{
-		_playlistType == PLAYLIST_TYPE::PL_STATIC_LIST;
+		_playlistType = PLAYLIST_TYPE::PL_STATIC_LIST;
 		_playlist = staticList;
 	}
 	else
 	{
 		// If we are not given explicit playlist, we switch to active!
-		_playlistType == PLAYLIST_TYPE::PL_ACTIVE_LIST;
+		_playlistType = PLAYLIST_TYPE::PL_ACTIVE_LIST;
 		Global::Log.Add("WARNING: Got NULL pointer as *staticList in PlaylistViewer creating!", false);
 	}
 
@@ -281,9 +282,12 @@ void PlaylistViewer::_Init()
 		(*columnIter)->set_resizable();
 	}
 
+	// refTreeSelection takes care of selecting songs in playlist
 	_refTreeSelection = _treeView.get_selection();
+	_refTreeSelection->set_mode(Gtk::SELECTION_MULTIPLE);
 
-	// Hook to playlist_change so we always show correct items here
+	_library = Global::player.GetLibrary();
+
 	AddEventHook(Global::EVENT::E_PLAYLIST_CHANGED, boost::bind(&PlaylistViewer::_UpdateContents, this));
 	AddEventHook(Global::EVENT::E_SONG_CHANGED, boost::bind(&PlaylistViewer::_SongChanged, this));
 
@@ -295,39 +299,43 @@ void PlaylistViewer::_UpdateContents()
 {
 	typedef std::vector<unsigned long> plType;
 
-	if (_playlistType != PLAYLIST_TYPE::PL_STATIC_LIST)
+	// make sure we have currently active playlist on our pointer
+	if (_playlistType == PLAYLIST_TYPE::PL_ACTIVE_LIST)
 		_playlist = Global::player.GetCurrentPlaylist();
-
-	Library *libraryPointer = Global::player.GetLibrary();
 
 	_treeModel->clear();
 
+	// return after clearing everything, to show user we really don't have a playlist
 	if (!_playlist)
 		return;
 
+	// then we add all the songs in playlist one-by-one
 	plType playlistIDs = _playlist->GetAllSongIDs();
 	for (plType::iterator plIter = playlistIDs.begin(); plIter != playlistIDs.end(); ++plIter)
 	{
 		Gtk::TreeModel::iterator iter = _treeModel->append();
 		Gtk::TreeModel::Row row = (*iter);
 
-		row[_columns.columnTrack] = libraryPointer->GetSong(*plIter)->GetTrack();
-		row[_columns.columnTitle] = libraryPointer->GetSong(*plIter)->GetTitle();
-		row[_columns.columnArtist] = libraryPointer->GetSong(*plIter)->GetArtist();
-		row[_columns.columnAlbum] = libraryPointer->GetSong(*plIter)->GetAlbum();
+		row[_columns.columnTrack] = _library->GetSong(*plIter)->GetTrack();
+		row[_columns.columnTitle] = _library->GetSong(*plIter)->GetTitle();
+		row[_columns.columnArtist] = _library->GetSong(*plIter)->GetArtist();
+		row[_columns.columnAlbum] = _library->GetSong(*plIter)->GetAlbum();
 	}
 
+	// finally call _songchanged to take care of selection business etc.
 	_SongChanged();
 }
 
 void PlaylistViewer::_SongChanged()
 {
-	// select active song from playlist
+	// find out what the active song should be
 	Playlist::playlist_index index = _playlist->GetCurrentSongIndex();
 	if (_treeModel->children().size() <= index)
 		return;
 
+	// and select active song from playlist
 	Gtk::TreeModel::Row row = _treeModel->children()[index];
 	if(row)
 		_refTreeSelection->select(row);
+
 }
