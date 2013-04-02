@@ -239,22 +239,21 @@ PlaylistViewerColumns::PlaylistViewerColumns()
 
 PlaylistViewer::PlaylistViewer()
 	: _playlistType(PLAYLIST_TYPE::PL_ACTIVE_LIST)
+	, _playlist(Global::player.GetCurrentPlaylist())
 {
 	_Init();
 }
 
 PlaylistViewer::PlaylistViewer(Playlist *staticList)
+	: _playlistType(PLAYLIST_TYPE::PL_STATIC_LIST)
+	, _playlist(staticList)
 {
-	if (staticList != NULL)
+	if (staticList == NULL)
 	{
-		_playlistType = PLAYLIST_TYPE::PL_STATIC_LIST;
-		_playlist = staticList;
-	}
-	else
-	{
+		Global::Log.Add("WARNING: Got NULL pointer as *staticList in PlaylistViewer creating!", false);
 		// If we are not given explicit playlist, we switch to active!
 		_playlistType = PLAYLIST_TYPE::PL_ACTIVE_LIST;
-		Global::Log.Add("WARNING: Got NULL pointer as *staticList in PlaylistViewer creating!", false);
+		_playlist = Global::player.GetCurrentPlaylist();
 	}
 
 	_Init();
