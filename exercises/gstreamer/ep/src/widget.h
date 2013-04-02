@@ -190,22 +190,39 @@ class PlaylistViewer : public BaseWidget
 		// TODO: add more options (like 'currently playing artist')
 		enum PLAYLIST_TYPE { PL_ACTIVE_LIST, PL_STATIC_LIST };
 
+
+		/*
+		 *  Constructors
+		 */
+
+
 		PlaylistViewer();
-		PlaylistViewer(PLAYLIST_TYPE plType, Playlist *staticList);
+
+		// if constructor gets single playlist reference, we implicitly set playlist type to static
+		PlaylistViewer(Playlist *staticList);
+
+
+		/*
+		 *  Public Methods
+		 */
+
 
 		Gtk::Widget& GetWidget() { return _scrollBox; }
 
 	private:
 
 		/*
-		 *  Methods
+		 *  Private Methods
 		 */
 
-		// Init
+		// Initialize treeview, treemodel etc.
 		void _Init();
 		
 		// Redraw all data
 		void _UpdateContents();
+
+		// Handle song changing
+		void _SongChanged();
 
 		
 		/*

@@ -242,19 +242,18 @@ PlaylistViewer::PlaylistViewer()
 	_Init();
 }
 
-PlaylistViewer::PlaylistViewer(PlaylistViewer::PLAYLIST_TYPE plType, Playlist *staticList)
-	: _playlistType(plType)
+PlaylistViewer::PlaylistViewer(Playlist *staticList)
 {
-	if (_playlistType == PLAYLIST_TYPE::PL_STATIC_LIST)
+	if (staticList != NULL)
 	{
-		if (staticList != NULL)
-			_playlist = staticList;
-		else
-		{
-			// If we are not given explicit playlist, we switch to active!
-			_playlistType == PLAYLIST_TYPE::PL_ACTIVE_LIST;
-			Global::Log.Add("WARNING: Could not create static playlist viewer, *staticList was NULL pointer! (switched to active list instead)", false);
-		}
+		_playlistType == PLAYLIST_TYPE::PL_STATIC_LIST;
+		_playlist = staticList;
+	}
+	else
+	{
+		// If we are not given explicit playlist, we switch to active!
+		_playlistType == PLAYLIST_TYPE::PL_ACTIVE_LIST;
+		Global::Log.Add("WARNING: Got NULL pointer as *staticList in PlaylistViewer creating!", false);
 	}
 
 	_Init();
@@ -284,6 +283,7 @@ void PlaylistViewer::_Init()
 
 	// Hook to playlist_change so we always show correct items here
 	AddEventHook(Global::EVENT::E_PLAYLIST_CHANGED, boost::bind(&PlaylistViewer::_UpdateContents, this));
+	AddEventHook(Global::EVENT::E_SONG_CHANGED, boost::bind(&PlaylistViewer::_SongChanged, this));
 
 	// initialize contents
 	_UpdateContents();
@@ -314,4 +314,9 @@ void PlaylistViewer::_UpdateContents()
 		row[_columns.columnArtist] = libraryPointer->GetSong(*plIter)->GetArtist();
 		row[_columns.columnAlbum] = libraryPointer->GetSong(*plIter)->GetAlbum();
 	}
+}
+
+void PlaylistViewer::_SongChanged()
+{
+	Global::Log.Add("Song has been changed, -playlistViewer");
 }

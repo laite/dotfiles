@@ -39,6 +39,9 @@ class Playlist
 		// return pointer to currently active song
 		const Song* GetCurrentSong() const { return GetSong(_currentSong); }
 
+		// return index of current song
+		const playlist_index GetCurrentSongIndex() const { return _currentSong; }
+
 		// returns NULL if index is out of bounds
 		const Song* GetSong(playlist_index index) const;
 
