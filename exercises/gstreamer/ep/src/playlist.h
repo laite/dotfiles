@@ -20,7 +20,7 @@ class Playlist
 
 		typedef std::vector<Song*>::size_type playlist_index;
 
-		Playlist(unsigned int);
+		Playlist(unsigned long);
 		~Playlist();
 
 		// File operations
@@ -43,14 +43,14 @@ class Playlist
 		const Song* GetSong(playlist_index index) const;
 
 		// return vector (song ID) reference
-		const std::vector<unsigned int>& GetAllSongIDs() const { return _songlist; }
+		const std::vector<unsigned long>& GetAllSongIDs() const { return _songlist; }
 
 		const playlist_index GetSize() const { return _songlist.size(); }
 		const Glib::ustring GetName() const { return _name; }
 		const Glib::ustring GetUri() const { return _uri; }
 
 		// add single song to the end of playlist
-		void AddSong(unsigned int song) { _songlist.push_back(song); }
+		void AddSong(unsigned long song) { _songlist.push_back(song); }
 
 		// Query songs from library and add matching to playlist
 		void AddQuery(std::string);
@@ -59,7 +59,7 @@ class Playlist
 
 		// list of all songs playlist holds
 		// (unique song ID's)
-		std::vector<unsigned int> _songlist;
+		std::vector<unsigned long> _songlist;
 
 		// index of currently active song [0..n[
 		playlist_index _currentSong;

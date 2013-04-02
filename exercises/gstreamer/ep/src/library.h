@@ -20,14 +20,14 @@ class UniqueNumber
 {
 	public:
 		UniqueNumber();
-		unsigned int GenerateNumber();
-		void ReleaseNumber(unsigned int);
+		unsigned long GenerateNumber();
+		void ReleaseNumber(unsigned long);
 
 	private:
 
-		unsigned int _lastNumber;
-		std::queue<unsigned int> _releasedNumbers;
-		unsigned int _amountOfNumbers;
+		unsigned long _lastNumber;
+		std::queue<unsigned long> _releasedNumbers;
+		unsigned long _amountOfNumbers;
 };
 
 class Songlist 
@@ -39,11 +39,11 @@ class Songlist
 		Songlist();
 
 		// TODO: remember to release unique id when adding removeSong
-		unsigned int _AddSong(Song);
-		const Song* _GetSong(unsigned int) const;
+		unsigned long _AddSong(Song);
+		const Song* _GetSong(unsigned long) const;
 
 		UniqueNumber _ID;
-		std::map< unsigned int, Song> _songs;
+		std::map< unsigned long, Song> _songs;
 };
 
 class Library 
@@ -56,9 +56,9 @@ class Library
 
 		// AddSingleSong returns added song's ID
 		// throws std::invalid_argument if file can't be found
-		unsigned int AddSingleSong(std::string);
+		unsigned long AddSingleSong(std::string);
 
-		const Song* GetSong(unsigned int ID) { return _songs._GetSong(ID); }
+		const Song* GetSong(unsigned long ID) { return _songs._GetSong(ID); }
 
 	private:
 

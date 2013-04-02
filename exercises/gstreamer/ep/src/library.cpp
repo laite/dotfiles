@@ -21,9 +21,9 @@ UniqueNumber::UniqueNumber()
 	
 }
 
-unsigned int UniqueNumber::GenerateNumber()
+unsigned long UniqueNumber::GenerateNumber()
 {
-	unsigned int newNumber;
+	unsigned long newNumber;
 
 	// if there is released numbers, we give one of them
 	if (_releasedNumbers.size() > 0)
@@ -40,7 +40,7 @@ unsigned int UniqueNumber::GenerateNumber()
 	return newNumber;
 }
 
-void UniqueNumber::ReleaseNumber(unsigned int num)
+void UniqueNumber::ReleaseNumber(unsigned long num)
 {
 	_releasedNumbers.push(num);
 }
@@ -55,15 +55,15 @@ Songlist::Songlist()
 	
 }
 
-unsigned int Songlist::_AddSong(Song s)
+unsigned long Songlist::_AddSong(Song s)
 {
-	unsigned int newID = _ID.GenerateNumber();
+	unsigned long newID = _ID.GenerateNumber();
 	_songs.insert(std::make_pair(newID, s));
 
 	return newID;
 }
 
-const Song* Songlist::_GetSong(unsigned int wanted) const
+const Song* Songlist::_GetSong(unsigned long wanted) const
 {
 	if (_songs.find(wanted) != _songs.end())
 		return &_songs.at(wanted);
@@ -125,7 +125,7 @@ void Library::LoadFolder(std::string s)
 	}
 }
 
-unsigned int Library::AddSingleSong(std::string filename)
+unsigned long Library::AddSingleSong(std::string filename)
 {
 	// TODO: check that song is not in library already
 

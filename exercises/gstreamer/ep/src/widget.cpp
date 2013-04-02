@@ -291,7 +291,7 @@ void PlaylistViewer::_Init()
 
 void PlaylistViewer::_UpdateContents()
 {
-	typedef std::vector<unsigned int> plType;
+	typedef std::vector<unsigned long> plType;
 
 	if (_playlistType != PLAYLIST_TYPE::PL_STATIC_LIST)
 		_playlist = Global::player.GetCurrentPlaylist();

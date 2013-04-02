@@ -14,7 +14,7 @@
 #include "engine.h"
 #include "config.h"
 
-Playlist::Playlist(unsigned int ID)
+Playlist::Playlist(unsigned long ID)
 	: _currentSong(0)
 	, _ID(ID)
 	, _uri("/home/laite/.config/laite/ep/list" + std::to_string(_ID) + ".m3u")
@@ -61,7 +61,7 @@ void Playlist::SaveToFile(const std::string file) const
 		return;
 	}
 
-	typedef std::vector<unsigned int>::const_iterator playlist_iter;
+	typedef std::vector<unsigned long>::const_iterator playlist_iter;
 	for (playlist_iter iter = _songlist.begin(); iter != _songlist.end(); ++iter)
 		outFile << Global::player.GetLibrary()->GetSong(*iter)->GetUri() << std::endl;
 
@@ -86,10 +86,11 @@ void Playlist::LoadFromFile(const std::string file)
 	{
 		// We add song from file to our Library
 		// and put its unique ID to playlist
-		unsigned int i;
+		unsigned long i;
 
 		try
 		{
+			// AddSingleSong returns unique song ID
 			i = Global::player.GetLibrary()->AddSingleSong(*iter);
 		}
 		catch (std::invalid_argument e)
