@@ -14,40 +14,98 @@
 #include <vector>
 #include <cstdlib>
 #include <stdexcept>
+#include <fstream>
 
-const int PATEVYYS_MIN = 2;
-const int PATEVYYS_MAX = 15;
+// tiedosto johon kierrostiedot puretaan
+const char *OUTPUT_FILE = "dump.txt";
+
+
+/*
+ *  Skenaarion muuttujat
+ */
+
+
+// palvelupisteiden (jonojen) määrä kaupassa
+const int PALVELUPISTEET = 8;
+
+// kokonaisaika (kierrosta, ~10s reaaliaikaa)
+const int KOKONAISAIKA = 360;
+
+// todennäköisyys että uusi asiakas tulee kauppaan (/100)
+const double UUSI_ASIAKAS = 50;
+
+// Myyjien todennäköisyys suoritetulle ostotapahtumalle
+const int PATEVYYS_MIN = 1;
+const int PATEVYYS_MAX = 3;
+
+// Asiakkaiden sietokyky
+// Mikäli sietokyky laskee alle nollan, asiakas poistuu paikalta
+const int SIETOKYKY_MIN = 10;
+const int SIETOKYKY_MAX = 50;
+
+
+/*
+ *  Luokat
+ */
+
+
+class Statistiikka 
+{
+	public:
+
+		Statistiikka(): asiakkaitaYhteensa(0), poistunutAsiakas(0) { }
+
+		// kaikki käsitellyt ostotapahtumat
+		unsigned asiakkaitaYhteensa;
+
+		// odottamaan kyllästyneiden asiakkaiden määrä
+		unsigned poistunutAsiakas;
+
+		// poistuneiden asiakkaiden odotusaika
+		std::vector<unsigned> poistuneidenOdotusAjat;
+
+		// asiakkaiden jonossa kuluttama aika, tallennetaan kun asiakas pääsee kassalta
+		std::vector<unsigned> odotusAjat;
+
+		std::vector< std::vector<unsigned> > asiakkaitaJonossa;
+
+		// Myyjien pätevyydet
+		std::vector<unsigned> myyjienPatevyydet;
+};
 
 class Asiakas 
 {
 	public:
 
-		Asiakas() { sietokyky = 10+rand()%50; std::cout << "Uusi asiakas! Sietokyky: " << sietokyky << std::endl; }
+		Asiakas(): odotusaika(0) { sietokyky = SIETOKYKY_MIN+rand()%(SIETOKYKY_MAX-SIETOKYKY_MIN); }
 
 		const int GetSietokyky() const { return sietokyky; }
+		const unsigned GetOdotusaika() const { return odotusaika; }
 
-		void LaskeSietokykya(unsigned);
+		void LaskeSietokykya(unsigned lasku) { sietokyky -= lasku; }
+		void LisaaOdotusaikaa() { ++odotusaika; }
 
 	private:
 
 		int sietokyky; 
+		unsigned odotusaika;
 };
 
 class Palvelupiste 
 {
 	public:
 
-		Palvelupiste(int num): ID(num) { patevyys = PATEVYYS_MIN+rand()%(PATEVYYS_MAX-PATEVYYS_MIN); std::cout << "Uusi myyjä! Pätevyys: " << patevyys << std::endl; }
+		Palvelupiste(int num);
 
 		const int GetID() const { return ID; }
 
 		const int GetPatevyys() { return patevyys; }
 
-		void LisaaAsiakasJonoon() { asiakkaat.push_back(Asiakas()); std::cout << "Asiakas lisätty jonoon " << ID << std::endl; }
+		void LisaaAsiakasJonoon() { asiakkaat.push_back(Asiakas()); }
 		void PoistaAsiakas();
 		unsigned int AsiakkaitaJonossa() { return asiakkaat.size(); }
 
-		void LaskeAsiakkaidenSietokyvyt();
+		void KasitteleAsiakkaat();
 
 	private:
 
@@ -70,21 +128,17 @@ class Kauppa
 
 		unsigned AnnaLyhinJono();
 
-		unsigned AsiakkaitaYhteensa();
 		std::vector<unsigned> AsiakkaitaJonoissa();
 
 		void UusiAsiakas();
 		void TarkistaOstostapahtumat();
 
-		void TarkistaSietokyvyt();
+		void TarkistaAsiakkaat();
 		void TallennaAsiakasLuvut();
-
-		std::vector<unsigned> GetAsiakkaatKierroksella(unsigned index) { return asiakkaatKierroksella.at(index); }
 
 	private:
 
 		std::vector<Palvelupiste> palveluPisteet;
-		std::vector< std::vector<unsigned> > asiakkaatKierroksella;
 };
 
 #endif /* end HARKKA_H */

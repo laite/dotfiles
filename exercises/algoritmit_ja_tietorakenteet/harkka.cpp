@@ -8,20 +8,7 @@
 
 #include "harkka.h"
 
-#include <fstream>
-
-// palvelupisteiden (jonojen) määrä kaupassa
-const int PALVELUPISTEET = 1;
-
-// todennäköisyydet per kierros (/100)
-//const double OSTOS_SUORITETTU = 5;
-const double UUSI_ASIAKAS = 50;
-
-// kokonaisaika (kierrosta, ~10s reaaliaikaa)
-const int KOKONAISAIKA = 200;
-
-// tiedosto johon kierrostiedot dumpataan
-const char *OUTPUT_FILE = "dump.txt";
+Statistiikka tilastot;
 
 /*
  *
@@ -55,24 +42,17 @@ unsigned Kauppa::AnnaLyhinJono()
 	return palvelupisteID;
 }
 
-unsigned Kauppa::AsiakkaitaYhteensa()
-{
-	unsigned asiakkaita = 0;
-	for (palvelupisteIter ppIter = palveluPisteet.begin(); ppIter != palveluPisteet.end(); ++ppIter)
-		asiakkaita += (*ppIter).AsiakkaitaJonossa();
-
-	return asiakkaita;
-}
-
 void Kauppa::TallennaAsiakasLuvut()
 {
 	std::vector <unsigned> kierrosMaara;
 
-	kierrosMaara.push_back(AsiakkaitaYhteensa());
 	for (palvelupisteIter ppIter = palveluPisteet.begin(); ppIter != palveluPisteet.end(); ++ppIter)
-		kierrosMaara.push_back((*ppIter).AsiakkaitaJonossa());
+	{
+		unsigned asiakkaitaJonossa = (*ppIter).AsiakkaitaJonossa();
+		kierrosMaara.push_back(asiakkaitaJonossa);
+	}
 
-	asiakkaatKierroksella.push_back(kierrosMaara);
+	tilastot.asiakkaitaJonossa.push_back(kierrosMaara);
 }
 
 void Kauppa::UusiAsiakas()
@@ -80,13 +60,14 @@ void Kauppa::UusiAsiakas()
 	// Uusi asiakas valitsee aina lyhimmän jonon
 	unsigned jonoID = this->AnnaLyhinJono();
 
+	// LisaaAsiakasJonoon luo uuden Asiakas-luokan kappaleen
 	palveluPisteet.at(jonoID).LisaaAsiakasJonoon();
 }
 
-void Kauppa::TarkistaSietokyvyt()
+void Kauppa::TarkistaAsiakkaat()
 {
 	for (palvelupisteIter ppIter = palveluPisteet.begin(); ppIter != palveluPisteet.end(); ++ppIter)
-		(*ppIter).LaskeAsiakkaidenSietokyvyt();
+		(*ppIter).KasitteleAsiakkaat();
 }
 
 void Kauppa::TarkistaOstostapahtumat()
@@ -94,7 +75,10 @@ void Kauppa::TarkistaOstostapahtumat()
 	for (palvelupisteIter ppIter = palveluPisteet.begin(); ppIter != palveluPisteet.end(); ++ppIter)
 	{
 		if (rand()%100 < (*ppIter).GetPatevyys())
+		{
 			(*ppIter).PoistaAsiakas();
+			++tilastot.asiakkaitaYhteensa;
+		}
 	}
 }
 
@@ -104,44 +88,51 @@ void Kauppa::TarkistaOstostapahtumat()
  *
  */
 
+Palvelupiste::Palvelupiste(int num)
+	: ID(num) 
+{ 
+	patevyys = PATEVYYS_MIN+rand()%(1+(PATEVYYS_MAX-PATEVYYS_MIN));
+	tilastot.myyjienPatevyydet.push_back(patevyys);
+}
+
 void Palvelupiste::PoistaAsiakas()
 {
 	if (asiakkaat.size() == 0)
 		return;
 
+	tilastot.odotusAjat.push_back(asiakkaat.at(0).GetOdotusaika());
+
 	asiakkaat.erase(asiakkaat.begin());
-	std::cout << "Asiakas jonossa " << ID << " suoritti ostoksensa." << std::endl;
+	//std::cout << "Asiakas jonossa " << ID << " suoritti ostoksensa." << std::endl;
 }
 
-void Palvelupiste::LaskeAsiakkaidenSietokyvyt()
+void Palvelupiste::KasitteleAsiakkaat()
 {
 	if (asiakkaat.size() == 0)
 		return;
 
 	std::vector<Asiakas> edelleenJonossa;
 
+	unsigned ihmisiaEdella = 0;
 	for (std::vector<Asiakas>::iterator asiakasIter = asiakkaat.begin(); asiakasIter != asiakkaat.end(); ++asiakasIter)
 	{
-		// Asiakkaan sietokyky laskee sitä enemmän, mitä enemmän jonossa on ihmisiä
-		(*asiakasIter).LaskeSietokykya(rand()%(this->AsiakkaitaJonossa()));
+		(*asiakasIter).LisaaOdotusaikaa();
+
+		// Asiakkaan sietokyky laskee sitä enemmän, mitä enemmän hänen edessään on ihmisiä
+		(*asiakasIter).LaskeSietokykya(rand()%(ihmisiaEdella+1));
 		if ((*asiakasIter).GetSietokyky() < 0)
-			std::cout << "Asiakas jonossa " << ID << " kyllästyi odottamaan!" << std::endl;
+		{
+			//std::cout << "Asiakas jonossa " << ID << " kyllästyi odottamaan (odotti " << (*asiakasIter).GetOdotusaika() << " sykliä)!" << std::endl;
+			++tilastot.poistunutAsiakas;
+			tilastot.poistuneidenOdotusAjat.push_back((*asiakasIter).GetOdotusaika());
+		}
 		else
 			edelleenJonossa.push_back(*asiakasIter);
+
+		++ihmisiaEdella;
 	}
 
 	asiakkaat = edelleenJonossa;
-}
-
-/*
- *
- * Asiakas Class
- *
- */
-
-void Asiakas::LaskeSietokykya(unsigned lasku)
-{
-	sietokyky -= lasku;
 }
 
 /* 
@@ -156,26 +147,61 @@ void dump_output(std::ostream &os, Kauppa &kauppa)
 
 	for (int a = 0; a < KOKONAISAIKA; ++a)
 	{
-		std::vector<unsigned> asiakkaatKierroksella = kauppa.GetAsiakkaatKierroksella(a);
+		std::vector<unsigned> asiakkaatKierroksella = tilastot.asiakkaitaJonossa.at(a);
+		int yhteensa = 0;
 
-		if (asiakkaatKierroksella.at(0) > maxTotal)
-			maxTotal = asiakkaatKierroksella.at(0);
-
-		os << asiakkaatKierroksella.at(0) << "\t";
 		for (int i = 0; i != PALVELUPISTEET; ++i)
 		{
-			if (asiakkaatKierroksella.at(i+1) > maxJono)
-				maxJono = asiakkaatKierroksella.at(i+1);
+			yhteensa += asiakkaatKierroksella.at(i);
+			if (asiakkaatKierroksella.at(i) > maxJono)
+				maxJono = asiakkaatKierroksella.at(i);
 
-			os << asiakkaatKierroksella.at(i+1) << "\t";
+			os << asiakkaatKierroksella.at(i) << "\t";
 		}
+
+		if (yhteensa > maxTotal)
+			maxTotal = yhteensa;
+
 		os << std::endl;
 	}
 
+	unsigned asiakkaita = 0;
+	double keskiOdotus = 0, poistuneidenKeskiOdotus = 0;
+
+	for (std::vector<unsigned>::const_iterator iter = tilastot.poistuneidenOdotusAjat.begin();
+			iter != tilastot.poistuneidenOdotusAjat.end(); ++iter)
+	{
+		poistuneidenKeskiOdotus += *iter;
+	}
+
+	for (std::vector<unsigned>::const_iterator iter = tilastot.odotusAjat.begin();
+			iter != tilastot.odotusAjat.end(); ++iter)
+	{
+		keskiOdotus += *iter;
+		++asiakkaita;
+	}
+
+	keskiOdotus /= asiakkaita;
+	poistuneidenKeskiOdotus /= asiakkaita;
+
 	// just print these to console
-	std::cout << "Kokonaisaika:        " << KOKONAISAIKA << std::endl;
-	std::cout << "Suurin asiakasmäärä: " << maxTotal << std::endl;
-	std::cout << "Pisin jono:          " << maxJono << std::endl;
+	std::cout << "Kokonaisaika:           " << KOKONAISAIKA << std::endl;
+	std::cout << "Palvelupisteitä:        " << PALVELUPISTEET << std::endl;
+
+	std::cout << "Myyjien pätevyydet:     ";
+
+	for (std::vector<unsigned>::const_iterator myyjaIter = tilastot.myyjienPatevyydet.begin();
+			myyjaIter != tilastot.myyjienPatevyydet.end(); ++myyjaIter)
+	{
+		std::cout << *myyjaIter << " ";
+	}
+	std::cout << std::endl;
+
+	std::cout << "Suurin asiakasmäärä:    " << maxTotal << std::endl;
+	std::cout << "Pisin jono:             " << maxJono << std::endl;
+	std::cout << "Ostoksia yhteensä:      " << tilastot.asiakkaitaYhteensa << std::endl;
+	std::cout << "Keskimääräinen odotus:  " << keskiOdotus << std::endl;
+	std::cout << "Poistuneita asiakkaita: " << tilastot.poistunutAsiakas << " (keskimääräinen odotus: " << poistuneidenKeskiOdotus << ")"<< std::endl;
 }
 
 int main(int argc, char **argv)
@@ -190,7 +216,7 @@ int main(int argc, char **argv)
 	{
 		r_kioski.TarkistaOstostapahtumat();
 
-		r_kioski.TarkistaSietokyvyt();
+		r_kioski.TarkistaAsiakkaat();
 
 		if (rand()%100 < UUSI_ASIAKAS)
 			r_kioski.UusiAsiakas();
