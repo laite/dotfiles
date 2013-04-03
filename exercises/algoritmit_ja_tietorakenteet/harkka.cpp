@@ -8,15 +8,20 @@
 
 #include "harkka.h"
 
+#include <fstream>
+
 // palvelupisteiden (jonojen) määrä kaupassa
 const int PALVELUPISTEET = 1;
 
 // todennäköisyydet per kierros (/100)
-const double OSTOS_SUORITETTU = 8;
-const double UUSI_ASIAKAS = 20;
+//const double OSTOS_SUORITETTU = 5;
+const double UUSI_ASIAKAS = 50;
 
 // kokonaisaika (kierrosta, ~10s reaaliaikaa)
-const int KOKONAISAIKA = 100;
+const int KOKONAISAIKA = 200;
+
+// tiedosto johon kierrostiedot dumpataan
+const char *OUTPUT_FILE = "dump.txt";
 
 /*
  *
@@ -59,6 +64,17 @@ unsigned Kauppa::AsiakkaitaYhteensa()
 	return asiakkaita;
 }
 
+void Kauppa::TallennaAsiakasLuvut()
+{
+	std::vector <unsigned> kierrosMaara;
+
+	kierrosMaara.push_back(AsiakkaitaYhteensa());
+	for (palvelupisteIter ppIter = palveluPisteet.begin(); ppIter != palveluPisteet.end(); ++ppIter)
+		kierrosMaara.push_back((*ppIter).AsiakkaitaJonossa());
+
+	asiakkaatKierroksella.push_back(kierrosMaara);
+}
+
 void Kauppa::UusiAsiakas()
 {
 	// Uusi asiakas valitsee aina lyhimmän jonon
@@ -77,7 +93,7 @@ void Kauppa::TarkistaOstostapahtumat()
 {
 	for (palvelupisteIter ppIter = palveluPisteet.begin(); ppIter != palveluPisteet.end(); ++ppIter)
 	{
-		if (rand()%100 < OSTOS_SUORITETTU)
+		if (rand()%100 < (*ppIter).GetPatevyys())
 			(*ppIter).PoistaAsiakas();
 	}
 }
@@ -134,14 +150,43 @@ void Asiakas::LaskeSietokykya(unsigned lasku)
  *
  */
 
+void dump_output(std::ostream &os, Kauppa &kauppa)
+{
+	int maxTotal = 0, maxJono = 0;
+
+	for (int a = 0; a < KOKONAISAIKA; ++a)
+	{
+		std::vector<unsigned> asiakkaatKierroksella = kauppa.GetAsiakkaatKierroksella(a);
+
+		if (asiakkaatKierroksella.at(0) > maxTotal)
+			maxTotal = asiakkaatKierroksella.at(0);
+
+		os << asiakkaatKierroksella.at(0) << "\t";
+		for (int i = 0; i != PALVELUPISTEET; ++i)
+		{
+			if (asiakkaatKierroksella.at(i+1) > maxJono)
+				maxJono = asiakkaatKierroksella.at(i+1);
+
+			os << asiakkaatKierroksella.at(i+1) << "\t";
+		}
+		os << std::endl;
+	}
+
+	// just print these to console
+	std::cout << "Kokonaisaika:        " << KOKONAISAIKA << std::endl;
+	std::cout << "Suurin asiakasmäärä: " << maxTotal << std::endl;
+	std::cout << "Pisin jono:          " << maxJono << std::endl;
+}
+
 int main(int argc, char **argv)
 {
 	srand(time(NULL));
 
 	Kauppa r_kioski;
+	std::vector<unsigned> asiakkaatKierroksella;
 
 	int t = 0;
-	while (++t != KOKONAISAIKA)
+	while (++t <= KOKONAISAIKA)
 	{
 		r_kioski.TarkistaOstostapahtumat();
 
@@ -150,8 +195,12 @@ int main(int argc, char **argv)
 		if (rand()%100 < UUSI_ASIAKAS)
 			r_kioski.UusiAsiakas();
 
-		std::cout << "Kierros " << t << ": " << r_kioski.AsiakkaitaYhteensa() << " asiakasta." << std::endl;
+		r_kioski.TallennaAsiakasLuvut();
 	}
+
+	std::ofstream file(OUTPUT_FILE);
+	dump_output(file, r_kioski);
+	file.close();
 
 	return 0;
 }
