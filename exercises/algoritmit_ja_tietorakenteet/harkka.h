@@ -26,7 +26,7 @@ const char *OUTPUT_FILE = "dump.txt";
 
 
 // palvelupisteiden (jonojen) määrä kaupassa
-const int PALVELUPISTEET = 8;
+const int PALVELUPISTEET = 1;
 
 // kokonaisaika (kierrosta, ~10s reaaliaikaa)
 const int KOKONAISAIKA = 360;
@@ -35,13 +35,13 @@ const int KOKONAISAIKA = 360;
 const double UUSI_ASIAKAS = 50;
 
 // Myyjien todennäköisyys suoritetulle ostotapahtumalle
-const int PATEVYYS_MIN = 1;
-const int PATEVYYS_MAX = 3;
+const int PATEVYYS_MIN = 25;
+const int PATEVYYS_MAX = 50;
 
 // Asiakkaiden sietokyky
 // Mikäli sietokyky laskee alle nollan, asiakas poistuu paikalta
 const int SIETOKYKY_MIN = 10;
-const int SIETOKYKY_MAX = 50;
+const int SIETOKYKY_MAX = 100;
 
 
 /*
@@ -53,10 +53,13 @@ class Statistiikka
 {
 	public:
 
-		Statistiikka(): asiakkaitaYhteensa(0), poistunutAsiakas(0) { }
+		Statistiikka(): ostanutAsiakas(0), asiakkaitaYhteensa(0), poistunutAsiakas(0) { }
 
-		// kaikki käsitellyt ostotapahtumat
+		// kaikki sisään tulleet asiakkaat
 		unsigned asiakkaitaYhteensa;
+
+		// asiakkaat, jotka suorittivat ostoksen
+		unsigned ostanutAsiakas;
 
 		// odottamaan kyllästyneiden asiakkaiden määrä
 		unsigned poistunutAsiakas;
@@ -77,7 +80,7 @@ class Asiakas
 {
 	public:
 
-		Asiakas(): odotusaika(0) { sietokyky = SIETOKYKY_MIN+rand()%(SIETOKYKY_MAX-SIETOKYKY_MIN); }
+		Asiakas(): odotusaika(0) { sietokyky = SIETOKYKY_MIN+rand()%(1+(SIETOKYKY_MAX-SIETOKYKY_MIN)); }
 
 		const int GetSietokyky() const { return sietokyky; }
 		const unsigned GetOdotusaika() const { return odotusaika; }

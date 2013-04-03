@@ -62,6 +62,8 @@ void Kauppa::UusiAsiakas()
 
 	// LisaaAsiakasJonoon luo uuden Asiakas-luokan kappaleen
 	palveluPisteet.at(jonoID).LisaaAsiakasJonoon();
+
+	++tilastot.asiakkaitaYhteensa;
 }
 
 void Kauppa::TarkistaAsiakkaat()
@@ -74,10 +76,10 @@ void Kauppa::TarkistaOstostapahtumat()
 {
 	for (palvelupisteIter ppIter = palveluPisteet.begin(); ppIter != palveluPisteet.end(); ++ppIter)
 	{
-		if (rand()%100 < (*ppIter).GetPatevyys())
+		if (((*ppIter).AsiakkaitaJonossa() > 0) && (rand()%100 < (*ppIter).GetPatevyys()))
 		{
 			(*ppIter).PoistaAsiakas();
-			++tilastot.asiakkaitaYhteensa;
+			++tilastot.ostanutAsiakas;
 		}
 	}
 }
@@ -165,13 +167,14 @@ void dump_output(std::ostream &os, Kauppa &kauppa)
 		os << std::endl;
 	}
 
-	unsigned asiakkaita = 0;
+	unsigned asiakkaita = 0, poistuneitaAsiakkaita = 0;
 	double keskiOdotus = 0, poistuneidenKeskiOdotus = 0;
 
 	for (std::vector<unsigned>::const_iterator iter = tilastot.poistuneidenOdotusAjat.begin();
 			iter != tilastot.poistuneidenOdotusAjat.end(); ++iter)
 	{
 		poistuneidenKeskiOdotus += *iter;
+		++poistuneitaAsiakkaita;
 	}
 
 	for (std::vector<unsigned>::const_iterator iter = tilastot.odotusAjat.begin();
@@ -181,8 +184,10 @@ void dump_output(std::ostream &os, Kauppa &kauppa)
 		++asiakkaita;
 	}
 
-	keskiOdotus /= asiakkaita;
-	poistuneidenKeskiOdotus /= asiakkaita;
+	if (asiakkaita > 0)
+		keskiOdotus /= asiakkaita;
+	if (poistuneitaAsiakkaita > 0)
+		poistuneidenKeskiOdotus /= poistuneitaAsiakkaita;
 
 	// just print these to console
 	std::cout << "Kokonaisaika:           " << KOKONAISAIKA << std::endl;
@@ -199,9 +204,10 @@ void dump_output(std::ostream &os, Kauppa &kauppa)
 
 	std::cout << "Suurin asiakasmäärä:    " << maxTotal << std::endl;
 	std::cout << "Pisin jono:             " << maxJono << std::endl;
-	std::cout << "Ostoksia yhteensä:      " << tilastot.asiakkaitaYhteensa << std::endl;
+	std::cout << "Asiakkaita yhteensä:    " << tilastot.asiakkaitaYhteensa << " (kaupassa vielä: " << (tilastot.asiakkaitaYhteensa-(tilastot.ostanutAsiakas+tilastot.poistunutAsiakas)) << ")" << std::endl;
+	std::cout << "Ostoksia yhteensä:      " << tilastot.ostanutAsiakas << std::endl;
 	std::cout << "Keskimääräinen odotus:  " << keskiOdotus << std::endl;
-	std::cout << "Poistuneita asiakkaita: " << tilastot.poistunutAsiakas << " (keskimääräinen odotus: " << poistuneidenKeskiOdotus << ")"<< std::endl;
+	std::cout << "Kyllästyneitä:          " << tilastot.poistunutAsiakas << " (keskimääräinen odotus: " << poistuneidenKeskiOdotus << ")"<< std::endl;
 }
 
 int main(int argc, char **argv)
