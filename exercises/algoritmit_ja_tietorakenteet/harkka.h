@@ -24,24 +24,26 @@ const char *OUTPUT_FILE = "dump.txt";
  *  Skenaarion muuttujat
  */
 
+// Käyttävätkö kaikki palvelupisteet samaa jonoa
+const bool VAIN_YKSI_JONO = true;
 
 // palvelupisteiden (jonojen) määrä kaupassa
-const int PALVELUPISTEET = 1;
+const int PALVELUPISTEET = 2;
 
 // kokonaisaika (kierrosta, ~10s reaaliaikaa)
-const int KOKONAISAIKA = 360;
+const int KOKONAISAIKA = 600;
 
 // todennäköisyys että uusi asiakas tulee kauppaan (/100)
-const double UUSI_ASIAKAS = 50;
+const double UUSI_ASIAKAS = 25;
 
 // Myyjien todennäköisyys suoritetulle ostotapahtumalle
-const int PATEVYYS_MIN = 25;
-const int PATEVYYS_MAX = 50;
+const int PATEVYYS_MIN = 20;
+const int PATEVYYS_MAX = 20;
 
 // Asiakkaiden sietokyky
 // Mikäli sietokyky laskee alle nollan, asiakas poistuu paikalta
-const int SIETOKYKY_MIN = 10;
-const int SIETOKYKY_MAX = 100;
+const int SIETOKYKY_MIN = 500;
+const int SIETOKYKY_MAX = 1000;
 
 
 /*
@@ -94,21 +96,38 @@ class Asiakas
 		unsigned odotusaika;
 };
 
+class Jono
+{
+	public:
+
+		Jono() { }
+
+		void LisaaAsiakas() { asiakkaat.push_back(Asiakas()); }
+		void PoistaAsiakas();
+		unsigned int AsiakkaitaJonossa() { return asiakkaat.size(); }
+
+		void KasitteleAsiakkaat();
+
+	private:
+
+		std::vector<Asiakas> asiakkaat;
+};
+
 class Palvelupiste 
 {
 	public:
 
-		Palvelupiste(int num);
+		Palvelupiste(int num, Jono*);
 
 		const int GetID() const { return ID; }
 
 		const int GetPatevyys() { return patevyys; }
 
-		void LisaaAsiakasJonoon() { asiakkaat.push_back(Asiakas()); }
-		void PoistaAsiakas();
-		unsigned int AsiakkaitaJonossa() { return asiakkaat.size(); }
+		void LisaaAsiakasJonoon() { jono->LisaaAsiakas(); }
+		void PoistaAsiakas() { jono->PoistaAsiakas(); }
+		unsigned int AsiakkaitaJonossa() { return jono->AsiakkaitaJonossa(); }
 
-		void KasitteleAsiakkaat();
+		void KasitteleAsiakkaat() { jono->KasitteleAsiakkaat(); }
 
 	private:
 
@@ -117,7 +136,7 @@ class Palvelupiste
 		// todennakoisyys sille, että ostos tulee suoritettua (/100)
 		int patevyys;
 
-		std::vector<Asiakas> asiakkaat;
+		Jono *jono;
 		
 };
 
@@ -128,6 +147,7 @@ class Kauppa
 		typedef std::vector<Palvelupiste>::iterator palvelupisteIter;
 
 		Kauppa();
+		~Kauppa();
 
 		unsigned AnnaLyhinJono();
 
@@ -142,6 +162,7 @@ class Kauppa
 	private:
 
 		std::vector<Palvelupiste> palveluPisteet;
+		std::vector<Jono*> jonot;
 };
 
 #endif /* end HARKKA_H */
