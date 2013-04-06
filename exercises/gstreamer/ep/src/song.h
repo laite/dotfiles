@@ -13,6 +13,8 @@
 
 class Song 
 {
+	friend class Songlist;
+
 	public:
 
 		Song(Glib::ustring);
@@ -24,6 +26,8 @@ class Song
 		const Glib::ustring GetAlbum() const { return _album; }
 		const Glib::ustring GetTitle() const { return _title; }
 
+		const unsigned GetSongID() const { return _ID; }
+
 		const Glib::ustring Query(Glib::ustring) const;
 
 
@@ -34,6 +38,10 @@ class Song
 		Glib::ustring _artist;
 		Glib::ustring _album;
 		Glib::ustring _title;
+
+		unsigned _ID;
+
+		void _SetID(unsigned newID) { _ID = newID; }
 };
 
 

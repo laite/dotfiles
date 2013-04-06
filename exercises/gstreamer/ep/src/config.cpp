@@ -11,6 +11,7 @@ Options::Options()
 {
 	_appOptions.repeatMode = AppOptions::REPEAT_ALL;
 	_appOptions.playbackButtonLabels = false;
+	_appOptions.playbackFollowsCursor = true;
 }
 
 Options::~Options()

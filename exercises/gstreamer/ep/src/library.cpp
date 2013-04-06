@@ -59,6 +59,7 @@ unsigned long Songlist::_AddSong(Song s)
 {
 	unsigned long newID = _ID.GenerateNumber();
 	_songs.insert(std::make_pair(newID, s));
+	_songs.at(newID)._SetID(newID);
 
 	return newID;
 }

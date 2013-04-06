@@ -178,6 +178,7 @@ class PlaylistViewerColumns : public Gtk::TreeModel::ColumnRecord
 
 		PlaylistViewerColumns();
 
+		Gtk::TreeModelColumn<unsigned int> columnSongID;
 		Gtk::TreeModelColumn<unsigned int> columnTrack;
 		Gtk::TreeModelColumn<Glib::ustring> columnArtist;
 		Gtk::TreeModelColumn<Glib::ustring> columnAlbum;
@@ -197,10 +198,8 @@ class PlaylistViewer : public BaseWidget
 		 */
 
 
-		PlaylistViewer();
-
-		// if constructor gets single playlist reference, we implicitly set playlist type to static
-		PlaylistViewer(Playlist *staticList);
+		// if constructor gets single playlist reference, we set playlist type to static
+		PlaylistViewer(Playlist *staticList = NULL);
 
 
 		/*
@@ -225,6 +224,7 @@ class PlaylistViewer : public BaseWidget
 		// Handle song changing
 		void _SongChanged();
 
+		void _SelectionChanged();
 		
 		/*
 		 *  Members

@@ -231,29 +231,26 @@ PlaybackControls::PlaybackControls(Gtk::Orientation orientation)
 
 PlaylistViewerColumns::PlaylistViewerColumns()
 {
+	add(columnSongID);
 	add(columnTrack);
 	add(columnArtist);
 	add(columnAlbum);
 	add(columnTitle);
 }
 
-PlaylistViewer::PlaylistViewer()
-	: _playlistType(PLAYLIST_TYPE::PL_ACTIVE_LIST)
-	, _playlist(Global::player.GetCurrentPlaylist())
-{
-	_Init();
-}
-
 PlaylistViewer::PlaylistViewer(Playlist *staticList)
-	: _playlistType(PLAYLIST_TYPE::PL_STATIC_LIST)
-	, _playlist(staticList)
+
 {
+	// if we have NULL pointer, we'll use active playlist
 	if (staticList == NULL)
 	{
-		Global::Log.Add("WARNING: Got NULL pointer as *staticList in PlaylistViewer creating!", false);
-		// If we are not given explicit playlist, we switch to active!
 		_playlistType = PLAYLIST_TYPE::PL_ACTIVE_LIST;
 		_playlist = Global::player.GetCurrentPlaylist();
+	}
+	else
+	{
+		_playlistType = PLAYLIST_TYPE::PL_STATIC_LIST;
+		_playlist = staticList;
 	}
 
 	_Init();
@@ -267,6 +264,7 @@ void PlaylistViewer::_Init()
 	_treeModel = Gtk::ListStore::create(_columns);
 	_treeView.set_model(_treeModel);
 
+	//_treeView.append_column("ID", _columns.columnSongID);
 	_treeView.append_column("Artist", _columns.columnArtist);
 	_treeView.append_column("Album", _columns.columnAlbum);
 	_treeView.append_column("Track", _columns.columnTrack);
@@ -284,6 +282,7 @@ void PlaylistViewer::_Init()
 	// refTreeSelection takes care of selecting songs in playlist
 	_refTreeSelection = _treeView.get_selection();
 	_refTreeSelection->set_mode(Gtk::SELECTION_MULTIPLE);
+	_refTreeSelection->signal_changed().connect(sigc::mem_fun(*this, &PlaylistViewer::_SelectionChanged));
 
 	_library = Global::player.GetLibrary();
 
@@ -315,6 +314,7 @@ void PlaylistViewer::_UpdateContents()
 		Gtk::TreeModel::iterator iter = _treeModel->append();
 		Gtk::TreeModel::Row row = (*iter);
 
+		row[_columns.columnSongID] = _library->GetSong(*plIter)->GetSongID();
 		row[_columns.columnTrack] = _library->GetSong(*plIter)->GetTrack();
 		row[_columns.columnTitle] = _library->GetSong(*plIter)->GetTitle();
 		row[_columns.columnArtist] = _library->GetSong(*plIter)->GetArtist();
@@ -340,4 +340,25 @@ void PlaylistViewer::_SongChanged()
 		_refTreeSelection->select(row);
 	}
 
+}
+
+void PlaylistViewer::_SelectionChanged()
+{
+	// IF: option playbackFollowsCursor is set, only one song is selected and it's not currently playing
+	// and song has been selected on currently active playlist
+	// THEN: suggest it to be played next
+	if ((Global::options.GetAppOptions().playbackFollowsCursor) && 
+			(_refTreeSelection->count_selected_rows() == 1) &&
+			(Global::player.GetCurrentPlaylist() == _playlist))
+	{
+		std::vector<Gtk::TreeModel::Path> paths = _refTreeSelection->get_selected_rows();
+
+		for (std::vector<Gtk::TreeModel::Path>::iterator pathIter = paths.begin();
+				pathIter != paths.end(); ++pathIter)
+		{
+			Gtk::TreeModel::iterator rowIter = _treeModel->get_iter(*pathIter);
+			Gtk::TreeModel::Row row = *rowIter;
+			Global::Log.Add(std::to_string(row[_columns.columnSongID]));
+		}
+	}
 }

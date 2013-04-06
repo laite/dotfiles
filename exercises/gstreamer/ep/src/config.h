@@ -17,6 +17,9 @@ struct AppOptions
 
 	// do playback buttons have labels
 	bool playbackButtonLabels;
+
+	// does cursor on active playlist choose next song
+	bool playbackFollowsCursor;
 };
 
 class Options 
