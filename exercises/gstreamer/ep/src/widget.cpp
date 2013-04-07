@@ -231,6 +231,7 @@ PlaybackControls::PlaybackControls(Gtk::Orientation orientation)
 
 PlaylistViewerColumns::PlaylistViewerColumns()
 {
+	add(columnRowNumber);
 	add(columnSongID);
 	add(columnTrack);
 	add(columnArtist);
@@ -264,7 +265,7 @@ void PlaylistViewer::_Init()
 	_treeModel = Gtk::ListStore::create(_columns);
 	_treeView.set_model(_treeModel);
 
-	//_treeView.append_column("ID", _columns.columnSongID);
+	_treeView.append_column("N:o", _columns.columnRowNumber);
 	_treeView.append_column("Artist", _columns.columnArtist);
 	_treeView.append_column("Album", _columns.columnAlbum);
 	_treeView.append_column("Track", _columns.columnTrack);
@@ -309,11 +310,13 @@ void PlaylistViewer::_UpdateContents()
 
 	// then we add all the songs in playlist one-by-one
 	plType playlistIDs = _playlist->GetAllSongIDs();
+	unsigned rowNum = 1;
 	for (plType::iterator plIter = playlistIDs.begin(); plIter != playlistIDs.end(); ++plIter)
 	{
 		Gtk::TreeModel::iterator iter = _treeModel->append();
 		Gtk::TreeModel::Row row = (*iter);
 
+		row[_columns.columnRowNumber] = rowNum++;
 		row[_columns.columnSongID] = _library->GetSong(*plIter)->GetSongID();
 		row[_columns.columnTrack] = _library->GetSong(*plIter)->GetTrack();
 		row[_columns.columnTitle] = _library->GetSong(*plIter)->GetTitle();
@@ -352,13 +355,25 @@ void PlaylistViewer::_SelectionChanged()
 			(Global::player.GetCurrentPlaylist() == _playlist))
 	{
 		std::vector<Gtk::TreeModel::Path> paths = _refTreeSelection->get_selected_rows();
+		Gtk::TreeModel::Row row = *(_treeModel->get_iter(*paths.begin()));
 
-		for (std::vector<Gtk::TreeModel::Path>::iterator pathIter = paths.begin();
-				pathIter != paths.end(); ++pathIter)
-		{
-			Gtk::TreeModel::iterator rowIter = _treeModel->get_iter(*pathIter);
-			Gtk::TreeModel::Row row = *rowIter;
+		if ((row[_columns.columnRowNumber]-1) != _playlist->GetCurrentSongIndex())
 			Global::Log.Add(std::to_string(row[_columns.columnSongID]));
-		}
 	}
+}
+
+std::vector<Gtk::TreeModel::Row> PlaylistViewer::_GetSelectedSongRows()
+{
+	std::vector<Gtk::TreeModel::Row> selectedRows;
+
+	std::vector<Gtk::TreeModel::Path> paths = _refTreeSelection->get_selected_rows();
+	for (std::vector<Gtk::TreeModel::Path>::iterator pathIter = paths.begin();
+			pathIter != paths.end(); ++pathIter)
+	{
+		Gtk::TreeModel::iterator rowIter = _treeModel->get_iter(*pathIter);
+		Gtk::TreeModel::Row row = *rowIter;
+		Global::Log.Add(std::to_string(row[_columns.columnSongID]));
+	}
+
+	return selectedRows;
 }

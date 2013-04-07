@@ -178,6 +178,7 @@ class PlaylistViewerColumns : public Gtk::TreeModel::ColumnRecord
 
 		PlaylistViewerColumns();
 
+		Gtk::TreeModelColumn<unsigned int> columnRowNumber;
 		Gtk::TreeModelColumn<unsigned int> columnSongID;
 		Gtk::TreeModelColumn<unsigned int> columnTrack;
 		Gtk::TreeModelColumn<Glib::ustring> columnArtist;
@@ -226,6 +227,8 @@ class PlaylistViewer : public BaseWidget
 
 		void _SelectionChanged();
 		
+		std::vector<Gtk::TreeModel::Row> _GetSelectedSongRows();
+
 		/*
 		 *  Members
 		 */
