@@ -342,7 +342,6 @@ void PlaylistViewer::_SongChanged()
 		_refTreeSelection->unselect_all();
 		_refTreeSelection->select(row);
 	}
-
 }
 
 void PlaylistViewer::_SelectionChanged()
@@ -358,7 +357,13 @@ void PlaylistViewer::_SelectionChanged()
 		Gtk::TreeModel::Row row = *(_treeModel->get_iter(*paths.begin()));
 
 		if ((row[_columns.columnRowNumber]-1) != _playlist->GetCurrentSongIndex())
-			Global::Log.Add(std::to_string(row[_columns.columnSongID]));
+		{
+			// if selected song is same than currently selected, we don't recommend it
+			// note that we check playlist index number rather than Song ID since
+			// there might be multiple instances of same song and we allow
+			// user to jump to another instance in the playlist
+			_playlist->RecommendNextSong(row[_columns.columnRowNumber]-1); // our numbering of rows start from 1
+		}
 	}
 }
 

@@ -16,6 +16,7 @@
 
 Playlist::Playlist(unsigned long ID)
 	: _currentSong(0)
+	, _recommendedSong(-1)
 	, _ID(ID)
 	, _uri("/home/laite/.config/laite/ep/list" + std::to_string(_ID) + ".m3u")
 {
@@ -37,6 +38,13 @@ const Song *Playlist::GetSong(Playlist::playlist_index index) const
 
 bool Playlist::SelectSong(playlist_index newIndex)
 {
+	// follow the recommendation on nextSong (if there is one)
+	if ((newIndex == (_currentSong+1)) && (_recommendedSong != -1))
+	{
+		newIndex = _recommendedSong;
+		_recommendedSong = -1;
+	}
+
 	int repeat = Global::options.GetAppOptions().repeatMode;
 
 	if (newIndex < _songlist.size())
@@ -48,6 +56,14 @@ bool Playlist::SelectSong(playlist_index newIndex)
 
 	Global::player.TriggerEvent(Global::EVENT::E_SONG_CHANGED);
 	return true;
+}
+
+void Playlist::RecommendNextSong(playlist_index nextSong)
+{
+	if ((_recommendedSong != -1) || (nextSong >= _songlist.size()))
+		return; // there already is a song or nextSong is out-of-range
+
+	_recommendedSong = nextSong;
 }
 
 void Playlist::SaveToFile(const std::string file) const

@@ -31,6 +31,10 @@ class Playlist
 		// TODO: trigger
 		bool SelectSong(playlist_index);
 
+		// option playbackFollowsCursor can recommend next song through here
+		// it's taken into account on SelectSong-function
+		void RecommendNextSong(playlist_index);
+
 		// Some helpers for SelectSong
 		void FirstSong() { SelectSong(0); }
 		bool PreviousSong() { return SelectSong(_currentSong - 1); }
@@ -66,6 +70,10 @@ class Playlist
 
 		// index of currently active song [0..n[
 		playlist_index _currentSong;
+
+		// possible recommended song to be played next
+		// if no song is recommended, this is -1
+		int _recommendedSong;
 
 		// name of playlist (shows to user)
 		Glib::ustring _name;
