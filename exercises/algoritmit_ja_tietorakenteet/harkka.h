@@ -31,19 +31,19 @@ const bool VAIN_YKSI_JONO = true;
 const int PALVELUPISTEET = 2;
 
 // kokonaisaika (kierrosta, ~10s reaaliaikaa)
-const int KOKONAISAIKA = 600;
+const int KOKONAISAIKA = 360;
 
 // todennäköisyys että uusi asiakas tulee kauppaan (/100)
-const double UUSI_ASIAKAS = 25;
+const double UUSI_ASIAKAS = 40;
 
 // Myyjien todennäköisyys suoritetulle ostotapahtumalle
-const int PATEVYYS_MIN = 20;
-const int PATEVYYS_MAX = 20;
+const int PATEVYYS_MIN = 5;
+const int PATEVYYS_MAX = 5;
 
 // Asiakkaiden sietokyky
 // Mikäli sietokyky laskee alle nollan, asiakas poistuu paikalta
-const int SIETOKYKY_MIN = 500;
-const int SIETOKYKY_MAX = 1000;
+const int SIETOKYKY_MIN = 1000;
+const int SIETOKYKY_MAX = 1250;
 
 
 /*

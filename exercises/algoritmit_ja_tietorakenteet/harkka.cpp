@@ -275,6 +275,8 @@ int main(int argc, char **argv)
 		r_kioski.TallennaAsiakasLuvut();
 	}
 
+	// Tallennetaan tilastot lopuksi
+	// dump_output:lle voi antaa ensimmäiseksi parametriksi esim. std::cout
 	std::ofstream file(OUTPUT_FILE);
 	dump_output(file, r_kioski);
 	file.close();
