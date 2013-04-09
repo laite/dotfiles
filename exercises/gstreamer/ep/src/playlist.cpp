@@ -16,7 +16,7 @@
 
 Playlist::Playlist(unsigned long ID)
 	: _currentSong(0)
-	, _recommendedSong(-1)
+	, _nextSong(-1)
 	, _ID(ID)
 	, _uri("/home/laite/.config/laite/ep/list" + std::to_string(_ID) + ".m3u")
 {
@@ -36,13 +36,13 @@ const Song *Playlist::GetSong(Playlist::playlist_index index) const
 		return NULL;
 }
 
-bool Playlist::SelectSong(playlist_index newIndex)
+bool Playlist::SelectSong(playlist_index newIndex, bool force)
 {
 	// follow the recommendation on nextSong (if there is one)
-	if ((newIndex == (_currentSong+1)) && (_recommendedSong != -1))
+	if ((_nextSong != -1) && (!force))
 	{
-		newIndex = _recommendedSong;
-		_recommendedSong = -1;
+		newIndex = _nextSong;
+		_nextSong = -1;
 	}
 
 	int repeat = Global::options.GetAppOptions().repeatMode;
@@ -58,12 +58,12 @@ bool Playlist::SelectSong(playlist_index newIndex)
 	return true;
 }
 
-void Playlist::RecommendNextSong(playlist_index nextSong)
+void Playlist::RecommendNextSong(long newNextSong)
 {
-	if ((_recommendedSong != -1) || (nextSong >= _songlist.size()))
-		return; // there already is a song or nextSong is out-of-range
+	if ((newNextSong != -1) && (newNextSong >= _songlist.size()))
+		return; // nextSong is out-of-range
 
-	_recommendedSong = nextSong;
+	_nextSong = newNextSong;
 }
 
 void Playlist::SaveToFile(const std::string file) const

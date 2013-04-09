@@ -364,6 +364,12 @@ void PlaylistViewer::_SelectionChanged()
 			// user to jump to another instance in the playlist
 			_playlist->RecommendNextSong(row[_columns.columnRowNumber]-1); // our numbering of rows start from 1
 		}
+		else
+		{
+			// remove recommendations if user selects currently active song
+			Global::Log.Add(std::to_string(_playlist->GetCurrentSongIndex()) + "/" + std::to_string(row[_columns.columnRowNumber]-1));
+			_playlist->RecommendNextSong(-1);
+		}
 	}
 }
 
