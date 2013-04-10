@@ -229,6 +229,7 @@ class PlaylistViewer : public BaseWidget
 		
 		std::vector<Gtk::TreeModel::Row> _GetSelectedSongRows();
 
+		void _OnActivated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column);
 		/*
 		 *  Members
 		 */

@@ -51,7 +51,7 @@ void Playback::StartPlayback()
 
 	if (activePlaylist->GetCurrentSong()->GetUri() != _lastUri)
 		LoadSong();
-	else if (!IsStopped())
+	else if (!IsStopped()) // LoadSong stops playback anyway
 		StopPlayback();
 
 	sound.StartPlaying();

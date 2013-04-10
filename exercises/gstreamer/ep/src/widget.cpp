@@ -285,6 +285,9 @@ void PlaylistViewer::_Init()
 	_refTreeSelection->set_mode(Gtk::SELECTION_MULTIPLE);
 	_refTreeSelection->signal_changed().connect(sigc::mem_fun(*this, &PlaylistViewer::_SelectionChanged));
 
+	_treeView.signal_row_activated().connect( sigc::mem_fun(*this,
+              &PlaylistViewer::_OnActivated), false);
+
 	_library = Global::player.GetLibrary();
 
 	AddEventHook(Global::EVENT::E_PLAYLIST_CHANGED, boost::bind(&PlaylistViewer::_UpdateContents, this));
@@ -367,7 +370,6 @@ void PlaylistViewer::_SelectionChanged()
 		else
 		{
 			// remove recommendations if user selects currently active song
-			Global::Log.Add(std::to_string(_playlist->GetCurrentSongIndex()) + "/" + std::to_string(row[_columns.columnRowNumber]-1));
 			_playlist->RecommendNextSong(-1);
 		}
 	}
@@ -387,4 +389,12 @@ std::vector<Gtk::TreeModel::Row> PlaylistViewer::_GetSelectedSongRows()
 	}
 
 	return selectedRows;
+}
+
+void PlaylistViewer::_OnActivated(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column)
+{
+	unsigned songAtRow = (*_treeModel->get_iter(path))[_columns.columnSongID];
+
+	_playlist->SelectSong(songAtRow);
+	Global::player.GetPlayback()->StartPlayback();
 }
