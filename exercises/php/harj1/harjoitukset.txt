@@ -1,0 +1,39 @@
+Harjoitukset1
+
+Tehtävä 1.
+
+Tulosta www-sivulle päivämäärä ja kellonaika seuraavassa muodossa: "Nyt on pp.kk.vvvv klo tt:mm:ss". Vihje: date()-funktio.
+
+Tehtävä 2.
+
+Näytä sivun viimeisin muokkausajankohta www-sivulla. Vihje: getlastmod().
+Tehtävä 3.
+
+Luo taulukko-tietorakenne (array) jossa on viisi numeroa järjestyksessä 2,5,1,7,3. Järjestä numerot taulukossa järjestykseen pienimmästä suurimpaan (käytä sort() -funktiota). Tulosta taulukon numerot www-sivulla foreach -silmukassa.
+
+Tehtävä 4.
+
+Luo for-silmukan avulla www-sivulle HTML-taulukko jossa on viisi riviä. Tee table-elementit silmukan ulkopuolelle ja toista yksi HTML-taulukon rivi viiteen kertaan silmukassa. HTML-taulukon pitäisi näyttää seuraavalta:
+
+Tämä on rivi 1
+Tämä on rivi 2
+Tämä on rivi 3
+Tämä on rivi 4
+Tämä on rivi 5
+Tehtävä 5.
+
+Laajenna edellistä tehtävää siten että joka toisen rivin solun taustaväriksi tulee aina harmaa ja joka toisen taustaväriksi valkoinen. Näin tulee siis olla vaikka silmukalla tehtäisiin taulukkoon 1000 solua, joten homma pitää toteuttaa ohjelmoimalla.
+Ohje: Tee tyylitiedosto jossa rivien tyylit ovat nimeltään row0 ja row1. Määrittele silmukan ulkopuolelle aluksi muuttuja $nro jonka arvo on 1. Kun luot silmukassa HTML-taulukon rivin, laita tr-elementille tyyliksi class = "row".$nro. Tällöin rivin tyyli on row1 jossa taustaväri on määritelty harmaaksi. Simukan viimeisellä rivillä vähennä luvusta 1 nro-muuttujan arvo ($nro = 1-$nro). Sitten $nro on seuraavalla kierroksella 0 ja seuraavalla taas 1 jne...
+Viiden solun taulukon pitäisi näyttää seuraavalta:
+
+Tämä on rivi 1
+Tämä on rivi 2
+Tämä on rivi 3
+Tämä on rivi 4
+Tämä on rivi 5
+Tehtävä 6.
+
+Tee www-sivulle yksinkertainen laskin joka laskee yhteen- ja kertolaskuja. Tee molemmille laskutoimituksille omat aliohjelmat (funktiot). Laskimen käyttöliittymänä ovat www-sivun tekstikentät. Mitä tapahtuu jos kirjoitat tekstikenttiin numeroiden sijasta merkkijonoja ja yrität laskea niillä? Mistä johtuu että käy näin? Ratkaisu voisi näyttää tältä.
+Tehtävä 7. extratehtävä
+
+Tee yksinkertainen tietokonekaupan hintalaskuri. Siinä on kolme pudotusvalikkoa joilla voi valita kolmen eri osan hinnat (esim. prosessori, muistin määrä ja näyttö). Sovellus ottaa pudotusvalikoista option-elementin value-attribuutin arvosta osien hinnat ja näyttää sivun lopussa yhteen lasketun kokonaishinnan kun painat "Tee tarjous" -nappia. Ratkaisu voisi näyttää tältä.
