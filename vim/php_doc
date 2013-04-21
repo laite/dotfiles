@@ -1,0 +1,3 @@
+#!/bin/bash
+FUNCTION=`echo $1 | sed 's/_/-/g'`
+chromium-browser http://www.php.net/manual/en/print/function.$FUNCTION.php

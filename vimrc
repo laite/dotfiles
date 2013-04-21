@@ -222,6 +222,9 @@ if has("autocmd")
   autocmd Syntax cpp call EnhanceCppSyntax()
   " don't use cpp11 additions by default
   " au BufNewFile,BufRead *.cpp set syntax=cpp11
+  
+  " use external browser through script with php files
+  autocmd FileType php set keywordprg=~/.vim/php_doc
 
   augroup END
 
