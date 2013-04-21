@@ -1,0 +1,3 @@
+<a href="1.php?sivunro=1">Sivu 1</a>
+<a href="1.php?sivunro=2">Sivu 2</a>
+<a href="1.php?sivunro=3">Sivu 3</a>

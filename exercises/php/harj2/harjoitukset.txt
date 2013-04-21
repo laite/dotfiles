@@ -1,0 +1,33 @@
+
+Harjoitukset2
+
+Tehtävä 1.
+
+Tee pääsivu (index.php) joka muodostuu kolmesta sivulle upotetusta (include -funktio) osasta: Yläosa jossa on valikko (header.txt), keskiosa joka vaihtuu valikon linkeistä(sivu1.txt, sivu2.txt, sivu3.txt) ja alaosa (footer.txt). Valitessasi sivun valikosta, sivua kuvaava arvo (esim. numero) menee linkistä selaimen osoiteriville. Sieltä se napataan get-metodilla pääsivulle (index.php) jonka keskiosaan upotetaan (include) se sivu joka valittiin (esim. include("sivu$nro.txt")).   Ratkaisu voisi näyttää tältä.
+Tehtävä 2.
+
+Tee HTML-lomake jossa kysytään mitä ohjelmointikieliä osaat. Käyttäjä voi valita valintalistasta useampia kieliä samanaikaisesti. Lähetä valitut ohjelmointikielet sähköpostitse itsellesi. Muotoile lähetettävä viesti siten että kielet tulevat siististi allekkain eri riveille. 
+Vihje: valintalistasta valitut arvot tulevat taulukkomuuttujaan. Taulukkomuuttujassa olevat arvot pitää koota (implode funktion avulla) merkkijono -tyyppiseen muuttujaan. Siitä ne voidaan tulostaa sähköpostiviestiin.
+Jos vain tulostetaan valitut kielet www-sivulle, sovellus näyttää tältä.
+
+Tehtävä 3.
+
+Tee sivu jolle teet kaksi linkkiä: luo ja poista. Linkki luo vie ohjelmaan jolla luot kansion "kansio" ja sen sisälle tiedoston "tiedosto.txt". Linkki poista vie ohjelmaan jolla poistat tiedoston ja kansion. Tee molempiin ohjelmiin tarkastus, jolla katsotaan onko luotava tai poistettava kansio jo olemassa. Jos luotava kansio on jo olemassa tai poistettavaa kansiota ei ole, ei tehdä mitään vaan tulostetaan "kansio on jo olemassa/kansiota ei ole". PHP ohje:  mkdir(), fopen(), rmdir(), unlink() ja file_exists().
+
+Tehtävä 4.
+
+Muokkaa esimerkkinä ollutta vieraskirjaa siten että viimeksi kirjoitettu viesti tulee viestilistassa ensimmäiseksi. 
+Ohje: ota ensin vieraskirjassa olevat vanhat viestit talteen johonkin muuttujaan fread()-funktiolla. Kirjoita sitten uusin viesti tiedoston alkuun w-moodissa. Kirjoita sitten vanhat viestit uusimman viestin perään. Tee rivin lisäyksestä tiedostoon funktio nimeltään lisaaRivi.
+
+Tehtävä 5.
+
+Tee vieraskirjaan kuvavarmennus (captcha). Käyttäjä voi siis kirjoittaa vieraskirjaan vain jos kirjoittaa oikein myös kuvassa olevan tekstin. Näin estetään mainosrobottien kirjoittaminen vieraskirjaan. Voit käyttää vapaasti Wikipedian esimerkkikuvaa. Huomaa että captha-tunnistuksessa isoilla ja pienillä kirjaimilla on merkitystä. Kommentoi vieraskirja siten että "kuka tahansa" voi ymmärtää kuinka se toimii.
+
+Tehtävä 6.
+
+Toteuta muokattava www-sivu jonka lähdekoodi on tekstitiedostossa. Asenna TinyMCE-editori jolla voit muokata sivua. Jos laitat sivun julkiselle palvelimelle, muista suojata sivu kirjautumisella. Kts. ohje: Tiedostojen Käsittely, esimerkki2.
+
+Tehtävä 7. extratehtävä
+
+Toteuta GD-libraryn avulla pieni sovellus jossa käyttäjä syöttää lomakkeelta jotain dataa jonka perusteella piirretään yksinkertainen kuvio.
+
