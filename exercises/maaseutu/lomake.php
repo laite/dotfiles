@@ -16,7 +16,7 @@ Henkilöllä on ennakkoluuloton asenne maaseudun kehittämiseen ja hän tuo akti
     <td> <input name="nimi1" size="30" maxlength="100"/></td>
     </tr><tr>
     <td> Paikkakunta: </td>
-    <td> <input name="paikkakunta3" size="30" maxlength="50"/></td>
+    <td> <input name="paikkakunta1" size="30" maxlength="50"/></td>
     </tr><tr> 
     <td> Perustelut: </td> 
     <td> <textarea name="perustelut1" rows="4" cols="45" maxlength="1000"> </textarea> </td> 

@@ -80,3 +80,5 @@ for ($index = 1; $index <= $KATEGORIOIDEN_LKM; ++$index)
 }
 
 ?>
+<h2>Äänestystulos kirjattu!</h2>
+<a href="http://www.ksmaaseutugaala.fi/?page_id=545">Katsele tuloksia</a>

@@ -32,12 +32,14 @@ if ($tulokset)
 		// kirjoitetaan ensimmäinen otsikko
 		if ($edellinen_kategoria == "")
 		{
+			$koko_rivi .= "*** $kategoria ***\n";
 			echo "<h2>$kategoria</h2>";
 			echo "<table><tr><td>Nimi</td><td>Paikkakunta</td><td>Perustelut</td></tr>";
 		}
 		// kategorian vaihtuessa katkaistaan taulukko ja kirjoitetaan uusi
 		else if ($edellinen_kategoria != $kategoria)
 		{
+			$koko_rivi .= "*** $kategoria ***\n";
 			echo "</table>";
 			echo "<h2>$kategoria</h2>";
 			echo "<table><tr><td>Nimi</td><td>Paikkakunta</td><td>Perustelut</td></tr>";
