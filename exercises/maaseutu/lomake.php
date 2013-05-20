@@ -87,5 +87,7 @@ Yritys on innovatiivisella tavalla parantanut maaseudun elämänlaatua ja palvel
     </tr> 
 </table>
 
+Äänestäjän nimi (pakollinen)<br />
+<input name="aanestaja" size="30" maxlength="100" required />
 <input type="submit" value="Lähetä ehdotukset" />
 </form>
