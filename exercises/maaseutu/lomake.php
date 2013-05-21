@@ -10,7 +10,7 @@ Lähetä ehdotuksesi viimeistään 11.8.!
 <form method="post" action="http://www.ksmaaseutugaala.fi/?page_id=543" />
 <h2><strong>Innostava maaseudun kehittäjä</strong></h2>
 <p>
-Henkilöllä on ennakkoluuloton asenne maaseudun kehittämiseen ja hän tuo aktiivisesti esille uusia näkökulmia maaseudun elinvoimaisuuden hyväksi. Henkilö on edesauttanut maaseudun verkostoitumista ja parantanut paikallista yhteisöllisyyttä.
+Henkilöllä on ennakkoluuloton asenne maaseudun kehittämiseen ja hän tuo aktiivisesti esille uusia näkökulmia maaseudun elinvoimaisuuden hyväksi. Henkilö on edesauttanut maaseudun verkostoitumista ja parantanut paikallista yhteisöllisyyttä tai toiminut aktiivisena tiedottajana.
 </p>
 <table>
     <tr>
@@ -26,7 +26,7 @@ Henkilöllä on ennakkoluuloton asenne maaseudun kehittämiseen ja hän tuo akti
 </table>   
 <h2><strong>Oivallinen maaseututeko</strong></h2>
 <p>
-Vuoden maaseututeko 2013 voi olla hanke, tapahtuma, yhteisö, tempaus tai projekti. Teko on tuonut esille keskisuomalaista maaseutua uudella tavalla, sekä lisännyt sen yhteisöllisyyttä, näkyvyyttä ja elinvoimaa.
+Vuoden maaseututeko 2013 voi olla hanke, tapahtuma, yhteisö, tempaus tai projekti. Teko on tuonut esille keskisuomalaista maaseutua uudella tavalla, sekä lisännyt sen yhteisöllisyyttä, näkyvyyttä ja elinvoimaa. Se voi olla nuorisoon kohdistuva toimenpide tai nuorten oma toimenpide.
 </p>
 <table>
     <tr>
@@ -58,7 +58,7 @@ Vuoden 2013 ympäristöpanostus voi olla yksityisen henkilön, porukan, yhteisö
 </table>   
 <h2><strong>Vuoden 2013 maatalousyritys</strong></h2>
 <p>
-Tila on edistänyt maatalouden säilymistä ja maaseudun elinvoimaisuutta sekä kehittänyt toimintaansa suunnitelmallisesti. Lisäksi se on löytänyt uusia keinoja elinkeinon harjoittamiseen ja hyödyntänyt verkostoja järkevän avarakatseisella tavalla.
+Tila on edistänyt maatalouden uudistumista, kasvua ja maaseudun elinvoimaisuutta sekä kehittänyt toimintaansa suunnitelmallisesti. Lisäksi se on löytänyt uusia keinoja elinkeinon harjoittamiseen ja hyödyntänyt verkostoja järkevän avarakatseisella tavalla.
 </p>
 <table>
     <tr>
@@ -74,7 +74,7 @@ Tila on edistänyt maatalouden säilymistä ja maaseudun elinvoimaisuutta sekä 
 </table>
 <h2><strong>Vuoden 2013 maaseutuyritys</strong></h2>
 <p>
-Yritys on innovatiivisella tavalla parantanut maaseudun elämänlaatua ja palveluita. Yritys on myös lisännyt maaseudun elinvoimaisuutta, yhteisöllisyyttä ja parantanut maaseudun viihtyisyyttä. Yritys voi olla maatila tai muu maaseudulla toimiva yritys.
+Yritys toimii rohkeasti, kasvuhakuisesti ja innovatiivisesti. Se on luonut uusia työpaikkoja ja lisännyt liikevaihtoaan. Yritys on lisännyt maaseudun elinvoimaisuutta, kansainvälisyyttä, yhteisöllisyyttä ja parantanut maaseudun viihtyisyyttä. Yritys toimii maaseudulla, mutta ei ole maatila. 
 </p>
 <table>
     <tr>
