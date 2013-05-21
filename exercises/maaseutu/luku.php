@@ -48,6 +48,8 @@ if ($tulokset)
 	// lopuksi katkaistaan taulukko
         echo "</table>";
 }
+else
+	echo "<h2>Ei vielä yhtään äänestystulosta</h2>";
 ?>
 <form method="post" action="http://www.ksmaaseutugaala.fi/?page_id=566">
   Lähetä tiedot sähköpostiosoitteeseen: <input name="sposti_osoite" required /><input type="submit" value="Lähetä" />
