@@ -47,8 +47,14 @@ if ($tulokset)
 	}
 	// lopuksi katkaistaan taulukko
         echo "</table>";
+
+	// annetaan käyttäjälle mahdollisuus lähettää tiedot sähköpostilla
+	?>
+		<form method="post" action="http://www.ksmaaseutugaala.fi/?page_id=566">
+			Lähetä sähköpostiosoitteeseen: <input name="sposti_osoite" required /><br/>
+			<input type="submit" value="Lähetä" />
+		</form>
+	<?php
 }
+
 ?>
-<form method="post" action="http://www.ksmaaseutugaala.fi/?page_id=566">
-  Lähetä tiedot sähköpostiosoitteeseen: <input name="sposti_osoite" required /><input type="submit" value="Lähetä" />
-</form>

@@ -5,7 +5,7 @@
 global $wpdb;
 
 // taulukon nimi
-$taulukko = "aanestys";
+$taulukko = "aanestys_2013";
 
 // taulukon luontikomento SQL-kielellä
 $sql = "CREATE TABLE $taulukko (
@@ -80,5 +80,5 @@ for ($index = 1; $index <= $KATEGORIOIDEN_LKM; ++$index)
 }
 
 ?>
-<h2>Äänestystulos kirjattu!</h2>
-<a href="http://www.ksmaaseutugaala.fi/?page_id=545">Katsele tuloksia</a>
+<h2>Tiedot kirjattu talteen, kiitos äänestyksestä!</h2>
+<a href="http://www.ksmaaseutugaala.fi/">Palaa etusivulle</a>

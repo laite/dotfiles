@@ -1,11 +1,13 @@
 <p>
-Alla ovat tämän vuoden ehdotuskategoriat, joihin voit äänestää omia suosikkejasi. Voit vastata vain niihin kategorioihin, joihin haluat ja jättää muut tyhjäksi. Muista painaa sivun alalaidasta löytyvää "lähetä ehdotukset" -nappia kirjoitettuasi, jotta ehdotukset rekisteröityvät.
-</p>
-<p style="color: red;">
-Mari: Tämä on vain ehdotus, saat tietysti keksiä tähän paremmankin "pohjustustekstin". :)
+Keski-Suomen Maaseutujaosto palkitsee vuoden 2013 Maaseutugaalassa maaseudun elinvoimaisuutta edistäneitä henkilöitä, yrityksiä ja hankkeita.
+
+Voit ehdottaa palkittavia tällä lomakkeella. Voit täyttää vain ne kohdat, joihin haluat ehdottaa palkittavia. Muista painaa sivun alalaidasta löytyvää "lähetä ehdotukset" -nappia kirjoitettuasi, jotta ehdotukset rekisteröityvät.
+
+Lähetä ehdotuksesi viimeistään 11.8.!
 </p>
 
-<form method="post" action="" />
+
+<form method="post" action="http://www.ksmaaseutugaala.fi/?page_id=543" />
 <h2><strong>Innostava maaseudun kehittäjä</strong></h2>
 <p>
 Henkilöllä on ennakkoluuloton asenne maaseudun kehittämiseen ja hän tuo aktiivisesti esille uusia näkökulmia maaseudun elinvoimaisuuden hyväksi. Henkilö on edesauttanut maaseudun verkostoitumista ja parantanut paikallista yhteisöllisyyttä.
@@ -87,7 +89,7 @@ Yritys on innovatiivisella tavalla parantanut maaseudun elämänlaatua ja palvel
     </tr> 
 </table>
 
-Äänestäjän nimi (pakollinen)<br />
-<input name="aanestaja" size="30" maxlength="100" required />
+Ehdottajan nimi (pakollinen)<br />
+<input name="lahettaja" size="30" maxlength="100" required />
 <input type="submit" value="Lähetä ehdotukset" />
 </form>
