@@ -1,11 +1,30 @@
 #!/bin/sh
 # do incremental backups of directory
 
+
+# first we'll check startup arguments
+if [ $# -lt 2 ] || [ $# -gt 3 ]
+then
+	echo "$0: Bad arguments!"
+    echo "usage: $0 source_dir target_dir [exclude_file]"
+	exit;
+fi
+
+
+SOURCE_DIR="$1"
+TARGET_DIR="$2"
+
+# exclude some directories from syncing, mainly it's a good idea to exclude all caches
+# note that exclude file is optional
+EXCLUDE_COMMAND=""
+if [ $# -eq 3 ]
+then
+	EXCLUDE_FILE="$3"
+	EXCLUDE_COMMAND="--exclude-from=$3"
+fi
+
 # number of last kept backup directory
 MAX_BACKUPS=10
-
-SOURCE_DIR="/home/laite/" # mind the trailing /
-TARGET_DIR="/data/backups/home"
 
 # this is temporary place/name for log file, it gets copied to backup.current in the end
 LOG_FILE="$TARGET_DIR/backup.log"
@@ -30,9 +49,6 @@ if [[ ! -d "$TARGET_DIR/backup.current" ]]; then
 		echo "*** If you are running the script for the first time, this is expected ***" >> $LOG_FILE
 fi
 
-# exclude some directories from syncing, mainly it's a good idea to exclude all caches
-# if you don't want to use excludes, delete exclude-from also from $OPTIONS
-EXCLUDE_FILE="/home/laite/bin/backup_exclude.list"
 
 # rsync options
 # -a archive
@@ -44,7 +60,7 @@ EXCLUDE_FILE="/home/laite/bin/backup_exclude.list"
 # --exclude-from read excluded files/folders from a file
 
 # if we are initing backups we don't yet have link-dest
-OPTIONS="-aAXvh --delete --exclude-from=$EXCLUDE_FILE $LINK_COMMAND"
+OPTIONS="-aAXvh --delete $EXCLUDE_COMMAND $LINK_COMMAND"
 
 # remove previous MAX_BACKUP folder if it exists
 if [ -d $TARGET_DIR/backup.$MAX_BACKUPS ]
@@ -76,8 +92,11 @@ fi
 echo "*** Backing up from $SOURCE_DIR to $TARGET_DIR" >> $LOG_FILE
 echo "*** Link_dir is set as $LINK_DIR" >> $LOG_FILE
 echo "*** Maximum backups: $MAX_BACKUPS" >> $LOG_FILE
-echo "*** Excluding following:" >> $LOG_FILE
-cat $EXCLUDE_FILE >> $LOG_FILE
+if [ ! "$3" == "" ]
+then
+	echo "*** Excluding following:" >> $LOG_FILE
+	cat $EXCLUDE_FILE >> $LOG_FILE
+fi
 START_TIME=$(date +%s)
 
 # execute the backup command
