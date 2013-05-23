@@ -92,7 +92,7 @@ fi
 echo "*** Backing up from $SOURCE_DIR to $TARGET_DIR" >> $LOG_FILE
 echo "*** Link_dir is set as $LINK_DIR" >> $LOG_FILE
 echo "*** Maximum backups: $MAX_BACKUPS" >> $LOG_FILE
-if [ ! "$3" == "" ]
+if [ ! "$EXCLUDE_COMMAND" == "" ]
 then
 	echo "*** Excluding following:" >> $LOG_FILE
 	cat $EXCLUDE_FILE >> $LOG_FILE
