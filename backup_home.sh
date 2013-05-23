@@ -1,10 +1,16 @@
 #!/bin/sh
 # do incremental backups of directory
 
+# number of last kept backup directory
 MAX_BACKUPS=10
 
 SOURCE_DIR="/home/laite/" # mind the trailing /
 TARGET_DIR="/data/backups/home"
+
+# this is temporary place/name for log file, it gets copied to backup.current in the end
+LOG_FILE="$TARGET_DIR/backup.log"
+echo "*** Starting to run $0 ***" >> $LOG_FILE
+echo "*** It's now $(date '+%A %d.%m.%Y %R')" >> $LOG_FILE
 
 # we check differences to latest backup
 # (at this point latest backup is still named backup.current, but will get moved to backup.1 by
@@ -15,13 +21,19 @@ TARGET_DIR="/data/backups/home"
 # you also change rest of the script accordingly (mainly, transitions from current to linkdir 
 # and linkdir to first numerical backup dir)
 LINK_DIR="$TARGET_DIR/backup.1"
+LINK_COMMAND="--link-dest=$LINK_DIR"
 
-# this is temporary place/name for log file, it gets copied to backup.current in the end
-LOG_FILE="$TARGET_DIR/backup.log"
+# if there is no backup.current directory we don't link to anything, and create a warning
+if [[ ! -d "$TARGET_DIR/backup.current" ]]; then
+		LINK_COMMAND=""
+		echo "*** WARNING: There is no backup.current - directory in $TARGET_DIR ***" >> $LOG_FILE
+		echo "*** If you are running the script for the first time, this is expected ***" >> $LOG_FILE
+fi
 
 # exclude some directories from syncing, mainly it's a good idea to exclude all caches
 # if you don't want to use excludes, delete exclude-from also from $OPTIONS
 EXCLUDE_FILE="/home/laite/bin/backup_exclude.list"
+
 # rsync options
 # -a archive
 # -A preserve ACLs, permissions
@@ -29,7 +41,10 @@ EXCLUDE_FILE="/home/laite/bin/backup_exclude.list"
 # -v be verbose
 # -h preserve hard links
 # --delete remove extraneous files
-OPTIONS="-aAXvh --delete --exclude-from=$EXCLUDE_FILE"
+# --exclude-from read excluded files/folders from a file
+
+# if we are initing backups we don't yet have link-dest
+OPTIONS="-aAXvh --delete --exclude-from=$EXCLUDE_FILE $LINK_COMMAND"
 
 # remove previous MAX_BACKUP folder if it exists
 if [ -d $TARGET_DIR/backup.$MAX_BACKUPS ]
@@ -58,7 +73,6 @@ fi
 # start actually backing up
 
 # Log some information
-echo "*** Backup started $(date '+%A %d.%m.%Y %R')" >> $LOG_FILE
 echo "*** Backing up from $SOURCE_DIR to $TARGET_DIR" >> $LOG_FILE
 echo "*** Link_dir is set as $LINK_DIR" >> $LOG_FILE
 echo "*** Maximum backups: $MAX_BACKUPS" >> $LOG_FILE
