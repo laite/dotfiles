@@ -17,7 +17,7 @@
 
 LogClass Global::Log;
 ConfigClass Global::Config;
-bool Global::debugMode = true;
+bool Global::debugMode = false;
 
 int main(int argc, char *argv[])
 {
