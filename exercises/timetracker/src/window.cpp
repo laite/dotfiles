@@ -148,6 +148,8 @@ MainWindow::MainWindow(DataBase *d)
 
 	_treeData->GetRefTreeSelection()->signal_changed().connect(sigc::mem_fun(*this, &MainWindow::_TreeViewSelectionChanged));
 
+	this->signal_delete_event().connect(sigc::mem_fun(*this, &MainWindow::_OnDeleteEvent), false);
+
 	/*
 	 *  Select first row by default (if there is one)
 	 */
@@ -171,8 +173,6 @@ MainWindow::MainWindow(DataBase *d)
 
 MainWindow::~MainWindow()
 {
-	Global::Config.SetAppOptions().defaultWindowSize.first = this->get_width();
-	Global::Config.SetAppOptions().defaultWindowSize.second = this->get_height();
 	Global::Config.SetAppOptions().panedPosition = _contentVPaned.get_position();
 	Global::Log.Add("Killing MainWindow");
 }
@@ -265,6 +265,14 @@ void MainWindow::_LaunchPreferences()
 void MainWindow::_LaunchQuit()
 {
 	hide();
+}
+
+bool MainWindow::_OnDeleteEvent(GdkEventAny* event)
+{
+	Global::Log.Add("Delete-event");
+	Global::Config.SetAppOptions().defaultWindowSize.first = this->get_width();
+	Global::Config.SetAppOptions().defaultWindowSize.second = this->get_height();
+	this->hide();
 }
 
 void MainWindow::_StartTracking(unsigned int selectedID)

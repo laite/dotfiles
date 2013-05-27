@@ -75,6 +75,8 @@ class MainWindow : public Gtk::Window
 
 		void _TreeViewSelectionChanged();
 
+		bool _OnDeleteEvent(GdkEventAny* event);
+
 		/*
 		 *  Widgets
 		 *
