@@ -94,8 +94,8 @@ inoremap ( ()<Esc>:let lastleavechar=leavechar<CR>:let leavechar=")"<CR>i
 inoremap [ []<Esc>:let lastleavechar=leavechar<CR>:let leavechar="]"<CR>i
 inoremap { {}<Esc>:let lastleavechar=leavechar<CR>:let leavechar="}"<CR>i
 inoremap < <><Esc>:let lastleavechar=leavechar<CR>:let leavechar=">"<CR>i
-inoremap " ""<Esc>:let lastleavechar=leavechar<CR>:let leavechar="\""<CR>i
-inoremap ' ''<Esc>:let lastleavechar=leavechar<CR>:let leavechar="\'"<CR>i
+" inoremap " ""<Esc>:let lastleavechar=leavechar<CR>:let leavechar="\""<CR>i
+" inoremap ' ''<Esc>:let lastleavechar=leavechar<CR>:let leavechar="\'"<CR>i
 imap <C-L> <Esc>:exec "normal f" . leavechar<CR>a
 imap <Leader><C-L> <Esc>:exec "normal f" . lastleavechar<CR>a
 
