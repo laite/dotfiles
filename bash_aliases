@@ -8,6 +8,7 @@ alias cd..='cd ..'
 alias ..='cd ..'
 alias ...='cd ../..'
 
+alias rawlaunch='rawdog -uw && chromium file:///home/laite/.rawdog/rawdog.html & exit'
 alias rawexit='rawdog -uw && exit'
 alias :q='exit'
 alias d='dict -d wn '
