@@ -13,7 +13,7 @@
 
 <?php
 
-// Luodaan testikansio testi-kansion alle, jottei koko php-kansiolle tarvitse antaa oikeuksia kaikkeen
+// Luodaan testikansio testi-kansion alle
 // uuden tiedoston polku siis tulee olemaan ./testi/testi/tiedosto.txt (missä . = /var/www/php minulla)
 $KANSIO = "testi/testi";
 $TIEDOSTO = "tiedosto.txt";
