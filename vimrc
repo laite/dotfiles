@@ -58,8 +58,8 @@ nnoremap <Leader>o o<Esc>
 nnoremap <Leader>O O<Esc>
 nnoremap <Leader><Leader>o o<ESC>kO<ESC>j
 
-" delete into abyss with öd<motion>
-nnoremap <Leader>d "_d
+" delete row's contents with leader-d
+nnoremap <Leader>d ^D
 " treat c-h as real backspace also in normal mode
 nnoremap <C-H> "_X
 " make Y behave like C and D (yank to the end of line)
@@ -151,7 +151,9 @@ endfunc
 
 nnoremap <C-n> :call NumberToggle()<cr>
 
+
 """ Plugins """
+
 
 " EasyMotion
 let g:EasyMotion_leader_key = '<Leader>'
@@ -175,6 +177,15 @@ endif
 
 " buffalo
 let buffalo_autoaccept = 1
+"
+" ctrlp
+let g:ctrlp_follow_symlinks = 1
+let g:ctrlp_map = '<Leader>f'
+let g:ctrlp_max_height = 25
+let g:ctrlp_working_path_mode = 'a'
+
+""" Plugins End """
+
 
 set directory=~/.vim/tmp/
 set backupdir=~/.vim/tmp/
