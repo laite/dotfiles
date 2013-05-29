@@ -47,9 +47,12 @@ function lisaa_ostokset($yhteys, $sessio_id)
 
 	/* tallennetaan ensin asiakas - taulun tiedot */
 	$table = 'asiakas';
-    $nimi = addslashes($_POST['nimi']);
-    $email = addslashes($_POST['email']);
-    $address = addslashes($_POST['osoite']);
+
+	// toisin kuin perinteisemmän tavan kanssa, PDO:n kanssa ei tarvitse käyttää
+	// addslashes():ia
+    $nimi = $_POST['nimi'];
+    $email = $_POST['email'];
+    $address = $_POST['osoite'];
 
     $sql = "INSERT INTO $table SET id='$sessio_id', nimi='$nimi', email='$email', osoite='$address'";
 
