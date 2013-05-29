@@ -1,0 +1,25 @@
+Harjoitukset4
+
+Tehtävä 1.
+
+Kehitä Demo2:n tehtävä 6:n selaimen kautta päivitettävää sivua siten että päivitettävän HTML-sivun sisältö tallennetaan tekstitiedoston sijasta tietokantaan. Tee taulu jossa on kentät id, nimi (sivun nimi) ja sisalto (sivun HTML-sisältö).  Käytä dbfunctions.php -funktiokirjastoa ja tee tarvittavat muutokset sivuille joissa käsitellään tekstitiedostoa. Eli ryhdyt tekstitiedoston sijasta käsittelemään tietokantaa.
+
+Tehtävä 2.
+
+Tee Tietokantapohjainen www-sovellus -sivun esimerkki 2:n funktioilla toteutettuun sovellukseen haku, jonka avulla voit hakea tietueita etunimen tai sukunimen perusteella. Haku on muuten ihan samanlainen kuin tietueiden listaus, mutta vain ne tietueet listataan jotka toteuttavat hakuehdon. Tee hakua varten tekstikenttä listaussivun yläosaan.
+Tehtävä 3.
+
+Laajenna Tietokantapohjainen www-sovellus -sivun esimerkkiä 2 siten että teet funktiokirjastoon funktion jonka avulla voit poistaa valitsemasi tietueen kannasta. Tee myös delete.php -sivu jossa käytät kysesistä funktiota.
+Tehtävä 4.
+
+Laajenna samaa esimerkkiä edelleen siten että teet funktioilla toteutettuun sovellukseen myös tietueiden muokkauksen. Kopioi ensin edit.php sovelluksen kansioon. Katso että muokkaus toimii skriptin avulla. Incluudaa dbfunctions.php. Käytä connect() ja close() -funktioita. Tee itse pari uutta funktiota joihin siirrät koodia edit.php:stä. Käytä funktioita edit.php:ssä.
+
+Tehtävä 5. extratehtävä
+
+Tee uusi projekti johon kopioit tehtävissä 2-4 kehittelemäsi sovelluksen. Muunna sovellus sellaiseksi että se käyttää tietokantayhteyden luomiseen ja tietokantatoimenpiteisiin PDO-oliota ja sen metodeja. Eli sovelluksen toiminta ei muutu mitenkään, mutta tietokantapalvelimen vaihtaminen (esim. PostgreSQL:ään, Oracleen yms.) tulee hyvin helpoksi. Etene vaiheittain. 1. Ota kantayhteys PDO:lla ja kokeile toimiiko. 2. koita listata taulun tiedot PDO:n avulla. 3. Koita lisätä tietue PDO:n avulla. Pyri toteuttamaan PDO:n avulla ainakin nämä kolme toimintoa. Halutessasi voit käyttää apuna tätä valmista PDO-luokkaa.
+Tehtävä 6. extratehtävä
+
+Harjoitellaan hieman olio-ohjelmointia PHP:llä. PHP:n oliomalli on hyvin samanlainen kuin Javassa. Olio-ohjelmoinnin kurssilla tehtiin Javalla yksinkertainen tekstipelin alku: tekstipeli_java.zip. Muunna se PHP-sovellukseksi jossa on www-sivulla toimiva HTML-käyttöliittymä. Voit tehdä tämän esim. siiten että kopioit Java-luokkien koodit suoraan PHP-projektin PHP-sivuille ja muunnat sitten Java-luokat toimiviksi PHP-luokiksi.
+Tehtävä 7. extratehtävä
+
+Laajenna Demo3:n tehtävä 6:n ostoskoria niin että teet ostosten alapuolelle napin jossa lukee "osta tuotteet". Nappia painamalla pääsee lomakesivulle jossa ostaja eli asiakas kirjoittaa nimensä, osoitteensa ja mailiosoittensa tekstikenttiin ja voi tallentaa tietonsa ja ostoskorissa olevat ostokset tietokantaan. Tee kaksi taulua, asiakas ja ostokset ja niiden välille relaatio. Taulut yhdistävä avainkenttä voisi olla vaikkapa sessionid. Asiakkaasta pitää olla siis olemassa viittaus hänen ostamiinsa tuotteisiin. Ostoskorin voi tallentaa ostokset-tauluun serialisoidussa muodossa tekstitiedostona. Kts. serialize() -funktio PHP:n manuaalista jolloin ostokset-taulun luonti on helpompaa eli ei tarvita montaa kenttää.
