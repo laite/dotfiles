@@ -14,7 +14,7 @@ rm -rf vim-pathogen
 git clone git://github.com/majutsushi/tagbar ~/.vim/bundle/tagbar 
 
 # EasyMotion
-git clone https://github.com/Lokaltog/vim-easymotion.git ~/.vim/bundle/vim-easymotion
+# git clone https://github.com/Lokaltog/vim-easymotion.git ~/.vim/bundle/vim-easymotion
 
 # SuperTab
 git clone https://github.com/ervandew/supertab.git ~/.vim/bundle/supertab
@@ -22,7 +22,7 @@ git clone https://github.com/ervandew/supertab.git ~/.vim/bundle/supertab
 # SnipMate
 git clone https://github.com/msanders/snipmate.vim.git ~/.vim/bundle/snipmate.vim
 
-# Vimple
+# Vimple (needed by buffalo)
 git clone https://github.com/dahu/vimple.git ~/.vim/bundle/vimple
 
 # Buffalo
@@ -33,6 +33,9 @@ git clone https://github.com/vim-scripts/a.vim.git ~/.vim/bundle/a.vim
 
 # Surround
 git clone https://github.com/tpope/vim-surround.git ~/.vim/bundle/vim-surround
+
+# Ctrlp
+git clone https://github.com/kien/ctrlp.vim.git ~/.vim/bundle/ctrlp.vim
 
 # Also install all the pretty colors
 unzip vimColorSamplePack.zip -d ~/.vim
