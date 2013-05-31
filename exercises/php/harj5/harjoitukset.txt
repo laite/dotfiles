@@ -1,0 +1,28 @@
+Harjoitukset5
+
+Tehtävä 1.
+
+Tee lomakkeelle syötettyjen tietojen tarkistus Javascriptillä. Ota keltainen lomake Lomakkeiden Käsittely -sivulta. Huomauta käyttäjää Javascript-alertilla jos kaikkia lomakkeen tietoja ei ole täytetty tai email-osoite on kirjoitettu väärässä muodossa.
+
+Tehtävä 2.
+
+Kokeile tätä yksinkertaista Javalla tehtyä Ventti-peliä: TwentyOne.zip. Muunna peli Javascript-peliksi, eli pelin tulee toimia selaimessa. Voit uudelleenkäyttää Java-koodia suoraan eli voit kopioida Java-koodin suoraan JS-projektiin ja muuntaa koodin JS-koodiksi. Kommentoi kaikki kohdat joissa JS-koodi poikkeaa Java-koodista. Vihje: voit käyttää JS:n prompt() -komentoa tekstinsyötössä.
+Tehtävä 3.
+
+Tee Prototype -kirjaston Ajax.Updaterin avulla pieni hakusovellus. Sovelluksessa on yksi tekstikenttä johon kirjoitat hakusanan. Tietokantana voit käyttää Demo4:n T1:n kantaa ja sivut-taulua. Kun kirjoitat tekstikenttään sivun nimen, vaikkapa "sivu1", ilmestyy sivun sisältö tekstikentän alle. Ja tietenkin ilman sivun uudelleenlatausta koska käytetään Ajaxia. Mallia tähän tehtävään voit katsoa kurssin materiaalista kappaleesta JS-materiaali/JavaScriptin perusteita ja sieltä Prototype Ajax -Esimerkki1.
+
+Tehtävä 4. extratehtävä
+
+Toteuta JQueryn avulla pieni Edit-in-place -sovellus. Voit käyttää Jeditable-pluginia. Editoitavana sisältönä voit käyttää edellisessä tehtävässä käytettyä sivun sisältöä. Eli kun klikkaat hiirellä sivun sisällön päällä, se avautuu textareaan jossa voit heti editoida sisältöä.
+
+Tehtävä 5. extratehtävä
+
+www.codecademy.com on tällä hetkellä ehkäpä paras ilmainen ohjelmoinnin opiskelupalvelu. Suorita codecademyn Javascript-kokonaisuus niin pitkälle kuin ehdit/viitsit. Yritä suorittaa ainakin kolme kurssia.
+
+Tehtävä 6. extratehtävä
+
+Suorita Codecademyn JQuery-kokonaisuus mahdollisimman pitkälle. Yritä suorittaa ainakin kolme kurssia.
+
+Kesätehtävä. Huom! ei kuulu kurssiin
+
+Ryhdy harrastamaan Codecademyn tehtävien tekemistä. Montako ehdit tekemään päivässä? Entä montako peräkkäistä päivää muistat tehdä tehtäviä. Tommin ennätykset 50 ja 86.

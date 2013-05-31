@@ -1,0 +1,18 @@
+<html>
+	<head>
+		<title>Ajaxform</title>
+		<!--otetaan käyttöön prototype.js-->
+		<script type="text/javascript" src="prototype.js"></script>
+		<!--otetaan käyttöön pt_kaytto.js jolla käytetään prototype.js:n funktioita-->
+		<script type="text/javascript" src="pt_kaytto.js"></script>
+	</head>
+	<body>
+		<p>
+			Hae sivujen otsikoista:
+			<input type="text" name="hakusana" id="hakusana" size="20" onchange="updatePage()" >
+		</p>
+		<p id="page_area">
+		</p>
+	</form>
+</body>
+</html>
