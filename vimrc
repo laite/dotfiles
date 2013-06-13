@@ -90,14 +90,14 @@ inoremap {<CR> {<CR>}<Esc>O
 
 " complete brackets, make <c-l> exit latest, <leader><c-l> the one before that
 let leavechar=""
-inoremap ( ()<Esc>:let lastleavechar=leavechar<CR>:let leavechar=")"<CR>i
-inoremap [ []<Esc>:let lastleavechar=leavechar<CR>:let leavechar="]"<CR>i
-inoremap { {}<Esc>:let lastleavechar=leavechar<CR>:let leavechar="}"<CR>i
-inoremap < <><Esc>:let lastleavechar=leavechar<CR>:let leavechar=">"<CR>i
+" inoremap ( ()<Esc>:let lastleavechar=leavechar<CR>:let leavechar=")"<CR>i
+" inoremap [ []<Esc>:let lastleavechar=leavechar<CR>:let leavechar="]"<CR>i
+" inoremap { {}<Esc>:let lastleavechar=leavechar<CR>:let leavechar="}"<CR>i
+" inoremap < <><Esc>:let lastleavechar=leavechar<CR>:let leavechar=">"<CR>i
 " inoremap " ""<Esc>:let lastleavechar=leavechar<CR>:let leavechar="\""<CR>i
 " inoremap ' ''<Esc>:let lastleavechar=leavechar<CR>:let leavechar="\'"<CR>i
-imap <C-L> <Esc>:exec "normal f" . leavechar<CR>a
-imap <Leader><C-L> <Esc>:exec "normal f" . lastleavechar<CR>a
+" imap <C-L> <Esc>:exec "normal f" . leavechar<CR>a
+" imap <Leader><C-L> <Esc>:exec "normal f" . lastleavechar<CR>a
 
 " by default, brackets are autocompleted, we can skip this with leader-key
 inoremap <Leader>[ [
@@ -175,14 +175,15 @@ else
 	let g:SuperTabMappingBackward = '<S-C-@>'
 endif
 
-" buffalo
-let buffalo_autoaccept = 1
-"
 " ctrlp
 let g:ctrlp_follow_symlinks = 1
 let g:ctrlp_map = '<Leader>f'
 let g:ctrlp_max_height = 25
 let g:ctrlp_working_path_mode = 'a'
+
+" delimitMate
+" use <C-l> in insert mode for escaping brackets
+imap <C-l> <Plug>delimitMateS-Tab
 
 """ Plugins End """
 

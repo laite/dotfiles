@@ -22,11 +22,14 @@ git clone https://github.com/ervandew/supertab.git ~/.vim/bundle/supertab
 # SnipMate
 git clone https://github.com/msanders/snipmate.vim.git ~/.vim/bundle/snipmate.vim
 
+# delimitMate
+git clone https://github.com/Raimondi/delimitMate.git ~/.vim/bundle/delimitMate
+
 # Vimple (needed by buffalo)
-git clone https://github.com/dahu/vimple.git ~/.vim/bundle/vimple
+# git clone https://github.com/dahu/vimple.git ~/.vim/bundle/vimple
 
 # Buffalo
-git clone https://github.com/Raimondi/vim-buffalo.git ~/.vim/bundle/vim-buffalo
+# git clone https://github.com/Raimondi/vim-buffalo.git ~/.vim/bundle/vim-buffalo
 
 # a.vim
 git clone https://github.com/vim-scripts/a.vim.git ~/.vim/bundle/a.vim
