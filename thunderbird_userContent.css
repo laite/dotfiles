@@ -1,0 +1,37 @@
+/* Set colors for quoting levels when reading messages */
+blockquote[type=cite] {
+   color: #222 !important;
+   background-color: RGB(235, 241, 245) !important; 
+   border-color: navy !important;
+   border-left: 3px solid !important;
+   border-right: 3px solid !important;
+}
+blockquote[type=cite] blockquote {
+   color: #333 !important;
+   background-color: RGB(210, 216, 221) !important;
+   border-color: maroon !important;
+   border-left: 3px solid !important;
+   border-right: 3px solid !important;
+}
+blockquote[type=cite] blockquote blockquote {
+   color: #444 !important;
+   background-color: RGB(184, 189, 195) !important;
+   border-color: green !important;
+   border-left: 3px solid !important;
+   border-right: 3px solid !important;
+}
+blockquote[type=cite] blockquote blockquote blockquote {
+   color: #222 !important;
+   background-color: RGB(235, 241, 245) !important; 
+   border-color: navy !important;
+   border-left: 3px solid !important;
+   border-right: 3px solid !important;
+}
+blockquote[type=cite] blockquote blockquote blockquote blockquote {
+   color: #333 !important;
+   background-color: RGB(210, 216, 221) !important;
+   border-color: maroon !important;
+   border-left: 3px solid !important;
+   border-right: 3px solid !important;
+}
+
