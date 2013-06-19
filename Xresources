@@ -43,31 +43,31 @@ Urxvt.scrollBar: false
 URxvt.iconFile:    /usr/share/icons/gnome/32x32/apps/terminal.png
 
 ! light colors
-*background:    #101010
-*foreground:    #668866
+URxvt*background:    #101010
+URxvt*foreground:    #668866
 
 !black
-*color0:        #1c1c1c
-*color8:        #4d4d4d
+URxvt*color0:        #1c1c1c
+URxvt*color8:        #4d4d4d
 !red
-*color1:        #AD5634
-*color9:        #D98194
+URxvt*color1:        #AD5634
+URxvt*color9:        #D98194
 !green
-*color2:        #94d981
-*color10:       #c0d981
+URxvt*color2:        #94d981
+URxvt*color10:       #c0d981
 !yellow
-*color3:        #D9C681
-*color11:       #D99AB1
+URxvt*color3:        #D9C681
+URxvt*color11:       #D99AB1
 !blue
-*color4:        #81C0D9
-*color12:       #8194D9
+URxvt*color4:        #81C0D9
+URxvt*color12:       #8194D9
 !magenta
-*color5:        #9A81D9
-*color13:       #C681D9
+URxvt*color5:        #9A81D9
+URxvt*color13:       #C681D9
 !cyan
-*color6:        #81D9C6
-*color14:       #52A9CB
+URxvt*color6:        #81D9C6
+URxvt*color14:       #52A9CB
 !white
-*color7:        #f3ebe2
-*color15:       #eeeeee
+URxvt*color7:        #f3ebe2
+URxvt*color15:       #eeeeee
 
