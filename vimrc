@@ -26,6 +26,7 @@ set scrolloff=5 				" always +- 5 rows in sight
 set sidescrolloff=5				" always +- 5 columns
 set linebreak
 set showbreak=\ ->\ 
+set number
 set relativenumber				" use relative numbers by default
 
 set listchars=extends:>,precedes:<
@@ -37,6 +38,7 @@ set foldnestmax=2
 set foldminlines=1
 
 let mapleader = "ö"
+let g:is_bash=1
 map <S-Insert> <MiddleMouse>
 map! <S-Insert> <MiddleMouse>
 map <Leader>h :A<CR>
@@ -143,7 +145,7 @@ source $HOME/.numbermaps.vim
 " add quick way to toggle between normal and relative line numbers
 function! NumberToggle()
 	if(&relativenumber == 1)
-		set number
+		set norelativenumber
 	else
 		set relativenumber
 	endif
@@ -184,6 +186,7 @@ let g:ctrlp_working_path_mode = 'a'
 " delimitMate
 " use <C-l> in insert mode for escaping brackets
 imap <C-l> <Plug>delimitMateS-Tab
+imap <Leader><C-l> <Plug>delimitMateJumpMany
 
 """ Plugins End """
 
@@ -231,7 +234,12 @@ if has("autocmd")
   " automatically reload vimrc when it's saved
   au BufWritePost .vimrc so ~/.vimrc
 
+  " enhance highlighting some functions
   autocmd Syntax cpp call EnhanceCppSyntax()
+
+  " don't automatically add commentmark when creating newline with o/O
+  autocmd FileType cpp set fo-=o
+
   " don't use cpp11 additions by default
   " au BufNewFile,BufRead *.cpp set syntax=cpp11
   
