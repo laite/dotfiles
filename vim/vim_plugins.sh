@@ -20,7 +20,10 @@ git clone git://github.com/majutsushi/tagbar ~/.vim/bundle/tagbar
 git clone https://github.com/ervandew/supertab.git ~/.vim/bundle/supertab
 
 # SnipMate
-git clone https://github.com/msanders/snipmate.vim.git ~/.vim/bundle/snipmate.vim
+# SnipMate depends on vim-addon-mw-utils and tlib
+git clone https://github.com/tomtom/tlib_vim.git ~/.vim/bundle/tlib_vim
+git clone https://github.com/MarcWeber/vim-addon-mw-utils.git ~/.vim/bundle/vim-addon-mw-utils
+git clone https://github.com/garbas/vim-snipmate.git ~/.vim/bundle/vim-snipmate
 
 # delimitMate
 git clone https://github.com/Raimondi/delimitMate.git ~/.vim/bundle/delimitMate
@@ -39,6 +42,10 @@ git clone https://github.com/tpope/vim-surround.git ~/.vim/bundle/vim-surround
 
 # Ctrlp
 git clone https://github.com/kien/ctrlp.vim.git ~/.vim/bundle/ctrlp.vim
+
+#snippets for SnipMate come from different repository
+git clone https://github.com/honza/vim-snippets.git ./vim-snippets
+cp -t ~/.vim vim-snippets/autoload vim-snippets/snippets
 
 # Also install all the pretty colors
 unzip vimColorSamplePack.zip -d ~/.vim
