@@ -167,7 +167,7 @@ std::string Helpers::GetParsedSince(std::chrono::system_clock::time_point then)
 
 long Helpers::GetSecondsSince(std::chrono::system_clock::time_point then)
 {
-	std::chrono::duration<double> timeAgo = std::chrono::duration_cast< std::chrono::duration<double> >(std::chrono::steady_clock::now() - then);
+	std::chrono::duration<double> timeAgo = std::chrono::duration_cast< std::chrono::duration<double> >(std::chrono::system_clock::now() - then);
 	
 	return timeAgo.count();
 }

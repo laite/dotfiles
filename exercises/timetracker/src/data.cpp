@@ -165,7 +165,7 @@ long DataItem::GetTotal() const
 
 long DataItem::GetSecondsSinceFirstRun() const
 {
-	std::chrono::duration<double> timeAgo = std::chrono::duration_cast< std::chrono::duration<double> >(std::chrono::steady_clock::now() - firstRunTime);
+	std::chrono::duration<double> timeAgo = std::chrono::duration_cast< std::chrono::duration<double> >(std::chrono::system_clock::now() - firstRunTime);
 
 	return timeAgo.count();
 }
