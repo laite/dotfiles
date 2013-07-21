@@ -33,7 +33,7 @@ set listchars=extends:>,precedes:<
 
 " foldingmethods for gvim are specified in .gvimrc (they differ a bit)
 set foldcolumn=2
-set foldmethod=manual
+set foldmethod=syntax
 set foldnestmax=2
 set foldminlines=1
 
@@ -210,9 +210,13 @@ if has("autocmd")
   " Enable file type detection.
   filetype plugin indent on
 
-  " remember folding
-  "au BufWinLeave * silent! mkview
-  "au BufWinEnter * silent! loadview
+  " set manual folding only for textfiles and files without syntax, and remember it
+  au Syntax text setlocal foldmethod=manual
+  au BufWinLeave ?* if &syntax == 'text' | mkview! | endif
+  au BufWinEnter ?* if &syntax == 'text' | silent! loadview | endif
+
+  au BufWinLeave ?* if &syntax == '' | mkview! | endif
+  au BufWinEnter ?* if &syntax == '' | silent! loadview | endif
 
   " hide search highlighting when entering insert mode
   " new search through / or ? returns hls, as do letters n and N
@@ -230,9 +234,6 @@ if has("autocmd")
     \ if line("'\"") > 1 && line("'\"") <= line("$") |
     \   exe "normal! g`\"" |
     \ endif
-
-  " automatically reload vimrc when it's saved
-  au BufWritePost .vimrc so ~/.vimrc
 
   " enhance highlighting some functions
   autocmd Syntax cpp call EnhanceCppSyntax()
