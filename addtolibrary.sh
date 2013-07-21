@@ -1,10 +1,14 @@
 #/bin/bash
 
+cyan='\e[0;36m'
+red='\e[1;31m'
+NC='\e[0m' # no color
+
 # first we'll check startup arguments
 if [ $# -ne 1 ]
 then
-	echo "$0: Bad arguments!"
-    echo "usage: $0 directory"
+	echo -e "$0: ${red}Bad arguments!${NC}"
+    echo -e "usage: $0 directory"
 	exit;
 fi
 
@@ -14,12 +18,12 @@ new_folder="/data/str/Music/$(echo "$source" | sed 's/\/data\/str\/_Music\///' |
 
 mkdir -p "$new_folder"
 
-echo ":: Copying $source to $new_folder"
+echo -e "${cyan}:: Copying $source to $new_folder${NC}"
 cp -rav "$source" "$new_folder.." || {
 # on failure, abort
-echo ":: ABORT - copying did NOT succeed ::"
+echo -e "${red}:: ABORT - copying did NOT succeed ::${NC}"
 exit
 }
 
-echo ":: Removing original $source"
+echo -e "${cyan}:: Removing original $source${NC}"
 rm -Ivr "$source"
