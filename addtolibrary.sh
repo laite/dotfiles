@@ -47,7 +47,7 @@ echo -e "${red}:: Removing original $source${NC}"
 rm -Ivr "$source"
 
 # if original topfolder is empty, ask also to remove it
-echo ":: $topfolder has still following items"
+echo "${cyan}:: $topfolder has still following items${NC}"
 ls -lA "$topfolder"
 
 if find "$topfolder" -maxdepth 0 -empty | read;
