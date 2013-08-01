@@ -23,7 +23,6 @@
 
 AppOptions::AppOptions()
 	: useShortTimeFormat(false)
-	, autoSave(true)
 	, useCustomDateTimeFormat(true)
 	, customDateTimeFormat("%d.%m.%Y %H:%M")
 	, defaultWindowSize(800, 450)
@@ -59,7 +58,6 @@ ConfigClass::ConfigClass(std::string configFile):
 	_configDataNames[APPOPTION_USE_SHORT_TIME_FORMAT] = "use_short_time_format";
 	_configDataNames[APPOPTION_USE_CUSTOM_DATETIME_FORMAT] = "use_custom_datetime_format";
 	_configDataNames[APPOPTION_CUSTOM_DATETIME_FORMAT] = "custom_datetime_format";
-	_configDataNames[APPOPTION_AUTOSAVE] = "autosave";
 	_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_X] = "default_window_size_x";
 	_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_Y] = "default_window_size_y";
 	_configDataNames[APPOPTION_PANED_POSITION] = "paned_position";
@@ -261,11 +259,6 @@ bool ConfigClass::GetSavedOptions()
 		}
 		else if (_IsLineDbItem(line, APPOPTION_CUSTOM_DATETIME_FORMAT))
 			_appOptions.customDateTimeFormat = line.substr(_configDataNames[APPOPTION_CUSTOM_DATETIME_FORMAT].size() + 3);
-		else if (_IsLineDbItem(line, APPOPTION_AUTOSAVE))
-		{
-			std::string tempValue = line.substr(_configDataNames[APPOPTION_AUTOSAVE].size() + 3);
-			_appOptions.autoSave = (tempValue == "true"? 1 : 0);
-		}
 		else if (_IsLineDbItem(line, APPOPTION_DEFAULT_WINDOW_SIZE_X))
 			_appOptions.defaultWindowSize.first = std::stoi(line.substr(_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_X].size() + 3));
 		else if (_IsLineDbItem(line, APPOPTION_DEFAULT_WINDOW_SIZE_Y))

@@ -28,9 +28,6 @@ struct AppOptions
 	bool useCustomDateTimeFormat;
 	std::string customDateTimeFormat;
 
-	// true: save data automatically after each run
-	bool autoSave;
-	
 	// Window default size
 	std::pair<int, int> defaultWindowSize;
 
@@ -75,7 +72,7 @@ class ConfigClass
 		// AppOptions names' indices start from place 200 and go up
 		enum {
 			APPOPTION_USE_SHORT_TIME_FORMAT = 200, APPOPTION_USE_CUSTOM_DATETIME_FORMAT,
-			APPOPTION_CUSTOM_DATETIME_FORMAT, APPOPTION_AUTOSAVE, APPOPTION_DEFAULT_WINDOW_SIZE_X,
+			APPOPTION_CUSTOM_DATETIME_FORMAT, APPOPTION_DEFAULT_WINDOW_SIZE_X,
 			APPOPTION_DEFAULT_WINDOW_SIZE_Y, APPOPTION_PANED_POSITION
 		};
 

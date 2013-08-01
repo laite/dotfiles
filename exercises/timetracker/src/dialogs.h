@@ -117,9 +117,6 @@ class PreferencesDialog : public Gtk::Dialog
 		Gtk::CheckButton _useCustomDateTimeButton;
 		Gtk::Label _customDateTimeLabel;
 		Gtk::Entry _customDateTimeFormatEntry;
-
-		Gtk::CheckButton _autoSaveButton;
-
 };
 
 #endif /* end DIALOGS_H */

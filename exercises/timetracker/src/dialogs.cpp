@@ -343,7 +343,6 @@ void AddTimeDialog::_InitValues()
 
 PreferencesDialog::PreferencesDialog()
 	: _useShortTimeFormatButton("Use short time format")
-	, _autoSaveButton("Autosave")
 	, _useCustomDateTimeButton("Use custom date/time format")
 	, _customDateTimeLabel("Format:")
 {
@@ -354,7 +353,6 @@ PreferencesDialog::PreferencesDialog()
 	dialogArea->pack_start(_useShortTimeFormatButton);
 	dialogArea->pack_start(_useCustomDateTimeButton);
 	dialogArea->pack_start(_customDateTimeFormatEntry);
-	dialogArea->pack_start(_autoSaveButton);
 
 	this->add_button("OK", Gtk::RESPONSE_OK);
 	this->add_button("Cancel", Gtk::RESPONSE_CANCEL);
@@ -366,7 +364,6 @@ void PreferencesDialog::_FillDialogValues()
 	_useShortTimeFormatButton.set_active(Global::Config.GetAppOptions().useShortTimeFormat);
 	_useCustomDateTimeButton.set_active(Global::Config.GetAppOptions().useCustomDateTimeFormat);
 	_customDateTimeFormatEntry.set_text(Global::Config.GetAppOptions().customDateTimeFormat);
-	_autoSaveButton.set_active(Global::Config.GetAppOptions().autoSave);
 }
 
 int PreferencesDialog::LaunchDialog()
@@ -380,7 +377,6 @@ int PreferencesDialog::LaunchDialog()
 		Global::Config.SetAppOptions().useShortTimeFormat = _useShortTimeFormatButton.get_active();
 		Global::Config.SetAppOptions().useCustomDateTimeFormat = _useCustomDateTimeButton.get_active();
 		Global::Config.SetAppOptions().customDateTimeFormat = _customDateTimeFormatEntry.get_text();
-		Global::Config.SetAppOptions().autoSave = _autoSaveButton.get_active();
 	}
 
 	return result;

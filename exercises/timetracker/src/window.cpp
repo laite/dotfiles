@@ -226,8 +226,7 @@ void MainWindow::_LaunchAddNewTime()
 
 		_UpdateStatistics(_db->GetItem(currentID));
 
-		if (Global::Config.GetAppOptions().autoSave)
-			Global::Config.SaveEverything(_db);
+		Global::Config.SaveEverything(_db);
 	}
 }
 
@@ -243,8 +242,7 @@ void MainWindow::_LaunchEdit()
 		Global::Log.Add("Edited file successfully.");
 		_UpdateStatistics(_db->GetItem(currentID));
 
-		if (Global::Config.GetAppOptions().autoSave)
-			Global::Config.SaveEverything(_db);
+		Global::Config.SaveEverything(_db);
 	}
 }
 
@@ -341,8 +339,7 @@ void MainWindow::_StopTracking()
 	_UpdateStatistics(_db->GetItem(_treeData->GetSelectedID()));
 	_UpdateStatusLabel();
 
-	if (Global::Config.GetAppOptions().autoSave)
-		Global::Config.SaveEverything(_db);
+	Global::Config.SaveEverything(_db);
 }
 
 void MainWindow::_TreeViewSelectionChanged()
