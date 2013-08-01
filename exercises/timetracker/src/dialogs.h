@@ -15,6 +15,7 @@ class DataItem;
 class DataItemDialog : public Gtk::Dialog
 {
 	public:
+
 		DataItemDialog();
 
 		int LaunchDialog(DataItem *);
@@ -42,6 +43,72 @@ class DataItemDialog : public Gtk::Dialog
 
 		DataItem _dataItem;
 };
+
+class AddTimeDialog : public Gtk::Dialog
+{
+	public:
+
+		AddTimeDialog();
+
+		int LaunchDialog(DataItem *);
+
+	private:
+
+		Gtk::VBox _mainColumn;
+
+		Gtk::HBox _widgetColumnsRow;
+		Gtk::VBox _titleColumn;
+		Gtk::VBox _widgetColumn;
+
+		Gtk::HBox _beginDateRow, _endDateRow;
+		Gtk::HBox _beginTimeRow, _endTimeRow;
+		Gtk::HBox _totalRow;
+
+		Gtk::Label _descriptionLabel;
+		Gtk::Label _totalHourLabel, _totalMinLabel;
+
+		Gtk::Label _beginDateLabel, _endDateLabel, _totalLabel;
+		Gtk::Label _beginTimeLabel, _endTimeLabel;
+
+		Gtk::SpinButton _beginDaySpin, _beginMonthSpin, _beginYearSpin, _beginHourSpin, _beginMinSpin;
+		Gtk::SpinButton _endDaySpin, _endMonthSpin, _endYearSpin, _endHourSpin, _endMinSpin;
+		Gtk::SpinButton _totalHourSpin, _totalMinSpin;
+
+
+		/*
+		 * Private Functions
+		 */
+
+
+		/*
+		 * _InitValues sets all spins to 'now'
+		 */
+
+		void _InitValues();
+
+		/* 
+		 * _SetTotal checks both _beginEntry and _endEntry,
+		 * and calculates Total values from them
+		 * If either entry is invalid, total-spinbuttons are set to 0
+		 */
+
+		bool _SetTotal(GdkEventFocus *e);
+
+		/* 
+		 * _SetEndTime sets ending time spins according to
+		 * _beginSpins + totalHours + totalMinutes
+		 * (this allows user to modify total- time instead of calculating end point manually)
+		 */
+
+		void _SetEndTime();
+
+		/* 
+		 * Private members
+		 */
+
+		DataItem _dataItem;
+};
+
 
 class PreferencesDialog : public Gtk::Dialog 
 {

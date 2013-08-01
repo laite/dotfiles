@@ -67,6 +67,7 @@ class MainWindow : public Gtk::Window
 		void _LaunchNew();
 		void _LaunchRemove();
 		void _LaunchEdit();
+		void _LaunchAddNewTime();
 		void _LaunchQuit();
 		void _LaunchPreferences();
 

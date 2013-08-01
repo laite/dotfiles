@@ -501,7 +501,7 @@ void ConfigClass::_FetchDBConfig(DataBase *db)
 			for (historyTypedef::const_iterator historyIter = dataIter->second.history.begin();
 					historyIter != dataIter->second.history.end(); ++historyIter)
 			{
-				std::chrono::duration<int> historyBeginPoint = std::chrono::duration_cast<std::chrono::duration<int>>(historyIter->first.time_since_epoch());
+				std::chrono::duration<int> historyBeginPoint = std::chrono::duration_cast<std::chrono::seconds>(historyIter->first.time_since_epoch());
 				std::chrono::duration<int> historyEndPoint = std::chrono::duration_cast<std::chrono::duration<int>>(historyIter->second.time_since_epoch());
 				dbConfig.push_back(_configDataNames[DATAITEM_HISTORY] + " = " + std::to_string(historyBeginPoint.count()) + "/" + std::to_string(historyEndPoint.count()));
 			}

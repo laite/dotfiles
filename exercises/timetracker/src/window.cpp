@@ -40,6 +40,7 @@ MainWindow::MainWindow(DataBase *d)
 	_UIActionGroup->add( Gtk::Action::create("ContextMenu", "Context Menu"));
 	_UIActionGroup->add( Gtk::Action::create("ContextNew", "New"), sigc::mem_fun(*this, &MainWindow::_LaunchNew) );
 	_UIActionGroup->add( Gtk::Action::create("ContextEdit", "Edit"), sigc::mem_fun(*this, &MainWindow::_LaunchEdit) );
+	_UIActionGroup->add( Gtk::Action::create("ContextAddNewTime", "Add new time"), sigc::mem_fun(*this, &MainWindow::_LaunchAddNewTime) );
 	_UIActionGroup->add( Gtk::Action::create("ContextRemove", "Remove"), sigc::mem_fun(*this, &MainWindow::_LaunchRemove) );
 	_UIActionGroup->add( Gtk::Action::create("ContextPreferences", "Preferences"), sigc::mem_fun(*this, &MainWindow::_LaunchPreferences) );
 	_UIActionGroup->add( Gtk::Action::create("ContextQuit", "Quit"), sigc::mem_fun(*this, &MainWindow::_LaunchQuit) );
@@ -53,6 +54,7 @@ MainWindow::MainWindow(DataBase *d)
 		"  <popup name='PopupMenu'>"
 		"    <menuitem action='ContextNew'/>"
 		"    <menuitem action='ContextEdit'/>"
+		"    <menuitem action='ContextAddNewTime'/>"
 		"    <menuitem action='ContextRemove'/>"
         "    <separator/>"
 		"    <menuitem action='ContextPreferences'/>"
@@ -208,6 +210,19 @@ void MainWindow::_LaunchNew()
 		_db->AddItemToDataBase(newItem);
 		_treeData->AddRow(newItem, true);
 		_launchButton.set_sensitive(1);
+	}
+}
+
+void MainWindow::_LaunchAddNewTime()
+{
+	AddTimeDialog dialog;
+	unsigned int currentID = _treeData->GetSelectedID();
+
+	if (dialog.LaunchDialog(&_db->GetItem(currentID)) == Gtk::RESPONSE_OK)
+	{
+		//_db->UpdateItemStats(currentID);
+		//_treeData->UpdateRow(_treeData->GetRowIterFromID(currentID));
+		Global::Log.Add("Added new time successfully.");
 	}
 }
 

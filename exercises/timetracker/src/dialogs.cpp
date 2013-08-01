@@ -10,12 +10,12 @@
 #include "helpers.h"
 #include "config.h"
 
-DataItemDialog::DataItemDialog():
-	_nameLabel("Name: "),
-	_descriptionLabel("Description: "),
-	_inverseButton("Inverse goal"),
-	_goalLabel("Goal: "),
-	_goalPerLabel("In: ")
+DataItemDialog::DataItemDialog()
+	: _nameLabel("Name: ")
+	, _descriptionLabel("Description: ")
+	, _inverseButton("Inverse goal")
+	, _goalLabel("Goal: ")
+	, _goalPerLabel("In: ")
 {
 	Gtk::Box* dialogArea = this->get_content_area();
 	dialogArea->set_orientation(Gtk::ORIENTATION_VERTICAL);
@@ -167,16 +167,259 @@ void DataItemDialog::_FillDialogValues(DataItem &dataItem)
 
 
 /*
+ * AddTimeDialog
+ */
+
+
+AddTimeDialog::AddTimeDialog()
+	: _descriptionLabel("Select timepoints for new action")
+	, _beginDateLabel("Begin date: ")
+	, _endDateLabel("End date: ")
+	, _beginTimeLabel("Begin time: ")
+	, _endTimeLabel("End time: ")
+	, _totalHourLabel("h")
+	, _totalMinLabel("min")
+	, _totalLabel("Total: ")
+{
+	Gtk::Box* dialogArea = this->get_content_area();
+	dialogArea->set_orientation(Gtk::ORIENTATION_VERTICAL);
+	dialogArea->set_spacing(5);
+
+	//_beginEntry.set_text(Helpers::ParseLongTime(std::chrono::system_clock::now()));
+
+	// TODO: disable end date on non-continuous dataitems
+	//_endEntry.set_text(Helpers::ParseLongTime(std::chrono::system_clock::now()));
+
+
+	/*
+	 *  Widgets 
+	 */
+
+
+	_mainColumn.set_spacing(5);
+
+	/* Spins */
+
+	_beginYearSpin.set_adjustment(Gtk::Adjustment::create(0, 2000.0, 2027.0, 1.0, 10.0));
+	_beginMonthSpin.set_adjustment(Gtk::Adjustment::create(0, 1.0, 12.0, 1.0, 2.0));
+	_beginDaySpin.set_adjustment(Gtk::Adjustment::create(0, 1.0, 31.0, 1.0, 10.0));
+	_beginHourSpin.set_adjustment(Gtk::Adjustment::create(0, 0.0, 23.0, 1.0, 10.0));
+	_beginMinSpin.set_adjustment(Gtk::Adjustment::create(0, 0.0, 59.0, 1.0, 10.0));
+
+	_endYearSpin.set_adjustment(Gtk::Adjustment::create(0, 2000.0, 2027.0, 1.0, 10.0));
+	_endMonthSpin.set_adjustment(Gtk::Adjustment::create(0, 1.0, 12.0, 1.0, 2.0));
+	_endDaySpin.set_adjustment(Gtk::Adjustment::create(0, 1.0, 31.0, 1.0, 10.0));
+	_endHourSpin.set_adjustment(Gtk::Adjustment::create(0, 0.0, 23.0, 1.0, 10.0));
+	_endMinSpin.set_adjustment(Gtk::Adjustment::create(0, 0.0, 59.0, 1.0, 10.0));
+
+	_totalHourSpin.set_adjustment(Gtk::Adjustment::create(0, 0.0, 336.0, 1.0, 10.0));
+	_totalMinSpin.set_adjustment(Gtk::Adjustment::create(0, 0.0, 59.0, 1.0, 10.0));
+
+	/* Signals */
+
+	_beginDaySpin.signal_focus_out_event().connect( sigc::mem_fun(*this, &AddTimeDialog::_SetTotal));
+	_beginMonthSpin.signal_focus_out_event().connect( sigc::mem_fun(*this, &AddTimeDialog::_SetTotal));
+	_beginYearSpin.signal_focus_out_event().connect( sigc::mem_fun(*this, &AddTimeDialog::_SetTotal));
+	_beginHourSpin.signal_focus_out_event().connect( sigc::mem_fun(*this, &AddTimeDialog::_SetTotal));
+	_beginMinSpin.signal_focus_out_event().connect( sigc::mem_fun(*this, &AddTimeDialog::_SetTotal));
+
+	_endDaySpin.signal_focus_out_event().connect( sigc::mem_fun(*this, &AddTimeDialog::_SetTotal));
+	_endMonthSpin.signal_focus_out_event().connect( sigc::mem_fun(*this, &AddTimeDialog::_SetTotal));
+	_endYearSpin.signal_focus_out_event().connect( sigc::mem_fun(*this, &AddTimeDialog::_SetTotal));
+	_endHourSpin.signal_focus_out_event().connect( sigc::mem_fun(*this, &AddTimeDialog::_SetTotal));
+	_endMinSpin.signal_focus_out_event().connect( sigc::mem_fun(*this, &AddTimeDialog::_SetTotal));
+
+	_totalHourSpin.signal_changed().connect( sigc::mem_fun(*this, &AddTimeDialog::_SetEndTime));
+	_totalMinSpin.signal_changed().connect( sigc::mem_fun(*this, &AddTimeDialog::_SetEndTime));
+
+	/*
+	 * Packing
+	 */
+
+
+	_mainColumn.pack_start(_descriptionLabel, true, true);
+
+	_beginDateRow.pack_start(_beginDaySpin);
+	_beginDateRow.pack_start(_beginMonthSpin);
+	_beginDateRow.pack_start(_beginYearSpin);
+	_beginTimeRow.pack_start(_beginHourSpin);
+	_beginTimeRow.pack_start(_beginMinSpin);
+
+	_endDateRow.pack_start(_endDaySpin);
+	_endDateRow.pack_start(_endMonthSpin);
+	_endDateRow.pack_start(_endYearSpin);
+	_endTimeRow.pack_start(_endHourSpin);
+	_endTimeRow.pack_start(_endMinSpin);
+
+	_titleColumn.pack_start(_beginDateLabel, true, true);
+	_widgetColumn.pack_start(_beginDateRow, Gtk::PACK_EXPAND_PADDING);
+
+	_titleColumn.pack_start(_beginTimeLabel, true, true);
+	_widgetColumn.pack_start(_beginTimeRow, Gtk::PACK_EXPAND_PADDING);
+
+	_titleColumn.pack_start(_endDateLabel, Gtk::PACK_EXPAND_PADDING);
+	_widgetColumn.pack_start(_endDateRow, Gtk::PACK_EXPAND_PADDING);
+
+	_titleColumn.pack_start(_endTimeLabel, Gtk::PACK_EXPAND_PADDING);
+	_widgetColumn.pack_start(_endTimeRow, Gtk::PACK_EXPAND_PADDING);
+
+	_titleColumn.pack_start(_totalLabel, Gtk::PACK_EXPAND_PADDING);
+
+	_totalRow.pack_start(_totalHourSpin);
+	_totalRow.pack_start(_totalHourLabel);
+	_totalRow.pack_start(_totalMinSpin);
+	_totalRow.pack_start(_totalMinLabel);
+
+	_widgetColumn.pack_start(_totalRow, Gtk::PACK_EXPAND_PADDING);
+
+	_widgetColumnsRow.pack_start(_titleColumn, Gtk::PACK_SHRINK);
+	_widgetColumnsRow.pack_start(_widgetColumn, Gtk::PACK_EXPAND_WIDGET);
+
+	_mainColumn.pack_start(_widgetColumnsRow, Gtk::PACK_EXPAND_WIDGET);
+
+	dialogArea->pack_start(_mainColumn);
+
+	this->add_button("OK", Gtk::RESPONSE_OK);
+	this->add_button("Cancel", Gtk::RESPONSE_CANCEL);
+	this->show_all_children();
+}
+
+int AddTimeDialog::LaunchDialog(DataItem *dataItem)
+{
+	if (dataItem == NULL)
+		dataItem = &_dataItem;
+
+	_InitValues();
+
+	int result = this->run();
+
+	if (result == Gtk::RESPONSE_OK)
+	{
+		/*
+		std::string nameText = _nameEntry.get_text();
+		if (nameText.size() == 0)
+			nameText = "[empty]";
+		dataItem->name = nameText;
+
+		std::string descriptionText = _descriptionEntry.get_text();
+		if (descriptionText.size() == 0)
+			descriptionText = "[empty]";
+		dataItem->description = descriptionText;
+
+		dataItem->inverse = _inverseButton.get_active();
+
+		dataItem->goal= _goalButton.get_value();
+
+		// get_act..ber() returns -1 if nothing is active
+		dataItem->goalTimeFrame = std::max(0, _goalTimeFrame.get_active_row_number());
+
+		if (_goalType.get_active_text() == "instances")
+			dataItem->continuous = false;
+		else
+		{
+			dataItem->continuous = true;
+			if (_goalType.get_active_text() == "minutes")
+				dataItem->goal *= 60;
+			else if (_goalType.get_active_text() == "hours")
+				dataItem->goal *= 60*60;
+		}
+		*/
+	}
+
+	return result;
+}
+
+void AddTimeDialog::_InitValues()
+{
+	std::time_t t = time(NULL);
+    std::tm time_tm = *std::localtime(&t);
+
+	_beginYearSpin.set_value(time_tm.tm_year + 1900);
+	_beginMonthSpin.set_value(time_tm.tm_mon + 1);
+	_beginDaySpin.set_value(time_tm.tm_mday);
+	_beginHourSpin.set_value(time_tm.tm_hour);
+	_beginMinSpin.set_value(time_tm.tm_min);
+
+	_endYearSpin.set_value(time_tm.tm_year + 1900);
+	_endMonthSpin.set_value(time_tm.tm_mon + 1);
+	_endDaySpin.set_value(time_tm.tm_mday);
+	_endHourSpin.set_value(time_tm.tm_hour);
+	_endMinSpin.set_value(time_tm.tm_min);
+}
+
+bool AddTimeDialog::_SetTotal(GdkEventFocus *e)
+{
+	std::time_t beginTimeT = time(NULL), endTimeT = time(NULL);
+    std::tm beginTm = *std::localtime(&beginTimeT), endTm = *std::localtime(&endTimeT);
+
+	beginTm.tm_year = _beginYearSpin.get_value() - 1900;
+	beginTm.tm_mon = _beginMonthSpin.get_value() - 1;
+	beginTm.tm_mday = _beginDaySpin.get_value();
+	beginTm.tm_hour = _beginHourSpin.get_value();
+	beginTm.tm_min = _beginMinSpin.get_value();
+
+	endTm.tm_year = _endYearSpin.get_value() - 1900;
+	endTm.tm_mon = _endMonthSpin.get_value() - 1;
+	endTm.tm_mday = _endDaySpin.get_value();
+	endTm.tm_hour = _endHourSpin.get_value();
+	endTm.tm_min = _endMinSpin.get_value();
+
+	beginTimeT = mktime(&beginTm);
+	endTimeT = mktime(&endTm);
+
+	std::chrono::system_clock::time_point beginTimePoint = std::chrono::system_clock::from_time_t(beginTimeT);
+	std::chrono::system_clock::time_point endTimePoint = std::chrono::system_clock::from_time_t(endTimeT);
+
+	std::chrono::seconds difference = std::chrono::duration_cast< std::chrono::seconds >(endTimePoint - beginTimePoint);
+	Global::Log.Add("_SetTotal: difference is " + std::to_string(difference.count()));
+
+	long totalSeconds = difference.count();
+	long totalHours = std::floor(totalSeconds/3600);
+	long totalMinutes = std::floor((totalSeconds%3600)/60);
+	
+	_totalHourSpin.set_value(totalHours);
+	_totalMinSpin.set_value(totalMinutes);
+
+	return false;
+}
+
+void AddTimeDialog::_SetEndTime()
+{
+	std::time_t endTimeT = time(NULL);
+    std::tm endTm = *std::localtime(&endTimeT);
+
+	endTm.tm_year = _beginYearSpin.get_value() - 1900;
+	endTm.tm_mon = _beginMonthSpin.get_value() - 1;
+	endTm.tm_mday = _beginDaySpin.get_value();
+	endTm.tm_hour = _beginHourSpin.get_value();
+	endTm.tm_min = _beginMinSpin.get_value();
+
+	endTimeT = mktime(&endTm);
+	endTimeT += _totalHourSpin.get_value()*3600;
+	endTimeT += _totalMinSpin.get_value()*60;
+
+	endTm = *std::localtime(&endTimeT);
+
+	_endYearSpin.set_value(endTm.tm_year + 1900);
+	_endMonthSpin.set_value(endTm.tm_mon + 1);
+	_endDaySpin.set_value(endTm.tm_mday);
+	_endHourSpin.set_value(endTm.tm_hour);
+	_endMinSpin.set_value(endTm.tm_min);
+}
+
+
+/*
  *  PreferencesDialog
  */
 
-PreferencesDialog::PreferencesDialog():
-	_useShortTimeFormatButton("Use short time format"),
-	_autoSaveButton("Autosave"),
-	_useCustomDateTimeButton("Use custom date/time format"),
-	_customDateTimeLabel("Format:"),
-	_useBellButton("Run external commands periodically"),
-	_bellPeriodLabel("Period (min)")
+
+PreferencesDialog::PreferencesDialog()
+	: _useShortTimeFormatButton("Use short time format")
+	, _autoSaveButton("Autosave")
+	, _useCustomDateTimeButton("Use custom date/time format")
+	, _customDateTimeLabel("Format:")
+	, _useBellButton("Run external commands periodically")
+	, _bellPeriodLabel("Period (min)")
 {
 	Gtk::Box* dialogArea = this->get_content_area();
 	dialogArea->set_orientation(Gtk::ORIENTATION_VERTICAL);
