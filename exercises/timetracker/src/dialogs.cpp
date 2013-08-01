@@ -183,11 +183,6 @@ AddTimeDialog::AddTimeDialog()
 	dialogArea->set_orientation(Gtk::ORIENTATION_VERTICAL);
 	dialogArea->set_spacing(5);
 
-	//_beginEntry.set_text(Helpers::ParseLongTime(std::chrono::system_clock::now()));
-
-	// TODO: disable end date on non-continuous dataitems
-	//_endEntry.set_text(Helpers::ParseLongTime(std::chrono::system_clock::now()));
-
 
 	/*
 	 *  Widgets 
@@ -257,6 +252,13 @@ int AddTimeDialog::LaunchDialog(DataItem *dataItem)
 		dataItem = &_dataItem;
 
 	_InitValues();
+
+	// don't allow duration on non-continuous items
+	if (!dataItem->continuous)
+	{
+		_totalHourSpin.set_sensitive(0);
+		_totalMinSpin.set_sensitive(0);
+	}
 
 	int result = this->run();
 
