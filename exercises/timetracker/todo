@@ -6,6 +6,11 @@ TimeTracker todo
 
 	¤ Show/View History items per item
 	¤ Add Notes to History
+	¤ Group items (e.g. Programming => { C++, Php, Javascript } )
+	¤ Run multiple items at once
+	¤ Add specific times to history
+	¤ Pause and return for workouts
 
 * Minor Things *
 
+	¤ Timely refreshing of main window graphs (once per hour?)
