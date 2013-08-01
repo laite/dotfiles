@@ -262,7 +262,6 @@ int AddTimeDialog::LaunchDialog(DataItem *dataItem)
 
 	int result = this->run();
 
-	// TODO: don't allow future times?
 	if (result == Gtk::RESPONSE_OK)
 	{
 		// Obtain timePoints
@@ -271,12 +270,25 @@ int AddTimeDialog::LaunchDialog(DataItem *dataItem)
 
 		std::chrono::system_clock::time_point beginPoint(std::chrono::seconds(timePoints.first));
 		std::chrono::system_clock::time_point endPoint(std::chrono::seconds(timePoints.second));
+		std::chrono::seconds now = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
 
-		// Add timepoints to dataItem
-		dataItem->AddNewRun(beginPoint);
+		if (now.count() < endPoint.time_since_epoch().count())
+		{
+			Gtk::MessageDialog dialog(*this, "The time you have set is in the FUTURE!", false, Gtk::MESSAGE_ERROR, Gtk::BUTTONS_OK);
+			dialog.set_secondary_text("Please try again, future is not yet supported.");
 
-		if (dataItem->continuous)
-			dataItem->ChangeEndPoint(beginPoint, endPoint);
+			dialog.run();
+			result = Gtk::RESPONSE_CANCEL;
+		}
+		else
+		{
+			// Add timepoints to dataItem
+			dataItem->AddNewRun(beginPoint);
+
+			if (dataItem->continuous)
+				dataItem->ChangeEndPoint(beginPoint, endPoint);
+		}
+
 	}
 
 	return result;
