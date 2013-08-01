@@ -346,8 +346,6 @@ PreferencesDialog::PreferencesDialog()
 	, _autoSaveButton("Autosave")
 	, _useCustomDateTimeButton("Use custom date/time format")
 	, _customDateTimeLabel("Format:")
-	, _useBellButton("Run external commands periodically")
-	, _bellPeriodLabel("Period (min)")
 {
 	Gtk::Box* dialogArea = this->get_content_area();
 	dialogArea->set_orientation(Gtk::ORIENTATION_VERTICAL);
@@ -357,14 +355,6 @@ PreferencesDialog::PreferencesDialog()
 	dialogArea->pack_start(_useCustomDateTimeButton);
 	dialogArea->pack_start(_customDateTimeFormatEntry);
 	dialogArea->pack_start(_autoSaveButton);
-	dialogArea->pack_start(_useBellButton);
-	dialogArea->pack_start(_bellCommandEntry);
-
-	_bellPeriodBox.pack_start(_bellPeriodLabel);
-	_bellPeriodBox.pack_start(_bellPeriodButton);
-	dialogArea->pack_start(_bellPeriodBox);
-	
-	_bellPeriodButton.set_adjustment(Gtk::Adjustment::create(15.0, 1.0, 120.0, 1.0, 10.0));
 
 	this->add_button("OK", Gtk::RESPONSE_OK);
 	this->add_button("Cancel", Gtk::RESPONSE_CANCEL);
@@ -377,9 +367,6 @@ void PreferencesDialog::_FillDialogValues()
 	_useCustomDateTimeButton.set_active(Global::Config.GetAppOptions().useCustomDateTimeFormat);
 	_customDateTimeFormatEntry.set_text(Global::Config.GetAppOptions().customDateTimeFormat);
 	_autoSaveButton.set_active(Global::Config.GetAppOptions().autoSave);
-	_useBellButton.set_active(Global::Config.GetAppOptions().useBell);
-	_bellCommandEntry.set_text(Global::Config.GetAppOptions().bellCommand);
-	_bellPeriodButton.set_value(Global::Config.GetAppOptions().bellPeriod/60);
 }
 
 int PreferencesDialog::LaunchDialog()
@@ -394,9 +381,6 @@ int PreferencesDialog::LaunchDialog()
 		Global::Config.SetAppOptions().useCustomDateTimeFormat = _useCustomDateTimeButton.get_active();
 		Global::Config.SetAppOptions().customDateTimeFormat = _customDateTimeFormatEntry.get_text();
 		Global::Config.SetAppOptions().autoSave = _autoSaveButton.get_active();
-		Global::Config.SetAppOptions().useBell = _useBellButton.get_active();
-		Global::Config.SetAppOptions().bellCommand = _bellCommandEntry.get_text();
-		Global::Config.SetAppOptions().bellPeriod = 60*_bellPeriodButton.get_value();
 	}
 
 	return result;

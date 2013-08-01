@@ -120,19 +120,6 @@ class PreferencesDialog : public Gtk::Dialog
 
 		Gtk::CheckButton _autoSaveButton;
 
-		// these here define 'default' values for new items
-		// they can later be changed on 'item settings'
-		Gtk::CheckButton _useBellButton;
-		Gtk::Entry _bellCommandEntry;
-
-		Gtk::HBox _bellPeriodBox;
-		Gtk::SpinButton _bellPeriodButton;
-		Gtk::Label _bellPeriodLabel;
-
-		/*
-		 *  Other private members
-		 */
-		
 };
 
 #endif /* end DIALOGS_H */

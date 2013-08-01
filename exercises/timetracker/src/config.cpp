@@ -26,9 +26,6 @@ AppOptions::AppOptions()
 	, autoSave(true)
 	, useCustomDateTimeFormat(true)
 	, customDateTimeFormat("%d.%m.%Y %H:%M")
-	, useBell(true)
-	, bellPeriod(900) // 15 minutes by default
-	, bellCommand("mplayer ~/workspace/c++/gtkmm/timetracker/bell.mp3 -volume 40 &")
 	, defaultWindowSize(800, 450)
 	, panedPosition(255)
 {
@@ -63,9 +60,6 @@ ConfigClass::ConfigClass(std::string configFile):
 	_configDataNames[APPOPTION_USE_CUSTOM_DATETIME_FORMAT] = "use_custom_datetime_format";
 	_configDataNames[APPOPTION_CUSTOM_DATETIME_FORMAT] = "custom_datetime_format";
 	_configDataNames[APPOPTION_AUTOSAVE] = "autosave";
-	_configDataNames[APPOPTION_USE_BELL] = "use_bell";
-	_configDataNames[APPOPTION_BELL_COMMAND] = "bell_command";
-	_configDataNames[APPOPTION_BELL_PERIOD] = "bell_period";
 	_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_X] = "default_window_size_x";
 	_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_Y] = "default_window_size_y";
 	_configDataNames[APPOPTION_PANED_POSITION] = "paned_position";
@@ -272,15 +266,6 @@ bool ConfigClass::GetSavedOptions()
 			std::string tempValue = line.substr(_configDataNames[APPOPTION_AUTOSAVE].size() + 3);
 			_appOptions.autoSave = (tempValue == "true"? 1 : 0);
 		}
-		else if (_IsLineDbItem(line, APPOPTION_USE_BELL))
-		{
-			std::string tempValue = line.substr(_configDataNames[APPOPTION_USE_BELL].size() + 3);
-			_appOptions.useBell = (tempValue == "true"? 1 : 0);
-		}
-		else if (_IsLineDbItem(line, APPOPTION_BELL_PERIOD))
-			_appOptions.bellPeriod = std::stol(line.substr(_configDataNames[APPOPTION_BELL_PERIOD].size() + 3));
-		else if (_IsLineDbItem(line, APPOPTION_BELL_COMMAND))
-			_appOptions.bellCommand = line.substr(_configDataNames[APPOPTION_BELL_COMMAND].size() + 3);
 		else if (_IsLineDbItem(line, APPOPTION_DEFAULT_WINDOW_SIZE_X))
 			_appOptions.defaultWindowSize.first = std::stoi(line.substr(_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_X].size() + 3));
 		else if (_IsLineDbItem(line, APPOPTION_DEFAULT_WINDOW_SIZE_Y))
@@ -453,9 +438,6 @@ void ConfigClass::_FetchAppConfig()
 	appConfig.push_back(_configDataNames[APPOPTION_USE_SHORT_TIME_FORMAT] + " = " + Helpers::GetBooleanString(_appOptions.useShortTimeFormat));
 	appConfig.push_back(_configDataNames[APPOPTION_USE_CUSTOM_DATETIME_FORMAT] + " = " + Helpers::GetBooleanString(_appOptions.useCustomDateTimeFormat));
 	appConfig.push_back(_configDataNames[APPOPTION_CUSTOM_DATETIME_FORMAT] + " = " + _appOptions.customDateTimeFormat);
-	appConfig.push_back(_configDataNames[APPOPTION_USE_BELL] + " = " + Helpers::GetBooleanString(_appOptions.useBell));
-	appConfig.push_back(_configDataNames[APPOPTION_BELL_COMMAND] + " = " + _appOptions.bellCommand);
-	appConfig.push_back(_configDataNames[APPOPTION_BELL_PERIOD] + " = " + std::to_string(_appOptions.bellPeriod));
 	appConfig.push_back(_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_X] + " = " + std::to_string(_appOptions.defaultWindowSize.first));
 	appConfig.push_back(_configDataNames[APPOPTION_DEFAULT_WINDOW_SIZE_Y] + " = " + std::to_string(_appOptions.defaultWindowSize.second));
 	appConfig.push_back(_configDataNames[APPOPTION_PANED_POSITION] + " = " + std::to_string(_appOptions.panedPosition));
