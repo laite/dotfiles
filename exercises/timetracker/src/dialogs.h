@@ -60,18 +60,15 @@ class AddTimeDialog : public Gtk::Dialog
 		Gtk::VBox _titleColumn;
 		Gtk::VBox _widgetColumn;
 
-		Gtk::HBox _beginDateRow, _endDateRow;
-		Gtk::HBox _beginTimeRow, _endTimeRow;
+		Gtk::HBox _beginDateRow, _beginTimeRow;
 		Gtk::HBox _totalRow;
 
 		Gtk::Label _descriptionLabel;
 		Gtk::Label _totalHourLabel, _totalMinLabel;
 
-		Gtk::Label _beginDateLabel, _endDateLabel, _totalLabel;
-		Gtk::Label _beginTimeLabel, _endTimeLabel;
+		Gtk::Label _beginDateLabel, _beginTimeLabel, _totalLabel;
 
 		Gtk::SpinButton _beginDaySpin, _beginMonthSpin, _beginYearSpin, _beginHourSpin, _beginMinSpin;
-		Gtk::SpinButton _endDaySpin, _endMonthSpin, _endYearSpin, _endHourSpin, _endMinSpin;
 		Gtk::SpinButton _totalHourSpin, _totalMinSpin;
 
 
@@ -86,22 +83,7 @@ class AddTimeDialog : public Gtk::Dialog
 
 		void _InitValues();
 
-		/* 
-		 * _SetTotal checks both _beginEntry and _endEntry,
-		 * and calculates Total values from them
-		 * If either entry is invalid, total-spinbuttons are set to 0
-		 */
-
-		bool _SetTotal(GdkEventFocus *e);
-
-		/* 
-		 * _SetEndTime sets ending time spins according to
-		 * _beginSpins + totalHours + totalMinutes
-		 * (this allows user to modify total- time instead of calculating end point manually)
-		 */
-
-		void _SetEndTime();
-
+		std::pair<long, long> _CalculateTimePoints();
 		/* 
 		 * Private members
 		 */

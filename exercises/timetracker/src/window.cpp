@@ -220,9 +220,14 @@ void MainWindow::_LaunchAddNewTime()
 
 	if (dialog.LaunchDialog(&_db->GetItem(currentID)) == Gtk::RESPONSE_OK)
 	{
-		//_db->UpdateItemStats(currentID);
-		//_treeData->UpdateRow(_treeData->GetRowIterFromID(currentID));
+		_db->UpdateItemStats(currentID);
+		_treeData->UpdateRow(_treeData->GetRowIterFromID(currentID));
 		Global::Log.Add("Added new time successfully.");
+
+		_UpdateStatistics(_db->GetItem(currentID));
+
+		if (Global::Config.GetAppOptions().autoSave)
+			Global::Config.SaveEverything(_db);
 	}
 }
 
@@ -236,6 +241,10 @@ void MainWindow::_LaunchEdit()
 		_db->UpdateItemStats(currentID);
 		_treeData->UpdateRow(_treeData->GetRowIterFromID(currentID));
 		Global::Log.Add("Edited file successfully.");
+		_UpdateStatistics(_db->GetItem(currentID));
+
+		if (Global::Config.GetAppOptions().autoSave)
+			Global::Config.SaveEverything(_db);
 	}
 }
 
@@ -386,6 +395,7 @@ bool MainWindow::_UpdateStatusLabel()
 
 void MainWindow::_UpdateStatistics(DataItem &dataItem)
 {
+	Global::Log.Add("Updating Statistics");
 	std::string tempValue; // used for formatting some values
 	_statisticTextBuffer->erase(_statisticTextBuffer->begin(), _statisticTextBuffer->end());
 	
