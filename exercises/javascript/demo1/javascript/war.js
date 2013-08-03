@@ -99,7 +99,7 @@ exports.initUnits = function(gMonsters) {
 	for (var i=0; i<engine.units.length; i++)
 		console.log(engine.units[i]);
 
-	engine.currentUnit = engine.units[0];
+	engine.currentUnit = 0;
 
 	console.log("initUnits - ok");
 }
@@ -140,14 +140,19 @@ exports.initTiles = function(gMonsters) {
 exports.nextUnit = function() {
 	engine.currentUnit = (engine.currentUnit+1)%engine.units.length;
 
-	return engine.currentUnit;
+	console.log("Next unit:",engine.units[engine.currentUnit]);
+	return engine.units[engine.currentUnit];
 }
 
 exports.getCurrentUnit = function() {
-	return engine.currentUnit;
+	return engine.units[engine.currentUnit];
 }
 
 // TODO: error checking?
 exports.getTileState = function(arr) {
 	return engine.tiles[arr[0]][arr[1]];
+}
+
+exports.setTileState = function(x, y, state) {
+	engine.tiles[x][y] = state;
 }

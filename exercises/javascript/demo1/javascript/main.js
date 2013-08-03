@@ -15,6 +15,7 @@ var globals = require('global');
 
 var gamejs = require('gamejs');
 var draw = require('gamejs/draw');
+var $v = require('gamejs/utils/vectors');
 
 var war = require('war');
 
@@ -47,6 +48,7 @@ var Monster = function(rect, id) {
 
 	// rect shows the position of monster
 	this.rect = new gamejs.Rect(rect, [globals.TILE_SIZE, globals.TILE_SIZE]);
+	this.destination = [0, 0];
 
 	[this.x,this.y] = war.getTile(rect);
 	/*
@@ -55,8 +57,16 @@ var Monster = function(rect, id) {
 
 	// moveTo gets destination in terms of tiles, aka. [0..globals.TILE_AMOUNT]
 	this.moveTo = function(x, y) {
+		if (this.state !== globals.MonsterState.ACTIVE)
+			return;
+
+		war.setTileState(this.x, this.y, globals.TileState.EMPTY);
+		war.setTileState(x, y, globals.TileState.OCCUPIED);
 		this.destination = [x, y];
+		console.log(x,y,this.destination[0],this.destination[1]);
 		this.changeState(globals.MonsterState.MOVING);
+
+		console.log("Monster",this.id,"is on its way!");
 	}
 	this.activate = function() {
 		console.log("Monster", this.id, "just became active");
@@ -112,17 +122,26 @@ Monster.prototype.update = function(msDuration) {
 
 	if (this.getState() === globals.MonsterState.MOVING) {
 
-		// moveIp, move in place
-		this.rect.moveIp(0, this.speed * (msDuration/1000));
+		/* get direction to destination from current place */
+		var position = [this.rect.left, this.rect.top];
+		var goal = [this.destination[0]*globals.TILE_SIZE, this.destination[1]*globals.TILE_SIZE];
+		var delta = [0, 0];
 
-		/* Check boundaries */
-		if (this.rect.top+this.rect.height > globals.CANVAS_HEIGHT) {
-			this.rect.top = globals.CANVAS_HEIGHT-this.rect.height-1;
-			this.speed *= -1;
-		} else if (this.rect.top < 0 ) {
-			this.rect.top = 0;
-			this.speed *= -1;
+		if (position[0] == goal[0] && position[1] == goal[1])
+		{
+			this.changeState(globals.MonsterState.INACTIVE);
+			war.nextUnit();
+			console.log("Monster",this.id,"finished its journey.");
+			return;
 		}
+
+		delta[0] = (position[0] > goal[0])? (-this.speed * (msDuration/1000)) : (this.speed * (msDuration/1000));
+		delta[1] = (position[1] > goal[1])? (-this.speed * (msDuration/1000)) : (this.speed * (msDuration/1000));
+
+		delta[0] = Math.floor(delta[0]);
+		delta[1] = Math.floor(delta[1]);
+		// moveIp, move in place
+		this.rect.moveIp(delta[0], delta[1]);
 	}
 };
 
@@ -147,6 +166,7 @@ function main() {
 
 	var mainSurface = gamejs.display.getSurface();
 
+	var lastUnit = -1;
 
 	/*
 	 * Sprites
@@ -179,7 +199,7 @@ function main() {
 	war.initUnits(gMonsters);
 	war.initTiles(gMonsters);
 
-	gMonsters.sprites()[war.getCurrentUnit()].changeState(globals.MonsterState.ACTIVE);
+	//lastUnit = war.getCurrentUnit();
 
 
 	/*
@@ -214,17 +234,9 @@ function main() {
 				var tileState = war.getTileState([click_x, click_y]);
 				console.log("x:", click_x, "y:", click_y, "state:", tileState);
 
-				// check if there's a monster here
-				var monstersHere = gMonsters.collidePoint(event.pos);
-				if (monstersHere.length > 0) {
-					monstersHere[0].changeState(globals.MonsterState.ACTIVE);
+				if (tileState === globals.TileState.EMPTY) {
+					gMonsters.sprites()[war.getCurrentUnit()].moveTo(click_x, click_y);
 				}
-				else {
-					gMonsters.forEach(function(monster) {
-						monster.speed *= -1;
-					});
-				}
-				console.log("click");
 			}
 		}
 	});
@@ -238,6 +250,10 @@ function main() {
 	/* msDuration = time since last tick() call */
 	gamejs.onTick(function(msDuration) {
 
+		if (war.getCurrentUnit() != lastUnit) {
+			lastUnit = war.getCurrentUnit();
+			gMonsters.sprites()[lastUnit].changeState(globals.MonsterState.ACTIVE);
+		}
 		/*
 		 * Drawing stuff
 		 */
