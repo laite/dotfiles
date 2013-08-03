@@ -24,25 +24,61 @@ var war = require('war');
  */
 
 var cursor_x = 0, cursor_y = 0;
-var AMOUNT_OF_MONSTERS = 10;
 
 console.log(war.name());
 /*
  * Sprite classes
  */
 
-var Monster = function(rect) {
+var Monster = function(rect, id) {
+
+	this.id = id;
 
 	// call superconstructor
 	Monster.superConstructor.apply(this, arguments);
 	this.speed = 80 + (40 * Math.random());
 
-	this.state = globals.MonsterStatus.INACTIVE;
+	var state = globals.MonsterStatus.INACTIVE;
 
 	this.image = gamejs.image.load("images/monster.png");
 
 	// rect shows the position of monster
 	this.rect = new gamejs.Rect(rect, [globals.TILE_SIZE, globals.TILE_SIZE]);
+
+	/*
+	 * Monster public functions
+	 */
+
+	this.activate = function() {
+		this.image = gamejs.image.load("images/monster_active.png");
+	}
+
+	this.deactivate = function() {
+		this.image = gamejs.image.load("images/monster.png");
+	}
+
+	this.getState = function() {
+		return this.state;
+	}
+
+	this.changeState = function(newState) { 
+
+		if (this.state === newState)
+			return;
+
+		this.state = newState;
+
+		switch (this.state) {
+			case globals.MonsterStatus.INACTIVE:
+				this.deactivate();
+				break;
+			case globals.MonsterStatus.ACTIVE:
+				this.activate();
+				break;
+			default:
+		}
+	}
+
 
 	return this;
 };
@@ -62,7 +98,7 @@ gamejs.utils.objects.extend(Ground, gamejs.sprite.Sprite);
 
 Monster.prototype.update = function(msDuration) {
 
-	if (this.state === globals.MonsterStatus.MOVING) {
+	if (this.getState() === globals.MonsterStatus.MOVING) {
 
 		// moveIp, move in place
 		this.rect.moveIp(0, this.speed * (msDuration/1000));
@@ -109,8 +145,8 @@ function main() {
 
 	var gMonsters = new gamejs.sprite.Group();
 
-	for (var i=0; i < (AMOUNT_OF_MONSTERS); i++)
-		gMonsters.add(new Monster([i*globals.TILE_SIZE, 0]));
+	for (var i=0; i < (globals.AMOUNT_OF_MONSTERS); i++)
+		gMonsters.add(new Monster([i*globals.TILE_SIZE, 0]), i);
 
 	/* Ground */
 
@@ -121,6 +157,14 @@ function main() {
 			gGroundTiles.add(new Ground([i*globals.TILE_SIZE, j*globals.TILE_SIZE]));
 		}
 	}
+
+
+	/*
+	 * Engine initializations
+	 */
+
+
+	war.initUnits();
 
 
 	/*
@@ -149,7 +193,7 @@ function main() {
 			// check if there's a monster here
 			var monstersHere = gMonsters.collidePoint(event.pos);
 			if (monstersHere.length > 0) {
-				monstersHere[0].state = globals.MonsterStatus.MOVING;
+				monstersHere[0].changeState(globals.MonsterStatus.ACTIVE);
 			}
 			else {
 				gMonsters.forEach(function(monster) {
@@ -194,6 +238,7 @@ function main() {
 
 
 gamejs.preload(['images/monster.png']);
+gamejs.preload(['images/monster_active.png']);
 gamejs.preload(['images/tile.png']);
 
 

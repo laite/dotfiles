@@ -14,6 +14,23 @@ exports.name = function() {
 
 /*
  *
+ * Classes
+ *
+ *
+ */
+
+var Engine = function() {
+	
+	this.units = [];
+
+	this.currentUnit = 0;
+}
+
+
+var engine = new Engine();
+
+/*
+ *
  *
  * Helper functions
  *
@@ -43,3 +60,34 @@ exports.getTilePixels = function(arr) {
 }
 
 
+/*
+ *
+ *
+ * Engine initialization
+ *
+ *
+ */
+
+exports.initUnits = function() {
+	for (var i=0; i<globals.AMOUNT_OF_MONSTERS; i++)
+		engine.units.push(i);
+
+	engine.currentUnit = 0;
+
+	console.log("initUnits - ok");
+}
+
+
+/*
+ *
+ *
+ * Engine functions
+ *
+ *
+ */
+
+
+exports.nextUnit = function() {
+	engine.currentUnit = (engine.currentUnit+1)%engine.units.length;
+
+}
