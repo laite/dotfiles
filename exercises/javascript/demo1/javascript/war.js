@@ -22,6 +22,11 @@ exports.name = function() {
 var Engine = function() {
 	
 	this.units = [];
+	this.tiles = [];
+
+	for (var i=0; i<globals.TILE_AMOUNT;i++) {
+		this.tiles[i] = [globals.TILE_AMOUNT];
+	}
 
 	this.currentUnit = 0;
 }
@@ -99,6 +104,29 @@ exports.initUnits = function(gMonsters) {
 	console.log("initUnits - ok");
 }
 
+exports.initTiles = function(gMonsters) {
+
+	/*
+	 * We need to know where monsters are on the map
+	 * and which tiles are empty
+	 *
+	 * Array of tiles is engine.tiles
+	 */
+
+	for (var i=0; i<globals.TILE_AMOUNT; i++) {
+		for (var j=0; j<globals.TILE_AMOUNT; j++) {
+			engine.tiles[i][j] = globals.TileState.EMPTY;
+		}
+	}
+
+	gMonsters.forEach(function(monster) {
+		var [x, y] = [monster.x, monster.y];
+
+		engine.tiles[x][y] = globals.TileState.OCCUPIED;
+		console.log("Tile [",x,",",y,"] is occupied");
+	});
+	
+}
 
 /*
  *
@@ -117,4 +145,9 @@ exports.nextUnit = function() {
 
 exports.getCurrentUnit = function() {
 	return engine.currentUnit;
+}
+
+// TODO: error checking?
+exports.getTileState = function(arr) {
+	return engine.tiles[arr[0]][arr[1]];
 }

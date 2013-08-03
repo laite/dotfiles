@@ -41,17 +41,23 @@ var Monster = function(rect, id) {
 	Monster.superConstructor.apply(this, arguments);
 	this.speed = 80 + (40 * Math.random());
 
-	var state = globals.MonsterStatus.INACTIVE;
+	var state = globals.MonsterState.INACTIVE;
 
 	this.image = gamejs.image.load("images/monster.png");
 
 	// rect shows the position of monster
 	this.rect = new gamejs.Rect(rect, [globals.TILE_SIZE, globals.TILE_SIZE]);
 
+	[this.x,this.y] = war.getTile(rect);
 	/*
 	 * Monster public functions
 	 */
 
+	// moveTo gets destination in terms of tiles, aka. [0..globals.TILE_AMOUNT]
+	this.moveTo = function(x, y) {
+		this.destination = [x, y];
+		this.changeState(globals.MonsterState.MOVING);
+	}
 	this.activate = function() {
 		console.log("Monster", this.id, "just became active");
 		this.image = gamejs.image.load("images/monster_active.png");
@@ -74,10 +80,10 @@ var Monster = function(rect, id) {
 		this.state = newState;
 
 		switch (this.state) {
-			case globals.MonsterStatus.INACTIVE:
+			case globals.MonsterState.INACTIVE:
 				this.deactivate();
 				break;
-			case globals.MonsterStatus.ACTIVE:
+			case globals.MonsterState.ACTIVE:
 				this.activate();
 				break;
 			default:
@@ -104,7 +110,7 @@ gamejs.utils.objects.extend(Ground, gamejs.sprite.Sprite);
 
 Monster.prototype.update = function(msDuration) {
 
-	if (this.getState() === globals.MonsterStatus.MOVING) {
+	if (this.getState() === globals.MonsterState.MOVING) {
 
 		// moveIp, move in place
 		this.rect.moveIp(0, this.speed * (msDuration/1000));
@@ -171,8 +177,9 @@ function main() {
 
 
 	war.initUnits(gMonsters);
+	war.initTiles(gMonsters);
 
-	gMonsters.sprites()[war.getCurrentUnit()].changeState(globals.MonsterStatus.ACTIVE);
+	gMonsters.sprites()[war.getCurrentUnit()].changeState(globals.MonsterState.ACTIVE);
 
 
 	/*
@@ -198,15 +205,26 @@ function main() {
 
 		/* Mouse clicking */
 		if (event.type === gamejs.event.MOUSE_UP) {
-			// check if there's a monster here
-			var monstersHere = gMonsters.collidePoint(event.pos);
-			if (monstersHere.length > 0) {
-				monstersHere[0].changeState(globals.MonsterStatus.ACTIVE);
-			}
-			else {
-				gMonsters.forEach(function(monster) {
-					monster.speed *= -1;
-				});
+			
+			// TODO: make sure only clicks on game area are registered
+			// (after status area is implemented, that is)
+			if (mainSurface.rect.collidePoint(event.pos)) {
+				
+				var [click_x, click_y] = war.getTile([event.pos[0], event.pos[1]]);
+				var tileState = war.getTileState([click_x, click_y]);
+				console.log("x:", click_x, "y:", click_y, "state:", tileState);
+
+				// check if there's a monster here
+				var monstersHere = gMonsters.collidePoint(event.pos);
+				if (monstersHere.length > 0) {
+					monstersHere[0].changeState(globals.MonsterState.ACTIVE);
+				}
+				else {
+					gMonsters.forEach(function(monster) {
+						monster.speed *= -1;
+					});
+				}
+				console.log("click");
 			}
 		}
 	});

@@ -11,8 +11,15 @@ exports.CANVAS_WIDTH = 640;
 
 exports.AMOUNT_OF_MONSTERS = 10;
 
-exports.MonsterStatus = {
+/* enums */
+exports.MonsterState = {
     INACTIVE : 0,
     ACTIVE : 1,
     MOVING : 2
+}
+
+exports.TileState = {
+	EMPTY : 0,
+	OCCUPIED : 1,
+	BLOCKED : 2
 }
