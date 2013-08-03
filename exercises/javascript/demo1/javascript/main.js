@@ -47,7 +47,7 @@ var Monster = function(rect, id) {
 	Monster.superConstructor.apply(this, arguments);
 
 	// speed varies between (1, 10)
-	this.speed = 80 + (40 * Math.random());
+	this.speed = Math.ceil(10 * Math.random());
 
 	// passive image
 	this.image = gamejs.image.load("images/monster.png");
@@ -87,7 +87,6 @@ var Monster = function(rect, id) {
 		war.setTileState(this.x, this.y, globals.TileState.EMPTY);
 		war.setTileState(x, y, globals.TileState.OCCUPIED);
 		this.destination = [x, y];
-		console.log(x,y,this.destination[0],this.destination[1]);
 		this.changeState(globals.MonsterState.MOVING);
 
 		console.log("Monster",this.id,"is on its way!");
@@ -155,20 +154,27 @@ Monster.prototype.update = function(msDuration) {
 		var position = [this.rect.left, this.rect.top];
 		var goal = [this.destination[0]*globals.TILE_SIZE, this.destination[1]*globals.TILE_SIZE];
 		var delta = [0, 0];
+		var diff = [Math.abs(goal[0]-position[0]), Math.abs(goal[1]-position[1])];
 
 		if (position[0] == goal[0] && position[1] == goal[1])
 		{
 			this.changeState(globals.MonsterState.INACTIVE);
+			this.x = this.destination[0];
+			this.y = this.destination[1];
 			war.nextUnit();
 			console.log("Monster",this.id,"finished its journey.");
 			return;
 		}
 
-		delta[0] = (position[0] > goal[0])? (-this.speed * (msDuration/1000)) : (this.speed * (msDuration/1000));
-		delta[1] = (position[1] > goal[1])? (-this.speed * (msDuration/1000)) : (this.speed * (msDuration/1000));
+		// monster moves speed*30 pixels per second
+		var speed = 1+Math.floor((this.speed*20) * (msDuration/1000));
 
-		delta[0] = Math.floor(delta[0]);
-		delta[1] = Math.floor(delta[1]);
+		delta[0] = Math.min(speed, diff[0]);
+		delta[1] = Math.min(speed, diff[1]);
+
+		delta[0] = (position[0] > goal[0])? (-delta[0]) : (delta[0]);
+		delta[1] = (position[1] > goal[1])? (-delta[1]) : (delta[1]);
+
 		// moveIp, move in place
 		this.rect.moveIp(delta[0], delta[1]);
 	}
