@@ -68,11 +68,33 @@ exports.getTilePixels = function(arr) {
  *
  */
 
-exports.initUnits = function() {
-	for (var i=0; i<globals.AMOUNT_OF_MONSTERS; i++)
-		engine.units.push(i);
+exports.initUnits = function(gMonsters) {
 
-	engine.currentUnit = 0;
+	/*
+	 * We calculate order of units based on their speed
+	 * so that fastests units go first
+	 *
+	 * Resulting order array is engine.units
+	 */
+
+	var speeds = [];
+	var i = 0;
+
+	gMonsters.forEach(function(monster) {
+		engine.units.push(i++);
+		speeds.push(monster.speed); 
+	});
+
+	function sort_index(a, b) {
+		return (speeds[a] < speeds[b])? 1 : -1;
+	}
+
+	engine.units.sort(sort_index);
+
+	for (var i=0; i<engine.units.length; i++)
+		console.log(engine.units[i]);
+
+	engine.currentUnit = engine.units[0];
 
 	console.log("initUnits - ok");
 }
@@ -90,4 +112,9 @@ exports.initUnits = function() {
 exports.nextUnit = function() {
 	engine.currentUnit = (engine.currentUnit+1)%engine.units.length;
 
+	return engine.currentUnit;
+}
+
+exports.getCurrentUnit = function() {
+	return engine.currentUnit;
 }

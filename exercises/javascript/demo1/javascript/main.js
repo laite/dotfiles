@@ -23,9 +23,12 @@ var war = require('war');
  * Initial members
  */
 
+
 var cursor_x = 0, cursor_y = 0;
 
 console.log(war.name());
+
+
 /*
  * Sprite classes
  */
@@ -50,10 +53,12 @@ var Monster = function(rect, id) {
 	 */
 
 	this.activate = function() {
+		console.log("Monster", this.id, "just became active");
 		this.image = gamejs.image.load("images/monster_active.png");
 	}
 
 	this.deactivate = function() {
+		console.log("Monster", this.id, "was de-activated");
 		this.image = gamejs.image.load("images/monster.png");
 	}
 
@@ -79,6 +84,7 @@ var Monster = function(rect, id) {
 		}
 	}
 
+	console.log("Created monster", this.id, "(speed:", this.speed, ")");
 
 	return this;
 };
@@ -146,7 +152,7 @@ function main() {
 	var gMonsters = new gamejs.sprite.Group();
 
 	for (var i=0; i < (globals.AMOUNT_OF_MONSTERS); i++)
-		gMonsters.add(new Monster([i*globals.TILE_SIZE, 0]), i);
+		gMonsters.add(new Monster([i*globals.TILE_SIZE, 0], i));
 
 	/* Ground */
 
@@ -164,7 +170,9 @@ function main() {
 	 */
 
 
-	war.initUnits();
+	war.initUnits(gMonsters);
+
+	gMonsters.sprites()[war.getCurrentUnit()].changeState(globals.MonsterStatus.ACTIVE);
 
 
 	/*
