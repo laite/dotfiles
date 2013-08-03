@@ -34,6 +34,7 @@ console.log(war.name());
  * Sprite classes
  */
 
+// TODO: take tile-coordinate instead of rect
 var Monster = function(rect, id) {
 
 	/*
@@ -42,6 +43,7 @@ var Monster = function(rect, id) {
 
 	// each monster has a unique id
 	this.id = id;
+	this.name = "Monster!";
 
 	// call superconstructor (Monster is derived from Sprite)
 	Monster.superConstructor.apply(this, arguments);
@@ -50,7 +52,7 @@ var Monster = function(rect, id) {
 	this.speed = Math.ceil(10 * Math.random());
 
 	// passive image
-	this.image = gamejs.image.load("images/monster.png");
+	this.image = gamejs.image.load(this.image_name + ".png");
 
 	// rect shows the position and dimensions of monster
 	this.rect = new gamejs.Rect(rect, [globals.TILE_SIZE, globals.TILE_SIZE]);
@@ -95,13 +97,13 @@ var Monster = function(rect, id) {
 	/* activate sets monster as 'active' one on battlefield */
 	this.activate = function() {
 		console.log("Monster", this.id, "just became active");
-		this.image = gamejs.image.load("images/monster_active.png");
+		this.image = gamejs.image.load(this.image_name + "_active.png");
 	}
 
 	/* deactivate passivates the monster */
 	this.deactivate = function() {
 		console.log("Monster", this.id, "was de-activated");
-		this.image = gamejs.image.load("images/monster.png");
+		this.image = gamejs.image.load(this.image_name + ".png");
 	}
 
 	/* this.state needs a getter since it's private */
@@ -133,6 +135,28 @@ var Monster = function(rect, id) {
 	return this;
 };
 
+
+/*
+ * Derivative monster classes
+ */
+
+
+var Orc = function(rect, id) {
+	this.image_name = "images/orc";
+	Monster.call(this, rect, id);
+
+	this.name = "Orc";
+}
+
+var Octopus = function(rect, id) {
+	this.image_name = "images/octopus";
+	Monster.call(this, rect, id);
+
+	this.name = "Octo-Monster";
+
+	this.image
+}
+
 var Ground = function(rect) {
 	Ground.superConstructor.apply(this, arguments);
 	this.image = gamejs.image.load("images/tile.png");
@@ -144,7 +168,11 @@ var Ground = function(rect) {
 
 // inherit (actually: set prototype)
 gamejs.utils.objects.extend(Monster, gamejs.sprite.Sprite);
+gamejs.utils.objects.extend(Orc, Monster);
+gamejs.utils.objects.extend(Octopus, Monster);
+
 gamejs.utils.objects.extend(Ground, gamejs.sprite.Sprite);
+
 
 Monster.prototype.update = function(msDuration) {
 
@@ -162,7 +190,7 @@ Monster.prototype.update = function(msDuration) {
 			this.x = this.destination[0];
 			this.y = this.destination[1];
 			war.nextUnit();
-			console.log("Monster",this.id,"finished its journey.");
+			console.log("Monster",this.name,"finished its journey.");
 			return;
 		}
 
@@ -213,7 +241,9 @@ function main() {
 	var gMonsters = new gamejs.sprite.Group();
 
 	for (var i=0; i < (globals.AMOUNT_OF_MONSTERS); i++)
-		gMonsters.add(new Monster([i*globals.TILE_SIZE, 0], i));
+		gMonsters.add(new Orc([i*globals.TILE_SIZE, 0], i));
+	for (var i=0; i < (globals.AMOUNT_OF_MONSTERS); i++)
+		gMonsters.add(new Octopus([i*globals.TILE_SIZE, 9*globals.TILE_SIZE], i+globals.AMOUNT_OF_MONSTERS));
 
 	/* Ground */
 
@@ -314,8 +344,10 @@ function main() {
  */
 
 
-gamejs.preload(['images/monster.png']);
-gamejs.preload(['images/monster_active.png']);
+gamejs.preload(['images/orc.png']);
+gamejs.preload(['images/orc_active.png']);
+gamejs.preload(['images/octopus.png']);
+gamejs.preload(['images/octopus_active.png']);
 gamejs.preload(['images/tile.png']);
 
 

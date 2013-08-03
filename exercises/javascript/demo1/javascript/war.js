@@ -126,6 +126,7 @@ exports.initTiles = function(gMonsters) {
 		console.log("Tile [",x,",",y,"] is occupied");
 	});
 	
+	console.log("initTiles - ok");
 }
 
 /*
