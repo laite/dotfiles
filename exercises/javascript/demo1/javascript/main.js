@@ -36,26 +36,50 @@ console.log(war.name());
 
 var Monster = function(rect, id) {
 
+	/*
+	 * Monster public members
+	 */
+
+	// each monster has a unique id
 	this.id = id;
 
-	// call superconstructor
+	// call superconstructor (Monster is derived from Sprite)
 	Monster.superConstructor.apply(this, arguments);
+
+	// speed varies between (1, 10)
 	this.speed = 80 + (40 * Math.random());
 
-	var state = globals.MonsterState.INACTIVE;
-
+	// passive image
 	this.image = gamejs.image.load("images/monster.png");
 
-	// rect shows the position of monster
+	// rect shows the position and dimensions of monster
 	this.rect = new gamejs.Rect(rect, [globals.TILE_SIZE, globals.TILE_SIZE]);
+
+	// destination is used while traveling
 	this.destination = [0, 0];
 
+	// monster.x and monster.y show tile monster is currently on
 	[this.x,this.y] = war.getTile(rect);
+
+
+	/*
+	 * Private members
+	 */
+
+
+	// state of monster is private, so it won't get changed by accident
+	var state = globals.MonsterState.INACTIVE;
+
+
 	/*
 	 * Monster public functions
 	 */
 
-	// moveTo gets destination in terms of tiles, aka. [0..globals.TILE_AMOUNT]
+
+	/*
+	 * moveTo gets parameter coordinates as tiles [0..globals.TILE_AMOUNT] 
+	 * and sets monster to motion (actual movement is done in gMonster.update()
+	 */
 	this.moveTo = function(x, y) {
 		if (this.state !== globals.MonsterState.ACTIVE)
 			return;
@@ -68,20 +92,25 @@ var Monster = function(rect, id) {
 
 		console.log("Monster",this.id,"is on its way!");
 	}
+
+	/* activate sets monster as 'active' one on battlefield */
 	this.activate = function() {
 		console.log("Monster", this.id, "just became active");
 		this.image = gamejs.image.load("images/monster_active.png");
 	}
 
+	/* deactivate passivates the monster */
 	this.deactivate = function() {
 		console.log("Monster", this.id, "was de-activated");
 		this.image = gamejs.image.load("images/monster.png");
 	}
 
+	/* this.state needs a getter since it's private */
 	this.getState = function() {
 		return this.state;
 	}
 
+	/* this.changeState calls appropriate methods on changing the state of monster */
 	this.changeState = function(newState) { 
 
 		if (this.state === newState)
