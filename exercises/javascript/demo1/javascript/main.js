@@ -153,8 +153,6 @@ var Octopus = function(rect, id) {
 	Monster.call(this, rect, id);
 
 	this.name = "Octo-Monster";
-
-	this.image
 }
 
 var Ground = function(rect) {
