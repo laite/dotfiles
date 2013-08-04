@@ -92,27 +92,27 @@ var Monster = function(rect, id) {
 
 		var tileState = war.getTileState(rect);
 		var dist = war.getDistance(this.position, rect);
+		var go = false;
 
-		/* Move to empty tile within range */
-		if (tileState === globals.TileState.EMPTY && dist <= this.moveRange) {
-			war.setTileState(this.position, globals.TileState.EMPTY);
-			war.setTileState(rect, globals.TileState.OCCUPIED, this.id);
-			this.destination = rect;
-			this.changeState(globals.MonsterState.MOVING);
-
-			console.log(this.name,this.id,"is on its way!","Distance: ",war.getDistance(rect,this.position));
-		}
-		/* Move towards the tile? */
-		else if (dist > this.moveRange) {
-			// TODO
-		}
-		/* move towards tile that is out of reach */
-		/* Target is occupied, move next to it */
-		else if ((tileState === globals.TileState.OCCUPIED) && (war.getMonsterAt(rect).family != this.family)) {
-			war.setTileState(this.position, globals.TileState.EMPTY);
-			this.destination = rect;
+		/* If tile is occupied by non-family member (and within reach), attack! */
+		if ((tileState === globals.TileState.OCCUPIED) && (dist <= this.moveRange) && (war.getMonsterAt(rect).family != this.family)) {
 			this.changeState(globals.MonsterState.ATTACKING);
+			this.destination = rect;
+			go = true;
+		}
+		else {
+			var destination = war.getPointTowardsGoal(this.position, rect, this.moveRange);
+			if (destination) {
+				war.setTileState(destination, globals.TileState.OCCUPIED, this.id);
+				this.changeState(globals.MonsterState.MOVING);
+				this.destination = destination;
+				go = true;
+			}
+		}
 
+		if (go) {
+			war.setTileState(this.position, globals.TileState.EMPTY);
+			console.log(this.name,this.id,"is on its way to", this.destination,"Distance: ",war.getDistance(this.destination,this.position));
 		}
 	}
 
@@ -127,14 +127,24 @@ var Monster = function(rect, id) {
 	 * skipTurn means that monster does nothing, and next unit gets activated
 	 */
 	this.skipTurn = function() {
-		this.changeState(globals.MonsterState.INACTIVE);
-		war.nextUnit();
+		this.endTurn();
 		console.log("Monster",this.name,this.id,"skipped its turn");
 	}
 
+	/*
+	 * attack handles one-on-one battle between enemies
+	 */
 	this.attack = function(enemy) {
 		console.log("Attacking",enemy.name,enemy.id);
-		this.skipTurn();
+		this.endTurn();
+	}
+
+	/*
+	 * endTurn makes monster inactive, and tells war that it next units turn
+	 */
+	this.endTurn = function() {
+		this.changeState(globals.MonsterState.INACTIVE);
+		war.nextUnit();
 	}
 
 	/* activate sets monster as 'active' one on battlefield */
@@ -237,23 +247,22 @@ gamejs.utils.objects.extend(Ground, gamejs.sprite.Sprite);
 Monster.prototype.update = function(msDuration) {
 
 	if (this.getState() === globals.MonsterState.MOVING || this.getState() === globals.MonsterState.ATTACKING) {
-
 		/* get direction to destination from current place */
 		var position = [this.rect.left, this.rect.top];
 		var goal = [this.destination[0]*globals.TILE_SIZE, this.destination[1]*globals.TILE_SIZE];
 		var delta = [0, 0];
 		var diff = [Math.abs(goal[0]-position[0]), Math.abs(goal[1]-position[1])];
 
+		/* We launch actual attack only when movement animation has finished */
 		if (position[0] == goal[0] && position[1] == goal[1])
 		{
 			if (this.getState() === globals.MonsterState.MOVING) {
-				this.changeState(globals.MonsterState.INACTIVE);
 				this.position = this.destination;
-				war.nextUnit();
+				this.endTurn();
 				console.log("Monster",this.name,"finished its journey.");
 			}
 			else {
-				this.attack(globals.Monsters.sprites()[war.getTileMonsterID(this.destination)]);
+				this.attack(war.getMonsterAt(this.destination));
 			}
 			return;
 		}

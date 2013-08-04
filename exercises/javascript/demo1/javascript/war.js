@@ -213,6 +213,35 @@ exports.getMonsterAt = function(arr) {
 	return globals.Monsters.sprites()[id];
 }
 
+exports.getPointTowardsGoal = function(p1, p2, range) {
+	/* this shouldn't happen, but who knows */
+	if ((this.getDistance(p1, p2) <= range) && (this.getTileState(p2) == globals.TileState.EMPTY))
+		return p2;
+
+	/* we start looking suitable endpoint in rectangular area which cornerpoints are p1 and p2 
+	 * and select the furthest available */
+
+	var [x0, y0] = [Math.min(p1[0], p2[0]), Math.min(p1[1], p2[1])];
+	var [delta_x, delta_y] = [Math.abs(p2[0]-p1[0]), Math.abs(p2[1]-p1[1])];
+	var closestPoint = 1000;
+	var point = null;
+
+	console.log("delta_x:",delta_x, "delta_y:", delta_y);
+
+	for (var x=x0; x<=(x0+delta_x); x++) {
+		for (var y=y0; y<=(y0+delta_y);y++) {
+			if ((this.getDistance(p2,[x,y]) <= closestPoint) 
+				&& (this.getDistance(p1,[x,y]) <= range)
+				&& (this.getTileState([x,y]) == globals.TileState.EMPTY)) {
+					closestPoint = this.getDistance(p2,[x,y]);
+					point = [x,y];
+			}
+		}
+	}
+	console.log("Wayward point:",point);
+	return point;
+}
+
 /*
  *
  *
