@@ -119,7 +119,7 @@ exports.randomPersonality = function(arr) {
  *
  */
 
-exports.initUnits = function(gMonsters) {
+exports.initUnits = function() {
 
 	/*
 	 * We calculate order of units based on their speed
@@ -131,7 +131,7 @@ exports.initUnits = function(gMonsters) {
 	var speeds = [];
 	var i = 0;
 
-	gMonsters.forEach(function(monster) {
+	globals.Monsters.forEach(function(monster) {
 		engine.units.push(i++);
 		speeds.push(monster.speed); 
 	});
@@ -146,7 +146,7 @@ exports.initUnits = function(gMonsters) {
 	console.log("initUnits - ok");
 }
 
-exports.initTiles = function(gMonsters) {
+exports.initTiles = function() {
 
 	/*
 	 * We need to know where monsters are on the map
@@ -161,11 +161,11 @@ exports.initTiles = function(gMonsters) {
 		}
 	}
 
-	gMonsters.forEach(function(monster) {
+	globals.Monsters.forEach(function(monster) {
 		var [x, y] = monster.position;
 
 		engine.tiles[x][y]['state'] = globals.TileState.OCCUPIED;
-		engine.tiles[x][y]['monster'] = monster;
+		engine.tiles[x][y]['monster'] = monster.id;
 	});
 	
 	console.log("initTiles - ok");
@@ -183,7 +183,7 @@ exports.initTiles = function(gMonsters) {
 exports.nextUnit = function() {
 	engine.currentUnit = (engine.currentUnit+1)%engine.units.length;
 
-	console.log("Next unit:",engine.units[engine.currentUnit]);
+	console.log("Next unit:",engine.units[engine.currentUnit],engine.currentUnit, engine.units.length);
 	return engine.units[engine.currentUnit];
 }
 
@@ -200,7 +200,12 @@ exports.setTileState = function(arr, state, id = null) {
 	var [x,y] = arr;
 
 	engine.tiles[x][y]['state'] = state;
+	engine.tiles[x][y]['monster'] = id;
 	console.log("Tile [",x,",",y,"] has state:", state);
+}
+
+exports.getTileMonsterID = function(arr) {
+	return engine.tiles[arr[0]][arr[1]]['monster'];
 }
 
 /*
@@ -211,7 +216,87 @@ exports.setTileState = function(arr, state, id = null) {
  *
  */
 
+exports.findNearestEnemy = function(monster) {
+	found = null;
+	distance = 1000;
+
+	for (var i=0; i < engine.tiles.length; i++) {
+		for (var j=0; j < engine.tiles[i].length; j++) {
+			if (engine.tiles[i][j]['monster'] 
+				&& (monster.family != globals.Monsters.sprites()[engine.tiles[i][j]['monster']].family)
+				&& (this.getDistance(monster.position, [i,j]) < distance)) {
+					distance = this.getDistance(monster.position, [i,j]);
+					found = [i,j];
+			}
+		}
+	}
+	return found;
+}
+
 exports.doAI = function(monster) {
-	console.log("AI:",monster.position);
-	//monster.moveTo([monster.x, monster.y - 1]);
+	console.log("AI:",monster.name,monster.id,monster.position);
+	nearestEnemy = this.findNearestEnemy(monster);
+
+	var Action = { ATTACK_MELEE : 0, ATTACK_RANGER : 1, ATTACK_SPELL : 2,
+			GATHER_AROUND : 3, DEFEND_WEAK : 4, 
+			DO_NOTHING : 99};
+
+	if (nearestEnemy) {
+		console.log("Nearest enemy:",nearestEnemy,this.getDistance(monster.position, nearestEnemy));
+
+		/* by default, we attack with our hands and claws. */
+		var action = Action.ATTACK_MELEE;
+		var distance = this.getDistance(monster.position, nearestEnemy);
+
+
+		if (monster.personality === globals.MonsterPersonality.IMMOBILE) {
+			if (distance == 1)
+				action = Action.ATTACK_MELEE;
+			else if (monster.weapon === globals.WeaponStyle.MELEE)
+				action = Action.DO_NOTHING;
+			else if (moster.weapon === globals.WeaponStyle.RANGED)
+				action = Action.ATTACK_RANGED;
+			else if (moster.weapon === globals.WeaponStyle.MAGIC) {
+					// cast a spell
+			}
+		}
+		else if (monster.personality === globals.MonsterPersonality.CAREFUL) {
+			if (distance == 1)
+				action = Action.ATTACK_MELEE;
+			else if (monster.weapon === globals.WeaponStyle.MELEE) {
+				action = (distance > monster.moveRange)? Action.GATHER_AROUND : Action.ATTACK_MELEE;
+			}
+			else if (monster.weapon === globals.WeaponStyle.RANGED) {
+				action = Action.ATTACK_RANGED;
+			}
+			else if (monster.weapon === globals.WeaponStyle.MAGIC) {
+				action = Action.ATTACK_MAGIC;
+			}
+		}
+		else if (monster.personality === globals.MonsterPersonality.INDIVIDUAL) {
+			//monster.skipTurn();
+		}
+		else if (monster.personality === globals.MonsterPersonality.BERSERK) {
+			//monster.skipTurn();
+		}
+		else {
+			console.error("Something's wrong with personalities!")
+		}
+
+
+		if (action === Action.ATTACK_MELEE) {
+			if (distance <= monster.moveRange) {
+				//monster.skipTurn();
+			}
+			else {
+				//monster.skipTurn();
+				//monster.moveTowards(monster.position);
+			}
+		}
+		else {
+			//monster.skipTurn();
+		}
+	}
+
+	monster.skipTurn();
 }

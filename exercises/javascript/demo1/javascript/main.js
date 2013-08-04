@@ -76,7 +76,9 @@ var Monster = function(rect, id) {
 
 
 	/*
+	 *
 	 * Monster public functions
+	 *
 	 */
 
 
@@ -88,12 +90,51 @@ var Monster = function(rect, id) {
 		if (this.state !== globals.MonsterState.ACTIVE)
 			return;
 
-		war.setTileState(this.position, globals.TileState.EMPTY);
-		war.setTileState(rect, globals.TileState.OCCUPIED, this.id);
-		this.destination = rect;
-		this.changeState(globals.MonsterState.MOVING);
+		var tileState = war.getTileState(rect);
+		var dist = war.getDistance(this.position, rect);
 
-		console.log(this.name,this.id,"is on its way!","Distance: ",war.getDistance(rect,this.position));
+		/* Move to empty tile within range */
+		if (tileState === globals.TileState.EMPTY && dist <= this.moveRange) {
+			war.setTileState(this.position, globals.TileState.EMPTY);
+			war.setTileState(rect, globals.TileState.OCCUPIED, this.id);
+			this.destination = rect;
+			this.changeState(globals.MonsterState.MOVING);
+
+			console.log(this.name,this.id,"is on its way!","Distance: ",war.getDistance(rect,this.position));
+		}
+		/* Move towards the tile? */
+		else if (dist > this.moveRange) {
+			// TODO
+		}
+		/* move towards tile that is out of reach */
+		/* Target is occupied, move next to it */
+		else if (tileState === globals.TileState.OCCUPIED) {
+			war.setTileState(this.position, globals.TileState.EMPTY);
+			this.destination = rect;
+			this.changeState(globals.MonsterState.ATTACKING);
+
+		}
+	}
+
+
+	/*
+	 * moveTowards specific target, not necessarily reaching it
+	 * this function only calculates point in the route, actual
+	 * moving is done through moveTo(rect)
+	 */
+
+	/*
+	 * skipTurn means that monster does nothing, and next unit gets activated
+	 */
+	this.skipTurn = function() {
+		this.changeState(globals.MonsterState.INACTIVE);
+		war.nextUnit();
+		console.log("Monster",this.name,this.id,"skipped its turn");
+	}
+
+	this.attack = function(enemy) {
+		console.log("Attacking",enemy.name,enemy.id);
+		this.skipTurn();
 	}
 
 	/* activate sets monster as 'active' one on battlefield */
@@ -154,7 +195,7 @@ var Orc = function(rect, id) {
 	this.family = "Heroes";
 
 	this.personality = war.randomPersonality([globals.MonsterPersonality.BERSERK,globals.MonsterPersonality.INDIVIDUAL]);
-	this.naturalSpeedType = globals.MonsterSpeed.QUICK;
+	this.naturalSpeedType = globals.MonsterSpeed.VERY_QUICK;
 	this.weapon = globals.WeaponStyle.MELEE;
 
 	this.controller = globals.Controller.HUMAN;
@@ -168,7 +209,7 @@ var Octopus = function(rect, id) {
 	this.family = "Monsters";
 
 	this.personality = war.randomPersonality([globals.MonsterPersonality.CAREFUL,globals.MonsterPersonality.INDIVIDUAL]);
-	this.naturalSpeedType = globals.MonsterSpeed.SLOW;
+	this.naturalSpeedType = globals.MonsterSpeed.QUICK;
 	this.weapon = globals.WeaponStyle.MAGIC;
 
 	this.controller = globals.Controller.AI;
@@ -195,7 +236,7 @@ gamejs.utils.objects.extend(Ground, gamejs.sprite.Sprite);
 
 Monster.prototype.update = function(msDuration) {
 
-	if (this.getState() === globals.MonsterState.MOVING) {
+	if (this.getState() === globals.MonsterState.MOVING || this.getState() === globals.MonsterState.ATTACKING) {
 
 		/* get direction to destination from current place */
 		var position = [this.rect.left, this.rect.top];
@@ -205,10 +246,15 @@ Monster.prototype.update = function(msDuration) {
 
 		if (position[0] == goal[0] && position[1] == goal[1])
 		{
-			this.changeState(globals.MonsterState.INACTIVE);
-			this.position = this.destination;
-			war.nextUnit();
-			console.log("Monster",this.name,"finished its journey.");
+			if (this.getState() === globals.MonsterState.MOVING) {
+				this.changeState(globals.MonsterState.INACTIVE);
+				this.position = this.destination;
+				war.nextUnit();
+				console.log("Monster",this.name,"finished its journey.");
+			}
+			else {
+				this.attack(globals.Monsters.sprites()[war.getTileMonsterID(this.destination)]);
+			}
 			return;
 		}
 
@@ -257,12 +303,12 @@ function main() {
 
 	/* Monsters */
 
-	var gMonsters = new gamejs.sprite.Group();
+	globals.Monsters = new gamejs.sprite.Group();
 
 	for (var i=0; i < (globals.AMOUNT_OF_MONSTERS); i++)
-		gMonsters.add(new Orc([i*globals.TILE_SIZE, 0], i));
+		globals.Monsters.add(new Orc([i*globals.TILE_SIZE, 0], i));
 	for (var i=0; i < (globals.AMOUNT_OF_MONSTERS); i++)
-		gMonsters.add(new Octopus([i*globals.TILE_SIZE, 9*globals.TILE_SIZE], i+globals.AMOUNT_OF_MONSTERS));
+		globals.Monsters.add(new Octopus([i*globals.TILE_SIZE, 9*globals.TILE_SIZE], i+globals.AMOUNT_OF_MONSTERS));
 
 	/* Ground */
 
@@ -280,8 +326,8 @@ function main() {
 	 */
 
 
-	war.initUnits(gMonsters);
-	war.initTiles(gMonsters);
+	war.initUnits();
+	war.initTiles();
 
 
 	/*
@@ -328,10 +374,7 @@ function main() {
 
 				console.log("pos:", click_pos, "state:", tileState, "dist:", dist);
 
-				/* if tile is empty and within reach, we move there */
-				if (tileState === globals.TileState.EMPTY && dist <= activeMonster.moveRange) {
-					activeMonster.moveTo(click_pos);
-				}
+				activeMonster.moveTo(click_pos);
 			}
 		}
 	});
@@ -347,7 +390,7 @@ function main() {
 
 		if (war.getCurrentUnit() != activeMonsterIndex) {
 			activeMonsterIndex = war.getCurrentUnit();
-			activeMonster = gMonsters.sprites()[activeMonsterIndex];
+			activeMonster = globals.Monsters.sprites()[activeMonsterIndex];
 			activeMonster.changeState(globals.MonsterState.ACTIVE);
 		}
 		/*
@@ -355,7 +398,7 @@ function main() {
 		 */
 
 		// update the monsters
-		gMonsters.update(msDuration);
+		globals.Monsters.update(msDuration);
 
 		// clear
 		mainSurface.fill("#efefef");
@@ -367,7 +410,7 @@ function main() {
 		war.drawCursor(mainSurface, cursor_pos, cursor_state);
 
 		// on top of everything else, monsters
-		gMonsters.draw(mainSurface);
+		globals.Monsters.draw(mainSurface);
 
 	});
 }

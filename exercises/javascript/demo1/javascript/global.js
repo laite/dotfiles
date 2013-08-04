@@ -3,6 +3,8 @@
  *
  */
 
+exports.Monsters;
+
 exports.TILE_SIZE = 64;
 exports.TILE_AMOUNT = 10;
 
@@ -15,7 +17,8 @@ exports.AMOUNT_OF_MONSTERS = 10;
 exports.MonsterState = {
     INACTIVE : 0,
     ACTIVE : 1,
-    MOVING : 2
+    MOVING : 2,
+	ATTACKING : 3
 };
 
 exports.TileState = {
