@@ -108,7 +108,7 @@ var Monster = function(rect, id) {
 		}
 		/* move towards tile that is out of reach */
 		/* Target is occupied, move next to it */
-		else if (tileState === globals.TileState.OCCUPIED) {
+		else if ((tileState === globals.TileState.OCCUPIED) && (war.getMonsterAt(rect).family != this.family)) {
 			war.setTileState(this.position, globals.TileState.EMPTY);
 			this.destination = rect;
 			this.changeState(globals.MonsterState.ATTACKING);

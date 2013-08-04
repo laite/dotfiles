@@ -208,6 +208,11 @@ exports.getTileMonsterID = function(arr) {
 	return engine.tiles[arr[0]][arr[1]]['monster'];
 }
 
+exports.getMonsterAt = function(arr) { 
+	var id = this.getTileMonsterID(arr);
+	return globals.Monsters.sprites()[id];
+}
+
 /*
  *
  *
