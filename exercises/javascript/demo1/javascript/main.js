@@ -25,7 +25,7 @@ var war = require('war');
  */
 
 
-var cursor_x = 0, cursor_y = 0;
+var cursor_x = 0, cursor_y = 0, cursor_state = globals.CursorState.ALLOWED;
 
 console.log(war.name());
 
@@ -43,13 +43,15 @@ var Monster = function(rect, id) {
 
 	// each monster has a unique id
 	this.id = id;
-	this.name = "Monster!";
 
 	// call superconstructor (Monster is derived from Sprite)
 	Monster.superConstructor.apply(this, arguments);
 
 	// speed varies between (1, 10)
 	this.speed = Math.ceil(10 * Math.random());
+
+	// moveRange is based on speed and it's between [1,5]
+	this.moveRange = Math.max(1, Math.floor(this.speed/2));
 
 	// passive image
 	this.image = gamejs.image.load(this.image_name + ".png");
@@ -91,18 +93,23 @@ var Monster = function(rect, id) {
 		this.destination = [x, y];
 		this.changeState(globals.MonsterState.MOVING);
 
-		console.log("Monster",this.id,"is on its way!");
+		console.log(this.name,this.id,"is on its way!","Distance: ",war.getDistance([x,y],[this.x,this.y]));
 	}
 
 	/* activate sets monster as 'active' one on battlefield */
 	this.activate = function() {
-		console.log("Monster", this.id, "just became active");
+		console.log(this.name, this.id, "just became active");
 		this.image = gamejs.image.load(this.image_name + "_active.png");
+
+		/* if this is computer controlled, it launches its ai sequence */
+		if (this.controller === globals.AI) {
+			war.doAI(this);
+		}
 	}
 
 	/* deactivate passivates the monster */
 	this.deactivate = function() {
-		console.log("Monster", this.id, "was de-activated");
+		console.log(this.name, this.id, "was de-activated");
 		this.image = gamejs.image.load(this.image_name + ".png");
 	}
 
@@ -130,7 +137,7 @@ var Monster = function(rect, id) {
 		}
 	}
 
-	console.log("Created monster", this.id, "(speed:", this.speed, ")");
+	console.log("Created", this.name, this.id, "(speed:", this.speed, " move:", this.moveRange, ")");
 
 	return this;
 };
@@ -143,16 +150,20 @@ var Monster = function(rect, id) {
 
 var Orc = function(rect, id) {
 	this.image_name = "images/orc";
-	Monster.call(this, rect, id);
-
 	this.name = "Orc";
+
+	this.controller = globals.HUMAN;
+
+	Monster.call(this, rect, id);
 }
 
 var Octopus = function(rect, id) {
 	this.image_name = "images/octopus";
-	Monster.call(this, rect, id);
-
 	this.name = "Octo-Monster";
+
+	this.controller = globals.AI;
+
+	Monster.call(this, rect, id);
 }
 
 var Ground = function(rect) {
@@ -227,7 +238,8 @@ function main() {
 
 	var mainSurface = gamejs.display.getSurface();
 
-	var lastUnit = -1;
+	var activeMonster = null;
+	var activeMonsterIndex = -1;
 
 	/*
 	 * Sprites
@@ -262,8 +274,6 @@ function main() {
 	war.initUnits(gMonsters);
 	war.initTiles(gMonsters);
 
-	//lastUnit = war.getCurrentUnit();
-
 
 	/*
 	 * Event handling
@@ -276,13 +286,15 @@ function main() {
 		if (event.type === gamejs.event.MOUSE_MOTION) {
 			/* If we are on canvas, draw rectangle on current tile */
 			if (mainSurface.rect.collidePoint(event.pos)) {
+				[cursor_x, cursor_y] = war.getTile([event.pos[0], event.pos[1]]);
 
-				[cursor_x, cursor_y] = war.getTilePixels([event.pos[0], event.pos[1]]);
+				var dist = war.getDistance([cursor_x, cursor_y], [activeMonster.x, activeMonster.y]);
+				if (dist > activeMonster.moveRange)
+					cursor_state = globals.CursorState.DISALLOWED;
+				else if (dist <= activeMonster.moveRange)
+					cursor_state = globals.CursorState.ALLOWED;
 
-				cursor_x = Math.max(cursor_x, 2.5);
-				cursor_x = Math.min(cursor_x, globals.CANVAS_WIDTH-globals.TILE_SIZE-2.5);
-				cursor_y = Math.max(cursor_y, 2.5);
-				cursor_y = Math.min(cursor_y, globals.CANVAS_HEIGHT-globals.TILE_SIZE-2.5);
+				// TODO: handle if there's a monstrocity */
 			}
 		}
 
@@ -292,13 +304,18 @@ function main() {
 			// TODO: make sure only clicks on game area are registered
 			// (after status area is implemented, that is)
 			if (mainSurface.rect.collidePoint(event.pos)) {
-				
+				// get clicked tile
 				var [click_x, click_y] = war.getTile([event.pos[0], event.pos[1]]);
-				var tileState = war.getTileState([click_x, click_y]);
-				console.log("x:", click_x, "y:", click_y, "state:", tileState);
 
-				if (tileState === globals.TileState.EMPTY) {
-					gMonsters.sprites()[war.getCurrentUnit()].moveTo(click_x, click_y);
+				// check its state and distance there
+				var tileState = war.getTileState([click_x, click_y]);
+				var dist = war.getDistance([click_x, click_y], [activeMonster.x, activeMonster.y]);
+
+				console.log("x:", click_x, "y:", click_y, "state:", tileState, "dist:", dist);
+
+				/* if tile is empty and within reach, we move there */
+				if (tileState === globals.TileState.EMPTY && dist <= activeMonster.moveRange) {
+					activeMonster.moveTo(click_x, click_y);
 				}
 			}
 		}
@@ -313,9 +330,10 @@ function main() {
 	/* msDuration = time since last tick() call */
 	gamejs.onTick(function(msDuration) {
 
-		if (war.getCurrentUnit() != lastUnit) {
-			lastUnit = war.getCurrentUnit();
-			gMonsters.sprites()[lastUnit].changeState(globals.MonsterState.ACTIVE);
+		if (war.getCurrentUnit() != activeMonsterIndex) {
+			activeMonsterIndex = war.getCurrentUnit();
+			activeMonster = gMonsters.sprites()[activeMonsterIndex];
+			activeMonster.changeState(globals.MonsterState.ACTIVE);
 		}
 		/*
 		 * Drawing stuff
@@ -332,7 +350,7 @@ function main() {
 		gMonsters.draw(mainSurface);
 
 		// then "cursor"
-		draw.rect(mainSurface, "#006600", new gamejs.Rect([cursor_x,cursor_y,globals.TILE_SIZE,globals.TILE_SIZE]), 5);
+		war.drawCursor(mainSurface, cursor_x, cursor_y, cursor_state);
 	});
 }
 

@@ -5,6 +5,8 @@
  */
 
 var globals = require('global');
+var gamejs = require('gamejs');
+var draw = require('gamejs/draw');
 var name = "WAR 0.1a";
 
 exports.name = function() {
@@ -64,6 +66,34 @@ exports.getTilePixels = function(arr) {
 	return [tile_x, tile_y];
 }
 
+/* getDistance takes two coordinate points and calculates the distance between them */
+exports.getDistance = function(p1, p2) {
+	var distance = Math.max(Math.abs(p1[0]-p2[0]), Math.abs(p1[1]-p2[1]));
+
+	return distance;
+}
+
+/* drawCursor gets parameters x and y as tiles */
+exports.drawCursor = function(surface, x, y, state) {
+
+	var cursor_size = 3;
+
+	x *= globals.TILE_SIZE;
+	y *= globals.TILE_SIZE;
+	x = Math.max(x, (cursor_size/2));
+	x = Math.min(x, globals.CANVAS_WIDTH-globals.TILE_SIZE-(cursor_size/2));
+	y = Math.max(y, (cursor_size/2));
+	y = Math.min(y, globals.CANVAS_HEIGHT-globals.TILE_SIZE-(cursor_size/2));
+
+	var col = "green";
+
+	if (state === globals.CursorState.DISALLOWED)
+		col = "#666";
+	else if (state === globals.CursorState.ATTACK)
+		col = "#880000";
+
+	draw.rect(surface, col, new gamejs.Rect([x,y,globals.TILE_SIZE,globals.TILE_SIZE]), cursor_size);
+}
 
 /*
  *
@@ -95,10 +125,6 @@ exports.initUnits = function(gMonsters) {
 	}
 
 	engine.units.sort(sort_index);
-
-	for (var i=0; i<engine.units.length; i++)
-		console.log(engine.units[i]);
-
 	engine.currentUnit = 0;
 
 	console.log("initUnits - ok");
@@ -123,7 +149,6 @@ exports.initTiles = function(gMonsters) {
 		var [x, y] = [monster.x, monster.y];
 
 		engine.tiles[x][y] = globals.TileState.OCCUPIED;
-		console.log("Tile [",x,",",y,"] is occupied");
 	});
 	
 	console.log("initTiles - ok");
@@ -156,4 +181,18 @@ exports.getTileState = function(arr) {
 
 exports.setTileState = function(x, y, state) {
 	engine.tiles[x][y] = state;
+	console.log("Tile [",x,",",y,"] has state:", state);
+}
+
+/*
+ *
+ *
+ * Artificial Intelligence
+ *
+ *
+ */
+
+exports.doAI = function(monster) {
+	console.log("AI:",monster.x, monster.y);
+	monster.moveTo(monster.x, monster.y - 1);
 }

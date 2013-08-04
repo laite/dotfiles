@@ -1,0 +1,17 @@
+other:
+	¤ clean arguments for functions, unify
+
+monster interaction:
+	¤ attack()
+	¤ move range?
+
+Artificial intelligence:
+	¤ getNearestEnemy()
+	¤ 
+
+sidebar
+	¤ status
+	¤ actions
+	¤ 
+
+
