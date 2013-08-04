@@ -88,7 +88,7 @@ var Monster = function(rect, id) {
 			return;
 
 		war.setTileState(this.position, globals.TileState.EMPTY);
-		war.setTileState(rect, globals.TileState.OCCUPIED);
+		war.setTileState(rect, globals.TileState.OCCUPIED, this.id);
 		this.destination = rect;
 		this.changeState(globals.MonsterState.MOVING);
 
@@ -151,6 +151,9 @@ var Orc = function(rect, id) {
 	this.image_name = "images/orc";
 	this.name = "Orc";
 
+	this.personality = globals.MonsterPersonality.BERSERK;
+	this.naturalSpeedType = globals.MonsterSpeed.QUICK;
+
 	this.controller = globals.Controller.HUMAN;
 
 	Monster.call(this, rect, id);
@@ -159,6 +162,9 @@ var Orc = function(rect, id) {
 var Octopus = function(rect, id) {
 	this.image_name = "images/octopus";
 	this.name = "Octo-Monster";
+
+	this.personality = globals.MonsterPersonality.CAREFUL;
+	this.naturalSpeedType = globals.MonsterSpeed.SLOW;
 
 	this.controller = globals.Controller.AI;
 

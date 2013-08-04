@@ -20,8 +20,10 @@ exports.MonsterState = {
 
 exports.TileState = {
 	EMPTY : 0,
-	OCCUPIED : 1,
-	BLOCKED : 2
+	BLOCKED : 1,
+	
+	// occupied tiles hold id of monster residing there
+	OCCUPIED : 100
 };
 
 exports.CursorState = {
@@ -35,4 +37,25 @@ exports.Controller = {
 	HUMAN : 0,
 	AI : 1
 };
+
+/*
+ * Monster personalities and tactical preferences
+ */
+
+/* MonsterSpeed acts as a modifier when calculating individual monsters speed and moveRate */
+exports.MonsterSpeed = {
+	VERY_SLOW : 0,
+	SLOW : 1,
+	NORMAL : 2,
+	QUICK : 3,
+	VERY_QUICK : 4
+}
+
+/* Personality defines monsters actions on battlefield */
+exports.MonsterPersonality = {
+	IMMOBILE : 0,
+	CAREFUL : 1,
+	INDIVIDUAL : 2,
+	BERSERK : 3
+}
 

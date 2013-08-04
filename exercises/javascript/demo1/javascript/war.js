@@ -155,7 +155,7 @@ exports.initTiles = function(gMonsters) {
 	gMonsters.forEach(function(monster) {
 		var [x, y] = monster.position;
 
-		engine.tiles[x][y] = globals.TileState.OCCUPIED;
+		engine.tiles[x][y] = globals.TileState.OCCUPIED + monster.id;
 	});
 	
 	console.log("initTiles - ok");
@@ -186,8 +186,15 @@ exports.getTileState = function(arr) {
 	return engine.tiles[arr[0]][arr[1]];
 }
 
-exports.setTileState = function(arr, state) {
+exports.setTileState = function(arr, state, id = null) {
 	var [x,y] = arr;
+	if (state === globals.TileState.OCCUPIED) {
+		if (id === null)
+			console.error("setTileState : id === null!");
+		else
+			state += id;
+	}
+
 	engine.tiles[x][y] = state;
 	console.log("Tile [",x,",",y,"] has state:", state);
 }
