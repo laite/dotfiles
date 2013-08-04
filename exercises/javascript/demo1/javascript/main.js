@@ -47,7 +47,8 @@ var Monster = function(rect, id) {
 	Monster.superConstructor.apply(this, arguments);
 
 	// speed varies between (1, 10)
-	this.speed = Math.ceil(10 * Math.random());
+	// naturalSpeedTypes go from VERY_SLOW = 0 to VERY_QUICK = 4
+	this.speed = 1 + Math.round(Math.random()) + Math.round(this.naturalSpeedType + (this.naturalSpeedType * Math.random()));
 
 	// moveRange is based on speed and it's between [1,5]
 	this.moveRange = Math.max(1, Math.floor(this.speed/2));
@@ -150,9 +151,11 @@ var Monster = function(rect, id) {
 var Orc = function(rect, id) {
 	this.image_name = "images/orc";
 	this.name = "Orc";
+	this.family = "Heroes";
 
-	this.personality = globals.MonsterPersonality.BERSERK;
+	this.personality = war.randomPersonality([globals.MonsterPersonality.BERSERK,globals.MonsterPersonality.INDIVIDUAL]);
 	this.naturalSpeedType = globals.MonsterSpeed.QUICK;
+	this.weapon = globals.WeaponStyle.MELEE;
 
 	this.controller = globals.Controller.HUMAN;
 
@@ -162,9 +165,11 @@ var Orc = function(rect, id) {
 var Octopus = function(rect, id) {
 	this.image_name = "images/octopus";
 	this.name = "Octo-Monster";
+	this.family = "Monsters";
 
-	this.personality = globals.MonsterPersonality.CAREFUL;
+	this.personality = war.randomPersonality([globals.MonsterPersonality.CAREFUL,globals.MonsterPersonality.INDIVIDUAL]);
 	this.naturalSpeedType = globals.MonsterSpeed.SLOW;
+	this.weapon = globals.WeaponStyle.MAGIC;
 
 	this.controller = globals.Controller.AI;
 

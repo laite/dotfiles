@@ -57,3 +57,8 @@ exports.MonsterPersonality = {
 	BERSERK : 3
 }
 
+exports.WeaponStyle = {
+	MELEE : 0,
+	RANGED : 1,
+	MAGIC : 2
+}

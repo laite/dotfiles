@@ -106,6 +106,11 @@ exports.drawCursor = function(surface, position, state) {
 	draw.rect(surface, col, new gamejs.Rect([x,y,globals.TILE_SIZE,globals.TILE_SIZE]), cursor_size);
 }
 
+exports.randomPersonality = function(arr) {
+	var i = Math.floor(arr.length * Math.random());
+	return arr[i];
+}
+
 /*
  *
  *
