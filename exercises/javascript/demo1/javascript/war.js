@@ -47,7 +47,7 @@ var engine = new Engine();
 
 /* getTile returns array of wanted tile index */
 exports.getTile = function(arr) {
-	if ((!arr instanceof Array) || (arr.length != 2))
+	if ((!arr instanceof Array) || (arr.length < 2))
 		return [0, 0];
 
 	tile_x = Math.floor(arr[0]/globals.TILE_SIZE);
@@ -80,9 +80,10 @@ exports.getDistance = function(p1, p2) {
 }
 
 /* drawCursor gets parameters x and y as tiles */
-exports.drawCursor = function(surface, x, y, state) {
+exports.drawCursor = function(surface, position, state) {
 
 	var cursor_size = 0;
+	var [x, y] = position;
 
 	x *= globals.TILE_SIZE;
 	y *= globals.TILE_SIZE;
@@ -152,7 +153,7 @@ exports.initTiles = function(gMonsters) {
 	}
 
 	gMonsters.forEach(function(monster) {
-		var [x, y] = [monster.x, monster.y];
+		var [x, y] = monster.position;
 
 		engine.tiles[x][y] = globals.TileState.OCCUPIED;
 	});
@@ -185,7 +186,8 @@ exports.getTileState = function(arr) {
 	return engine.tiles[arr[0]][arr[1]];
 }
 
-exports.setTileState = function(x, y, state) {
+exports.setTileState = function(arr, state) {
+	var [x,y] = arr;
 	engine.tiles[x][y] = state;
 	console.log("Tile [",x,",",y,"] has state:", state);
 }
@@ -199,6 +201,6 @@ exports.setTileState = function(x, y, state) {
  */
 
 exports.doAI = function(monster) {
-	console.log("AI:",monster.x, monster.y);
-	monster.moveTo(monster.x, monster.y - 1);
+	console.log("AI:",monster.position);
+	//monster.moveTo([monster.x, monster.y - 1]);
 }

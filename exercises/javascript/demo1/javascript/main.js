@@ -6,7 +6,6 @@
  *
  */
 
-
 /*
  * Requires
  */
@@ -25,7 +24,7 @@ var war = require('war');
  */
 
 
-var cursor_x = 0, cursor_y = 0, cursor_state = globals.CursorState.ALLOWED;
+var cursor_pos = [0,0], cursor_state = globals.CursorState.ALLOWED;
 
 console.log(war.name());
 
@@ -62,8 +61,8 @@ var Monster = function(rect, id) {
 	// destination is used while traveling
 	this.destination = [0, 0];
 
-	// monster.x and monster.y show tile monster is currently on
-	[this.x,this.y] = war.getTile(rect);
+	// monster.position shows the tile monster is currently on
+	this.position = war.getTile(rect);
 
 
 	/*
@@ -84,16 +83,16 @@ var Monster = function(rect, id) {
 	 * moveTo gets parameter coordinates as tiles [0..globals.TILE_AMOUNT] 
 	 * and sets monster to motion (actual movement is done in gMonster.update()
 	 */
-	this.moveTo = function(x, y) {
+	this.moveTo = function(rect) {
 		if (this.state !== globals.MonsterState.ACTIVE)
 			return;
 
-		war.setTileState(this.x, this.y, globals.TileState.EMPTY);
-		war.setTileState(x, y, globals.TileState.OCCUPIED);
-		this.destination = [x, y];
+		war.setTileState(this.position, globals.TileState.EMPTY);
+		war.setTileState(rect, globals.TileState.OCCUPIED);
+		this.destination = rect;
 		this.changeState(globals.MonsterState.MOVING);
 
-		console.log(this.name,this.id,"is on its way!","Distance: ",war.getDistance([x,y],[this.x,this.y]));
+		console.log(this.name,this.id,"is on its way!","Distance: ",war.getDistance(rect,this.position));
 	}
 
 	/* activate sets monster as 'active' one on battlefield */
@@ -196,8 +195,7 @@ Monster.prototype.update = function(msDuration) {
 		if (position[0] == goal[0] && position[1] == goal[1])
 		{
 			this.changeState(globals.MonsterState.INACTIVE);
-			this.x = this.destination[0];
-			this.y = this.destination[1];
+			this.position = this.destination;
 			war.nextUnit();
 			console.log("Monster",this.name,"finished its journey.");
 			return;
@@ -286,9 +284,10 @@ function main() {
 		if (event.type === gamejs.event.MOUSE_MOTION) {
 			/* If we are on canvas, draw rectangle on current tile */
 			if (mainSurface.rect.collidePoint(event.pos)) {
-				[cursor_x, cursor_y] = war.getTile([event.pos[0], event.pos[1]]);
+				cursor_pos = war.getTile(event.pos);
 
-				var dist = war.getDistance([cursor_x, cursor_y], [activeMonster.x, activeMonster.y]);
+				var dist = war.getDistance(cursor_pos, activeMonster.position);
+
 				if (dist > activeMonster.moveRange)
 					cursor_state = globals.CursorState.DISALLOWED;
 				else if (dist <= activeMonster.moveRange)
@@ -310,17 +309,17 @@ function main() {
 					return;
 
 				// get clicked tile
-				var [click_x, click_y] = war.getTile([event.pos[0], event.pos[1]]);
+				var click_pos = war.getTile(event.pos);
 
 				// check its state and distance there
-				var tileState = war.getTileState([click_x, click_y]);
-				var dist = war.getDistance([click_x, click_y], [activeMonster.x, activeMonster.y]);
+				var tileState = war.getTileState(click_pos);
+				var dist = war.getDistance(click_pos, activeMonster.position);
 
-				console.log("x:", click_x, "y:", click_y, "state:", tileState, "dist:", dist);
+				console.log("pos:", click_pos, "state:", tileState, "dist:", dist);
 
 				/* if tile is empty and within reach, we move there */
 				if (tileState === globals.TileState.EMPTY && dist <= activeMonster.moveRange) {
-					activeMonster.moveTo(click_x, click_y);
+					activeMonster.moveTo(click_pos);
 				}
 			}
 		}
@@ -354,7 +353,7 @@ function main() {
 		gGroundTiles.draw(mainSurface);
 
 		// then "cursor"
-		war.drawCursor(mainSurface, cursor_x, cursor_y, cursor_state);
+		war.drawCursor(mainSurface, cursor_pos, cursor_state);
 
 		// on top of everything else, monsters
 		gMonsters.draw(mainSurface);
