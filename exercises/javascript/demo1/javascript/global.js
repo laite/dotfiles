@@ -20,10 +20,8 @@ exports.MonsterState = {
 
 exports.TileState = {
 	EMPTY : 0,
-	BLOCKED : 1,
-	
-	// occupied tiles hold id of monster residing there
-	OCCUPIED : 100
+	OCCUPIED : 1,
+	BLOCKED : 2
 };
 
 exports.CursorState = {

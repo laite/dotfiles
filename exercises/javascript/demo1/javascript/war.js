@@ -21,13 +21,17 @@ exports.name = function() {
  *
  */
 
+
 var Engine = function() {
 	
 	this.units = [];
-	this.tiles = [];
+	this.tiles = [globals.TILE_AMOUNT];
 
 	for (var i=0; i<globals.TILE_AMOUNT;i++) {
-		this.tiles[i] = [globals.TILE_AMOUNT];
+		this.tiles[i] = [];
+		for (var j=0; j<globals.TILE_AMOUNT;j++) {
+			this.tiles[i].push({ state: globals.TileState.EMPTY, monster : null});
+		}
 	}
 
 	this.currentUnit = 0;
@@ -148,14 +152,15 @@ exports.initTiles = function(gMonsters) {
 
 	for (var i=0; i<globals.TILE_AMOUNT; i++) {
 		for (var j=0; j<globals.TILE_AMOUNT; j++) {
-			engine.tiles[i][j] = globals.TileState.EMPTY;
+			engine.tiles[i][j]['state'] = globals.TileState.EMPTY;
 		}
 	}
 
 	gMonsters.forEach(function(monster) {
 		var [x, y] = monster.position;
 
-		engine.tiles[x][y] = globals.TileState.OCCUPIED + monster.id;
+		engine.tiles[x][y]['state'] = globals.TileState.OCCUPIED;
+		engine.tiles[x][y]['monster'] = monster;
 	});
 	
 	console.log("initTiles - ok");
@@ -183,19 +188,13 @@ exports.getCurrentUnit = function() {
 
 // TODO: error checking?
 exports.getTileState = function(arr) {
-	return engine.tiles[arr[0]][arr[1]];
+	return engine.tiles[arr[0]][arr[1]]['state'];
 }
 
 exports.setTileState = function(arr, state, id = null) {
 	var [x,y] = arr;
-	if (state === globals.TileState.OCCUPIED) {
-		if (id === null)
-			console.error("setTileState : id === null!");
-		else
-			state += id;
-	}
 
-	engine.tiles[x][y] = state;
+	engine.tiles[x][y]['state'] = state;
 	console.log("Tile [",x,",",y,"] has state:", state);
 }
 
