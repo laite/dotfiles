@@ -11,25 +11,28 @@ exports.CANVAS_WIDTH = 640;
 
 exports.AMOUNT_OF_MONSTERS = 10;
 
-/* controllers */
-exports.HUMAN = 0;
-exports.AI = 1;
-
 /* enums */
 exports.MonsterState = {
     INACTIVE : 0,
     ACTIVE : 1,
     MOVING : 2
-}
+};
 
 exports.TileState = {
 	EMPTY : 0,
 	OCCUPIED : 1,
 	BLOCKED : 2
-}
+};
 
 exports.CursorState = {
 	ALLOWED : 0,
 	DISALLOWED : 1,
 	ATTACK : 2
-}
+};
+
+/* controllers */
+exports.Controller = {
+	HUMAN : 0,
+	AI : 1
+};
+

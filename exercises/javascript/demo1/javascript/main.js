@@ -102,7 +102,7 @@ var Monster = function(rect, id) {
 		this.image = gamejs.image.load(this.image_name + "_active.png");
 
 		/* if this is computer controlled, it launches its ai sequence */
-		if (this.controller === globals.AI) {
+		if (this.controller === globals.Controller.AI) {
 			war.doAI(this);
 		}
 	}
@@ -152,7 +152,7 @@ var Orc = function(rect, id) {
 	this.image_name = "images/orc";
 	this.name = "Orc";
 
-	this.controller = globals.HUMAN;
+	this.controller = globals.Controller.HUMAN;
 
 	Monster.call(this, rect, id);
 }
@@ -161,7 +161,7 @@ var Octopus = function(rect, id) {
 	this.image_name = "images/octopus";
 	this.name = "Octo-Monster";
 
-	this.controller = globals.AI;
+	this.controller = globals.Controller.AI;
 
 	Monster.call(this, rect, id);
 }
@@ -304,6 +304,11 @@ function main() {
 			// TODO: make sure only clicks on game area are registered
 			// (after status area is implemented, that is)
 			if (mainSurface.rect.collidePoint(event.pos)) {
+
+				// if activeMonster's not human controlled, we do nothing
+				if (activeMonster.controller !== globals.Controller.HUMAN)
+					return;
+
 				// get clicked tile
 				var [click_x, click_y] = war.getTile([event.pos[0], event.pos[1]]);
 
@@ -345,12 +350,15 @@ function main() {
 		// clear
 		mainSurface.fill("#efefef");
 		
-		// draw ground first, then monsters
+		// draw ground first
 		gGroundTiles.draw(mainSurface);
-		gMonsters.draw(mainSurface);
 
 		// then "cursor"
 		war.drawCursor(mainSurface, cursor_x, cursor_y, cursor_state);
+
+		// on top of everything else, monsters
+		gMonsters.draw(mainSurface);
+
 	});
 }
 

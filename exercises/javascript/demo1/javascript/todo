@@ -1,9 +1,13 @@
-other:
-	¤ clean arguments for functions, unify
+
+* NEXT *
+
+¤ actual AI
+¤ clean arguments for functions, unify
+
+* LATER *
 
 monster interaction:
 	¤ attack()
-	¤ move range?
 
 Artificial intelligence:
 	¤ getNearestEnemy()
@@ -14,4 +18,5 @@ sidebar
 	¤ actions
 	¤ 
 
+other:
 

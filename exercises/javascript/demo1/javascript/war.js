@@ -68,7 +68,13 @@ exports.getTilePixels = function(arr) {
 
 /* getDistance takes two coordinate points and calculates the distance between them */
 exports.getDistance = function(p1, p2) {
-	var distance = Math.max(Math.abs(p1[0]-p2[0]), Math.abs(p1[1]-p2[1]));
+	var [x, y] = [Math.abs(p1[0]-p2[0]), Math.abs(p1[1]-p2[1])];
+
+	/* 
+	 * Movement cost for vector is (longer side) + (shorter side / 2)
+	 * division is rounded down
+	 */
+	var distance = Math.max(x, y) + Math.floor(Math.min(x,y)*0.5);
 
 	return distance;
 }
@@ -76,7 +82,7 @@ exports.getDistance = function(p1, p2) {
 /* drawCursor gets parameters x and y as tiles */
 exports.drawCursor = function(surface, x, y, state) {
 
-	var cursor_size = 3;
+	var cursor_size = 0;
 
 	x *= globals.TILE_SIZE;
 	y *= globals.TILE_SIZE;
@@ -85,10 +91,10 @@ exports.drawCursor = function(surface, x, y, state) {
 	y = Math.max(y, (cursor_size/2));
 	y = Math.min(y, globals.CANVAS_HEIGHT-globals.TILE_SIZE-(cursor_size/2));
 
-	var col = "green";
+	var col = "rgba(128, 255, 128, 0.2)";
 
 	if (state === globals.CursorState.DISALLOWED)
-		col = "#666";
+		col = "rgba(255, 255, 255, 0.2)";
 	else if (state === globals.CursorState.ATTACK)
 		col = "#880000";
 
