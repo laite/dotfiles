@@ -90,25 +90,18 @@ var Monster = function(rect, id) {
 
 		var tileState = war.getTileState(rect);
 		var dist = war.getDistance(this.position, rect);
+		var destination = war.moveTowardsGoal(this.position, rect, this.moveRange);
 
-		/* If tile is occupied by non-family member (and within reach), attack! */
-		if ((tileState === globals.TileState.OCCUPIED) && (dist <= this.moveRange) && (war.getMonsterAt(rect).family != this.family)) {
-			war.setTileState(this.position, globals.TileState.EMPTY);
-			this.changeState(globals.MonsterState.ATTACKING);
-			this.destination = rect;
-		}
-		/* on other case, we move towards point as far as we can */
-		else {
-			var destination = war.getPointTowardsGoal(this.position, rect, this.moveRange);
-			if (destination) {
-				war.setTileState(destination, globals.TileState.OCCUPIED, this.id);
-				if (this.getState() !== globals.MonsterState.MOVING_AFTER_ATTACK) {
-					war.setTileState(this.position, globals.TileState.EMPTY);
-				}
-				this.changeState(globals.MonsterState.MOVING);
-				this.destination = destination;
+		if (destination) {
+			if (this.getState() !== globals.MonsterState.MOVING_AFTER_ATTACK) {
+				war.setTileState(this.position, globals.TileState.EMPTY);
 			}
+			this.changeState(globals.MonsterState.MOVING);
+			this.destination = destination;
 		}
+
+		/* note that units turn continues until we get a proper destination 
+		 * TODO: or turn is manually skipped */
 	}
 
 
@@ -252,23 +245,27 @@ gamejs.utils.objects.extend(Ground, gamejs.sprite.Sprite);
 
 Monster.prototype.update = function(msDuration) {
 
-	if (this.getState() === globals.MonsterState.MOVING || this.getState() === globals.MonsterState.ATTACKING) {
+	if (this.getState() === globals.MonsterState.MOVING) {
 		/* get direction to destination from current place */
 		var position = [this.rect.left, this.rect.top];
 		var goal = [this.destination[0]*globals.TILE_SIZE, this.destination[1]*globals.TILE_SIZE];
 		var delta = [0, 0];
 		var diff = [Math.abs(goal[0]-position[0]), Math.abs(goal[1]-position[1])];
 
-		/* We launch actual attack only when movement animation has finished */
+		/* We launch actual attack only when movement has finished */
 		if (position[0] == goal[0] && position[1] == goal[1])
 		{
 			this.position = this.destination;
-			if (this.getState() === globals.MonsterState.MOVING) {
+
+			/* if we are on hostile tile, we launch attack */
+			if ((war.getTileState(this.position) === globals.TileState.OCCUPIED) && (war.getMonsterAt(this.position).family != this.family)) {
+				this.attack(war.getMonsterAt(this.position));
+			}
+			/* else, we end turn */
+			else {
+				war.setTileState(this.position, globals.TileState.OCCUPIED, this.id);
 				this.endTurn();
 				console.log("Monster",this.name,"finished its journey.");
-			}
-			else {
-				this.attack(war.getMonsterAt(this.destination));
 			}
 			return;
 		}
@@ -284,6 +281,9 @@ Monster.prototype.update = function(msDuration) {
 
 		// moveIp, move in place
 		this.rect.moveIp(delta[0], delta[1]);
+	}
+	else if (this.getState() === globals.MonsterState.ATTACKING) {
+
 	}
 };
 

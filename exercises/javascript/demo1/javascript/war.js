@@ -219,10 +219,17 @@ exports.getMonsterAt = function(arr) {
 		return globals.Monsters.sprites()[id];
 }
 
-exports.getPointTowardsGoal = function(p1, p2, range) {
-	/* this shouldn't happen, but who knows */
-	if ((this.getDistance(p1, p2) <= range) && (this.getTileState(p2) == globals.TileState.EMPTY))
-		return p2;
+exports.moveTowardsGoal = function(p1, p2, range) {
+	/* if p2 is at range */
+	if (this.getDistance(p1, p2) <= range) {
+		/* if it's empty or if there is a hostile monster */
+		if ((this.getTileState(p2) == globals.TileState.EMPTY) || 
+				((this.getTileState(p2) === globals.TileState.OCCUPIED) 
+				&& (this.getMonsterAt(p1).family != this.getMonsterAt(p2).family)))	
+		{
+			return p2;
+		}
+	}	
 
 	/* we start looking suitable endpoint in rectangular area which cornerpoints are p1 and p2 
 	 * and select the furthest available */
