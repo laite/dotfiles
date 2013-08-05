@@ -191,7 +191,6 @@ exports.getCurrentUnit = function() {
 	return engine.units[engine.currentUnit];
 }
 
-// TODO: error checking?
 exports.getTileState = function(arr) {
 	return engine.tiles[arr[0]][arr[1]]['state'];
 }
@@ -205,6 +204,9 @@ exports.setTileState = function(arr, state, id = null) {
 }
 
 exports.getTileMonsterID = function(arr) {
+	arr[0] = Math.max(Math.min(arr[0],globals.TILE_AMOUNT-1), 0);
+	arr[1] = Math.max(Math.min(arr[1],globals.TILE_AMOUNT-1), 0);
+
 	return engine.tiles[arr[0]][arr[1]]['monster'];
 }
 
@@ -294,6 +296,28 @@ exports.findFreeTile = function(rect) {
 	else
 		return foundPoint;
 }
+
+exports.findNewLocation = function(arr) {
+	var found = false;
+	var radius = 1;
+	var newLocation = null;
+
+	while (!found) {
+		var rect = this.getRectFromRadius(arr, radius);
+		newLocation = this.findFreeTile(rect);
+
+		if ((newLocation.length !== null) || (radius > 10))
+			found = true;
+		else
+			radius++;
+	}
+
+	if (newLocation === null)
+		console.error("findNewLocation failed, returning null");
+
+	return newLocation;
+}
+
 /*
  *
  *

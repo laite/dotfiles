@@ -87,33 +87,27 @@ var Monster = function(rect, id) {
 	 * and sets monster to motion (actual movement is done in gMonster.update()
 	 */
 	this.moveTo = function(rect) {
-		if (this.state !== globals.MonsterState.ACTIVE)
-			return;
 
 		var tileState = war.getTileState(rect);
 		var dist = war.getDistance(this.position, rect);
-		var go = false;
 
 		/* If tile is occupied by non-family member (and within reach), attack! */
 		if ((tileState === globals.TileState.OCCUPIED) && (dist <= this.moveRange) && (war.getMonsterAt(rect).family != this.family)) {
+			war.setTileState(this.position, globals.TileState.EMPTY);
 			this.changeState(globals.MonsterState.ATTACKING);
 			this.destination = rect;
-			go = true;
 		}
 		/* on other case, we move towards point as far as we can */
 		else {
 			var destination = war.getPointTowardsGoal(this.position, rect, this.moveRange);
 			if (destination) {
 				war.setTileState(destination, globals.TileState.OCCUPIED, this.id);
+				if (this.getState() !== globals.MonsterState.MOVING_AFTER_ATTACK) {
+					war.setTileState(this.position, globals.TileState.EMPTY);
+				}
 				this.changeState(globals.MonsterState.MOVING);
 				this.destination = destination;
-				go = true;
 			}
-		}
-
-		if (go) {
-			war.setTileState(this.position, globals.TileState.EMPTY);
-			console.log(this.name,this.id,"is on its way to", this.destination,"Distance: ",war.getDistance(this.destination,this.position));
 		}
 	}
 
@@ -137,7 +131,18 @@ var Monster = function(rect, id) {
 	 */
 	this.attack = function(enemy) {
 		console.log("Attacking",enemy.name,enemy.id);
-		this.endTurn();
+
+		/* TODO : actual attack */
+
+		// after melee attack we find close position for attacker
+		if (this.position[0] == enemy.position[0] && this.position[1] == enemy.position[1]) {
+			var newLocation = war.findNewLocation(this.position);
+			console.log("New location:",newLocation);
+			this.changeState(globals.MonsterState.MOVING_AFTER_ATTACK);
+			this.moveTo(newLocation);
+		}
+		else
+			this.endTurn();
 	}
 
 	/*
@@ -223,7 +228,7 @@ var Octopus = function(rect, id) {
 	this.naturalSpeedType = globals.MonsterSpeed.QUICK;
 	this.weapon = globals.WeaponStyle.MAGIC;
 
-	this.controller = globals.Controller.AI;
+	this.controller = globals.Controller.HUMAN;
 
 	Monster.call(this, rect, id);
 }
@@ -257,8 +262,8 @@ Monster.prototype.update = function(msDuration) {
 		/* We launch actual attack only when movement animation has finished */
 		if (position[0] == goal[0] && position[1] == goal[1])
 		{
+			this.position = this.destination;
 			if (this.getState() === globals.MonsterState.MOVING) {
-				this.position = this.destination;
 				this.endTurn();
 				console.log("Monster",this.name,"finished its journey.");
 			}
@@ -359,9 +364,9 @@ function main() {
 					cursor_state = globals.CursorState.DISALLOWED;
 				}
 				else {
-					var monsterInThere = war.getMonsterAt(cursor_pos);
-					if (monsterInThere !== null) {
-						if (monsterInThere.family != activeMonster.family)
+					var monsterInTile = war.getTileState(cursor_pos);
+					if (monsterInTile === globals.TileState.OCCUPIED) {
+						if (war.getMonsterAt(cursor_pos).family != activeMonster.family)
 						cursor_state = globals.CursorState.ATTACK;
 					}
 					else {

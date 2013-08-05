@@ -11,14 +11,15 @@ exports.TILE_AMOUNT = 10;
 exports.CANVAS_HEIGHT = 640;
 exports.CANVAS_WIDTH = 640;
 
-exports.AMOUNT_OF_MONSTERS = 5;
+exports.AMOUNT_OF_MONSTERS = 3;
 
 /* enums */
 exports.MonsterState = {
     INACTIVE : 0,
     ACTIVE : 1,
     MOVING : 2,
-	ATTACKING : 3
+	ATTACKING : 3,
+	MOVING_AFTER_ATTACK : 4
 };
 
 exports.TileState = {
