@@ -267,70 +267,99 @@ exports.findNearestEnemy = function(monster) {
 	return found;
 }
 
+/* 
+ * TODO:
+ * 		better target selection
+ * 		attack/magic ranges?
+ */
 exports.doAI = function(monster) {
 	console.log("AI:",monster.name,monster.id,monster.position);
-	nearestEnemy = this.findNearestEnemy(monster);
+	var nearestEnemyPosition = this.findNearestEnemy(monster);
 
-	var Action = { ATTACK_MELEE : 0, ATTACK_RANGER : 1, ATTACK_SPELL : 2,
-			GATHER_AROUND : 3, DEFEND_WEAK : 4, 
-			DO_NOTHING : 99};
+	var Action = { ATTACK : 0, GATHER_AROUND : 1, DEFEND_WEAK : 3, MOVE_CLOSER : 4, 
+			CAST_SPELL : 5, DO_NOTHING : 99};
 
-	if (nearestEnemy) {
-		console.log("Nearest enemy:",nearestEnemy,this.getDistance(monster.position, nearestEnemy));
+	if (nearestEnemyPosition) {
+		console.log("Nearest enemy:",nearestEnemyPosition,this.getDistance(monster.position, nearestEnemyPosition));
 
 		/* by default, we attack with our hands and claws. */
-		var action = Action.ATTACK_MELEE;
-		var distance = this.getDistance(monster.position, nearestEnemy);
+		var action = Action.ATTACK;
+		var distance = this.getDistance(monster.position, nearestEnemyPosition);
+		var nearestEnemy = this.getMonsterAt(nearestEnemyPosition);
 
+		/*
+		 *
+		 * Decide best action
+		 *
+		 */
 
 		if (monster.personality === globals.MonsterPersonality.IMMOBILE) {
 			if (distance == 1)
-				action = Action.ATTACK_MELEE;
+				action = Action.ATTACK;
 			else if (monster.weapon === globals.WeaponStyle.MELEE)
 				action = Action.DO_NOTHING;
 			else if (moster.weapon === globals.WeaponStyle.RANGED)
-				action = Action.ATTACK_RANGED;
+				action = Action.ATTACK;
 			else if (moster.weapon === globals.WeaponStyle.MAGIC) {
-					// cast a spell
+				action = Action.CAST_SPELL;
 			}
 		}
 		else if (monster.personality === globals.MonsterPersonality.CAREFUL) {
 			if (distance == 1)
-				action = Action.ATTACK_MELEE;
+				action = Action.ATTACK;
 			else if (monster.weapon === globals.WeaponStyle.MELEE) {
-				action = (distance > monster.moveRange)? Action.GATHER_AROUND : Action.ATTACK_MELEE;
+				action = (distance > monster.moveRange)? Action.GATHER_AROUND : Action.ATTACK;
 			}
-			else if (monster.weapon === globals.WeaponStyle.RANGED) {
-				action = Action.ATTACK_RANGED;
-			}
-			else if (monster.weapon === globals.WeaponStyle.MAGIC) {
-				action = Action.ATTACK_MAGIC;
+			else {
+				action = Action.ATTACK;
 			}
 		}
 		else if (monster.personality === globals.MonsterPersonality.INDIVIDUAL) {
-			//monster.skipTurn();
+			
 		}
 		else if (monster.personality === globals.MonsterPersonality.BERSERK) {
-			//monster.skipTurn();
+			
 		}
 		else {
 			console.error("Something's wrong with personalities!")
 		}
 
 
-		if (action === Action.ATTACK_MELEE) {
-			if (distance <= monster.moveRange) {
-				//monster.skipTurn();
-			}
-			else {
-				//monster.skipTurn();
-				//monster.moveTowards(monster.position);
-			}
-		}
-		else {
-			//monster.skipTurn();
-		}
-	}
+		/*
+		 *
+		 * Handle the wanted action
+		 *
+		 */
 
-	monster.skipTurn();
+		if (action === Action.ATTACK) {
+			console.log("Action: ATTACK");
+			if (monster.weapon === globals.WeaponStyle.MELEE)
+				monster.moveTo(nearestEnemyPosition);
+			else // ranged || magic
+				monster.attack(nearestEnemy);
+		}
+		else if (action === Action.GATHER_AROUND) {
+			console.log("Action: GATHER_AROUND");
+			monster.skipTurn();
+		}
+		else if (action === Action.DEFEND_WEAK) {
+			console.log("Action: DEFEND_WEAK");
+			monster.skipTurn();
+		}
+		else if (action === Action.MOVE_CLOSER) {
+			console.log("Action: MOVE_CLOSER");
+			monster.skipTurn();
+		}
+		else if (action === Action.CAST_SPELL) {
+			// TODO: implement spells
+			// for now, we just attack
+			monster.attack(nearestEnemy);
+		}
+		else
+			monster.skipTurn();
+	}
+	else {
+		console.warn("Couldn't find nearest enemy!");
+		monster.skipTurn();
+	}
 }

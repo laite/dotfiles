@@ -3,16 +3,9 @@
 
 ¤ actual AI
 ¤ show possible tiles where to move
-¤ merge moveTo/&wards
+¤ make AI move towards enemy
 
 * LATER *
-
-monster interaction:
-	¤ attack()
-
-Artificial intelligence:
-	¤ getNearestEnemy()
-	¤ 
 
 sidebar
 	¤ status
@@ -20,4 +13,5 @@ sidebar
 	¤ 
 
 other:
-
+	¤ keyboard commands
+	¤ attack/magic ranges?

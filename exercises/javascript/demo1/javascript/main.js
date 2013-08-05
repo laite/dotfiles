@@ -100,6 +100,7 @@ var Monster = function(rect, id) {
 			this.destination = rect;
 			go = true;
 		}
+		/* on other case, we move towards point as far as we can */
 		else {
 			var destination = war.getPointTowardsGoal(this.position, rect, this.moveRange);
 			if (destination) {
