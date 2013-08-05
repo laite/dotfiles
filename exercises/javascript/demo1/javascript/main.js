@@ -89,7 +89,6 @@ var Monster = function(rect, id) {
 	this.kill = function() {
 		console.log("Killing",this.name,this.id);
 
-		war.nextUnit();
 		NEED_INIT = true;
 		globals.Monsters.remove(this);
 	}
@@ -126,13 +125,6 @@ var Monster = function(rect, id) {
 		/* note that units turn continues until we get a proper destination 
 		 * TODO: or turn is manually skipped */
 	}
-
-
-	/*
-	 * moveTowards specific target, not necessarily reaching it
-	 * this function only calculates point in the route, actual
-	 * moving is done through moveTo(rect)
-	 */
 
 	/*
 	 * skipTurn means that monster does nothing, and next unit gets activated
@@ -301,23 +293,34 @@ Monster.prototype.update = function(msDuration) {
 	}
 	else if (this.getState() === globals.MonsterState.ATTACKING) {
 		
-		var result = war.battle(this.id, this.enemy.id);
+		war.battle(this.id, this.enemy.id);
 
 		if (this.hp <= 0) {
+			war.nextUnit();
 			this.kill();
 		}
+		else {
+			if (this.enemy.hp <= 0) {
+				this.enemy.kill();
 
-		/* after melee attack (if both are still alive) we find a new position for attacker */
-		if (war.samePlace(this.position, this.enemy.position)) {
-			var newLocation = war.findNewLocation(this.position);
-			console.log("New location:",newLocation);
-			this.changeState(globals.MonsterState.MOVING_AFTER_ATTACK);
-			this.moveTo(newLocation);
+				/* enemy is dead, so we can stay at its position */
+				war.setTileState(this.position, globals.TileState.OCCUPIED, this.id);
+				this.endTurn();
+				console.log("Monster",this.name,"killed its enemy!");
+			}
+			else {
+				/* both seem to be still alive, so we find a new position for (melee-)attacker */
+				if (war.samePlace(this.position, this.enemy.position)) {
+					var newLocation = war.findNewLocation(this.position);
+					console.log("New location:",newLocation);
+					this.changeState(globals.MonsterState.MOVING_AFTER_ATTACK);
+					this.moveTo(newLocation);
+				}
+				else
+					this.endTurn();
+			}
 		}
-		else
-			this.endTurn();
-
-	}
+	} // if this.getState() === globals.MonsterState.ATTACKING
 };
 
 
