@@ -87,7 +87,7 @@ var Monster = function(rect, id) {
 	 */
 
 	this.kill = function() {
-		console.log("Killing",this.name,this.id);
+		console.log("Killing",this.name);
 
 		NEED_INIT = true;
 		globals.Monsters.remove(this);
@@ -131,7 +131,7 @@ var Monster = function(rect, id) {
 	 */
 	this.skipTurn = function() {
 		this.endTurn();
-		console.log("Monster",this.name,this.id,"skipped its turn");
+		console.log("Monster",this.name,"skipped its turn");
 	}
 
 	/*
@@ -144,7 +144,7 @@ var Monster = function(rect, id) {
 
 	/* activate sets monster as 'active' one on battlefield */
 	this.activate = function() {
-		console.log(this.name, this.id, "just became active");
+		console.log(this.name, "just became active");
 		this.image = gamejs.image.load(this.image_name + "_active.png");
 
 		/* if this is computer controlled, it launches its ai sequence */
@@ -155,7 +155,7 @@ var Monster = function(rect, id) {
 
 	/* deactivate passivates the monster */
 	this.deactivate = function() {
-		console.log(this.name, this.id, "was de-activated");
+		console.log(this.name, "was de-activated");
 		this.image = gamejs.image.load(this.image_name + ".png");
 	}
 
@@ -183,7 +183,7 @@ var Monster = function(rect, id) {
 		}
 	}
 
-	console.log("Created", this.name, this.id, "(speed:", this.speed, "move:", this.moveRange, "hp:",this.hp,")");
+	console.log("Created", this.name, "(speed:", this.speed, "move:", this.moveRange, "hp:",this.hp,")");
 
 	return this;
 };
@@ -196,7 +196,7 @@ var Monster = function(rect, id) {
 
 var Orc = function(rect, id) {
 	this.image_name = "images/orc";
-	this.name = "Orc";
+	this.name = "Orc " + id;
 	this.family = "Heroes";
 
 	this.personality = war.randomPersonality([globals.MonsterPersonality.BERSERK,globals.MonsterPersonality.INDIVIDUAL]);
@@ -216,7 +216,7 @@ var Orc = function(rect, id) {
 
 var Octopus = function(rect, id) {
 	this.image_name = "images/octopus";
-	this.name = "Octo-Monster";
+	this.name = "Octo-Monster " + id;
 	this.family = "Monsters";
 
 	this.personality = war.randomPersonality([globals.MonsterPersonality.CAREFUL,globals.MonsterPersonality.INDIVIDUAL]);
@@ -295,21 +295,28 @@ Monster.prototype.update = function(msDuration) {
 		
 		war.battle(this.id, this.enemy.id);
 
+		/* Note: It's not possible that both monsters die in the battle */
+
+		/* If attacker died, it's over for him */
 		if (this.hp <= 0) {
+			console.log("Monster",this.enemy.name,"killed its enemy!");
 			war.nextUnit();
 			this.kill();
 		}
+		/* If attacker survived ... */
 		else {
+			/* enemy is dead, so we can stay at its position (if melee-fight) */
 			if (this.enemy.hp <= 0) {
 				this.enemy.kill();
 
-				/* enemy is dead, so we can stay at its position */
-				war.setTileState(this.position, globals.TileState.OCCUPIED, this.id);
+				if (war.samePlace(this.position, this.enemy.position)) {
+					war.setTileState(this.position, globals.TileState.OCCUPIED, this.id);
+				}
 				this.endTurn();
 				console.log("Monster",this.name,"killed its enemy!");
 			}
+			/* Enemy is also alive, so we need to find a new position for us (if attacked by melee) */
 			else {
-				/* both seem to be still alive, so we find a new position for (melee-)attacker */
 				if (war.samePlace(this.position, this.enemy.position)) {
 					var newLocation = war.findNewLocation(this.position);
 					console.log("New location:",newLocation);
@@ -358,8 +365,8 @@ function main() {
 
 	for (var i=0; i < (globals.AMOUNT_OF_MONSTERS); i++)
 		globals.Monsters.add(new Orc([i*globals.TILE_SIZE, 0], i));
-	for (var i=0; i < (globals.AMOUNT_OF_MONSTERS); i++)
-		globals.Monsters.add(new Octopus([i*globals.TILE_SIZE, 9*globals.TILE_SIZE], i+globals.AMOUNT_OF_MONSTERS));
+	for (var i=0; i < (10); i++)
+		globals.Monsters.add(new Octopus([i*globals.TILE_SIZE, 9*globals.TILE_SIZE], i));
 
 	/* Ground */
 
@@ -391,22 +398,7 @@ function main() {
 			/* If we are on canvas, draw rectangle on current tile */
 			if (mainSurface.rect.collidePoint(event.pos)) {
 				cursor_pos = war.getTile(event.pos);
-
-				var dist = war.getDistance(cursor_pos, activeMonster.position);
-
-				if (dist > activeMonster.moveRange) {
-					cursor_state = globals.CursorState.DISALLOWED;
-				}
-				else {
-					var monsterInTile = war.getTileState(cursor_pos);
-					if (monsterInTile === globals.TileState.OCCUPIED) {
-						if (war.getMonsterAt(cursor_pos).family != activeMonster.family)
-						cursor_state = globals.CursorState.ATTACK;
-					}
-					else {
-						cursor_state = globals.CursorState.ALLOWED;
-					}
-				}
+				cursor_state = war.updateCursorState(cursor_pos, activeMonster);
 			}
 		}
 
@@ -453,6 +445,7 @@ function main() {
 			activeMonsterIndex = war.getCurrentUnit();
 			activeMonster = globals.Monsters.sprites()[activeMonsterIndex];
 			activeMonster.changeState(globals.MonsterState.ACTIVE);
+			cursor_state = war.updateCursorState(cursor_pos, activeMonster);
 		}
 
 		NEED_INIT = false;

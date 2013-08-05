@@ -83,6 +83,28 @@ exports.getDistance = function(p1, p2) {
 	return distance;
 }
 
+exports.updateCursorState = function(cursor_pos,activeMonster) {
+
+	var dist = this.getDistance(cursor_pos, activeMonster.position);
+	var cursor_state = globals.CursorState.ALLOWED;
+
+	if (dist > activeMonster.moveRange) {
+		cursor_state = globals.CursorState.DISALLOWED;
+	}
+	else {
+		var monsterInTile = this.getTileState(cursor_pos);
+		if (monsterInTile === globals.TileState.OCCUPIED) {
+			if (this.getMonsterAt(cursor_pos).family != activeMonster.family)
+				cursor_state = globals.CursorState.ATTACK;
+		}
+		else {
+			cursor_state = globals.CursorState.ALLOWED;
+		}
+	}
+
+	return cursor_state;
+}
+
 /* drawCursor gets parameters x and y as tiles */
 exports.drawCursor = function(surface, position, state) {
 
@@ -341,19 +363,19 @@ exports.battle = function(id1, id2) {
 	var m2 = globals.Monsters.sprites()[id2];
 
 	console.log("### BATTLE ###");
-	console.log(m1.name, m1.id, " vs. ", m2.name, m2.id);
+	console.log(m1.name, " vs. ", m2.name);
 
 	/* melee attack */
 	if (this.samePlace(m1.position, m2.position)) {
 
 		/* attacker goes first */
 		var m1Damage = m1.getDamage(globals.WeaponStyle.MELEE);
-		console.log(m1.name,m1.id,"damage:",m1Damage);
+		console.log(m1.name,"damage:",m1Damage);
 		m2.hp -= m1Damage;
 
 		if (m2.hp > 0) {
 			var m2Damage = m2.getDamage(globals.WeaponStyle.MELEE);
-			console.log(m2.name,m2.id,"damage:",m2Damage);
+			console.log(m2.name,"damage:",m2Damage);
 			m1.hp -= m2Damage;
 		}
 	}
@@ -394,7 +416,7 @@ exports.findNearestEnemy = function(monster) {
  * 		attack/magic ranges?
  */
 exports.doAI = function(monster) {
-	console.log("AI:",monster.name,monster.id,monster.position);
+	console.log("AI:",monster.name,monster.position);
 	var nearestEnemyPosition = this.findNearestEnemy(monster);
 
 	var Action = { ATTACK : 0, GATHER_AROUND : 1, DEFEND_WEAK : 3, MOVE_CLOSER : 4, 
