@@ -355,12 +355,19 @@ function main() {
 
 				var dist = war.getDistance(cursor_pos, activeMonster.position);
 
-				if (dist > activeMonster.moveRange)
+				if (dist > activeMonster.moveRange) {
 					cursor_state = globals.CursorState.DISALLOWED;
-				else if (dist <= activeMonster.moveRange)
-					cursor_state = globals.CursorState.ALLOWED;
-
-				// TODO: handle if there's a monstrocity */
+				}
+				else {
+					var monsterInThere = war.getMonsterAt(cursor_pos);
+					if (monsterInThere !== null) {
+						if (monsterInThere.family != activeMonster.family)
+						cursor_state = globals.CursorState.ATTACK;
+					}
+					else {
+						cursor_state = globals.CursorState.ALLOWED;
+					}
+				}
 			}
 		}
 

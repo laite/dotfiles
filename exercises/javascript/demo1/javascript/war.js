@@ -101,7 +101,7 @@ exports.drawCursor = function(surface, position, state) {
 	if (state === globals.CursorState.DISALLOWED)
 		col = "rgba(255, 255, 255, 0.2)";
 	else if (state === globals.CursorState.ATTACK)
-		col = "#880000";
+		col = "rgba(255, 0, 0, 0.3)";
 
 	draw.rect(surface, col, new gamejs.Rect([x,y,globals.TILE_SIZE,globals.TILE_SIZE]), cursor_size);
 }
@@ -210,7 +210,11 @@ exports.getTileMonsterID = function(arr) {
 
 exports.getMonsterAt = function(arr) { 
 	var id = this.getTileMonsterID(arr);
-	return globals.Monsters.sprites()[id];
+
+	if (id === null)
+		return null;
+	else
+		return globals.Monsters.sprites()[id];
 }
 
 exports.getPointTowardsGoal = function(p1, p2, range) {
