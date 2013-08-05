@@ -53,6 +53,9 @@ var Monster = function(rect, id) {
 	// moveRange is based on speed and it's between [1,5]
 	this.moveRange = Math.max(1, Math.floor(this.speed/2));
 
+	/* VERY_WEAK : 0, WEAK : 1, NORMAL : 2, TOUGH : 3, VERY_TOUGH : 4, GODLIKE : 5 */
+	this.hp = Math.round((this.endurance*10)+(this.endurance*10*Math.random()));
+
 	// passive image
 	this.image = gamejs.image.load(this.image_name + ".png");
 
@@ -80,6 +83,15 @@ var Monster = function(rect, id) {
 	 * Monster public functions
 	 *
 	 */
+
+	/* getDamage returns inflicted pain */
+	this.getDamage = function(style) { 
+		var damage = 0;
+	   	for (var i=0; i<this.damage[style]; i++) {
+			damage += 10*Math.random();
+		}
+		return damage;
+	}
 
 
 	/*
@@ -117,25 +129,6 @@ var Monster = function(rect, id) {
 	this.skipTurn = function() {
 		this.endTurn();
 		console.log("Monster",this.name,this.id,"skipped its turn");
-	}
-
-	/*
-	 * attack handles one-on-one battle between enemies
-	 */
-	this.attack = function(enemy) {
-		console.log("Attacking",enemy.name,enemy.id);
-
-		/* TODO : actual attack */
-
-		// after melee attack we find close position for attacker
-		if (this.position[0] == enemy.position[0] && this.position[1] == enemy.position[1]) {
-			var newLocation = war.findNewLocation(this.position);
-			console.log("New location:",newLocation);
-			this.changeState(globals.MonsterState.MOVING_AFTER_ATTACK);
-			this.moveTo(newLocation);
-		}
-		else
-			this.endTurn();
 	}
 
 	/*
@@ -187,7 +180,7 @@ var Monster = function(rect, id) {
 		}
 	}
 
-	console.log("Created", this.name, this.id, "(speed:", this.speed, " move:", this.moveRange, ")");
+	console.log("Created", this.name, this.id, "(speed:", this.speed, "move:", this.moveRange, "hp:",this.hp,")");
 
 	return this;
 };
@@ -205,7 +198,13 @@ var Orc = function(rect, id) {
 
 	this.personality = war.randomPersonality([globals.MonsterPersonality.BERSERK,globals.MonsterPersonality.INDIVIDUAL]);
 	this.naturalSpeedType = globals.MonsterSpeed.VERY_QUICK;
+	this.endurance = globals.MonsterEndurance.VERY_TOUGH;
 	this.weapon = globals.WeaponStyle.MELEE;
+
+	this.damage = {};
+	this.damage[globals.WeaponStyle.MELEE] = 7;
+	this.damage[globals.WeaponStyle.RANGED] = 0;
+	this.damage[globals.WeaponStyle.MAGIC] = 0;
 
 	this.controller = globals.Controller.HUMAN;
 
@@ -219,7 +218,13 @@ var Octopus = function(rect, id) {
 
 	this.personality = war.randomPersonality([globals.MonsterPersonality.CAREFUL,globals.MonsterPersonality.INDIVIDUAL]);
 	this.naturalSpeedType = globals.MonsterSpeed.QUICK;
+	this.endurance = globals.MonsterEndurance.WEAK;
 	this.weapon = globals.WeaponStyle.MAGIC;
+
+	this.damage = {};
+	this.damage[globals.WeaponStyle.MELEE] = 2;
+	this.damage[globals.WeaponStyle.RANGED] = 0;
+	this.damage[globals.WeaponStyle.MAGIC] = 5;
 
 	this.controller = globals.Controller.HUMAN;
 
@@ -259,7 +264,8 @@ Monster.prototype.update = function(msDuration) {
 
 			/* if we are on hostile tile, we launch attack */
 			if ((war.getTileState(this.position) === globals.TileState.OCCUPIED) && (war.getMonsterAt(this.position).family != this.family)) {
-				this.attack(war.getMonsterAt(this.position));
+				this.enemy = war.getMonsterAt(this.position);
+				this.changeState(globals.MonsterState.ATTACKING);
 			}
 			/* else, we end turn */
 			else {
@@ -283,6 +289,18 @@ Monster.prototype.update = function(msDuration) {
 		this.rect.moveIp(delta[0], delta[1]);
 	}
 	else if (this.getState() === globals.MonsterState.ATTACKING) {
+		
+		var result = war.battle(this.id, this.enemy.id);
+
+		/* after melee attack (if both are still alive) we find a new position for attacker */
+		if (this.position[0] == this.enemy.position[0] && this.position[1] == this.enemy.position[1]) {
+			var newLocation = war.findNewLocation(this.position);
+			console.log("New location:",newLocation);
+			this.changeState(globals.MonsterState.MOVING_AFTER_ATTACK);
+			this.moveTo(newLocation);
+		}
+		else
+			this.endTurn();
 
 	}
 };

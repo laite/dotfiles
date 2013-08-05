@@ -328,6 +328,45 @@ exports.findNewLocation = function(arr) {
 /*
  *
  *
+ * Battle
+ *
+ *
+ */
+
+exports.samePlace = function(p1, p2) {
+	return ((p1[0] == p2[0]) && (p1[1] == p2[1]));
+}
+
+exports.battle = function(id1, id2) {
+	var m1 = globals.Monsters.sprites()[id1];
+	var m2 = globals.Monsters.sprites()[id2];
+
+	console.log("### BATTLE ###");
+	console.log(m1.name, m1.id, " vs. ", m2.name, m2.id);
+
+	/* melee attack */
+	if (this.samePlace(m1.position, m2.position)) {
+
+		/* attacker goes first */
+		var m1Damage = m1.getDamage(globals.WeaponStyle.MELEE);
+		console.log(m1.name,m1.id,"damage:",m1Damage);
+		m2.hp -= m1Damage;
+
+		if (m2.hp > 0) {
+			var m2Damage = m2.getDamage(globals.WeaponStyle.MELEE);
+			console.log(m2.name,m2.id,"damage:",m2Damage);
+			m1.hp -= m2Damage;
+		}
+	}
+	/* ranged/magic attack */
+	else {
+		// TODO
+	}
+}
+
+/*
+ *
+ *
  * Artificial Intelligence
  *
  *

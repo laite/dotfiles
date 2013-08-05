@@ -61,6 +61,15 @@ exports.MonsterPersonality = {
 	BERSERK : 3
 }
 
+exports.MonsterEndurance = {
+	VERY_WEAK : 0,
+	WEAK : 1,
+	NORMAL : 2,
+	TOUGH : 3,
+	VERY_TOUGH : 4,
+	GODLIKE : 5
+}
+
 exports.WeaponStyle = {
 	MELEE : 0,
 	RANGED : 1,
