@@ -119,23 +119,40 @@ exports.randomPersonality = function(arr) {
  *
  */
 
-exports.initUnits = function(forceUnit = 0) {
+exports.init = function(forceUnit = 0) {
 
 	/*
+	 * Init map tiles
+	 */
+
+	for (var index_x=0; index_x<globals.TILE_AMOUNT; index_x++) {
+		for (var index_y=0; index_y<globals.TILE_AMOUNT; index_y++) {
+			engine.tiles[index_x][index_y]['state'] = globals.TileState.EMPTY;
+		}
+	}
+
+	/*
+	 * Init units
+	 *
 	 * We calculate order of units based on their speed
 	 * so that fastests units go first
 	 *
 	 * Resulting order array is engine.units
 	 */
 
-	var speeds = [];
 	var i = 0;
-
+	var speeds = [];
 	engine.units = [];
 
 	globals.Monsters.forEach(function(monster) {
-		engine.units.push(i++);
+		var [x, y] = monster.position;
+
+		monster.id = i++;
+		engine.units.push(monster.id);
 		speeds.push(monster.speed); 
+
+		engine.tiles[x][y]['state'] = globals.TileState.OCCUPIED;
+		engine.tiles[x][y]['monster'] = monster.id;
 	});
 
 	function sort_index(a, b) {
@@ -145,41 +162,10 @@ exports.initUnits = function(forceUnit = 0) {
 	engine.units.sort(sort_index);
 	engine.currentUnit = forceUnit%engine.units.length;
 
-	console.log("initUnits(), currentUnit:",engine.currentUnit,"units.length:",engine.units.length,"forceUnit:",forceUnit);
+	console.log("* INIT *");
+	console.log("currentUnit:",engine.currentUnit,"units.length:",engine.units.length,"forceUnit:",forceUnit);
 }
 
-exports.initTiles = function() {
-
-	/*
-	 * We need to know where monsters are on the map
-	 * and which tiles are empty
-	 *
-	 * Array of tiles is engine.tiles
-	 */
-
-	for (var i=0; i<globals.TILE_AMOUNT; i++) {
-		for (var j=0; j<globals.TILE_AMOUNT; j++) {
-			engine.tiles[i][j]['state'] = globals.TileState.EMPTY;
-		}
-	}
-
-	globals.Monsters.forEach(function(monster) {
-		var [x, y] = monster.position;
-
-		engine.tiles[x][y]['state'] = globals.TileState.OCCUPIED;
-		engine.tiles[x][y]['monster'] = monster.id;
-	});
-	
-	console.log("initTiles - ok");
-}
-
-exports.initMonsterIds = function() {
-	var i = 0;
-	globals.Monsters.forEach(function(monster) {
-		monster.id = i;
-		i++;
-	});
-}
 /*
  *
  *

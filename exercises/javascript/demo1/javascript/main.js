@@ -374,9 +374,7 @@ function main() {
 	 */
 
 
-	war.initUnits();
-	war.initTiles();
-
+	war.init();
 
 	/*
 	 * Event handling
@@ -445,9 +443,7 @@ function main() {
 
 		if (NEED_INIT) {
 			console.log("Re-initing things");
-			war.initMonsterIds();
-			war.initUnits(war.getCurrentUnitIndex());
-			war.initTiles();
+			war.init(war.getCurrentUnitIndex());
 		}
 
 		if ((war.getCurrentUnit() != activeMonsterIndex) || (NEED_INIT)) {
