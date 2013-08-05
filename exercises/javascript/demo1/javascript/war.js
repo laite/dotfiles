@@ -119,7 +119,7 @@ exports.randomPersonality = function(arr) {
  *
  */
 
-exports.initUnits = function() {
+exports.initUnits = function(forceUnit = 0) {
 
 	/*
 	 * We calculate order of units based on their speed
@@ -131,6 +131,8 @@ exports.initUnits = function() {
 	var speeds = [];
 	var i = 0;
 
+	engine.units = [];
+
 	globals.Monsters.forEach(function(monster) {
 		engine.units.push(i++);
 		speeds.push(monster.speed); 
@@ -141,9 +143,9 @@ exports.initUnits = function() {
 	}
 
 	engine.units.sort(sort_index);
-	engine.currentUnit = 0;
+	engine.currentUnit = forceUnit%engine.units.length;
 
-	console.log("initUnits - ok");
+	console.log("initUnits(), currentUnit:",engine.currentUnit,"units.length:",engine.units.length,"forceUnit:",forceUnit);
 }
 
 exports.initTiles = function() {
@@ -171,6 +173,13 @@ exports.initTiles = function() {
 	console.log("initTiles - ok");
 }
 
+exports.initMonsterIds = function() {
+	var i = 0;
+	globals.Monsters.forEach(function(monster) {
+		monster.id = i;
+		i++;
+	});
+}
 /*
  *
  *
@@ -189,6 +198,10 @@ exports.nextUnit = function() {
 
 exports.getCurrentUnit = function() {
 	return engine.units[engine.currentUnit];
+}
+
+exports.getCurrentUnitIndex = function() {
+	return engine.currentUnit;
 }
 
 exports.getTileState = function(arr) {

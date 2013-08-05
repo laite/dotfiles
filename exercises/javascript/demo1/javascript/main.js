@@ -25,6 +25,7 @@ var war = require('war');
 
 
 var cursor_pos = [0,0], cursor_state = globals.CursorState.ALLOWED;
+var NEED_INIT = false;
 
 console.log(war.name());
 
@@ -55,6 +56,7 @@ var Monster = function(rect, id) {
 
 	/* VERY_WEAK : 0, WEAK : 1, NORMAL : 2, TOUGH : 3, VERY_TOUGH : 4, GODLIKE : 5 */
 	this.hp = Math.round((this.endurance*10)+(this.endurance*10*Math.random()));
+	this.maxhp = this.hp;
 
 	// passive image
 	this.image = gamejs.image.load(this.image_name + ".png");
@@ -84,13 +86,22 @@ var Monster = function(rect, id) {
 	 *
 	 */
 
+	this.kill = function() {
+		console.log("Killing",this.name,this.id);
+
+		war.nextUnit();
+		NEED_INIT = true;
+		globals.Monsters.remove(this);
+	}
+
 	/* getDamage returns inflicted pain */
 	this.getDamage = function(style) { 
 		var damage = 0;
 	   	for (var i=0; i<this.damage[style]; i++) {
 			damage += 10*Math.random();
 		}
-		return damage;
+		// inflicted damage goes down with health of unit
+		return Math.round(damage*(this.hp/this.maxhp));
 	}
 
 
@@ -258,7 +269,7 @@ Monster.prototype.update = function(msDuration) {
 		var diff = [Math.abs(goal[0]-position[0]), Math.abs(goal[1]-position[1])];
 
 		/* We launch actual attack only when movement has finished */
-		if (position[0] == goal[0] && position[1] == goal[1])
+		if (war.samePlace(position, goal))
 		{
 			this.position = this.destination;
 
@@ -292,8 +303,12 @@ Monster.prototype.update = function(msDuration) {
 		
 		var result = war.battle(this.id, this.enemy.id);
 
+		if (this.hp <= 0) {
+			this.kill();
+		}
+
 		/* after melee attack (if both are still alive) we find a new position for attacker */
-		if (this.position[0] == this.enemy.position[0] && this.position[1] == this.enemy.position[1]) {
+		if (war.samePlace(this.position, this.enemy.position)) {
 			var newLocation = war.findNewLocation(this.position);
 			console.log("New location:",newLocation);
 			this.changeState(globals.MonsterState.MOVING_AFTER_ATTACK);
@@ -428,11 +443,21 @@ function main() {
 	/* msDuration = time since last tick() call */
 	gamejs.onTick(function(msDuration) {
 
-		if (war.getCurrentUnit() != activeMonsterIndex) {
+		if (NEED_INIT) {
+			console.log("Re-initing things");
+			war.initMonsterIds();
+			war.initUnits(war.getCurrentUnitIndex());
+			war.initTiles();
+		}
+
+		if ((war.getCurrentUnit() != activeMonsterIndex) || (NEED_INIT)) {
 			activeMonsterIndex = war.getCurrentUnit();
 			activeMonster = globals.Monsters.sprites()[activeMonsterIndex];
 			activeMonster.changeState(globals.MonsterState.ACTIVE);
 		}
+
+		NEED_INIT = false;
+
 		/*
 		 * Drawing stuff
 		 */
