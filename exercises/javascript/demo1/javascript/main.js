@@ -324,8 +324,8 @@ function main() {
 
 	var gGroundTiles = new gamejs.sprite.Group();
 
-	for (var i=0; i<(globals.CANVAS_WIDTH/globals.TILE_SIZE); i++) {
-		for (var j=0; j<(globals.CANVAS_WIDTH/globals.TILE_SIZE); j++) {
+	for (var i=0; i<globals.TILE_AMOUNT; i++) {
+		for (var j=0; j<globals.TILE_AMOUNT; j++) {
 			gGroundTiles.add(new Ground([i*globals.TILE_SIZE, j*globals.TILE_SIZE]));
 		}
 	}
@@ -389,7 +389,7 @@ function main() {
 				var tileState = war.getTileState(click_pos);
 				var dist = war.getDistance(click_pos, activeMonster.position);
 
-				console.log("pos:", click_pos, "state:", tileState, "dist:", dist);
+				console.log("Click:", click_pos, "state:", tileState, "dist:", dist);
 
 				activeMonster.moveTo(click_pos);
 			}

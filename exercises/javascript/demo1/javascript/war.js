@@ -246,6 +246,54 @@ exports.getPointTowardsGoal = function(p1, p2, range) {
 	return point;
 }
 
+exports.getRectFromRadius = function(pos, radius) {
+	var x0 = pos[0]-radius, y0 = pos[1]-radius;
+	var x1 = pos[0]+radius, y1 = pos[1]+radius;
+
+	x0 = Math.min(x0, globals.TILE_AMOUNT-1); y0 = Math.min(y0, globals.TILE_AMOUNT-1);
+	x0 = Math.max(x0, 0); y0 = Math.max(y0, 0);
+	x1 = Math.min(x1, globals.TILE_AMOUNT-1); y1 = Math.min(y1, globals.TILE_AMOUNT-1);
+	x1 = Math.max(x1, 0); y1 = Math.max(y1, 0);
+
+	return [x0,y0,x1,y1];
+}
+
+/* findFreeTile gets rect with four points as argument */
+exports.findFreeTile = function(rect) {
+	if ((!rect instanceof Array) || (rect.length < 4)) {
+		console.error("Invalid parameter at findFreeTile!");
+		return null;
+	}
+
+	var allPoints = [];
+	var found = false, foundPoint = [];
+	var [x0, y0] = [Math.min(rect[0],rect[2]), Math.min(rect[1],rect[3])];
+	var [x1, y1] = [Math.max(rect[0],rect[2]), Math.max(rect[1],rect[3])];
+
+	for (var x = x0; x <= x1; x++) {
+		for (var y = y0; y <= y1; y++) {
+			allPoints.push([x,y]);
+		}
+	}
+
+	while (!found) {
+		var i = Math.floor(allPoints.length * Math.random());
+		if (this.getTileState(allPoints[i]) === globals.TileState.EMPTY) {
+			found = true;
+			foundPoint = allPoints[i];
+		}
+		else
+			allPoints.splice(i,1);
+
+		if (allPoints.length == 0)
+			found = true;
+	}
+
+	if (!found)
+		return null;
+	else
+		return foundPoint;
+}
 /*
  *
  *
