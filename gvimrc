@@ -5,6 +5,7 @@ set ch=1
 set guioptions=agit
 set guicursor+=a:blinkon0
 set mousehide		" Hide the mouse when typing text
+set guifont=Monospace\ 9
 
 " set initial size of gvim
 set lines=40
@@ -69,5 +70,5 @@ if exists("+showtabline")
   set tabline=%!MyTabLine()
 endif
 
-"color laite05
-color rdark
+color laite05
+"color rdark
