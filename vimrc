@@ -17,15 +17,17 @@ set showcmd						" display incomplete commands
 set incsearch					" do incremental searching
 set mouse=a						" enable mouse for all modes
 set hlsearch					" highlight search results
-set tabstop=4					" number of spaces a tab counts for
+set tabstop=8					" number of spaces a tab counts for
+set noexpandtab					" don't handle tab as spaces
 set shiftwidth=4				" number of spaces for (auto)indent
+set softtabstop=4				" number of spaces that a <tab> counts
 set smartindent					" start new lines indented
 set nowrap						" don't wrap long lines
 set ignorecase smartcase 		" ignore case on lowcase-searches
 set scrolloff=5 				" always +- 5 rows in sight
 set sidescrolloff=5				" always +- 5 columns
 set linebreak
-set showbreak=\ ->\ 
+set showbreak=\ -->\ 
 set number
 set relativenumber				" use relative numbers by default
 
@@ -234,9 +236,6 @@ if has("autocmd")
   " Put these in an autocmd group, so that we can delete them easily.
   augroup vimrcEx
   au!
-
-  " For all text files set 'textwidth' to 78 characters.
-  autocmd FileType text setlocal textwidth=78
 
   " When editing a file, always jump to the last known cursor position.
   autocmd BufReadPost *
