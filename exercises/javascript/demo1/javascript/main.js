@@ -162,7 +162,6 @@ var Monster = function(rect, id) {
 	/* activate sets monster as 'active' one on battlefield */
 	this.activate = function() {
 		console.log(this.name, "just became active");
-		//this.image = gamejs.image.load(this.image_name + "_active.png");
 
 		/* if this is computer controlled, it launches its ai sequence */
 		if (this.controller === globals.Controller.AI) {
@@ -213,8 +212,30 @@ var Monster = function(rect, id) {
 
 var Orc = function(rect, id) {
 	this.image_name = "images/orc";
-	this.name = "Orc " + id;
-	this.family = "Heroes";
+	this.name = "Orc ";
+	this.family = "Orcs";
+
+	this.personality = war.randomPersonality([globals.MonsterPersonality.BERSERK,globals.MonsterPersonality.INDIVIDUAL]);
+	this.naturalSpeedType = globals.MonsterSpeed.QUICK;
+	this.endurance = globals.MonsterEndurance.TOUGH;
+	this.weapon = globals.WeaponStyle.MELEE;
+
+	this.damage = {};
+	this.damage[globals.WeaponStyle.MELEE] = 7;
+	this.damage[globals.WeaponStyle.RANGED] = 0;
+	this.damage[globals.WeaponStyle.MAGIC] = 0;
+	this.damageModifier = 3;
+	this.damageBonus = 3;
+
+	this.controller = globals.Controller.HUMAN;
+
+	Monster.call(this, rect, id);
+}
+
+var ToughOrc = function(rect, id) {
+	this.image_name = "images/tough_orc";
+	this.name = "Tough Orc ";
+	this.family = "Orcs";
 
 	this.personality = war.randomPersonality([globals.MonsterPersonality.BERSERK,globals.MonsterPersonality.INDIVIDUAL]);
 	this.naturalSpeedType = globals.MonsterSpeed.VERY_QUICK;
@@ -225,8 +246,8 @@ var Orc = function(rect, id) {
 	this.damage[globals.WeaponStyle.MELEE] = 7;
 	this.damage[globals.WeaponStyle.RANGED] = 0;
 	this.damage[globals.WeaponStyle.MAGIC] = 0;
-	this.damageModifier = 3;
-	this.damageBonus = 3;
+	this.damageModifier = 6;
+	this.damageBonus = 10;
 
 	this.controller = globals.Controller.HUMAN;
 
@@ -244,10 +265,32 @@ var Octopus = function(rect, id) {
 	this.weapon = globals.WeaponStyle.MAGIC;
 
 	this.damage = {};
-	this.damage[globals.WeaponStyle.MELEE] = 2;
+	this.damage[globals.WeaponStyle.MELEE] = 4;
 	this.damage[globals.WeaponStyle.RANGED] = 0;
 	this.damage[globals.WeaponStyle.MAGIC] = 5;
-	this.damageModifier = 6;
+	this.damageModifier = 4;
+	this.damageBonus = 0;
+
+	this.controller = globals.Controller.HUMAN;
+
+	Monster.call(this, rect, id);
+}
+
+var Evileye = function(rect, id) {
+	this.image_name = "images/evileye";
+	this.name = "Evil eye";
+	this.family = "Monsters";
+
+	this.personality = globals.MonsterPersonality.IMMOBILE;
+	this.naturalSpeedType = globals.MonsterSpeed.SLOW;
+	this.endurance = globals.MonsterEndurance.WEAK;
+	this.weapon = globals.WeaponStyle.RANGED;
+
+	this.damage = {};
+	this.damage[globals.WeaponStyle.MELEE] = 1;
+	this.damage[globals.WeaponStyle.RANGED] = 8;
+	this.damage[globals.WeaponStyle.MAGIC] = 0;
+	this.damageModifier = 3;
 	this.damageBonus = 0;
 
 	this.controller = globals.Controller.HUMAN;
@@ -266,6 +309,8 @@ var Ground = function(rect) {
 
 // inherit (actually: set prototype)
 gamejs.utils.objects.extend(Monster, gamejs.sprite.Sprite);
+gamejs.utils.objects.extend(ToughOrc, Monster);
+gamejs.utils.objects.extend(Evileye, Monster);
 gamejs.utils.objects.extend(Orc, Monster);
 gamejs.utils.objects.extend(Octopus, Monster);
 
@@ -314,6 +359,9 @@ Monster.prototype.update = function(msDuration) {
 	}
 	else if (this.getState() === globals.MonsterState.ATTACKING) {
 		
+		/* TODO: show some animation for a while? */
+
+
 		war.battle(this.id, this.enemy.id);
 
 		/* Note: It's not possible that both monsters die in the battle */
@@ -348,6 +396,8 @@ Monster.prototype.update = function(msDuration) {
 					this.endTurn();
 			}
 		}
+
+		activeEnemy = war.getMonsterAt(cursor_pos);
 	} // if this.getState() === globals.MonsterState.ATTACKING
 };
 
@@ -387,10 +437,15 @@ function main() {
 
 	globals.Monsters = new gamejs.sprite.Group();
 
-	for (var i=0; i < (1); i++)
+	for (var i=0; i < (3); i++)
 		globals.Monsters.add(new Orc([i*globals.TILE_SIZE, 0], i));
-	for (var i=0; i < (10); i++)
+	globals.Monsters.add(new ToughOrc([5*globals.TILE_SIZE, 0], 4));
+
+	for (var i=0; i < (5); i++)
 		globals.Monsters.add(new Octopus([i*globals.TILE_SIZE, 9*globals.TILE_SIZE], i));
+
+	for (var i=5; i < (10); i++)
+		globals.Monsters.add(new Evileye([i*globals.TILE_SIZE, 9*globals.TILE_SIZE], i));
 
 	/* Ground */
 
@@ -522,10 +577,10 @@ function main() {
  */
 
 
+gamejs.preload(['images/tough_orc.png']);
+gamejs.preload(['images/evileye.png']);
 gamejs.preload(['images/orc.png']);
-//gamejs.preload(['images/orc_active.png']);
 gamejs.preload(['images/octopus.png']);
-//gamejs.preload(['images/octopus_active.png']);
 gamejs.preload(['images/tile.png']);
 
 
