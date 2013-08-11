@@ -97,10 +97,27 @@ var Monster = function(rect, id) {
 	this.getDamage = function(style) { 
 		var damage = 0;
 	   	for (var i=0; i<this.damage[style]; i++) {
-			damage += 10*Math.random();
+			damage += Math.ceil(this.damageModifier*Math.random());
 		}
-		// inflicted damage goes down with health of unit
-		return Math.round(damage*(this.hp/this.maxhp));
+
+		if (this.hp/this.maxhp > 0.9)
+			return Math.round(damage);
+		else {
+			/* If monster has under 90% health left, its inflicted damage goes down */
+			var dispersion = damage*0.1;
+			var middlePoint = damage*(this.hp/this.maxhp);
+			damage = (middlePoint - dispersion) + (2*Math.random()*dispersion);
+			return Math.round(Math.max(0, damage));
+		}
+	}
+
+	/* getDamageString returns "XdY + Z" - type string */
+	this.getDamageString = function(style) { 
+		var string = this.damage[style] + "d" + this.damageModifier;
+		if (this.damageBonus != 0)
+			string += " + " + this.damageBonus;
+
+		return string;
 	}
 
 
@@ -208,6 +225,8 @@ var Orc = function(rect, id) {
 	this.damage[globals.WeaponStyle.MELEE] = 7;
 	this.damage[globals.WeaponStyle.RANGED] = 0;
 	this.damage[globals.WeaponStyle.MAGIC] = 0;
+	this.damageModifier = 3;
+	this.damageBonus = 3;
 
 	this.controller = globals.Controller.HUMAN;
 
@@ -228,6 +247,8 @@ var Octopus = function(rect, id) {
 	this.damage[globals.WeaponStyle.MELEE] = 2;
 	this.damage[globals.WeaponStyle.RANGED] = 0;
 	this.damage[globals.WeaponStyle.MAGIC] = 5;
+	this.damageModifier = 6;
+	this.damageBonus = 0;
 
 	this.controller = globals.Controller.HUMAN;
 
@@ -350,6 +371,9 @@ function main() {
 	gamejs.display.setCaption("Example Monsters");
 
 	var mainSurface = gamejs.display.getSurface();
+	var font = new gamejs.font.Font('13px Monospace');
+	var caption = new gamejs.font.Font('20px Monospace');
+
 
 	var activeMonster = null;
 	var activeMonsterIndex = -1;
@@ -363,7 +387,7 @@ function main() {
 
 	globals.Monsters = new gamejs.sprite.Group();
 
-	for (var i=0; i < (globals.AMOUNT_OF_MONSTERS); i++)
+	for (var i=0; i < (1); i++)
 		globals.Monsters.add(new Orc([i*globals.TILE_SIZE, 0], i));
 	for (var i=0; i < (10); i++)
 		globals.Monsters.add(new Octopus([i*globals.TILE_SIZE, 9*globals.TILE_SIZE], i));
@@ -404,25 +428,29 @@ function main() {
 
 		/* Mouse clicking */
 		if (event.type === gamejs.event.MOUSE_UP) {
-			
-			// TODO: make sure only clicks on game area are registered
-			// (after status area is implemented, that is)
-			if (mainSurface.rect.collidePoint(event.pos)) {
 
-				// if activeMonster's not human controlled, we do nothing
-				if (activeMonster.controller !== globals.Controller.HUMAN)
+			var rect = new gamejs.Rect(0,0,globals.GAME_AREA_WIDTH, globals.GAME_AREA_HEIGHT);
+
+			/* if we are actually on game area */
+			if (rect.collidePoint(event.pos)) {
+				/* skip event if activeMonster is not human-controlled, or is not active */
+				if ((activeMonster.getState() !== globals.MonsterState.ACTIVE) || (activeMonster.controller !== globals.Controller.HUMAN)) {
 					return;
+				}
 
-				// get clicked tile
-				var click_pos = war.getTile(event.pos);
+				// TODO: make sure only clicks on game area are registered
+				// (after status area is implemented, that is)
+				if (mainSurface.rect.collidePoint(event.pos)) {
 
-				// check its state and distance there
-				var tileState = war.getTileState(click_pos);
-				var dist = war.getDistance(click_pos, activeMonster.position);
+					// get clicked tile, its state and distance from activeMonster
+					var click_pos = war.getTile(event.pos);
+					var tileState = war.getTileState(click_pos);
+					var dist = war.getDistance(click_pos, activeMonster.position);
 
-				console.log("Click:", click_pos, "state:", tileState, "dist:", dist);
+					console.log("Click:", click_pos, "state:", tileState, "dist:", dist);
 
-				activeMonster.moveTo(click_pos);
+					activeMonster.moveTo(click_pos);
+				}
 			}
 		}
 	});
@@ -437,14 +465,17 @@ function main() {
 	gamejs.onTick(function(msDuration) {
 
 		if (NEED_INIT) {
+			/* initializing is necessary once some poor monster dies */
 			console.log("Re-initing things");
 			war.init(war.getCurrentUnitIndex());
 		}
 
+		/* We check here if turn has changed and set new monster as active if necessary */
 		if ((war.getCurrentUnit() != activeMonsterIndex) || (NEED_INIT)) {
 			activeMonsterIndex = war.getCurrentUnit();
 			activeMonster = globals.Monsters.sprites()[activeMonsterIndex];
 			activeMonster.changeState(globals.MonsterState.ACTIVE);
+			/* also update cursor state for new monster */
 			cursor_state = war.updateCursorState(cursor_pos, activeMonster);
 		}
 
@@ -469,6 +500,11 @@ function main() {
 		// on top of everything else, monsters
 		globals.Monsters.draw(mainSurface);
 
+		/* Finally, some stats */
+
+		mainSurface.blit(caption.render(activeMonster.name), [650, 25]);
+
+		war.drawStats(mainSurface, font, activeMonster, 50);
 	});
 }
 
