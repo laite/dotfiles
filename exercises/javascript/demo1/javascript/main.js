@@ -35,14 +35,14 @@ console.log(war.name());
  */
 
 // TODO: take tile-coordinate instead of rect
-var Monster = function(rect, id) {
+var Monster = function(rect) {
 
 	/*
 	 * Monster public members
 	 */
 
-	// each monster has a unique id
-	this.id = id;
+	// war.Init handles id giving
+	this.id = -1;
 
 	// call superconstructor (Monster is derived from Sprite)
 	Monster.superConstructor.apply(this, arguments);
@@ -210,7 +210,7 @@ var Monster = function(rect, id) {
  */
 
 
-var Orc = function(rect, id) {
+var Orc = function(rect) {
 	this.image_name = "images/orc";
 	this.name = "Orc ";
 	this.family = "Orcs";
@@ -229,10 +229,10 @@ var Orc = function(rect, id) {
 
 	this.controller = globals.Controller.HUMAN;
 
-	Monster.call(this, rect, id);
+	Monster.call(this, rect);
 }
 
-var ToughOrc = function(rect, id) {
+var ToughOrc = function(rect) {
 	this.image_name = "images/tough_orc";
 	this.name = "Tough Orc ";
 	this.family = "Orcs";
@@ -251,12 +251,12 @@ var ToughOrc = function(rect, id) {
 
 	this.controller = globals.Controller.HUMAN;
 
-	Monster.call(this, rect, id);
+	Monster.call(this, rect);
 }
 
-var Octopus = function(rect, id) {
+var Octopus = function(rect) {
 	this.image_name = "images/octopus";
-	this.name = "Octo-Monster " + id;
+	this.name = "Octo-Monster ";
 	this.family = "Monsters";
 
 	this.personality = war.randomPersonality([globals.MonsterPersonality.CAREFUL,globals.MonsterPersonality.INDIVIDUAL]);
@@ -273,10 +273,10 @@ var Octopus = function(rect, id) {
 
 	this.controller = globals.Controller.HUMAN;
 
-	Monster.call(this, rect, id);
+	Monster.call(this, rect);
 }
 
-var Evileye = function(rect, id) {
+var Evileye = function(rect) {
 	this.image_name = "images/evileye";
 	this.name = "Evil eye";
 	this.family = "Monsters";
@@ -295,7 +295,7 @@ var Evileye = function(rect, id) {
 
 	this.controller = globals.Controller.HUMAN;
 
-	Monster.call(this, rect, id);
+	Monster.call(this, rect);
 }
 
 var Ground = function(rect) {
@@ -438,14 +438,14 @@ function main() {
 	globals.Monsters = new gamejs.sprite.Group();
 
 	for (var i=0; i < (3); i++)
-		globals.Monsters.add(new Orc([i*globals.TILE_SIZE, 0], i));
-	globals.Monsters.add(new ToughOrc([5*globals.TILE_SIZE, 0], 4));
+		globals.Monsters.add(new Orc([i*globals.TILE_SIZE, 0]));
+	globals.Monsters.add(new ToughOrc([5*globals.TILE_SIZE, 0]));
 
 	for (var i=0; i < (5); i++)
-		globals.Monsters.add(new Octopus([i*globals.TILE_SIZE, 9*globals.TILE_SIZE], i));
+		globals.Monsters.add(new Octopus([i*globals.TILE_SIZE, 9*globals.TILE_SIZE]));
 
 	for (var i=5; i < (10); i++)
-		globals.Monsters.add(new Evileye([i*globals.TILE_SIZE, 9*globals.TILE_SIZE], i));
+		globals.Monsters.add(new Evileye([i*globals.TILE_SIZE, 9*globals.TILE_SIZE]));
 
 	/* Ground */
 
@@ -479,7 +479,7 @@ function main() {
 				cursor_pos = war.getTile(event.pos);
 				cursor_state = war.updateCursorState(cursor_pos, activeMonster);
 
-				// might be null
+				/* activeEnemy is null if there is no monster at cursor position */
 				activeEnemy = war.getMonsterAt(cursor_pos);
 			}
 		}
@@ -535,6 +535,9 @@ function main() {
 			activeMonster.changeState(globals.MonsterState.ACTIVE);
 			/* also update cursor state for new monster */
 			cursor_state = war.updateCursorState(cursor_pos, activeMonster);
+			
+			/* activeEnemy is null if there is no monster at cursor position */
+			activeEnemy = war.getMonsterAt(cursor_pos);
 		}
 
 		NEED_INIT = false;
