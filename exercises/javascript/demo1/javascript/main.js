@@ -156,6 +156,7 @@ var Monster = function(rect) {
 	 */
 	this.endTurn = function() {
 		this.changeState(globals.MonsterState.INACTIVE);
+		this.enemy = null;
 		war.nextUnit();
 	}
 
@@ -307,6 +308,24 @@ var Ground = function(rect) {
 	return this;
 };
 
+var AttackIcon = function(rect) {
+	AttackIcon.superConstructor.apply(this, arguments);
+
+	this.originalImage = gamejs.image.load("images/attack.png");
+	this.image = this.originalImage;
+
+	this.rect = new gamejs.Rect(rect, [globals.TILE_SIZE, globals.TILE_SIZE]);
+	console.log("New attackicon: ", this.rect);
+
+	this.time = 0;
+	this.scale = 1;
+	this.scaleSpeed = (1/globals.ATTACK_ICON_DURATION);
+
+	this.origSize = this.originalImage.getSize();
+
+	return this;
+};
+
 // inherit (actually: set prototype)
 gamejs.utils.objects.extend(Monster, gamejs.sprite.Sprite);
 gamejs.utils.objects.extend(ToughOrc, Monster);
@@ -315,7 +334,28 @@ gamejs.utils.objects.extend(Orc, Monster);
 gamejs.utils.objects.extend(Octopus, Monster);
 
 gamejs.utils.objects.extend(Ground, gamejs.sprite.Sprite);
+gamejs.utils.objects.extend(AttackIcon, gamejs.sprite.Sprite);
 
+AttackIcon.prototype.update = function(msDuration) {
+	if (globals.attackOn) {
+		var delta = [Math.floor(this.scale*this.origSize[0]), Math.floor(this.scale*this.origSize[1])];
+		this.scale += Math.floor(100*msDuration*this.scaleSpeed)/100;
+		this.image = gamejs.transform.scale(this.originalImage, [Math.floor(this.scale*this.origSize[0]), Math.floor(this.scale*this.origSize[1])]);
+		var size = this.image.getSize();
+		this.rect.width = size[0];
+		this.rect.height = size[1];
+		delta[0] = Math.max(0, size[0] - delta[0]);
+		delta[1] = Math.max(0, size[1] - delta[1]);
+
+		this.rect.left = this.rect.left-(delta[0]/2);
+		console.log(delta[0],this.rect.left);
+		this.rect.top = this.rect.top-(delta[1]/2);
+	}
+	else {
+		this.scale = 1;
+		this.image = this.originalImage;
+	}
+}
 
 Monster.prototype.update = function(msDuration) {
 
@@ -345,7 +385,7 @@ Monster.prototype.update = function(msDuration) {
 			return;
 		}
 
-		// monster moves speed*30 pixels per second
+		// monster moves speed*30 pixels per second (duration/1000)
 		var speed = 1+Math.floor((this.speed*20) * (msDuration/1000));
 
 		delta[0] = Math.min(speed, diff[0]);
@@ -358,44 +398,64 @@ Monster.prototype.update = function(msDuration) {
 		this.rect.moveIp(delta[0], delta[1]);
 	}
 	else if (this.getState() === globals.MonsterState.ATTACKING) {
-		
-		/* TODO: show some animation for a while? */
 
+		if (!globals.attackOn) {
+			
+			/* show icon on top of enemy */
+			globals.attackIcon.rect.left = this.enemy.position[0]*globals.TILE_SIZE;
+			globals.attackIcon.rect.top = this.enemy.position[1]*globals.TILE_SIZE;
 
-		war.battle(this.id, this.enemy.id);
-
-		/* Note: It's not possible that both monsters die in the battle */
-
-		/* If attacker died, it's over for him */
-		if (this.hp <= 0) {
-			console.log("Monster",this.enemy.name,"killed its enemy!");
-			war.nextUnit();
-			this.kill();
+			globals.attackIcon.time = 0;
+			globals.attackOn = true;
 		}
-		/* If attacker survived ... */
+		else if (globals.attackIcon.time < globals.ATTACK_ICON_DURATION) {
+			globals.attackIcon.time += msDuration;
+		}
 		else {
-			/* enemy is dead, so we can stay at its position (if melee-fight) */
-			if (this.enemy.hp <= 0) {
-				this.enemy.kill();
 
-				if (war.samePlace(this.position, this.enemy.position)) {
-					war.setTileState(this.position, globals.TileState.OCCUPIED, this.id);
-				}
+			if (this.enemy === null) {
+				console.error(this.name, "is attacking, but has no enemy!");
 				this.endTurn();
-				console.log("Monster",this.name,"killed its enemy!");
 			}
-			/* Enemy is also alive, so we need to find a new position for us (if attacked by melee) */
+
+
+			war.battle(this.id, this.enemy.id);
+
+			/* Note: It's not possible that both monsters die in the battle */
+
+			/* If attacker died, it's over for him */
+			if (this.hp <= 0) {
+				console.log("Monster",this.enemy.name,"killed its enemy!");
+				war.nextUnit();
+				this.kill();
+			}
+			/* If attacker survived ... */
 			else {
-				if (war.samePlace(this.position, this.enemy.position)) {
-					var newLocation = war.findNewLocation(this.position);
-					console.log("New location:",newLocation);
-					this.changeState(globals.MonsterState.MOVING_AFTER_ATTACK);
-					this.moveTo(newLocation);
-				}
-				else
+				/* enemy is dead, so we can stay at its position (if melee-fight) */
+				if (this.enemy.hp <= 0) {
+					this.enemy.kill();
+
+					if (war.samePlace(this.position, this.enemy.position)) {
+						war.setTileState(this.position, globals.TileState.OCCUPIED, this.id);
+					}
 					this.endTurn();
+					console.log("Monster",this.name,"killed its enemy!");
+				}
+				/* Enemy is also alive, so we need to find a new position for us (if attacked by melee) */
+				else {
+					if (war.samePlace(this.position, this.enemy.position)) {
+						var newLocation = war.findNewLocation(this.position);
+						console.log("New location:",newLocation);
+						this.changeState(globals.MonsterState.MOVING_AFTER_ATTACK);
+						this.moveTo(newLocation);
+					}
+					else
+						this.endTurn();
+				}
 			}
-		}
+
+			globals.attackOn = false;
+		} // else (globals.attackOn && globals.attackIcon.time > 1000)
 
 		activeEnemy = war.getMonsterAt(cursor_pos);
 	} // if this.getState() === globals.MonsterState.ATTACKING
@@ -424,7 +484,6 @@ function main() {
 	var font = new gamejs.font.Font('13px Monospace');
 	var caption = new gamejs.font.Font('20px Monospace');
 
-
 	var activeMonster = null, activeEnemy = null;
 	var activeMonsterIndex = -1;
 
@@ -437,15 +496,15 @@ function main() {
 
 	globals.Monsters = new gamejs.sprite.Group();
 
-	for (var i=0; i < (3); i++)
-		globals.Monsters.add(new Orc([i*globals.TILE_SIZE, 0]));
+	//for (var i=0; i < (3); i++)
+		//globals.Monsters.add(new Orc([i*globals.TILE_SIZE, 0]));
 	globals.Monsters.add(new ToughOrc([5*globals.TILE_SIZE, 0]));
 
-	for (var i=0; i < (5); i++)
+	for (var i=0; i < (2); i++)
 		globals.Monsters.add(new Octopus([i*globals.TILE_SIZE, 9*globals.TILE_SIZE]));
 
-	for (var i=5; i < (10); i++)
-		globals.Monsters.add(new Evileye([i*globals.TILE_SIZE, 9*globals.TILE_SIZE]));
+	//for (var i=5; i < (10); i++)
+		//globals.Monsters.add(new Evileye([i*globals.TILE_SIZE, 9*globals.TILE_SIZE]));
 
 	/* Ground */
 
@@ -456,6 +515,8 @@ function main() {
 			gGroundTiles.add(new Ground([i*globals.TILE_SIZE, j*globals.TILE_SIZE]));
 		}
 	}
+
+	globals.attackIcon = new AttackIcon([0,0]);
 
 
 	/*
@@ -571,6 +632,10 @@ function main() {
 		if (activeEnemy)
 			war.drawStats(mainSurface, caption, font, activeEnemy, 150);
 
+		globals.attackIcon.update(msDuration);
+		if (globals.attackOn) {
+			globals.attackIcon.draw(mainSurface);
+		}
 	});
 }
 
@@ -585,6 +650,7 @@ gamejs.preload(['images/evileye.png']);
 gamejs.preload(['images/orc.png']);
 gamejs.preload(['images/octopus.png']);
 gamejs.preload(['images/tile.png']);
+gamejs.preload(['images/attack.png']);
 
 
 /* Go! */

@@ -4,6 +4,7 @@
  */
 
 exports.Monsters;
+exports.attackIcon;
 
 exports.TILE_SIZE = 64;
 exports.TILE_AMOUNT = 10;
@@ -15,6 +16,9 @@ exports.GAME_AREA_HEIGHT = 640;
 exports.GAME_AREA_WIDTH = 640;
 
 exports.AMOUNT_OF_MONSTERS = 3;
+exports.ATTACK_ICON_DURATION = 1500;
+
+exports.attackOn = false;
 
 /* enums */
 exports.MonsterState = {

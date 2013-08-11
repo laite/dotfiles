@@ -406,9 +406,12 @@ exports.battle = function(id1, id2) {
 			m1.hp -= m2Damage;
 		}
 	}
-	/* ranged/magic attack */
+	/* ranged attack */
 	else {
-		// TODO
+		/* There is no retaliation */
+		var m1Damage = m1.getDamage(globals.WeaponStyle.RANGED);
+		console.log(m1.name,"damage:",m1Damage);
+		m2.hp -= m1Damage;
 	}
 }
 
