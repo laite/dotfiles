@@ -375,7 +375,7 @@ function main() {
 	var caption = new gamejs.font.Font('20px Monospace');
 
 
-	var activeMonster = null;
+	var activeMonster = null, activeEnemy = null;
 	var activeMonsterIndex = -1;
 
 	/*
@@ -423,6 +423,9 @@ function main() {
 			if (mainSurface.rect.collidePoint(event.pos)) {
 				cursor_pos = war.getTile(event.pos);
 				cursor_state = war.updateCursorState(cursor_pos, activeMonster);
+
+				// might be null
+				activeEnemy = war.getMonsterAt(cursor_pos);
 			}
 		}
 
@@ -502,9 +505,10 @@ function main() {
 
 		/* Finally, some stats */
 
-		mainSurface.blit(caption.render(activeMonster.name), [650, 25]);
+		war.drawStats(mainSurface, caption, font, activeMonster, 25);
+		if (activeEnemy)
+			war.drawStats(mainSurface, caption, font, activeEnemy, 150);
 
-		war.drawStats(mainSurface, font, activeMonster, 50);
 	});
 }
 

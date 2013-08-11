@@ -133,16 +133,19 @@ exports.randomPersonality = function(arr) {
 	return arr[i];
 }
 
-exports.drawStats = function(surface, font, monster, y) {
+exports.drawStats = function(surface, caption, font, monster, y) {
 
-	surface.blit(font.render('Family:      ' + monster.family), [650, y]);
-	surface.blit(font.render('Speed:       ' + monster.speed), [650, y + 30]);
+	surface.blit(caption.render(monster.name), [650, y]);
+	y += 25;
+
+	surface.blit(font.render('Family:        ' + monster.family), [650, y]);
+	surface.blit(font.render('Speed:         ' + monster.speed), [650, y + 30]);
 	var health = monster.hp + " (" + Math.round(100*monster.hp/monster.maxhp) + "%)";
-	surface.blit(font.render('HP:          ' + health), [650, y + 15]);
-	surface.blit(font.render('Melee damage:' + monster.getDamageString(globals.WeaponStyle.MELEE)), [650, y + 45]);
+	surface.blit(font.render('HP:            ' + health), [650, y + 15]);
+	surface.blit(font.render('Melee damage:  ' + monster.getDamageString(globals.WeaponStyle.MELEE)), [650, y + 45]);
 
 	if (monster.weapon == globals.WeaponStyle.RANGED) {
-		surface.blit(font.render('Ranged damage:' + monster.getDamageString(globals.WeaponStyle.RANGED)), [650, y + 60]);
+		surface.blit(font.render('Ranged damage: ' + monster.getDamageString(globals.WeaponStyle.RANGED)), [650, y + 60]);
 	}
 }
 
