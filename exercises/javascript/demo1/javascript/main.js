@@ -162,7 +162,7 @@ var Monster = function(rect, id) {
 	/* activate sets monster as 'active' one on battlefield */
 	this.activate = function() {
 		console.log(this.name, "just became active");
-		this.image = gamejs.image.load(this.image_name + "_active.png");
+		//this.image = gamejs.image.load(this.image_name + "_active.png");
 
 		/* if this is computer controlled, it launches its ai sequence */
 		if (this.controller === globals.Controller.AI) {
@@ -500,12 +500,16 @@ function main() {
 		// then "cursor"
 		war.drawCursor(mainSurface, cursor_pos, cursor_state);
 
+		if (activeMonster)
+			war.drawActiveMonsterTile(mainSurface, [activeMonster.rect.left, activeMonster.rect.top]);
+
 		// on top of everything else, monsters
 		globals.Monsters.draw(mainSurface);
 
 		/* Finally, some stats */
 
-		war.drawStats(mainSurface, caption, font, activeMonster, 25);
+		if (activeMonster)
+			war.drawStats(mainSurface, caption, font, activeMonster, 25);
 		if (activeEnemy)
 			war.drawStats(mainSurface, caption, font, activeEnemy, 150);
 
@@ -519,9 +523,9 @@ function main() {
 
 
 gamejs.preload(['images/orc.png']);
-gamejs.preload(['images/orc_active.png']);
+//gamejs.preload(['images/orc_active.png']);
 gamejs.preload(['images/octopus.png']);
-gamejs.preload(['images/octopus_active.png']);
+//gamejs.preload(['images/octopus_active.png']);
 gamejs.preload(['images/tile.png']);
 
 

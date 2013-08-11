@@ -34,7 +34,8 @@ exports.TileState = {
 exports.CursorState = {
 	ALLOWED : 0,
 	DISALLOWED : 1,
-	ATTACK : 2
+	ATTACK : 2,
+	ACTIVE_MONSTER : 3
 };
 
 /* controllers */

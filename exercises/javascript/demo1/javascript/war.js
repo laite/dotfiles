@@ -111,12 +111,14 @@ exports.drawCursor = function(surface, position, state) {
 	var cursor_size = 0;
 	var [x, y] = position;
 
-	x *= globals.TILE_SIZE;
-	y *= globals.TILE_SIZE;
-	x = Math.max(x, (cursor_size/2));
-	x = Math.min(x, globals.CANVAS_WIDTH-globals.TILE_SIZE-(cursor_size/2));
-	y = Math.max(y, (cursor_size/2));
-	y = Math.min(y, globals.CANVAS_HEIGHT-globals.TILE_SIZE-(cursor_size/2));
+	if (state !== globals.CursorState.ACTIVE_MONSTER) {
+		x *= globals.TILE_SIZE;
+		y *= globals.TILE_SIZE;
+		x = Math.max(x, (cursor_size/2));
+		x = Math.min(x, globals.CANVAS_WIDTH-globals.TILE_SIZE-(cursor_size/2));
+		y = Math.max(y, (cursor_size/2));
+		y = Math.min(y, globals.CANVAS_HEIGHT-globals.TILE_SIZE-(cursor_size/2));
+	}
 
 	var col = "rgba(128, 255, 128, 0.2)";
 
@@ -124,8 +126,14 @@ exports.drawCursor = function(surface, position, state) {
 		col = "rgba(255, 255, 255, 0.2)";
 	else if (state === globals.CursorState.ATTACK)
 		col = "rgba(255, 0, 0, 0.3)";
+	else if (state === globals.CursorState.ACTIVE_MONSTER)
+		col = "rgba(0, 255, 128, 0.3)";
 
 	draw.rect(surface, col, new gamejs.Rect([x,y,globals.TILE_SIZE,globals.TILE_SIZE]), cursor_size);
+}
+
+exports.drawActiveMonsterTile = function(surface, position) {
+	this.drawCursor(surface, position, globals.CursorState.ACTIVE_MONSTER);
 }
 
 exports.randomPersonality = function(arr) {
@@ -229,6 +237,9 @@ exports.getCurrentUnitIndex = function() {
 }
 
 exports.getTileState = function(arr) {
+	arr[0] = Math.max(Math.min(arr[0],globals.TILE_AMOUNT-1), 0);
+	arr[1] = Math.max(Math.min(arr[1],globals.TILE_AMOUNT-1), 0);
+
 	return engine.tiles[arr[0]][arr[1]]['state'];
 }
 
