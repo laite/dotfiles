@@ -185,9 +185,26 @@ var addRow = function(item, value) {
     //return item + " " + value + "<br/>";
 }
 
+exports.areThereStillEnemies = function() {
+    var result = false;
+    var family1 = "";
+
+    globals.Monsters.forEach(function(monster) {
+	if (family1 == "") {
+	    family1 = monster.family;
+	}
+	else if (monster.family != family1) {
+	    result = true;
+	}
+    });
+
+    console.log("result:",result);
+    return result;
+}
+
 exports.drawStats = function(monster, enemy) {
 
-    if (monster !== null) {
+    if (monster != null) {
 	var health = monster.hp + " (" + Math.round(100*monster.hp/monster.maxhp) + "%)";
 
 	document.getElementById("mt1Name").innerHTML = monster.name;
@@ -198,7 +215,7 @@ exports.drawStats = function(monster, enemy) {
 	document.getElementById("mt1RangedDamage").innerHTML = monster.getDamageString(globals.WeaponStyle.RANGED);
     }
 
-    if (enemy !== null) {
+    if (enemy != null) {
 	var health = enemy.hp + " (" + Math.round(100*enemy.hp/enemy.maxhp) + "%)";
 
 	document.getElementById("mt2Name").innerHTML = enemy.name;
@@ -211,7 +228,6 @@ exports.drawStats = function(monster, enemy) {
     }
     else
     {
-	console.log("HIDE!");
 	document.getElementById("monsterTable2").style.display = 'none';
     }
 
@@ -300,6 +316,9 @@ exports.getTileState = function(arr) {
     arr[0] = Math.max(Math.min(arr[0],globals.TILE_AMOUNT-1), 0);
     arr[1] = Math.max(Math.min(arr[1],globals.TILE_AMOUNT-1), 0);
 
+    if (((arr[0] > 9) || (arr[0] < 0)) || ((arr[1] > 9) || (arr[1] < 0)))
+	console.error("invalid argument at getTileState!");
+
     return engine.tiles[arr[0]][arr[1]]['state'];
 }
 
@@ -315,13 +334,16 @@ exports.getTileMonsterID = function(arr) {
     arr[0] = Math.max(Math.min(arr[0],globals.TILE_AMOUNT-1), 0);
     arr[1] = Math.max(Math.min(arr[1],globals.TILE_AMOUNT-1), 0);
 
+    if (((arr[0] > 9) || (arr[0] < 0)) || ((arr[1] > 9) || (arr[1] < 0)))
+	console.error("invalid argument at getTileMonsterID!");
+
     return engine.tiles[arr[0]][arr[1]]['monster'];
 }
 
 exports.getMonsterAt = function(arr) { 
     var id = this.getTileMonsterID(arr);
 
-    if (id === null)
+    if (id == null)
 	return null;
     else
 	return globals.Monsters.sprites()[id];
@@ -387,6 +409,7 @@ exports.findFreeTile = function(rect) {
     var [x0, y0] = [Math.min(rect[0],rect[2]), Math.min(rect[1],rect[3])];
     var [x1, y1] = [Math.max(rect[0],rect[2]), Math.max(rect[1],rect[3])];
 
+    console.log("Looking free tile:",[x0,y0], [x1,y1]);
     for (var x = x0; x <= x1; x++) {
 	for (var y = y0; y <= y1; y++) {
 	    allPoints.push([x,y]);
@@ -407,7 +430,7 @@ exports.findFreeTile = function(rect) {
     }
 
     if (!found)
-	return null;
+	return [];
     else
 	return foundPoint;
 }
@@ -421,15 +444,13 @@ exports.findNewLocation = function(arr) {
 	var rect = this.getRectFromRadius(arr, radius);
 	newLocation = this.findFreeTile(rect);
 
-	if ((newLocation.length !== null) || (radius > 10))
+	if ((newLocation.length > 0) || (radius > 10))
 	    found = true;
 	else
 	    radius++;
     }
 
-    if (newLocation === null)
-	console.error("findNewLocation failed, returning null");
-
+    console.log("radius",radius,"newlocation",newLocation);
     return newLocation;
 }
 
@@ -492,14 +513,14 @@ exports.findNearestEnemy = function(monster) {
 
     for (var i=0; i < engine.tiles.length; i++) {
 	for (var j=0; j < engine.tiles[i].length; j++) {
+	    if (typeof engine.tiles[i][j]['monster'] === "undefined") 
+		console.error("Undefined tile:",[i,j],"at findNearestEnemy",monster.name,monster.id);
+
 	    if (engine.tiles[i][j]['monster'] !== null)
 	    {
-		console.log("monster!",monster.family,globals.Monsters.sprites()[engine.tiles[i][j]['monster']].name);
 		if (monster.family != globals.Monsters.sprites()[engine.tiles[i][j]['monster']].family)
 		{
-		    console.log("family!");
 		    if (this.getDistance(monster.position, [i,j]) < distance) {
-			console.log("There's one!");
 			distance = this.getDistance(monster.position, [i,j]);
 			found = [i,j];
 		    }
@@ -529,6 +550,10 @@ exports.doAI = function(monster) {
 	var action = Action.ATTACK;
 	var distance = this.getDistance(monster.position, nearestEnemyPosition);
 	var nearestEnemy = this.getMonsterAt(nearestEnemyPosition);
+
+	if (nearestEnemy == null) {
+	    console.error("nearestEnemy = null!");
+	}
 
 	/*
 	 *
@@ -598,7 +623,9 @@ exports.doAI = function(monster) {
 	    else if (monster.weapon === globals.WeaponStyle.RANGED)
 		monster.attackRanged(nearestEnemy);
 	    else {
-	    
+		// TODO: implement spells
+		// for now, we just attack
+		monster.attackRanged(nearestEnemy);
 	    }
 	}
 	else if (action === Action.GATHER_AROUND) {

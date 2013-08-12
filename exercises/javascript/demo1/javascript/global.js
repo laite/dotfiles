@@ -79,10 +79,11 @@ exports.MonsterPersonality = {
 exports.MonsterEndurance = {
 	VERY_WEAK : 0,
 	WEAK : 1,
-	NORMAL : 2,
-	TOUGH : 3,
-	VERY_TOUGH : 4,
-	GODLIKE : 5
+	NORMAL : 3,
+	TOUGH : 5,
+	VERY_TOUGH : 8,
+	EXTREMELY_TOUGH : 12,
+	GODLIKE : 20
 }
 
 exports.WeaponStyle = {

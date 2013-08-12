@@ -29,6 +29,7 @@ var NEED_INIT = false;
 
 /* attackOn helps in the 'attackIcon animation' showing */
 var attackOn = false;
+var stillBattling = true;
 
 
 console.log(war.name());
@@ -142,6 +143,8 @@ var Monster = function(rect) {
 	    this.changeState(globals.MonsterState.MOVING);
 	    this.destination = destination;
 	}
+	else if (this.controller == globals.Controller.AI)
+	    this.skipTurn();
 
 	/* note that units turn continues until we get a proper destination 
 	 * TODO: or turn is manually skipped */
@@ -281,12 +284,12 @@ var Octopus = function(rect) {
 
     this.damage = {};
     this.damage[globals.WeaponStyle.MELEE] = 4;
-    this.damage[globals.WeaponStyle.RANGED] = 0;
+    this.damage[globals.WeaponStyle.RANGED] = 1;
     this.damage[globals.WeaponStyle.MAGIC] = 5;
     this.damageModifier = 4;
     this.damageBonus = 0;
 
-    this.controller = globals.Controller.HUMAN;
+    this.controller = globals.Controller.AI;
 
     Monster.call(this, rect);
 }
@@ -294,11 +297,11 @@ var Octopus = function(rect) {
 var Evileye = function(rect) {
     this.image_name = "images/evileye";
     this.name = "Evil eye";
-    this.family = "Monsters";
+    this.family = "Boss";
 
     this.personality = globals.MonsterPersonality.IMMOBILE;
-    this.naturalSpeedType = globals.MonsterSpeed.SLOW;
-    this.endurance = globals.MonsterEndurance.WEAK;
+    this.naturalSpeedType = globals.MonsterSpeed.VERY_SLOW;
+    this.endurance = globals.MonsterEndurance.GODLIKE;
     this.weapon = globals.WeaponStyle.RANGED;
 
     this.damage = {};
@@ -447,7 +450,7 @@ Monster.prototype.update = function(msDuration) {
 	}
 	else {
 
-	    if (this.enemy === null) {
+	    if (this.enemy == null) {
 		console.error(this.name, "is attacking, but has no enemy!");
 		this.endTurn();
 	    }
@@ -487,6 +490,8 @@ Monster.prototype.update = function(msDuration) {
 			this.endTurn();
 		}
 	    }
+
+	    stillBattling = war.areThereStillEnemies();
 
 	    attackOn = false;
 	    globals.attackIcon.reset();
@@ -532,15 +537,18 @@ function main() {
 
     globals.Monsters = new gamejs.sprite.Group();
 
-    for (var i=0; i < (3); i++)
-	globals.Monsters.add(new Orc([i*globals.TILE_SIZE, 0]));
-    globals.Monsters.add(new ToughOrc([5*globals.TILE_SIZE, 0]));
+    for (var i=0; i < (10); i++)
+    {
+	if (Math.random() < 0.5)
+	    globals.Monsters.add(new Orc([i*globals.TILE_SIZE, 0]));
+	else
+	    globals.Monsters.add(new ToughOrc([i*globals.TILE_SIZE, 0]));
+    }
 
-    for (var i=0; i < (2); i++)
-	globals.Monsters.add(new Octopus([i*globals.TILE_SIZE, 9*globals.TILE_SIZE]));
+    for (var i=0; i < (10); i++)
+        globals.Monsters.add(new Octopus([i*globals.TILE_SIZE, 9*globals.TILE_SIZE]));
 
-    for (var i=5; i < (8); i++)
-    globals.Monsters.add(new Evileye([i*globals.TILE_SIZE, 9*globals.TILE_SIZE]));
+    globals.Monsters.add(new Evileye([4*globals.TILE_SIZE, 4*globals.TILE_SIZE]));
 
     /* Ground */
 
@@ -626,56 +634,64 @@ function main() {
     /* msDuration = time since last tick() call */
     gamejs.onTick(function(msDuration) {
 
-	if (NEED_INIT) {
-	    /* initializing is necessary once some poor monster dies */
-	    console.log("Re-initing things");
-	    war.init(war.getCurrentUnitIndex());
+	if (!stillBattling) {
+	    console.log(" *********************   It's all over!   ********************* ");
+	    return;
 	}
+	else {
 
-	/* We check here if turn has changed and set new monster as active if necessary */
-	if ((war.getCurrentUnit() != activeMonsterIndex) || (NEED_INIT)) {
-	    activeMonsterIndex = war.getCurrentUnit();
-	    activeMonster = globals.Monsters.sprites()[activeMonsterIndex];
-	    activeMonster.changeState(globals.MonsterState.ACTIVE);
-	    /* also update cursor state for new monster */
-	    cursor_state = war.updateCursorState(cursor_pos, activeMonster);
+	    if (NEED_INIT) {
+		/* initializing is necessary once some poor monster dies */
+		console.log("Re-initing things");
+		war.init(war.getCurrentUnitIndex());
+	    }
 
-	    /* activeEnemy is null if there is no monster at cursor position */
-	    activeEnemy = war.getMonsterAt(cursor_pos);
-	    war.drawStats(activeMonster, activeEnemy);
-	}
+	    /* We check here if turn has changed and set new monster as active if necessary */
+	    if ((war.getCurrentUnit() != activeMonsterIndex) || (NEED_INIT)) {
+		activeMonsterIndex = war.getCurrentUnit();
+		activeMonster = globals.Monsters.sprites()[activeMonsterIndex];
+		activeMonster.changeState(globals.MonsterState.ACTIVE);
+		/* also update cursor state for new monster */
+		cursor_state = war.updateCursorState(cursor_pos, activeMonster);
 
-	NEED_INIT = false;
+		/* activeEnemy is null if there is no monster at cursor position */
+		activeEnemy = war.getMonsterAt(cursor_pos);
+		war.drawStats(activeMonster, activeEnemy);
+	    }
 
-	/*
-	 * Drawing stuff
-	 */
+	    NEED_INIT = false;
 
-	// update the monsters
-	globals.Monsters.update(msDuration);
+	    /*
+	     * Drawing stuff
+	     */
 
-	// clear
-	mainSurface.fill("#efefef");
+	    // update the monsters
+	    globals.Monsters.update(msDuration);
 
-	// draw ground first
-	gGroundTiles.draw(mainSurface);
+	    // clear
+	    mainSurface.fill("#efefef");
 
-	// then "cursor"
-	war.drawCursor(mainSurface, cursor_pos, cursor_state);
+	    // draw ground first
+	    gGroundTiles.draw(mainSurface);
 
-	if (activeMonster)
-	    war.drawActiveMonsterTile(mainSurface, [activeMonster.rect.left, activeMonster.rect.top]);
+	    // then "cursor"
+	    war.drawCursor(mainSurface, cursor_pos, cursor_state);
 
-	// on top of everything else, monsters
-	globals.Monsters.draw(mainSurface);
+	    if (activeMonster)
+		war.drawActiveMonsterTile(mainSurface, [activeMonster.rect.left, activeMonster.rect.top]);
 
-	/* Finally, some stats */
+	    // on top of everything else, monsters
+	    globals.Monsters.draw(mainSurface);
+
+	    /* Finally, some stats */
 
 
-	if (attackOn) {
-	    globals.attackIcon.update(msDuration);
-	    globals.attackIcon.draw(mainSurface);
-	}
+	    if (attackOn) {
+		globals.attackIcon.update(msDuration);
+		globals.attackIcon.draw(mainSurface);
+	    }
+
+	} // stillBattling
     });
 }
 
