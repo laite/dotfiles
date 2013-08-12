@@ -154,6 +154,7 @@ var Monster = function(rect) {
 	console.log("attackRanged:",enemy.name,this.name);
 	this.enemy = enemy;
 	this.changeState(globals.MonsterState.ATTACKING);
+	globals.attackIcon.setRanged();
     }
 
     /*
@@ -333,12 +334,35 @@ var AttackIcon = function(rect) {
     this.time = 0;
     this.scale = 1;
     this.scaleSpeed = (1/globals.ATTACK_ICON_DURATION);
+    this.duration = globals.ATTACK_ICON_DURATION;
 
     this.origSize = this.originalImage.getSize();
 
     this.reset = function() {
+	this.time = 0;
 	this.scale = 1;
 	this.image = this.originalImage;
+    }
+
+    this.setRanged = function() {
+	this.originalImage = gamejs.image.load("images/attack_ranged.png");
+	this.image = this.originalImage;
+	this.scaleSpeed = (1/globals.RANGED_ATTACK_ICON_DURATION);
+	this.duration = globals.RANGED_ATTACK_ICON_DURATION;
+    }
+
+    this.setMelee = function() {
+	this.originalImage = gamejs.image.load("images/attack.png");
+	this.image = this.originalImage;
+	this.scaleSpeed = (1/globals.ATTACK_ICON_DURATION);
+	this.duration = globals.ATTACK_ICON_DURATION;
+    }
+
+    this.setMagic = function() {
+	this.originalImage = gamejs.image.load("images/attack_magic.png");
+	this.image = this.originalImage;
+	this.scaleSpeed = (1/globals.MAGIC_ATTACK_ICON_DURATION);
+	this.duration = globals.MAGIC_ATTACK_ICON_DURATION;
     }
 
     return this;
@@ -385,6 +409,7 @@ Monster.prototype.update = function(msDuration) {
 	    if ((war.getTileState(this.position) === globals.TileState.OCCUPIED) && (war.getMonsterAt(this.position).family != this.family)) {
 		this.enemy = war.getMonsterAt(this.position);
 		this.changeState(globals.MonsterState.ATTACKING);
+		globals.attackIcon.setMelee();
 	    }
 	    /* else, we end turn */
 	    else {
@@ -415,10 +440,9 @@ Monster.prototype.update = function(msDuration) {
 	    globals.attackIcon.rect.left = this.enemy.position[0]*globals.TILE_SIZE;
 	    globals.attackIcon.rect.top = this.enemy.position[1]*globals.TILE_SIZE;
 
-	    globals.attackIcon.time = 0;
 	    attackOn = true;
 	}
-	else if (globals.attackIcon.time < globals.ATTACK_ICON_DURATION) {
+	else if (globals.attackIcon.time < globals.attackIcon.duration) {
 	    globals.attackIcon.time += msDuration;
 	}
 	else {
@@ -667,6 +691,8 @@ gamejs.preload(['images/orc.png']);
 gamejs.preload(['images/octopus.png']);
 gamejs.preload(['images/tile.png']);
 gamejs.preload(['images/attack.png']);
+gamejs.preload(['images/attack_ranged.png']);
+gamejs.preload(['images/attack_magic.png']);
 
 
 /* Go! */
