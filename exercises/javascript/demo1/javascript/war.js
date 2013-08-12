@@ -473,6 +473,7 @@ exports.battle = function(id1, id2) {
 	/* There is no retaliation */
 	var m1Damage = m1.getDamage(globals.WeaponStyle.RANGED);
 	console.log(m1.name,"damage:",m1Damage);
+	this.battleStatus.add(m1.name + " shoots " + m2.name + " for " + m1Damage + " damage!");
 	m2.hp -= m1Damage;
     }
 }
@@ -491,12 +492,19 @@ exports.findNearestEnemy = function(monster) {
 
     for (var i=0; i < engine.tiles.length; i++) {
 	for (var j=0; j < engine.tiles[i].length; j++) {
-	    if (engine.tiles[i][j]['monster'] 
-		    && (monster.family != globals.Monsters.sprites()[engine.tiles[i][j]['monster']].family)
-		    && (this.getDistance(monster.position, [i,j]) < distance)) {
+	    if (engine.tiles[i][j]['monster'] !== null)
+	    {
+		console.log("monster!",monster.family,globals.Monsters.sprites()[engine.tiles[i][j]['monster']].name);
+		if (monster.family != globals.Monsters.sprites()[engine.tiles[i][j]['monster']].family)
+		{
+		    console.log("family!");
+		    if (this.getDistance(monster.position, [i,j]) < distance) {
+			console.log("There's one!");
 			distance = this.getDistance(monster.position, [i,j]);
 			found = [i,j];
 		    }
+		}
+	    }
 	}
     }
     return found;
@@ -508,11 +516,11 @@ exports.findNearestEnemy = function(monster) {
  * 		attack/magic ranges?
  */
 exports.doAI = function(monster) {
-    console.log("AI:",monster.name,monster.position);
+    console.log("AI:",monster.name,monster.position,monster.family);
     var nearestEnemyPosition = this.findNearestEnemy(monster);
 
-    var Action = { ATTACK : 0, GATHER_AROUND : 1, DEFEND_WEAK : 3, MOVE_CLOSER : 4, 
-	CAST_SPELL : 5, DO_NOTHING : 99};
+    var Action = { ATTACK : 0, GATHER_AROUND : 1, DEFEND_WEAK : 3,
+	CAST_SPELL : 4, DO_NOTHING : 99};
 
     if (nearestEnemyPosition) {
 	console.log("Nearest enemy:",nearestEnemyPosition,this.getDistance(monster.position, nearestEnemyPosition));
@@ -528,32 +536,49 @@ exports.doAI = function(monster) {
 	 *
 	 */
 
-	if (monster.personality === globals.MonsterPersonality.IMMOBILE) {
-	    if (distance == 1)
-		action = Action.ATTACK;
-	    else if (monster.weapon === globals.WeaponStyle.MELEE)
+	var fate = Math.random();
+
+	if (distance == 1) {
+	    action = Action.ATTACK;
+	}
+	else if (monster.personality === globals.MonsterPersonality.IMMOBILE) {
+	    if (monster.weapon === globals.WeaponStyle.MELEE)
 		action = Action.DO_NOTHING;
-	    else if (moster.weapon === globals.WeaponStyle.RANGED)
+	    else if (monster.weapon === globals.WeaponStyle.RANGED)
 		action = Action.ATTACK;
-	    else if (moster.weapon === globals.WeaponStyle.MAGIC) {
+	    else if (monster.weapon === globals.WeaponStyle.MAGIC) {
 		action = Action.CAST_SPELL;
 	    }
 	}
 	else if (monster.personality === globals.MonsterPersonality.CAREFUL) {
-	    if (distance == 1)
-		action = Action.ATTACK;
-	    else if (monster.weapon === globals.WeaponStyle.MELEE) {
+	    if (monster.weapon === globals.WeaponStyle.MELEE) {
 		action = (distance > monster.moveRange)? Action.GATHER_AROUND : Action.ATTACK;
+	    }
+	    else if (monster.weapon === globals.WeaponStyle.MAGIC) {
+		action = Action.CAST_SPELL;
 	    }
 	    else {
 		action = Action.ATTACK;
 	    }
 	}
 	else if (monster.personality === globals.MonsterPersonality.INDIVIDUAL) {
-
+	    if (monster.weapon === globals.WeaponStyle.MAGIC) {
+		action = Action.CAST_SPELL;
+	    }
+	    else {
+		if (fate < 0.8)
+		    action = Action.ATTACK;
+		else 
+		    action = Action.DEFEND_WEAK;
+	    }
 	}
 	else if (monster.personality === globals.MonsterPersonality.BERSERK) {
-
+	    if ((monster.weapon === globals.WeaponStyle.MAGIC) && (fate < 0.5)) {
+		action = Action.CAST_SPELL;
+	    }
+	    else {
+		action = Action.ATTACK;
+	    }
 	}
 	else {
 	    console.error("Something's wrong with personalities!")
@@ -570,8 +595,11 @@ exports.doAI = function(monster) {
 	    console.log("Action: ATTACK");
 	    if (monster.weapon === globals.WeaponStyle.MELEE)
 		monster.moveTo(nearestEnemyPosition);
-	    else // ranged || magic
-		monster.attack(nearestEnemy);
+	    else if (monster.weapon === globals.WeaponStyle.RANGED)
+		monster.attackRanged(nearestEnemy);
+	    else {
+	    
+	    }
 	}
 	else if (action === Action.GATHER_AROUND) {
 	    console.log("Action: GATHER_AROUND");
@@ -581,14 +609,10 @@ exports.doAI = function(monster) {
 	    console.log("Action: DEFEND_WEAK");
 	    monster.skipTurn();
 	}
-	else if (action === Action.MOVE_CLOSER) {
-	    console.log("Action: MOVE_CLOSER");
-	    monster.skipTurn();
-	}
 	else if (action === Action.CAST_SPELL) {
 	    // TODO: implement spells
 	    // for now, we just attack
-	    monster.attack(nearestEnemy);
+	    monster.attackRanged(nearestEnemy);
 	}
 	else
 	    monster.skipTurn();

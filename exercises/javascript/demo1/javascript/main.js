@@ -148,6 +148,15 @@ var Monster = function(rect) {
     }
 
     /*
+     * attack() is only used for ranged attacks
+     */
+    this.attackRanged = function(enemy) {
+	console.log("attackRanged:",enemy.name,this.name);
+	this.enemy = enemy;
+	this.changeState(globals.MonsterState.ATTACKING);
+    }
+
+    /*
      * skipTurn means that monster does nothing, and next unit gets activated
      */
     this.skipTurn = function() {
@@ -232,7 +241,7 @@ var Orc = function(rect) {
     this.damageModifier = 3;
     this.damageBonus = 3;
 
-    this.controller = globals.Controller.HUMAN;
+    this.controller = globals.Controller.AI;
 
     Monster.call(this, rect);
 }
@@ -254,7 +263,7 @@ var ToughOrc = function(rect) {
     this.damageModifier = 6;
     this.damageBonus = 10;
 
-    this.controller = globals.Controller.HUMAN;
+    this.controller = globals.Controller.AI;
 
     Monster.call(this, rect);
 }
@@ -298,7 +307,7 @@ var Evileye = function(rect) {
     this.damageModifier = 3;
     this.damageBonus = 0;
 
-    this.controller = globals.Controller.HUMAN;
+    this.controller = globals.Controller.AI;
 
     Monster.call(this, rect);
 }
@@ -499,15 +508,15 @@ function main() {
 
     globals.Monsters = new gamejs.sprite.Group();
 
-    //for (var i=0; i < (3); i++)
-    //globals.Monsters.add(new Orc([i*globals.TILE_SIZE, 0]));
+    for (var i=0; i < (3); i++)
+	globals.Monsters.add(new Orc([i*globals.TILE_SIZE, 0]));
     globals.Monsters.add(new ToughOrc([5*globals.TILE_SIZE, 0]));
 
     for (var i=0; i < (2); i++)
 	globals.Monsters.add(new Octopus([i*globals.TILE_SIZE, 9*globals.TILE_SIZE]));
 
-    //for (var i=5; i < (10); i++)
-    //globals.Monsters.add(new Evileye([i*globals.TILE_SIZE, 9*globals.TILE_SIZE]));
+    for (var i=5; i < (8); i++)
+    globals.Monsters.add(new Evileye([i*globals.TILE_SIZE, 9*globals.TILE_SIZE]));
 
     /* Ground */
 
