@@ -16,9 +16,9 @@ exports.GAME_AREA_HEIGHT = 640;
 exports.GAME_AREA_WIDTH = 640;
 
 exports.AMOUNT_OF_MONSTERS = 3;
-exports.ATTACK_ICON_DURATION = 1500;
+exports.ATTACK_ICON_DURATION = 500;
 
-exports.attackOn = false;
+exports.LOG_LINES = 10;
 
 /* enums */
 exports.MonsterState = {
