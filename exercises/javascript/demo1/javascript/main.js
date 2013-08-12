@@ -460,6 +460,7 @@ Monster.prototype.update = function(msDuration) {
 	} // else (attackOn && globals.attackIcon.time > 1000)
 
 	activeEnemy = war.getMonsterAt(cursor_pos);
+	war.drawStats(null, activeEnemy);
     } // if this.getState() === globals.MonsterState.ATTACKING
 };
 
@@ -543,8 +544,14 @@ function main() {
 		cursor_pos = war.getTile(event.pos);
 		cursor_state = war.updateCursorState(cursor_pos, activeMonster);
 
+		var was = activeEnemy;
+
 		/* activeEnemy is null if there is no monster at cursor position */
 		activeEnemy = war.getMonsterAt(cursor_pos);
+
+		/* update sidebar status only when necessary */
+		if (activeEnemy !== was)
+		    war.drawStats(null, activeEnemy);
 	    }
 	}
 
@@ -602,7 +609,7 @@ function main() {
 
 	    /* activeEnemy is null if there is no monster at cursor position */
 	    activeEnemy = war.getMonsterAt(cursor_pos);
-	    war.drawStats(mainSurface, activeMonster, activeEnemy);
+	    war.drawStats(activeMonster, activeEnemy);
 	}
 
 	NEED_INIT = false;
@@ -636,8 +643,6 @@ function main() {
 	    globals.attackIcon.update(msDuration);
 	    globals.attackIcon.draw(mainSurface);
 	}
-
-	war.battleStatus.draw(mainSurface, font, 300);
     });
 }
 

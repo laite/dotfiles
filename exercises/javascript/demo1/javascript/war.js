@@ -30,6 +30,17 @@ exports.name = function() {
 var BattleStatus = function() {
     this.text = [];
 
+    this.reset = function() {
+	this.text = [];
+    }
+
+    this.draw = function() {
+	document.getElementById("statusLine").innerHTML = "";
+
+	for (var i = 0; i < this.text.length; i++)
+	    document.getElementById("statusLine").innerHTML += this.text[i]+"<br/>";
+    }
+
     this.add = function(text) {
 	/* we add new text on the beginning and remove from the end */
 	if (this.text.length >= globals.LOG_LINES) {
@@ -37,17 +48,8 @@ var BattleStatus = function() {
 	}
 
 	this.text.unshift(text);
-    }
 
-    this.reset = function() {
-	this.text = [];
-    }
-
-    this.draw = function(surface, font, y) {
-	document.getElementById("statusLine").innerHTML = "";
-
-	for (var i = 0; i < this.text.length; i++)
-	    document.getElementById("statusLine").innerHTML += this.text[i]+"<br/>";
+	this.draw()
     }
 }
 
@@ -183,7 +185,7 @@ var addRow = function(item, value) {
     //return item + " " + value + "<br/>";
 }
 
-exports.drawStats = function(surface, monster, enemy) {
+exports.drawStats = function(monster, enemy) {
 
     if (monster !== null) {
 	var health = monster.hp + " (" + Math.round(100*monster.hp/monster.maxhp) + "%)";
@@ -194,6 +196,23 @@ exports.drawStats = function(surface, monster, enemy) {
 	document.getElementById("mt1Health").innerHTML = health;
 	document.getElementById("mt1MeleeDamage").innerHTML = monster.getDamageString(globals.WeaponStyle.MELEE);
 	document.getElementById("mt1RangedDamage").innerHTML = monster.getDamageString(globals.WeaponStyle.RANGED);
+    }
+
+    if (enemy !== null) {
+	var health = enemy.hp + " (" + Math.round(100*enemy.hp/enemy.maxhp) + "%)";
+
+	document.getElementById("mt2Name").innerHTML = enemy.name;
+	document.getElementById("mt2Family").innerHTML = enemy.family;
+	document.getElementById("mt2Speed").innerHTML = enemy.speed;
+	document.getElementById("mt2Health").innerHTML = health;
+	document.getElementById("mt2MeleeDamage").innerHTML = enemy.getDamageString(globals.WeaponStyle.MELEE);
+	document.getElementById("mt2RangedDamage").innerHTML = enemy.getDamageString(globals.WeaponStyle.RANGED);
+	document.getElementById("monsterTable2").style.display = 'block';
+    }
+    else
+    {
+	console.log("HIDE!");
+	document.getElementById("monsterTable2").style.display = 'none';
     }
 
 }
