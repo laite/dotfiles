@@ -1,0 +1,23 @@
+body{
+    background:#fff;
+    color:#222;
+    margin:1em 0 2em 6em;
+    padding:0;
+}
+
+#gjs-loader {
+    width: 50%;
+    height: 50%;
+    background: url('./public/ajax-loader.gif');
+}
+
+#statusBarBattle {
+    float: right;
+    background: #f0f0f0;
+    width: 300px;
+    height: 620px;
+
+    padding: 10px;
+    margin: 0px;
+    border: 1px solid black;
+}

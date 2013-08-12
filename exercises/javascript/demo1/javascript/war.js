@@ -178,20 +178,24 @@ exports.randomPersonality = function(arr) {
     return arr[i];
 }
 
-exports.drawStats = function(surface, caption, font, monster, y) {
+var addRow = function(item, value) {
+    return "<tr><td>" + item + "</td><td>" + value + "</td></tr>";
+    //return item + " " + value + "<br/>";
+}
 
-    surface.blit(caption.render(monster.name), [650, y]);
-    y += 25;
+exports.drawStats = function(surface, monster, enemy) {
 
-    surface.blit(font.render('Family:        ' + monster.family), [650, y]);
-    surface.blit(font.render('Speed:         ' + monster.speed), [650, y + 30]);
-    var health = monster.hp + " (" + Math.round(100*monster.hp/monster.maxhp) + "%)";
-    surface.blit(font.render('HP:            ' + health), [650, y + 15]);
-    surface.blit(font.render('Melee damage:  ' + monster.getDamageString(globals.WeaponStyle.MELEE)), [650, y + 45]);
+    if (monster !== null) {
+	var health = monster.hp + " (" + Math.round(100*monster.hp/monster.maxhp) + "%)";
 
-    if (monster.weapon == globals.WeaponStyle.RANGED) {
-	surface.blit(font.render('Ranged damage: ' + monster.getDamageString(globals.WeaponStyle.RANGED)), [650, y + 60]);
+	document.getElementById("mt1Name").innerHTML = monster.name;
+	document.getElementById("mt1Family").innerHTML = monster.family;
+	document.getElementById("mt1Speed").innerHTML = monster.speed;
+	document.getElementById("mt1Health").innerHTML = health;
+	document.getElementById("mt1MeleeDamage").innerHTML = monster.getDamageString(globals.WeaponStyle.MELEE);
+	document.getElementById("mt1RangedDamage").innerHTML = monster.getDamageString(globals.WeaponStyle.RANGED);
     }
+
 }
 
 /*

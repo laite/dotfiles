@@ -10,8 +10,7 @@ exports.TILE_SIZE = 64;
 exports.TILE_AMOUNT = 10;
 
 exports.CANVAS_HEIGHT = 640;
-exports.CANVAS_WIDTH = 940;
-
+exports.CANVAS_WIDTH = 640;
 exports.GAME_AREA_HEIGHT = 640;
 exports.GAME_AREA_WIDTH = 640;
 
@@ -20,7 +19,13 @@ exports.ATTACK_ICON_DURATION = 500;
 
 exports.LOG_LINES = 10;
 
-/* enums */
+/* 
+ * "Enumerators"
+ *
+ * These are not consts, so tread carefully when using!
+ *
+ */
+
 exports.MonsterState = {
     INACTIVE : 0,
     ACTIVE : 1,

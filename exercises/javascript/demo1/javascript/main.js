@@ -118,7 +118,7 @@ var Monster = function(rect) {
     /* getDamageString returns "XdY + Z" - type string */
     this.getDamageString = function(style) { 
 	var string = this.damage[style] + "d" + this.damageModifier;
-	if (this.damageBonus != 0)
+	if ((this.damageBonus != 0) && (style === this.weapon))
 	    string += " + " + this.damageBonus;
 
 	return string;
@@ -602,6 +602,7 @@ function main() {
 
 	    /* activeEnemy is null if there is no monster at cursor position */
 	    activeEnemy = war.getMonsterAt(cursor_pos);
+	    war.drawStats(mainSurface, activeMonster, activeEnemy);
 	}
 
 	NEED_INIT = false;
@@ -630,10 +631,6 @@ function main() {
 
 	/* Finally, some stats */
 
-	if (activeMonster)
-	    war.drawStats(mainSurface, caption, font, activeMonster, 25);
-	if (activeEnemy)
-	    war.drawStats(mainSurface, caption, font, activeEnemy, 150);
 
 	if (attackOn) {
 	    globals.attackIcon.update(msDuration);
