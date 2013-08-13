@@ -350,39 +350,19 @@ exports.getMonsterAt = function(arr) {
 }
 
 exports.moveTowardsGoal = function(p1, p2, range) {
-    /* if p2 is at range */
-    if (this.getDistance(p1, p2) <= range) {
-	/* if it's empty or if there is a hostile monster */
-	if ((this.getTileState(p2) == globals.TileState.EMPTY) || 
-		((this.getTileState(p2) === globals.TileState.OCCUPIED) 
-		 && (this.getMonsterAt(p1).family != this.getMonsterAt(p2).family)))	
-	{
-	    return p2;
-	}
-    }	
 
-    /* we start looking suitable endpoint in rectangular area which cornerpoints are p1 and p2 
-     * and select the furthest available */
+    var board = [];
 
-    var [x0, y0] = [Math.min(p1[0], p2[0]), Math.min(p1[1], p2[1])];
-    var [delta_x, delta_y] = [Math.abs(p2[0]-p1[0]), Math.abs(p2[1]-p1[1])];
-    var closestPoint = 1000;
-    var point = null;
+    for (var i=0; i<globals.TILE_AMOUNT; i++) {
+	board[i] = [];
 
-    console.log("delta_x:",delta_x, "delta_y:", delta_y);
-
-    for (var x=x0; x<=(x0+delta_x); x++) {
-	for (var y=y0; y<=(y0+delta_y);y++) {
-	    if ((this.getDistance(p2,[x,y]) <= closestPoint) 
-		    && (this.getDistance(p1,[x,y]) <= range)
-		    && (this.getTileState([x,y]) == globals.TileState.EMPTY)) {
-			closestPoint = this.getDistance(p2,[x,y]);
-			point = [x,y];
-		    }
+	for (var j=0; j<globals.TILE_AMOUNT; j++) {
+	    board[i][j] = (this.getTileState([i,j]) == 0)? 0 : 1;
 	}
     }
-    console.log("Wayward point:",point);
-    return point;
+    var path = a_star(p1, p2, board, globals.TILE_AMOUNT, globals.TILE_AMOUNT, true);
+
+    return path;
 }
 
 exports.getRectFromRadius = function(pos, radius) {

@@ -70,7 +70,7 @@ var Monster = function(rect) {
     this.rect = new gamejs.Rect(rect, [globals.TILE_SIZE, globals.TILE_SIZE]);
 
     // destination is used while traveling
-    this.destination = [0, 0];
+    this.destination = [];
 
     // monster.position shows the tile monster is currently on
     this.position = war.getTile(rect);
@@ -136,11 +136,16 @@ var Monster = function(rect) {
 	var dist = war.getDistance(this.position, rect);
 	var destination = war.moveTowardsGoal(this.position, rect, this.moveRange);
 
-	if (destination) {
+	if (destination.length > 0) {
 	    if (this.getState() !== globals.MonsterState.MOVING_AFTER_ATTACK) {
 		war.setTileState(this.position, globals.TileState.EMPTY);
 	    }
 	    this.changeState(globals.MonsterState.MOVING);
+
+	    /* we have to make sure monster doesn't move past it's range */
+	    if (this.moveRange < destination.length)
+		destination = destination.splice(1, this.moveRange);
+
 	    this.destination = destination;
 	}
 	else if (this.controller == globals.Controller.AI)
@@ -399,14 +404,17 @@ Monster.prototype.update = function(msDuration) {
     if (this.getState() === globals.MonsterState.MOVING) {
 	/* get direction to destination from current place */
 	var position = [this.rect.left, this.rect.top];
-	var goal = [this.destination[0]*globals.TILE_SIZE, this.destination[1]*globals.TILE_SIZE];
+	var newPosition = [this.destination[0].x, this.destination[0].y];
+	var goal = [this.destination[0].x*globals.TILE_SIZE, this.destination[0].y*globals.TILE_SIZE];
 	var delta = [0, 0];
 	var diff = [Math.abs(goal[0]-position[0]), Math.abs(goal[1]-position[1])];
 
-	/* We launch actual attack only when movement has finished */
-	if (war.samePlace(position, goal))
-	{
-	    this.position = this.destination;
+	if ((war.samePlace(position, goal)) && (this.destination.length != 0)) {
+	    this.destination.shift();
+	}
+
+	if ((war.samePlace(position, goal)) && (this.destination.length == 0)) {
+	    this.position = newPosition;
 
 	    /* if we are on hostile tile, we launch attack */
 	    if ((war.getTileState(this.position) === globals.TileState.OCCUPIED) && (war.getMonsterAt(this.position).family != this.family)) {
@@ -550,7 +558,7 @@ function main() {
     for (var i=0; i < (10); i++)
         globals.Monsters.add(new Octopus([i*globals.TILE_SIZE, 9*globals.TILE_SIZE]));
 
-    globals.Monsters.add(new Evileye([4*globals.TILE_SIZE, 4*globals.TILE_SIZE]));
+    //globals.Monsters.add(new Evileye([4*globals.TILE_SIZE, 4*globals.TILE_SIZE]));
 
     /* Ground */
 

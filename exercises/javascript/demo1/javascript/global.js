@@ -36,6 +36,7 @@ exports.MonsterState = {
 	MOVING_AFTER_ATTACK : 4
 };
 
+/* a_star.js requires empty tile to be 0 */
 exports.TileState = {
 	EMPTY : 0,
 	OCCUPIED : 1,
