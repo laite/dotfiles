@@ -57,6 +57,46 @@ exports.battleStatus = new BattleStatus();
 
 /*
  *
+ * Ground
+ *
+ */
+
+var Ground = exports.Ground = function(rect, state) {
+    Ground.superConstructor.apply(this, arguments);
+
+    this.state = state;
+    this.occupied = false;
+    this.monsterID = null;
+
+    this.rect = new gamejs.Rect(rect, [globals.TILE_SIZE, globals.TILE_SIZE]);
+
+    tile_x = Math.floor(this.rect.left/globals.TILE_SIZE);
+    tile_y = Math.floor(this.rect.top/globals.TILE_SIZE);
+
+    this.position = [tile_x, tile_y];
+
+    if (state === globals.TileState.EMPTY) {
+	this.image = gamejs.image.load("images/tile.png");
+    }
+    else if (state === globals.TileState.BLOCKED) {
+	this.image = gamejs.image.load("images/tile2.png");
+    }
+
+    this.getState = function() {
+	return this.state;
+    }
+
+    return this;
+};
+
+var getGroundTile = function(x, y) {
+    //console.log("getGroundTile", x, y, globals.GroundTiles.sprites()[y*globals.TILE_AMOUNT+x])
+    return globals.GroundTiles.sprites()[y*globals.TILE_AMOUNT+x];
+}
+
+
+/*
+ *
  * Engine
  *
  */
@@ -64,14 +104,14 @@ exports.battleStatus = new BattleStatus();
 var Engine = function() {
 
     this.units = [];
-    this.tiles = [globals.TILE_AMOUNT];
+    ///this.tiles = [globals.TILE_AMOUNT];
 
-    for (var i=0; i<globals.TILE_AMOUNT;i++) {
-	this.tiles[i] = [];
-	for (var j=0; j<globals.TILE_AMOUNT;j++) {
-	    this.tiles[i].push({ state: globals.TileState.EMPTY, monster : null});
-	}
-    }
+    //for (var i=0; i<globals.TILE_AMOUNT;i++) {
+    //    this.tiles[i] = [];
+    //    for (var j=0; j<globals.TILE_AMOUNT;j++) {
+    //        this.tiles[i].push({ state: globals.TileState.EMPTY, monster : null});
+    //    }
+    //}
 
     this.currentUnit = 0;
 }
@@ -110,7 +150,7 @@ exports.getTilePixels = function(arr) {
 }
 
 /* getDistance takes two coordinate points and calculates the distance between them */
-exports.getDistance = function(p1, p2) {
+var getDistance = exports.getDistance = function(p1, p2) {
     var [x, y] = [Math.abs(p1[0]-p2[0]), Math.abs(p1[1]-p2[1])];
 
     /* 
@@ -131,8 +171,7 @@ exports.updateCursorState = function(cursor_pos,activeMonster) {
 	cursor_state = globals.CursorState.DISALLOWED;
     }
     else {
-	var monsterInTile = this.getTileState(cursor_pos);
-	if (monsterInTile === globals.TileState.OCCUPIED) {
+	if (this.isTileOccupied(cursor_pos)) {
 	    if (this.getMonsterAt(cursor_pos).family != activeMonster.family)
 		cursor_state = globals.CursorState.ATTACK;
 	}
@@ -247,11 +286,11 @@ exports.init = function(forceUnit = 0) {
      * Init map tiles
      */
 
-    for (var index_x=0; index_x<globals.TILE_AMOUNT; index_x++) {
-	for (var index_y=0; index_y<globals.TILE_AMOUNT; index_y++) {
-	    engine.tiles[index_x][index_y]['state'] = globals.TileState.EMPTY;
-	}
-    }
+    ///for (var index_x=0; index_x<globals.TILE_AMOUNT; index_x++) {
+    ///    for (var index_y=0; index_y<globals.TILE_AMOUNT; index_y++) {
+    ///        engine.tiles[index_x][index_y]['state'] = globals.TileState.EMPTY;
+    ///    }
+    ///}
 
     /*
      * Init units
@@ -273,8 +312,10 @@ exports.init = function(forceUnit = 0) {
 	engine.units.push(monster.id);
 	speeds.push(monster.speed); 
 
-	engine.tiles[x][y]['state'] = globals.TileState.OCCUPIED;
-	engine.tiles[x][y]['monster'] = monster.id;
+	getGroundTile(x, y).occupied = globals.TileState.OCCUPIED;
+	getGroundTile(x, y).monsterID = monster.id;
+	///engine.tiles[x][y]['state'] = globals.TileState.OCCUPIED;
+	///engine.tiles[x][y]['monster'] = monster.id;
     });
 
     function sort_index(a, b) {
@@ -319,15 +360,24 @@ exports.getTileState = function(arr) {
     if (((arr[0] > 9) || (arr[0] < 0)) || ((arr[1] > 9) || (arr[1] < 0)))
 	console.error("invalid argument at getTileState!");
 
-    return engine.tiles[arr[0]][arr[1]]['state'];
+    //console.log("getTileState",getGroundTile(arr[0], arr[1]).getState());
+    return getGroundTile(arr[0], arr[1]).getState();
+    ///return engine.tiles[arr[0]][arr[1]]['state'];
 }
 
 exports.setTileState = function(arr, state, id = null) {
     var [x,y] = arr;
 
-    engine.tiles[x][y]['state'] = state;
-    engine.tiles[x][y]['monster'] = id;
-    console.log("Tile [",x,",",y,"] has state:", state);
+    if ((state === globals.TileState.OCCUPIED) || (state === globals.TileState.NOT_OCCUPIED)) {
+	getGroundTile(x, y).occupied = (state === globals.TileState.OCCUPIED)? true : false;
+	getGroundTile(x, y).monsterID = id;
+	console.log(arr,"occupied:",getGroundTile(x,y).occupied);
+    }
+    else {
+	getGroundTile(x, y).state = state;
+    }
+    ///engine.tiles[x][y]['state'] = state;
+    ///engine.tiles[x][y]['monster'] = id;
 }
 
 exports.getTileMonsterID = function(arr) {
@@ -337,7 +387,8 @@ exports.getTileMonsterID = function(arr) {
     if (((arr[0] > 9) || (arr[0] < 0)) || ((arr[1] > 9) || (arr[1] < 0)))
 	console.error("invalid argument at getTileMonsterID!");
 
-    return engine.tiles[arr[0]][arr[1]]['monster'];
+    return getGroundTile(arr[0], arr[1]).monsterID;
+    ///return engine.tiles[arr[0]][arr[1]]['monster'];
 }
 
 exports.getMonsterAt = function(arr) { 
@@ -349,6 +400,10 @@ exports.getMonsterAt = function(arr) {
 	return globals.Monsters.sprites()[id];
 }
 
+exports.isTileOccupied = function(arr) {
+    return getGroundTile(arr[0], arr[1]).occupied;
+}
+
 exports.moveTowardsGoal = function(p1, p2, range) {
 
     var board = [];
@@ -358,6 +413,8 @@ exports.moveTowardsGoal = function(p1, p2, range) {
 
 	for (var j=0; j<globals.TILE_AMOUNT; j++) {
 	    board[i][j] = (this.getTileState([i,j]) == 0)? 0 : 1;
+	    if (this.isTileOccupied([i,j]))
+		board[i][j] = 1;
 	}
     }
     var path = a_star(p1, p2, board, globals.TILE_AMOUNT, globals.TILE_AMOUNT, true);
@@ -398,7 +455,7 @@ exports.findFreeTile = function(rect) {
 
     while (!found) {
 	var i = Math.floor(allPoints.length * Math.random());
-	if (this.getTileState(allPoints[i]) === globals.TileState.EMPTY) {
+	if ((this.getTileState(allPoints[i]) === globals.TileState.EMPTY) && (!this.isTileOccupied(allPoints[i]))) {
 	    found = true;
 	    foundPoint = allPoints[i];
 	}
@@ -491,23 +548,15 @@ exports.findNearestEnemy = function(monster) {
     found = null;
     distance = 1000;
 
-    for (var i=0; i < engine.tiles.length; i++) {
-	for (var j=0; j < engine.tiles[i].length; j++) {
-	    if (typeof engine.tiles[i][j]['monster'] === "undefined") 
-		console.error("Undefined tile:",[i,j],"at findNearestEnemy",monster.name,monster.id);
-
-	    if (engine.tiles[i][j]['monster'] !== null)
-	    {
-		if (monster.family != globals.Monsters.sprites()[engine.tiles[i][j]['monster']].family)
-		{
-		    if (this.getDistance(monster.position, [i,j]) < distance) {
-			distance = this.getDistance(monster.position, [i,j]);
-			found = [i,j];
-		    }
-		}
+    globals.GroundTiles.forEach(function(tile) {
+	if ((tile.monsterID != null) && (monster.family != globals.Monsters.sprites()[tile.monsterID].family)
+	    && (getDistance(monster.position, tile.position) < distance)) {
+		distance = getDistance(monster.position, tile.position);
+		found = tile.position;
 	    }
-	}
-    }
+
+    });
+
     return found;
 }
 

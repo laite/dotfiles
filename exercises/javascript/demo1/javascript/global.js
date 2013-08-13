@@ -4,6 +4,7 @@
  */
 
 exports.Monsters;
+exports.GroundTiles;
 exports.attackIcon;
 
 exports.TILE_SIZE = 64;
@@ -32,28 +33,29 @@ exports.MonsterState = {
     INACTIVE : 0,
     ACTIVE : 1,
     MOVING : 2,
-	ATTACKING : 3,
-	MOVING_AFTER_ATTACK : 4
+    ATTACKING : 3,
+    MOVING_AFTER_ATTACK : 4
 };
 
 /* a_star.js requires empty tile to be 0 */
 exports.TileState = {
-	EMPTY : 0,
-	OCCUPIED : 1,
-	BLOCKED : 2
+    EMPTY : 0,
+    BLOCKED : 1,
+    OCCUPIED : 2,
+    NOT_OCCUPIED : 3
 };
 
 exports.CursorState = {
-	ALLOWED : 0,
-	DISALLOWED : 1,
-	ATTACK : 2,
-	ACTIVE_MONSTER : 3
+    ALLOWED : 0,
+    DISALLOWED : 1,
+    ATTACK : 2,
+    ACTIVE_MONSTER : 3
 };
 
 /* controllers */
 exports.Controller = {
-	HUMAN : 0,
-	AI : 1
+    HUMAN : 0,
+    AI : 1
 };
 
 /*
@@ -62,33 +64,33 @@ exports.Controller = {
 
 /* MonsterSpeed acts as a modifier when calculating individual monsters speed and moveRate */
 exports.MonsterSpeed = {
-	VERY_SLOW : 0,
-	SLOW : 1,
-	NORMAL : 2,
-	QUICK : 3,
-	VERY_QUICK : 4
+    VERY_SLOW : 0,
+    SLOW : 1,
+    NORMAL : 2,
+    QUICK : 3,
+    VERY_QUICK : 4
 }
 
 /* Personality defines monsters actions on battlefield */
 exports.MonsterPersonality = {
-	IMMOBILE : 0,
-	CAREFUL : 1,
-	INDIVIDUAL : 2,
-	BERSERK : 3
+    IMMOBILE : 0,
+    CAREFUL : 1,
+    INDIVIDUAL : 2,
+    BERSERK : 3
 }
 
 exports.MonsterEndurance = {
-	VERY_WEAK : 0,
-	WEAK : 1,
-	NORMAL : 3,
-	TOUGH : 5,
-	VERY_TOUGH : 8,
-	EXTREMELY_TOUGH : 12,
-	GODLIKE : 20
+    VERY_WEAK : 0,
+    WEAK : 1,
+    NORMAL : 3,
+    TOUGH : 5,
+    VERY_TOUGH : 8,
+    EXTREMELY_TOUGH : 12,
+    GODLIKE : 20
 }
 
 exports.WeaponStyle = {
-	MELEE : 0,
-	RANGED : 1,
-	MAGIC : 2
+    MELEE : 0,
+    RANGED : 1,
+    MAGIC : 2
 }

@@ -132,19 +132,34 @@ var Monster = function(rect) {
      */
     this.moveTo = function(rect) {
 
-	var tileState = war.getTileState(rect);
-	var dist = war.getDistance(this.position, rect);
 	var destination = war.moveTowardsGoal(this.position, rect, this.moveRange);
 
 	if (destination.length > 0) {
 	    if (this.getState() !== globals.MonsterState.MOVING_AFTER_ATTACK) {
-		war.setTileState(this.position, globals.TileState.EMPTY);
+		war.setTileState(this.position, globals.TileState.NOT_OCCUPIED);
 	    }
 	    this.changeState(globals.MonsterState.MOVING);
 
 	    /* we have to make sure monster doesn't move past it's range */
 	    if (this.moveRange < destination.length)
 		destination = destination.splice(1, this.moveRange);
+
+	    /* a_star gives us destination even if it's occupied, so we make sure
+	     * there is no friendly monster 
+	     */
+	    if (destination.length > 0) {
+		var x = destination[destination.length-1].x;
+		var y = destination[destination.length-1].y;
+
+		if (war.isTileOccupied([x, y])) {
+		    if (this.family == war.getMonsterAt([x, y]).family) {
+			console.log("Slicing!");
+			destination = destination.slice(0, destination.length-1);
+		    }
+		    else
+			console.log("family mismatch");
+		}
+	    }
 
 	    this.destination = destination;
 	}
@@ -321,15 +336,6 @@ var Evileye = function(rect) {
     Monster.call(this, rect);
 }
 
-var Ground = function(rect) {
-    Ground.superConstructor.apply(this, arguments);
-    this.image = gamejs.image.load("images/tile.png");
-
-    this.rect = new gamejs.Rect(rect, [globals.TILE_SIZE, globals.TILE_SIZE]);
-
-    return this;
-};
-
 var AttackIcon = function(rect) {
     AttackIcon.superConstructor.apply(this, arguments);
 
@@ -383,7 +389,7 @@ gamejs.utils.objects.extend(Evileye, Monster);
 gamejs.utils.objects.extend(Orc, Monster);
 gamejs.utils.objects.extend(Octopus, Monster);
 
-gamejs.utils.objects.extend(Ground, gamejs.sprite.Sprite);
+gamejs.utils.objects.extend(war.Ground, gamejs.sprite.Sprite);
 gamejs.utils.objects.extend(AttackIcon, gamejs.sprite.Sprite);
 
 AttackIcon.prototype.update = function(msDuration) {
@@ -417,7 +423,7 @@ Monster.prototype.update = function(msDuration) {
 	    this.position = newPosition;
 
 	    /* if we are on hostile tile, we launch attack */
-	    if ((war.getTileState(this.position) === globals.TileState.OCCUPIED) && (war.getMonsterAt(this.position).family != this.family)) {
+	    if ((war.isTileOccupied(this.position)) && (war.getMonsterAt(this.position).family != this.family)) {
 		this.enemy = war.getMonsterAt(this.position);
 		this.changeState(globals.MonsterState.ATTACKING);
 		globals.attackIcon.setMelee();
@@ -562,11 +568,13 @@ function main() {
 
     /* Ground */
 
-    var gGroundTiles = new gamejs.sprite.Group();
+    globals.GroundTiles = new gamejs.sprite.Group();
 
-    for (var i=0; i<globals.TILE_AMOUNT; i++) {
-	for (var j=0; j<globals.TILE_AMOUNT; j++) {
-	    gGroundTiles.add(new Ground([i*globals.TILE_SIZE, j*globals.TILE_SIZE]));
+    for (var y=0; y<globals.TILE_AMOUNT; y++) {
+	for (var x=0; x<globals.TILE_AMOUNT; x++) {
+	    // there's a 25% chance that tile is lava */
+	    var blocked = (Math.random() > 0.25)? globals.TileState.EMPTY : globals.TileState.BLOCKED;
+	    globals.GroundTiles.add(new war.Ground([x*globals.TILE_SIZE, y*globals.TILE_SIZE], blocked));
 	}
     }
 
@@ -698,15 +706,13 @@ function main() {
 			return;
 		    }
 
-		    // TODO: make sure only clicks on game area are registered
-		    // (after status area is implemented, that is)
 		    if (mainSurface.rect.collidePoint(event.pos)) {
 
 			// get clicked tile, its state and distance from activeMonster
 			var click_pos = war.getTile(event.pos);
-			var tileState = war.getTileState(click_pos);
 			var dist = war.getDistance(click_pos, activeMonster.position);
 
+			var tileState = war.getTileState(click_pos);
 			console.log("Click:", click_pos, "state:", tileState, "dist:", dist);
 
 			activeMonster.moveTo(click_pos);
@@ -754,7 +760,7 @@ function main() {
 		mainSurface.fill("#efefef");
 
 		// draw ground first
-		gGroundTiles.draw(mainSurface);
+		globals.GroundTiles.draw(mainSurface);
 
 		// then "cursor"
 		war.drawCursor(mainSurface, cursor_pos, cursor_state);
@@ -858,6 +864,7 @@ gamejs.preload(['images/evileye.png']);
 gamejs.preload(['images/orc.png']);
 gamejs.preload(['images/octopus.png']);
 gamejs.preload(['images/tile.png']);
+gamejs.preload(['images/tile2.png']);
 gamejs.preload(['images/attack.png']);
 gamejs.preload(['images/attack_ranged.png']);
 gamejs.preload(['images/attack_magic.png']);
