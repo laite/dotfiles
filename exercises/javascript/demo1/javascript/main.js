@@ -463,6 +463,7 @@ Monster.prototype.update = function(msDuration) {
 	    /* If attacker died, it's over for him */
 	    if (this.hp <= 0) {
 		console.log("Monster",this.enemy.name,"killed its enemy!");
+		war.battleStatus.add(this.name + " was killed!");
 		war.nextUnit();
 		this.kill();
 	    }
@@ -470,6 +471,7 @@ Monster.prototype.update = function(msDuration) {
 	    else {
 		/* enemy is dead, so we can stay at its position (if melee-fight) */
 		if (this.enemy.hp <= 0) {
+		    war.battleStatus.add(this.enemy.name + " was killed!");
 		    this.enemy.kill();
 
 		    if (war.samePlace(this.position, this.enemy.position)) {
@@ -571,128 +573,229 @@ function main() {
     war.init();
     war.battleStatus.add("WAR");
 
+
+
     /*
-     * Event handling
+     *
+     *
+     *
+     *
+     *
+     * Director
+     *
+     *
+     *
+     *
      */
 
 
-    gamejs.onEvent(function(event) {
+    var Director = function() {
+	var onAir = false;
+	var activeScene = null;
 
-	/* Mouse movement */
-	if (event.type === gamejs.event.MOUSE_MOTION) {
-	    /* If we are on canvas, draw rectangle on current tile */
-	    if (mainSurface.rect.collidePoint(event.pos)) {
-		cursor_pos = war.getTile(event.pos);
-		cursor_state = war.updateCursorState(cursor_pos, activeMonster);
+	this.update = function(msDuration) {
+	    if (!onAir) return;
 
-		var was = activeEnemy;
-
-		/* activeEnemy is null if there is no monster at cursor position */
-		activeEnemy = war.getMonsterAt(cursor_pos);
-
-		/* update sidebar status only when necessary */
-		if (activeEnemy !== was)
-		    war.drawStats(null, activeEnemy);
+	    if (activeScene.update) {
+		activeScene.update(msDuration);
 	    }
 	}
 
-	/* Mouse clicking */
-	if (event.type === gamejs.event.MOUSE_UP) {
+	this.draw = function(display) {
+	    if (activeScene.draw) {
+		activeScene.draw(display);
+	    }
+	};
 
-	    var rect = new gamejs.Rect(0,0,globals.GAME_AREA_WIDTH, globals.GAME_AREA_HEIGHT);
+	this.handleEvent = function(event) {
+	    if (activeScene.handleEvent) {
+		activeScene.handleEvent(event);
+	    }
+	}
 
-	    /* if we are actually on game area */
-	    if (rect.collidePoint(event.pos)) {
-		/* skip event if activeMonster is not human-controlled, or is not active */
-		if ((activeMonster.getState() !== globals.MonsterState.ACTIVE) || (activeMonster.controller !== globals.Controller.HUMAN)) {
-		    return;
-		}
 
-		// TODO: make sure only clicks on game area are registered
-		// (after status area is implemented, that is)
+	this.start = function(scene) {
+	    onAir = true;
+	    this.replaceScene(scene);
+	    return;
+	};
+
+	this.replaceScene = function(scene) {
+	    activeScene = scene;
+	};
+
+	this.getScene = function() {
+	    return activeScene;
+	};
+	return this;
+    }
+
+    /*
+     *
+     *
+     * SCENE: WAR
+     *
+     *
+     */
+
+    var WarScene = function(director) {
+	this.handleEvent = function(event)
+	{
+	    /* Mouse movement */
+	    if (event.type === gamejs.event.MOUSE_MOTION) {
+		/* If we are on canvas, draw rectangle on current tile */
 		if (mainSurface.rect.collidePoint(event.pos)) {
+		    cursor_pos = war.getTile(event.pos);
+		    cursor_state = war.updateCursorState(cursor_pos, activeMonster);
 
-		    // get clicked tile, its state and distance from activeMonster
-		    var click_pos = war.getTile(event.pos);
-		    var tileState = war.getTileState(click_pos);
-		    var dist = war.getDistance(click_pos, activeMonster.position);
+		    var was = activeEnemy;
 
-		    console.log("Click:", click_pos, "state:", tileState, "dist:", dist);
+		    /* activeEnemy is null if there is no monster at cursor position */
+		    activeEnemy = war.getMonsterAt(cursor_pos);
 
-		    activeMonster.moveTo(click_pos);
+		    /* update sidebar status only when necessary */
+		    if (activeEnemy !== was)
+			war.drawStats(null, activeEnemy);
+		}
+	    }
+
+	    /* Keyboard shortcuts */
+	    if (event.type === gamejs.event.KEY_UP) {
+
+		/* [s]top the fight */
+		if (event.key === gamejs.event.K_s) {
+		    stillBattling = false;
+		}
+
+	    }
+
+	    /* Mouse clicking */
+	    if (event.type === gamejs.event.MOUSE_UP) {
+
+		var rect = new gamejs.Rect(0,0,globals.GAME_AREA_WIDTH, globals.GAME_AREA_HEIGHT);
+
+		/* if we are actually on game area */
+		if (rect.collidePoint(event.pos)) {
+		    /* skip event if activeMonster is not human-controlled, or is not active */
+		    if ((activeMonster.getState() !== globals.MonsterState.ACTIVE) || (activeMonster.controller !== globals.Controller.HUMAN)) {
+			return;
+		    }
+
+		    // TODO: make sure only clicks on game area are registered
+		    // (after status area is implemented, that is)
+		    if (mainSurface.rect.collidePoint(event.pos)) {
+
+			// get clicked tile, its state and distance from activeMonster
+			var click_pos = war.getTile(event.pos);
+			var tileState = war.getTileState(click_pos);
+			var dist = war.getDistance(click_pos, activeMonster.position);
+
+			console.log("Click:", click_pos, "state:", tileState, "dist:", dist);
+
+			activeMonster.moveTo(click_pos);
+		    }
 		}
 	    }
 	}
-    });
+
+	this.update = function(msDuration) {
+	    if (!stillBattling) {
+		war.battleStatus.add(" *********************   It's all over!   ********************* ");
+		
+		// TODO:
+		// show end statistics and such
+
+	    }
+	    else {
+
+		if (NEED_INIT) {
+		    /* initializing is necessary once some poor monster dies */
+		    console.log("Re-initing things");
+		    war.init(war.getCurrentUnitIndex());
+		}
+
+		/* We check here if turn has changed and set new monster as active if necessary */
+		if ((war.getCurrentUnit() != activeMonsterIndex) || (NEED_INIT)) {
+		    activeMonsterIndex = war.getCurrentUnit();
+		    activeMonster = globals.Monsters.sprites()[activeMonsterIndex];
+		    activeMonster.changeState(globals.MonsterState.ACTIVE);
+		    /* also update cursor state for new monster */
+		    cursor_state = war.updateCursorState(cursor_pos, activeMonster);
+
+		    /* activeEnemy is null if there is no monster at cursor position */
+		    activeEnemy = war.getMonsterAt(cursor_pos);
+		    war.drawStats(activeMonster, activeEnemy);
+		}
+
+		NEED_INIT = false;
+
+		/*
+		 * Drawing stuff
+		 */
+
+		// update the monsters
+		globals.Monsters.update(msDuration);
+
+		// clear
+		mainSurface.fill("#efefef");
+
+		// draw ground first
+		gGroundTiles.draw(mainSurface);
+
+		// then "cursor"
+		war.drawCursor(mainSurface, cursor_pos, cursor_state);
+
+		if (activeMonster)
+		    war.drawActiveMonsterTile(mainSurface, [activeMonster.rect.left, activeMonster.rect.top]);
+
+		// on top of everything else, monsters
+		globals.Monsters.draw(mainSurface);
+
+		/* Finally, some stats */
+
+
+		if (attackOn) {
+		    globals.attackIcon.update(msDuration);
+		    globals.attackIcon.draw(mainSurface);
+		}
+
+	    } // stillBattling
+	}
+    } // warScene
+
+    var MenuScene = function(director) {
+
+    }
 
 
     /*
      * Main loop
      */
 
+    gamejs.onEvent(function(event) {
+	director.handleEvent(event);
+    });
+
 
     /* msDuration = time since last tick() call */
     gamejs.onTick(function(msDuration) {
-
-	if (!stillBattling) {
-	    console.log(" *********************   It's all over!   ********************* ");
-	    return;
-	}
-	else {
-
-	    if (NEED_INIT) {
-		/* initializing is necessary once some poor monster dies */
-		console.log("Re-initing things");
-		war.init(war.getCurrentUnitIndex());
-	    }
-
-	    /* We check here if turn has changed and set new monster as active if necessary */
-	    if ((war.getCurrentUnit() != activeMonsterIndex) || (NEED_INIT)) {
-		activeMonsterIndex = war.getCurrentUnit();
-		activeMonster = globals.Monsters.sprites()[activeMonsterIndex];
-		activeMonster.changeState(globals.MonsterState.ACTIVE);
-		/* also update cursor state for new monster */
-		cursor_state = war.updateCursorState(cursor_pos, activeMonster);
-
-		/* activeEnemy is null if there is no monster at cursor position */
-		activeEnemy = war.getMonsterAt(cursor_pos);
-		war.drawStats(activeMonster, activeEnemy);
-	    }
-
-	    NEED_INIT = false;
-
-	    /*
-	     * Drawing stuff
-	     */
-
-	    // update the monsters
-	    globals.Monsters.update(msDuration);
-
-	    // clear
-	    mainSurface.fill("#efefef");
-
-	    // draw ground first
-	    gGroundTiles.draw(mainSurface);
-
-	    // then "cursor"
-	    war.drawCursor(mainSurface, cursor_pos, cursor_state);
-
-	    if (activeMonster)
-		war.drawActiveMonsterTile(mainSurface, [activeMonster.rect.left, activeMonster.rect.top]);
-
-	    // on top of everything else, monsters
-	    globals.Monsters.draw(mainSurface);
-
-	    /* Finally, some stats */
-
-
-	    if (attackOn) {
-		globals.attackIcon.update(msDuration);
-		globals.attackIcon.draw(mainSurface);
-	    }
-
-	} // stillBattling
+	director.update(msDuration);
     });
+
+
+    /*
+     * Create the director and the scenes 
+     */
+
+    var director = new Director();
+    var warScene = new WarScene(director);
+    var menuScene = new MenuScene(director);
+
+    /*
+     * Start the game
+     */
+
+    director.start(warScene);
 }
 
 
