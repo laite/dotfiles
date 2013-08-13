@@ -621,7 +621,16 @@ function main() {
 	};
 
 	this.replaceScene = function(scene) {
+
+	    if ((activeScene != null) && (activeScene.exit)) {
+		activeScene.exit();
+	    }
+
 	    activeScene = scene;
+
+	    if (activeScene.init) {
+		activeScene.init();
+	    }
 	};
 
 	this.getScene = function() {
@@ -664,7 +673,7 @@ function main() {
 
 		/* [s]top the fight */
 		if (event.key === gamejs.event.K_s) {
-		    stillBattling = false;
+		    director.replaceScene(endStatisticsScene);
 		}
 
 	    }
@@ -701,10 +710,7 @@ function main() {
 	this.update = function(msDuration) {
 	    if (!stillBattling) {
 		war.battleStatus.add(" *********************   It's all over!   ********************* ");
-		
-		// TODO:
-		// show end statistics and such
-
+		director.replaceScene(endStatisticsScene);
 	    }
 	    else {
 
@@ -763,13 +769,56 @@ function main() {
 	}
     } // warScene
 
+    var EndStatisticsScene = function(director) {
+
+	this.handleEvent = function(event) {
+	    /* Mouse clicking */
+	    if (event.type === gamejs.event.MOUSE_UP) {
+		var rect = new gamejs.Rect(0,0,globals.GAME_AREA_WIDTH, globals.GAME_AREA_HEIGHT);
+
+		/* if we are actually on game area */
+		if (rect.collidePoint(event.pos)) {
+		    stillBattling = true;
+		    director.replaceScene(warScene);
+		}
+	    }
+	}
+
+	this.init = function() {
+	    var box = document.getElementById("gamepaused");
+	    box.style.display = "block";
+
+	    if (!stillBattling) {
+		box.innerHTML = "<h1>Game over</h1>";
+		box.innerHTML += ""
+	    }
+	    else {
+		box.innerHTML = "<h1>Game paused</h1>";
+		box.innerHTML += ""
+	    }
+	}
+
+	this.exit = function() {
+	    var box = document.getElementById("gamepaused");
+	    box.style.display = "none";
+	    box.innerHTML = "";
+	}
+    }
     var MenuScene = function(director) {
 
     }
 
+    /*
+     * Create the director and the scenes 
+     */
+
+    var director = new Director();
+    var warScene = new WarScene(director);
+    var endStatisticsScene = new EndStatisticsScene(director);
+    var menuScene = new MenuScene(director);
 
     /*
-     * Main loop
+     * Apply gamejs events to director
      */
 
     gamejs.onEvent(function(event) {
@@ -782,14 +831,6 @@ function main() {
 	director.update(msDuration);
     });
 
-
-    /*
-     * Create the director and the scenes 
-     */
-
-    var director = new Director();
-    var warScene = new WarScene(director);
-    var menuScene = new MenuScene(director);
 
     /*
      * Start the game
