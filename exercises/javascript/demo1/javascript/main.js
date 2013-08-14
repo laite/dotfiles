@@ -40,7 +40,7 @@ console.log(war.name());
  */
 
 // TODO: take tile-coordinate instead of rect
-var Monster = function(rect) {
+var Monster = function() {
 
     /*
      * Monster public members
@@ -66,14 +66,15 @@ var Monster = function(rect) {
     // passive image
     this.image = gamejs.image.load(this.image_name + ".png");
 
-    // rect shows the position and dimensions of monster
+    this.position = war.findNewLocation(war.getSpawnPoint(this.family));
+
+    var rect = [this.position[0]*globals.TILE_SIZE, this.position[1]*globals.TILE_SIZE];
     this.rect = new gamejs.Rect(rect, [globals.TILE_SIZE, globals.TILE_SIZE]);
+
+    war.setTileState(this.position, globals.TileState.OCCUPIED, this.id);
 
     // destination is used while traveling
     this.destination = [];
-
-    // monster.position shows the tile monster is currently on
-    this.position = war.getTile(rect);
 
 
     /*
@@ -264,7 +265,7 @@ var Monster = function(rect) {
  */
 
 
-var Orc = function(rect) {
+var Orc = function() {
     this.image_name = "images/orc";
     this.name = "Orc ";
     this.family = "Orcs";
@@ -283,10 +284,10 @@ var Orc = function(rect) {
 
     this.controller = globals.Controller.AI;
 
-    Monster.call(this, rect);
+    Monster.call(this);
 }
 
-var ToughOrc = function(rect) {
+var ToughOrc = function() {
     this.image_name = "images/tough_orc";
     this.name = "Tough Orc ";
     this.family = "Orcs";
@@ -305,10 +306,10 @@ var ToughOrc = function(rect) {
 
     this.controller = globals.Controller.AI;
 
-    Monster.call(this, rect);
+    Monster.call(this);
 }
 
-var Octopus = function(rect) {
+var Octopus = function() {
     this.image_name = "images/octopus";
     this.name = "Octo-Monster ";
     this.family = "Monsters";
@@ -327,10 +328,10 @@ var Octopus = function(rect) {
 
     this.controller = globals.Controller.AI;
 
-    Monster.call(this, rect);
+    Monster.call(this);
 }
 
-var Evileye = function(rect) {
+var Evileye = function() {
     this.image_name = "images/evileye";
     this.name = "Evil eye";
     this.family = "Boss";
@@ -349,7 +350,7 @@ var Evileye = function(rect) {
 
     this.controller = globals.Controller.AI;
 
-    Monster.call(this, rect);
+    Monster.call(this);
 }
 
 var AttackIcon = function(rect) {
@@ -571,24 +572,6 @@ function main() {
      * Sprites
      */
 
-
-    /* Monsters */
-
-    globals.Monsters = new gamejs.sprite.Group();
-
-    for (var i=0; i < (10); i++)
-    {
-	if (Math.random() < 0.5)
-	    globals.Monsters.add(new Orc([i*globals.TILE_SIZE, 0]));
-	else
-	    globals.Monsters.add(new ToughOrc([i*globals.TILE_SIZE, 0]));
-    }
-
-    for (var i=0; i < (10); i++)
-        globals.Monsters.add(new Octopus([i*globals.TILE_SIZE, 9*globals.TILE_SIZE]));
-
-    //globals.Monsters.add(new Evileye([4*globals.TILE_SIZE, 4*globals.TILE_SIZE]));
-
     /* Ground */
 
     globals.GroundTiles = new gamejs.sprite.Group();
@@ -600,6 +583,23 @@ function main() {
 	    globals.GroundTiles.add(new war.Ground([x*globals.TILE_SIZE, y*globals.TILE_SIZE], blocked));
 	}
     }
+
+    /* Monsters */
+
+    globals.Monsters = new gamejs.sprite.Group();
+
+    for (var i=0; i < (10); i++)
+    {
+	if (Math.random() < 0.5)
+	    globals.Monsters.add(new Orc());
+	else
+	    globals.Monsters.add(new ToughOrc());
+    }
+
+    for (var i=0; i < (10); i++)
+        globals.Monsters.add(new Octopus());
+
+    //globals.Monsters.add(new Evileye([4*globals.TILE_SIZE, 4*globals.TILE_SIZE]));
 
     globals.attackIcon = new AttackIcon([0,0]);
 

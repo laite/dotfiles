@@ -169,6 +169,24 @@ var units = new Units();
  *
  */
 
+var familylist = [];
+
+/* getSpawnPoint returns an free place for new monster */
+exports.getSpawnPoint = function(family) {
+    // TODO: map has spawn points up to n families?
+    // for now, we use 4 corners
+    var spawnPlaces = [[0,0], [9,9], [0,9], [9,0]];
+    var familyNum = familylist.indexOf(family);
+    
+    console.log("familynum:",familyNum);
+    if (familyNum == -1) {
+	familylist.push(family);
+	return spawnPlaces[familylist.length-1];
+    }
+    else {
+	return spawnPlaces[familyNum];
+    }
+}
 
 /* getTile returns array of wanted tile index */
 exports.getTile = function(arr) {
@@ -181,19 +199,19 @@ exports.getTile = function(arr) {
     return [tile_x, tile_y];
 }
 
-exports.isTileOccupiedByEnemy = function(arr, family) {
-    return ((this.isTileOccupied(arr)) && (this.getMonsterAt(arr).family != family))
+var isTileOccupiedByEnemy = exports.isTileOccupiedByEnemy = function(arr, family) {
+    return ((isTileOccupied(arr)) && (this.getMonsterAt(arr).family != family))
 
 }
-exports.isTileOccupied = function(arr) {
+var isTileOccupied = exports.isTileOccupied = function(arr) {
     return getGroundTile(arr[0], arr[1]).occupied;
 }
 
-exports.isTileBlocked = function(arr) {
+var isTileBlocked = exports.isTileBlocked = function(arr) {
     return getGroundTile(arr[0], arr[1]).blocked;
 }
 
-exports.isTileEmpty = function(arr) {
+var isTileEmpty = exports.isTileEmpty = function(arr) {
     return !(getGroundTile(arr[0], arr[1]).blocked);
 }
 
@@ -214,7 +232,7 @@ exports.updateCursorState = function(cursor_pos,activeMonster) {
 	cursor_state = globals.CursorState.DISALLOWED;
     }
     else {
-	if (this.isTileOccupied(cursor_pos)) {
+	if (isTileOccupied(cursor_pos)) {
 	    if (this.getMonsterAt(cursor_pos).family != activeMonster.family)
 		cursor_state = globals.CursorState.ATTACK;
 	}
@@ -412,8 +430,8 @@ exports.moveTowardsGoal = function(family, p1, p2, range) {
 	board[i] = [];
 
 	for (var j=0; j<globals.TILE_AMOUNT; j++) {
-	    board[i][j] = this.isTileBlocked([i,j])? 1 : 0;
-	    if (this.isTileOccupied([i,j])) {
+	    board[i][j] = isTileBlocked([i,j])? 1 : 0;
+	    if (isTileOccupied([i,j])) {
 		/* we can pass through the tiles that are occupied by own family */
 		if (this.getMonsterAt([i,j]).family != family) {
 		    board[i][j] = 1;
@@ -459,7 +477,7 @@ var findFreeTile = function(rect) {
 
     while (!found) {
 	var i = Math.floor(allPoints.length * Math.random());
-	if ((this.isTileEmpty(allPoints[i])) && (!this.isTileOccupied(allPoints[i]))) {
+	if ((isTileEmpty(allPoints[i])) && (!isTileOccupied(allPoints[i]))) {
 	    found = true;
 	    foundPoint = allPoints[i];
 	}
