@@ -144,8 +144,8 @@ var Monster = function(rect) {
 	    if (this.moveRange < destination.length)
 		destination = destination.splice(1, this.moveRange);
 
-	    /* a_star gives us destination even if it's occupied, so we make sure
-	     * there is no-one else in there (and cut off the path until we find a free spot)
+	    /* a_star gives us destination even if it's occupied/blocked, so we 
+	     * cut off the path until we find a free spot (or run out of points)
 	     */
 	    if (destination.length > 0) {
 		var free = false;
@@ -155,8 +155,10 @@ var Monster = function(rect) {
 		    var y = destination[destination.length-1].y;
 
 		    /* tile is considered free if there's an enemy; that means we attack it */
-		    if (!war.isTileOccupied([x, y]) || (this.family != war.getMonsterAt([x, y]).family))
+		    if ((war.isTileEmpty([x, y])) &&
+			    (!war.isTileOccupied([x, y]) || (this.family != war.getMonsterAt([x, y]).family))) {
 			free = true;
+		    }
 		    else
 			destination = destination.slice(0, destination.length-1);
 
@@ -279,7 +281,7 @@ var Orc = function(rect) {
     this.damageModifier = 3;
     this.damageBonus = 3;
 
-    this.controller = globals.Controller.AI;
+    this.controller = globals.Controller.HUMAN;
 
     Monster.call(this, rect);
 }
@@ -301,7 +303,7 @@ var ToughOrc = function(rect) {
     this.damageModifier = 6;
     this.damageBonus = 10;
 
-    this.controller = globals.Controller.AI;
+    this.controller = globals.Controller.HUMAN;
 
     Monster.call(this, rect);
 }
@@ -323,7 +325,7 @@ var Octopus = function(rect) {
     this.damageModifier = 4;
     this.damageBonus = 0;
 
-    this.controller = globals.Controller.AI;
+    this.controller = globals.Controller.HUMAN;
 
     Monster.call(this, rect);
 }
@@ -345,7 +347,7 @@ var Evileye = function(rect) {
     this.damageModifier = 3;
     this.damageBonus = 0;
 
-    this.controller = globals.Controller.AI;
+    this.controller = globals.Controller.HUMAN;
 
     Monster.call(this, rect);
 }
@@ -716,9 +718,8 @@ function main() {
 		/* if we are actually on game area */
 		if (rect.collidePoint(event.pos)) {
 		    /* skip event if activeMonster is not human-controlled, or is not active */
-		    if ((!activeMonster.isActive()) || (!activeMonster.isHumanControlled())) {
+		    if ((!activeMonster.isActive()) || (!activeMonster.isHumanControlled()))
 			return;
-		    }
 
 		    if (mainSurface.rect.collidePoint(event.pos)) {
 
@@ -728,8 +729,14 @@ function main() {
 
 			var tileState = war.isTileEmpty(click_pos);
 			console.log("Click:", click_pos, "empty:", tileState, "dist:", dist);
+			console.log (war.isTileOccupiedByEnemy(click_pos, activeMonster.family));
+			console.log(activeMonster.weapon === globals.WeaponStyle.RANGED);
 
-			activeMonster.moveTo(click_pos);
+			if ((war.isTileOccupiedByEnemy(click_pos, activeMonster.family)) && (activeMonster.weapon === globals.WeaponStyle.RANGED)) {
+			    activeMonster.attackRanged(war.getMonsterAt(click_pos));
+			}
+			else
+			    activeMonster.moveTo(click_pos);
 		    }
 		}
 	    }

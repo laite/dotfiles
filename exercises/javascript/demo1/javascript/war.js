@@ -404,6 +404,10 @@ exports.getMonsterAt = function(arr) {
 	return globals.Monsters.sprites()[id];
 }
 
+exports.isTileOccupiedByEnemy = function(arr, family) {
+    return ((this.isTileOccupied(arr)) && (this.getMonsterAt(arr).family != family))
+
+}
 exports.isTileOccupied = function(arr) {
     return getGroundTile(arr[0], arr[1]).occupied;
 }
