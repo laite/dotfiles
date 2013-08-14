@@ -200,7 +200,7 @@ exports.getTile = function(arr) {
 }
 
 var isTileOccupiedByEnemy = exports.isTileOccupiedByEnemy = function(arr, family) {
-    return ((isTileOccupied(arr)) && (this.getMonsterAt(arr).family != family))
+    return ((isTileOccupied(arr)) && (getMonsterAt(arr).family != family))
 
 }
 var isTileOccupied = exports.isTileOccupied = function(arr) {
@@ -216,11 +216,18 @@ var isTileEmpty = exports.isTileEmpty = function(arr) {
 }
 
 /* getDistance takes two coordinate points and calculates the distance between them */
-var getDistance = exports.getDistance = function(p1, p2) {
-    var [x, y] = [Math.abs(p1[0]-p2[0]), Math.abs(p1[1]-p2[1])];
-    var distance = Math.max(x, y);
+var getDistance = exports.getDistance = function(p1, p2, family = null) {
+    var path = findPathTo(family, p1, p2);
 
-    return distance;
+    if (path.length == 0)
+	return 1000;
+    else
+	return path.length;
+}
+
+var getRangedDistance = function(p1, p2) {
+    var [x, y] = [Math.abs(p1[0]-p2[0]), Math.abs(p1[1]-p2[1])];
+    return Math.max(x, y);
 }
 
 exports.updateCursorState = function(cursor_pos,activeMonster) {
@@ -233,7 +240,7 @@ exports.updateCursorState = function(cursor_pos,activeMonster) {
     }
     else {
 	if (isTileOccupied(cursor_pos)) {
-	    if (this.getMonsterAt(cursor_pos).family != activeMonster.family)
+	    if (getMonsterAt(cursor_pos).family != activeMonster.family)
 		cursor_state = globals.CursorState.ATTACK;
 	}
 	else {
@@ -413,7 +420,7 @@ var getMonsterFromId = exports.getMonsterFromId = function(id) {
     return globals.Monsters.sprites()[id];
 }
 
-exports.getMonsterAt = function(arr) { 
+var getMonsterAt = exports.getMonsterAt = function(arr) { 
     var id = getTileMonsterId(arr);
 
     if (id == null)
@@ -422,7 +429,7 @@ exports.getMonsterAt = function(arr) {
 	return globals.Monsters.sprites()[id];
 }
 
-exports.moveTowardsGoal = function(family, p1, p2, range) {
+var findPathTo = exports.findPathTo = function(family, p1, p2) {
 
     var board = [];
 
@@ -433,7 +440,7 @@ exports.moveTowardsGoal = function(family, p1, p2, range) {
 	    board[i][j] = isTileBlocked([i,j])? 1 : 0;
 	    if (isTileOccupied([i,j])) {
 		/* we can pass through the tiles that are occupied by own family */
-		if (this.getMonsterAt([i,j]).family != family) {
+		if (getMonsterAt([i,j]).family != family) {
 		    board[i][j] = 1;
 		}
 	    }	
@@ -567,8 +574,8 @@ exports.battle = function(id1, id2) {
  */
 
 var findSpecificMonster = function(monster, want_friend = false, want_weakest = false) {
-    foundList = [];
-    key = 1000;
+    var foundList = [];
+    var key = 1000;
 
     globals.GroundTiles.forEach(function(tile) {
 	if (tile.monsterId != null) {
@@ -594,6 +601,38 @@ var findSpecificMonster = function(monster, want_friend = false, want_weakest = 
     return found;
 }
 
+var findNearestEnemyRanged = function(monster) { 
+    var foundList = [];
+    var key = 1000;
+
+    globals.GroundTiles.forEach(function(tile) {
+	if (tile.monsterId != null) {
+
+	    var dist = getRangedDistance(monster.position, tile.position);
+	    /* we find either closest or weakest */
+		/* check if it's enemy/friend we wanted */
+		if (monster.family != globals.Monsters.sprites()[tile.monsterId].family) {
+		    if (dist < key) { 
+			key = getRangedDistance(monster.position, tile.position);
+			foundList = [];
+			foundList.push(tile.position);
+		    }
+		    else if (dist == key)
+			foundList.push(tile.position);
+		}
+	}
+    });
+
+    var found = null;
+    if (foundList.length > 0)
+	found = randomFromList(foundList);
+
+    console.log(found);
+
+    return found;
+}
+
+
 var findNearestEnemy = function(monster) {
     return findSpecificMonster(monster, false, false);
 }
@@ -608,7 +647,11 @@ var findWeakestFriend = function(monster) {
 
 exports.doAI = function(monster) {
     console.log("AI:",monster.name,monster.position,monster.family);
-    var nearestEnemyPosition = findNearestEnemy(monster);
+    var nearestEnemyPosition;
+    if (monster.weapon === globals.WeaponStyle.MELEE)
+       nearestEnemyPosition = findNearestEnemy(monster);
+    else
+       nearestEnemyPosition = findNearestEnemyRanged(monster);
 
     var Action = { ATTACK : 0, GATHER_AROUND : 1, DEFEND_WEAK : 3,
 	CAST_SPELL : 4, DO_NOTHING : 99};
@@ -619,7 +662,7 @@ exports.doAI = function(monster) {
 	/* by default, we attack with our hands and claws. */
 	var action = Action.ATTACK;
 	var distance = getDistance(monster.position, nearestEnemyPosition);
-	var nearestEnemy = this.getMonsterAt(nearestEnemyPosition);
+	var nearestEnemy = getMonsterAt(nearestEnemyPosition);
 
 	if (nearestEnemy == null) {
 	    console.error("nearestEnemy = null!");

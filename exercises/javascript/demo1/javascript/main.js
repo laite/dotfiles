@@ -133,7 +133,7 @@ var Monster = function() {
      */
     this.moveTo = function(rect) {
 
-	var destination = war.moveTowardsGoal(this.family, this.position, rect, this.moveRange);
+	var destination = war.findPathTo(this.family, this.position, rect);
 
 	if (destination.length > 0) {
 	    if (this.getState() !== globals.MonsterState.MOVING_AFTER_ATTACK) {
