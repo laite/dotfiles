@@ -66,7 +66,7 @@ var Ground = exports.Ground = function(rect, state) {
 
     this.state = state;
     this.occupied = false;
-    this.monsterID = null;
+    this.monsterId = null;
 
     this.rect = new gamejs.Rect(rect, [globals.TILE_SIZE, globals.TILE_SIZE]);
 
@@ -97,27 +97,64 @@ var getGroundTile = function(x, y) {
 
 /*
  *
- * Engine
+ * Units
  *
  */
 
-var Engine = function() {
+var Units = function() {
 
     this.units = [];
-    ///this.tiles = [globals.TILE_AMOUNT];
-
-    //for (var i=0; i<globals.TILE_AMOUNT;i++) {
-    //    this.tiles[i] = [];
-    //    for (var j=0; j<globals.TILE_AMOUNT;j++) {
-    //        this.tiles[i].push({ state: globals.TileState.EMPTY, monster : null});
-    //    }
-    //}
-
     this.currentUnit = 0;
+
+    this.getCurrentUnit = function() {
+	return this.units[this.currentUnit];
+    }
+
+    this.getCurrentUnitIndex = function() {
+	return this.currentUnit;
+    }
+
+    this.getUnit = function(index) {
+	if (index >= this.units.length)
+	    return null;
+	else
+	    return this.units[index];
+    }
+
+    this.reset = function() {
+	this.units = [];
+    }
+
+    this.addUnit = function(id) {
+	this.units.push(id);
+    }
+
+    this.sortUnits = function() {
+	var speeds = [];
+
+	for (var i=0; i<this.units.length;i++) {
+	    speeds.push(getMonsterFromId(this.units[i]).speed);
+	}
+
+	function sort_index(a, b) {
+	    return (speeds[a] < speeds[b])? 1 : -1;
+	}
+
+	this.units.sort(sort_index);
+    }
+
+    this.setCurrentUnit = function(unit = 0) {
+	this.currentUnit = unit%this.units.length;
+	console.log("currentUnit:",this.currentUnit,"units.length:",this.units.length);
+    }
+
+    this.nextUnit = function() {
+	this.setCurrentUnit(this.currentUnit+1);
+    }
 }
 
 
-var engine = new Engine();
+var units = new Units();
 
 /*
  *
@@ -275,7 +312,7 @@ exports.drawStats = function(monster, enemy) {
 /*
  *
  *
- * Engine initialization
+ * Initialization
  *
  *
  */
@@ -283,74 +320,52 @@ exports.drawStats = function(monster, enemy) {
 exports.init = function(forceUnit = 0) {
 
     /*
-     * Init map tiles
-     */
-
-    ///for (var index_x=0; index_x<globals.TILE_AMOUNT; index_x++) {
-    ///    for (var index_y=0; index_y<globals.TILE_AMOUNT; index_y++) {
-    ///        engine.tiles[index_x][index_y]['state'] = globals.TileState.EMPTY;
-    ///    }
-    ///}
-
-    /*
      * Init units
      *
      * We calculate order of units based on their speed
      * so that fastests units go first
      *
-     * Resulting order array is engine.units
+     * Resulting order array is units
      */
 
     var i = 0;
-    var speeds = [];
-    engine.units = [];
+    units.reset();
 
     globals.Monsters.forEach(function(monster) {
 	var [x, y] = monster.position;
 
 	monster.id = i++;
-	engine.units.push(monster.id);
-	speeds.push(monster.speed); 
+	units.addUnit(monster.id);
 
 	getGroundTile(x, y).occupied = globals.TileState.OCCUPIED;
-	getGroundTile(x, y).monsterID = monster.id;
-	///engine.tiles[x][y]['state'] = globals.TileState.OCCUPIED;
-	///engine.tiles[x][y]['monster'] = monster.id;
+	getGroundTile(x, y).monsterId = monster.id;
     });
 
-    function sort_index(a, b) {
-	return (speeds[a] < speeds[b])? 1 : -1;
-    }
-
-    engine.units.sort(sort_index);
-    engine.currentUnit = forceUnit%engine.units.length;
+    units.sortUnits();
+    units.setCurrentUnit(forceUnit);
 
     console.log("* INIT *");
-    console.log("currentUnit:",engine.currentUnit,"units.length:",engine.units.length,"forceUnit:",forceUnit);
 }
 
 /*
  *
  *
- * Engine functions
+ * public functions
  *
  *
  */
 
 
 exports.nextUnit = function() {
-    engine.currentUnit = (engine.currentUnit+1)%engine.units.length;
-
-    console.log("Next unit:",engine.units[engine.currentUnit],engine.currentUnit, engine.units.length);
-    return engine.units[engine.currentUnit];
+    units.nextUnit();
 }
 
 exports.getCurrentUnit = function() {
-    return engine.units[engine.currentUnit];
+    return units.getCurrentUnit();
 }
 
 exports.getCurrentUnitIndex = function() {
-    return engine.currentUnit;
+    return units.getCurrentUnitIndex();
 }
 
 exports.getTileState = function(arr) {
@@ -362,7 +377,6 @@ exports.getTileState = function(arr) {
 
     //console.log("getTileState",getGroundTile(arr[0], arr[1]).getState());
     return getGroundTile(arr[0], arr[1]).getState();
-    ///return engine.tiles[arr[0]][arr[1]]['state'];
 }
 
 exports.setTileState = function(arr, state, id = null) {
@@ -370,29 +384,30 @@ exports.setTileState = function(arr, state, id = null) {
 
     if ((state === globals.TileState.OCCUPIED) || (state === globals.TileState.NOT_OCCUPIED)) {
 	getGroundTile(x, y).occupied = (state === globals.TileState.OCCUPIED)? true : false;
-	getGroundTile(x, y).monsterID = id;
+	getGroundTile(x, y).monsterId = id;
 	console.log(arr,"occupied:",getGroundTile(x,y).occupied);
     }
     else {
 	getGroundTile(x, y).state = state;
     }
-    ///engine.tiles[x][y]['state'] = state;
-    ///engine.tiles[x][y]['monster'] = id;
 }
 
-exports.getTileMonsterID = function(arr) {
+exports.getTileMonsterId = function(arr) {
     arr[0] = Math.max(Math.min(arr[0],globals.TILE_AMOUNT-1), 0);
     arr[1] = Math.max(Math.min(arr[1],globals.TILE_AMOUNT-1), 0);
 
     if (((arr[0] > 9) || (arr[0] < 0)) || ((arr[1] > 9) || (arr[1] < 0)))
-	console.error("invalid argument at getTileMonsterID!");
+	console.error("invalid argument at getTileMonsterId!");
 
-    return getGroundTile(arr[0], arr[1]).monsterID;
-    ///return engine.tiles[arr[0]][arr[1]]['monster'];
+    return getGroundTile(arr[0], arr[1]).monsterId;
+}
+
+var getMonsterFromId = exports.getMonsterFromId = function(id) {
+    return globals.Monsters.sprites()[id];
 }
 
 exports.getMonsterAt = function(arr) { 
-    var id = this.getTileMonsterID(arr);
+    var id = this.getTileMonsterId(arr);
 
     if (id == null)
 	return null;
@@ -549,7 +564,7 @@ exports.findNearestEnemy = function(monster) {
     distance = 1000;
 
     globals.GroundTiles.forEach(function(tile) {
-	if ((tile.monsterID != null) && (monster.family != globals.Monsters.sprites()[tile.monsterID].family)
+	if ((tile.monsterId != null) && (monster.family != globals.Monsters.sprites()[tile.monsterId].family)
 	    && (getDistance(monster.position, tile.position) < distance)) {
 		distance = getDistance(monster.position, tile.position);
 		found = tile.position;
