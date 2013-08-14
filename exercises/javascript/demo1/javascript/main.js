@@ -281,7 +281,7 @@ var Orc = function(rect) {
     this.damageModifier = 3;
     this.damageBonus = 3;
 
-    this.controller = globals.Controller.HUMAN;
+    this.controller = globals.Controller.AI;
 
     Monster.call(this, rect);
 }
@@ -303,7 +303,7 @@ var ToughOrc = function(rect) {
     this.damageModifier = 6;
     this.damageBonus = 10;
 
-    this.controller = globals.Controller.HUMAN;
+    this.controller = globals.Controller.AI;
 
     Monster.call(this, rect);
 }
@@ -325,7 +325,7 @@ var Octopus = function(rect) {
     this.damageModifier = 4;
     this.damageBonus = 0;
 
-    this.controller = globals.Controller.HUMAN;
+    this.controller = globals.Controller.AI;
 
     Monster.call(this, rect);
 }
@@ -347,7 +347,7 @@ var Evileye = function(rect) {
     this.damageModifier = 3;
     this.damageBonus = 0;
 
-    this.controller = globals.Controller.HUMAN;
+    this.controller = globals.Controller.AI;
 
     Monster.call(this, rect);
 }
@@ -703,11 +703,15 @@ function main() {
 	    /* Keyboard shortcuts */
 	    if (event.type === gamejs.event.KEY_UP) {
 
-		/* [s]top the fight */
+		/* [s]kip turn */
 		if (event.key === gamejs.event.K_s) {
+		    if (activeMonster.isActive() && activeMonster.isHumanControlled())
+			activeMonster.skipTurn();
+		}
+		/* [p]ause game */
+		if (event.key === gamejs.event.K_p) {
 		    director.replaceScene(endStatisticsScene);
 		}
-
 	    }
 
 	    /* Mouse clicking */
