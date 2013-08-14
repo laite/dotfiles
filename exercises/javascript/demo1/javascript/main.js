@@ -269,7 +269,7 @@ var Orc = function(rect) {
     this.name = "Orc ";
     this.family = "Orcs";
 
-    this.personality = war.randomPersonality([globals.MonsterPersonality.BERSERK,globals.MonsterPersonality.INDIVIDUAL]);
+    this.personality = war.randomFromList([globals.MonsterPersonality.BERSERK,globals.MonsterPersonality.INDIVIDUAL]);
     this.naturalSpeedType = globals.MonsterSpeed.QUICK;
     this.endurance = globals.MonsterEndurance.TOUGH;
     this.weapon = globals.WeaponStyle.MELEE;
@@ -291,7 +291,7 @@ var ToughOrc = function(rect) {
     this.name = "Tough Orc ";
     this.family = "Orcs";
 
-    this.personality = war.randomPersonality([globals.MonsterPersonality.BERSERK,globals.MonsterPersonality.INDIVIDUAL]);
+    this.personality = war.randomFromList([globals.MonsterPersonality.BERSERK,globals.MonsterPersonality.INDIVIDUAL]);
     this.naturalSpeedType = globals.MonsterSpeed.VERY_QUICK;
     this.endurance = globals.MonsterEndurance.VERY_TOUGH;
     this.weapon = globals.WeaponStyle.MELEE;
@@ -313,7 +313,7 @@ var Octopus = function(rect) {
     this.name = "Octo-Monster ";
     this.family = "Monsters";
 
-    this.personality = war.randomPersonality([globals.MonsterPersonality.CAREFUL,globals.MonsterPersonality.INDIVIDUAL]);
+    this.personality = war.randomFromList([globals.MonsterPersonality.CAREFUL,globals.MonsterPersonality.INDIVIDUAL]);
     this.naturalSpeedType = globals.MonsterSpeed.QUICK;
     this.endurance = globals.MonsterEndurance.WEAK;
     this.weapon = globals.WeaponStyle.MAGIC;

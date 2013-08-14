@@ -13,6 +13,11 @@ exports.name = function() {
     return name;
 };
 
+exports.randomFromList = function(arr) {
+    var i = Math.floor(arr.length * Math.random());
+    return arr[i];
+}
+
 
 /*
  *
@@ -176,14 +181,20 @@ exports.getTile = function(arr) {
     return [tile_x, tile_y];
 }
 
-/* getTilePixels returns actual start point of a TILE */
-exports.getTilePixels = function(arr) {
+exports.isTileOccupiedByEnemy = function(arr, family) {
+    return ((this.isTileOccupied(arr)) && (this.getMonsterAt(arr).family != family))
 
-    var [tile_x, tile_y] = this.getTile(arr);
-    tile_x *= globals.TILE_SIZE;
-    tile_y *= globals.TILE_SIZE;
+}
+exports.isTileOccupied = function(arr) {
+    return getGroundTile(arr[0], arr[1]).occupied;
+}
 
-    return [tile_x, tile_y];
+exports.isTileBlocked = function(arr) {
+    return getGroundTile(arr[0], arr[1]).blocked;
+}
+
+exports.isTileEmpty = function(arr) {
+    return !(getGroundTile(arr[0], arr[1]).blocked);
 }
 
 /* getDistance takes two coordinate points and calculates the distance between them */
@@ -249,11 +260,6 @@ exports.drawCursor = function(surface, position, state) {
 
 exports.drawActiveMonsterTile = function(surface, position) {
     this.drawCursor(surface, position, globals.CursorState.ACTIVE_MONSTER);
-}
-
-exports.randomPersonality = function(arr) {
-    var i = Math.floor(arr.length * Math.random());
-    return arr[i];
 }
 
 var addRow = function(item, value) {
@@ -374,14 +380,13 @@ exports.setTileState = function(arr, state, id = null) {
     if ((state === globals.TileState.OCCUPIED) || (state === globals.TileState.NOT_OCCUPIED)) {
 	getGroundTile(x, y).occupied = (state === globals.TileState.OCCUPIED)? true : false;
 	getGroundTile(x, y).monsterId = id;
-	console.log(arr,"occupied:",getGroundTile(x,y).occupied);
     }
     else {
 	getGroundTile(x, y).blocked = blocked;
     }
 }
 
-exports.getTileMonsterId = function(arr) {
+var getTileMonsterId = function(arr) {
     arr[0] = Math.max(Math.min(arr[0],globals.TILE_AMOUNT-1), 0);
     arr[1] = Math.max(Math.min(arr[1],globals.TILE_AMOUNT-1), 0);
 
@@ -396,28 +401,12 @@ var getMonsterFromId = exports.getMonsterFromId = function(id) {
 }
 
 exports.getMonsterAt = function(arr) { 
-    var id = this.getTileMonsterId(arr);
+    var id = getTileMonsterId(arr);
 
     if (id == null)
 	return null;
     else
 	return globals.Monsters.sprites()[id];
-}
-
-exports.isTileOccupiedByEnemy = function(arr, family) {
-    return ((this.isTileOccupied(arr)) && (this.getMonsterAt(arr).family != family))
-
-}
-exports.isTileOccupied = function(arr) {
-    return getGroundTile(arr[0], arr[1]).occupied;
-}
-
-exports.isTileBlocked = function(arr) {
-    return getGroundTile(arr[0], arr[1]).blocked;
-}
-
-exports.isTileEmpty = function(arr) {
-    return !(getGroundTile(arr[0], arr[1]).blocked);
 }
 
 exports.moveTowardsGoal = function(family, p1, p2, range) {
@@ -442,7 +431,7 @@ exports.moveTowardsGoal = function(family, p1, p2, range) {
     return path;
 }
 
-exports.getRectFromRadius = function(pos, radius) {
+var getRectFromRadius = function(pos, radius) {
     var x0 = pos[0]-radius, y0 = pos[1]-radius;
     var x1 = pos[0]+radius, y1 = pos[1]+radius;
 
@@ -455,7 +444,7 @@ exports.getRectFromRadius = function(pos, radius) {
 }
 
 /* findFreeTile gets rect with four points as argument */
-exports.findFreeTile = function(rect) {
+var findFreeTile = function(rect) {
     if ((!rect instanceof Array) || (rect.length < 4)) {
 	console.error("Invalid parameter at findFreeTile!");
 	return null;
@@ -498,8 +487,8 @@ exports.findNewLocation = function(arr) {
     var newLocation = null;
 
     while (!found) {
-	var rect = this.getRectFromRadius(arr, radius);
-	newLocation = this.findFreeTile(rect);
+	var rect = getRectFromRadius(arr, radius);
+	newLocation = findFreeTile(rect);
 
 	if ((newLocation.length > 0) || (radius > 10))
 	    found = true;
@@ -564,7 +553,7 @@ exports.battle = function(id1, id2) {
  *
  */
 
-exports.findNearestEnemy = function(monster) {
+var findNearestEnemy = function(monster) {
     found = null;
     distance = 1000;
 
@@ -587,7 +576,7 @@ exports.findNearestEnemy = function(monster) {
  */
 exports.doAI = function(monster) {
     console.log("AI:",monster.name,monster.position,monster.family);
-    var nearestEnemyPosition = this.findNearestEnemy(monster);
+    var nearestEnemyPosition = findNearestEnemy(monster);
 
     var Action = { ATTACK : 0, GATHER_AROUND : 1, DEFEND_WEAK : 3,
 	CAST_SPELL : 4, DO_NOTHING : 99};
