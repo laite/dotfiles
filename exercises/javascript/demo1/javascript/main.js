@@ -132,7 +132,7 @@ var Monster = function(rect) {
      */
     this.moveTo = function(rect) {
 
-	var destination = war.moveTowardsGoal(this.position, rect, this.moveRange);
+	var destination = war.moveTowardsGoal(this.family, this.position, rect, this.moveRange);
 
 	if (destination.length > 0) {
 	    if (this.getState() !== globals.MonsterState.MOVING_AFTER_ATTACK) {
@@ -145,19 +145,21 @@ var Monster = function(rect) {
 		destination = destination.splice(1, this.moveRange);
 
 	    /* a_star gives us destination even if it's occupied, so we make sure
-	     * there is no friendly monster 
+	     * there is no-one else in there (and cut off the path until we find a free spot)
 	     */
 	    if (destination.length > 0) {
-		var x = destination[destination.length-1].x;
-		var y = destination[destination.length-1].y;
+		var free = false;
 
-		if (war.isTileOccupied([x, y])) {
-		    if (this.family == war.getMonsterAt([x, y]).family) {
-			console.log("Slicing!");
-			destination = destination.slice(0, destination.length-1);
-		    }
+		while (!free && (destination.length > 0)) {
+		    var x = destination[destination.length-1].x;
+		    var y = destination[destination.length-1].y;
+
+		    /* tile is considered free if there's an enemy; that means we attack it */
+		    if (!war.isTileOccupied([x, y]) || (this.family != war.getMonsterAt([x, y]).family))
+			free = true;
 		    else
-			console.log("family mismatch");
+			destination = destination.slice(0, destination.length-1);
+
 		}
 	    }
 
@@ -216,6 +218,18 @@ var Monster = function(rect) {
     /* this.state needs a getter since it's private */
     this.getState = function() {
 	return this.state;
+    }
+
+    this.stateIs = function(state) {
+	return (this.state === state);
+    }
+
+    this.isActive = function() {
+	return (this.state == globals.MonsterState.ACTIVE);
+    }
+
+    this.isHumanControlled = function() {
+	return (this.controller === globals.Controller.HUMAN);
     }
 
     /* this.changeState calls appropriate methods on changing the state of monster */
@@ -407,7 +421,7 @@ AttackIcon.prototype.update = function(msDuration) {
 
 Monster.prototype.update = function(msDuration) {
 
-    if (this.getState() === globals.MonsterState.MOVING) {
+    if (this.stateIs(globals.MonsterState.MOVING)) {
 	/* get direction to destination from current place */
 	var position = [this.rect.left, this.rect.top];
 	var newPosition = [this.destination[0].x, this.destination[0].y];
@@ -449,7 +463,7 @@ Monster.prototype.update = function(msDuration) {
 	// moveIp, move in place
 	this.rect.moveIp(delta[0], delta[1]);
     }
-    else if (this.getState() === globals.MonsterState.ATTACKING) {
+    else if (this.stateIs(globals.MonsterState.ATTACKING)) {
 
 	if (!attackOn) {
 
@@ -587,7 +601,7 @@ function main() {
 
 
     war.init();
-    war.battleStatus.add("WAR");
+    war.battleStatus.add(war.name());
 
 
 
@@ -702,7 +716,7 @@ function main() {
 		/* if we are actually on game area */
 		if (rect.collidePoint(event.pos)) {
 		    /* skip event if activeMonster is not human-controlled, or is not active */
-		    if ((activeMonster.getState() !== globals.MonsterState.ACTIVE) || (activeMonster.controller !== globals.Controller.HUMAN)) {
+		    if ((!activeMonster.isActive()) || (!activeMonster.isHumanControlled())) {
 			return;
 		    }
 
@@ -712,8 +726,8 @@ function main() {
 			var click_pos = war.getTile(event.pos);
 			var dist = war.getDistance(click_pos, activeMonster.position);
 
-			var tileState = war.getTileState(click_pos);
-			console.log("Click:", click_pos, "state:", tileState, "dist:", dist);
+			var tileState = war.isTileEmpty(click_pos);
+			console.log("Click:", click_pos, "empty:", tileState, "dist:", dist);
 
 			activeMonster.moveTo(click_pos);
 		    }

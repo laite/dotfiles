@@ -64,7 +64,7 @@ exports.battleStatus = new BattleStatus();
 var Ground = exports.Ground = function(rect, state) {
     Ground.superConstructor.apply(this, arguments);
 
-    this.state = state;
+    this.blocked = state;
     this.occupied = false;
     this.monsterId = null;
 
@@ -82,8 +82,8 @@ var Ground = exports.Ground = function(rect, state) {
 	this.image = gamejs.image.load("images/tile2.png");
     }
 
-    this.getState = function() {
-	return this.state;
+    this.isBlocked = function() {
+	return this.blocked;
     }
 
     return this;
@@ -368,17 +368,6 @@ exports.getCurrentUnitIndex = function() {
     return units.getCurrentUnitIndex();
 }
 
-exports.getTileState = function(arr) {
-    arr[0] = Math.max(Math.min(arr[0],globals.TILE_AMOUNT-1), 0);
-    arr[1] = Math.max(Math.min(arr[1],globals.TILE_AMOUNT-1), 0);
-
-    if (((arr[0] > 9) || (arr[0] < 0)) || ((arr[1] > 9) || (arr[1] < 0)))
-	console.error("invalid argument at getTileState!");
-
-    //console.log("getTileState",getGroundTile(arr[0], arr[1]).getState());
-    return getGroundTile(arr[0], arr[1]).getState();
-}
-
 exports.setTileState = function(arr, state, id = null) {
     var [x,y] = arr;
 
@@ -388,7 +377,7 @@ exports.setTileState = function(arr, state, id = null) {
 	console.log(arr,"occupied:",getGroundTile(x,y).occupied);
     }
     else {
-	getGroundTile(x, y).state = state;
+	getGroundTile(x, y).blocked = blocked;
     }
 }
 
@@ -419,7 +408,15 @@ exports.isTileOccupied = function(arr) {
     return getGroundTile(arr[0], arr[1]).occupied;
 }
 
-exports.moveTowardsGoal = function(p1, p2, range) {
+exports.isTileBlocked = function(arr) {
+    return getGroundTile(arr[0], arr[1]).blocked;
+}
+
+exports.isTileEmpty = function(arr) {
+    return !(getGroundTile(arr[0], arr[1]).blocked);
+}
+
+exports.moveTowardsGoal = function(family, p1, p2, range) {
 
     var board = [];
 
@@ -427,9 +424,13 @@ exports.moveTowardsGoal = function(p1, p2, range) {
 	board[i] = [];
 
 	for (var j=0; j<globals.TILE_AMOUNT; j++) {
-	    board[i][j] = (this.getTileState([i,j]) == 0)? 0 : 1;
-	    if (this.isTileOccupied([i,j]))
-		board[i][j] = 1;
+	    board[i][j] = this.isTileBlocked([i,j])? 1 : 0;
+	    if (this.isTileOccupied([i,j])) {
+		/* we can pass through the tiles that are occupied by own family */
+		if (this.getMonsterAt([i,j]).family != family) {
+		    board[i][j] = 1;
+		}
+	    }	
 	}
     }
     var path = a_star(p1, p2, board, globals.TILE_AMOUNT, globals.TILE_AMOUNT, true);
@@ -470,7 +471,7 @@ exports.findFreeTile = function(rect) {
 
     while (!found) {
 	var i = Math.floor(allPoints.length * Math.random());
-	if ((this.getTileState(allPoints[i]) === globals.TileState.EMPTY) && (!this.isTileOccupied(allPoints[i]))) {
+	if ((this.isTileEmpty(allPoints[i])) && (!this.isTileOccupied(allPoints[i]))) {
 	    found = true;
 	    foundPoint = allPoints[i];
 	}
