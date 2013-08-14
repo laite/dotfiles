@@ -424,6 +424,12 @@ AttackIcon.prototype.update = function(msDuration) {
 Monster.prototype.update = function(msDuration) {
 
     if (this.stateIs(globals.MonsterState.MOVING)) {
+
+	if (this.destination.length == 0) {
+	    console.warn(this.name + " tried to move, but has no destination!");
+	    this.endTurn();
+	    return;
+	}
 	/* get direction to destination from current place */
 	var position = [this.rect.left, this.rect.top];
 	var newPosition = [this.destination[0].x, this.destination[0].y];
@@ -450,6 +456,7 @@ Monster.prototype.update = function(msDuration) {
 		this.endTurn();
 		console.log("Monster",this.name,"finished its journey.");
 	    }
+
 	    return;
 	}
 
@@ -712,6 +719,12 @@ function main() {
 		if (event.key === gamejs.event.K_p) {
 		    director.replaceScene(endStatisticsScene);
 		}
+		/* [h]umanize (debug) */
+		if (event.key === gamejs.event.K_h) {
+		    globals.Monsters.forEach(function(monster) { 
+			monster.controller = (monster.controller === globals.Controller.HUMAN)? globals.Controller.AI : globals.Controller.HUMAN;
+		    })
+		}
 	    }
 
 	    /* Mouse clicking */
@@ -733,8 +746,6 @@ function main() {
 
 			var tileState = war.isTileEmpty(click_pos);
 			console.log("Click:", click_pos, "empty:", tileState, "dist:", dist);
-			console.log (war.isTileOccupiedByEnemy(click_pos, activeMonster.family));
-			console.log(activeMonster.weapon === globals.WeaponStyle.RANGED);
 
 			if ((war.isTileOccupiedByEnemy(click_pos, activeMonster.family)) && (activeMonster.weapon === globals.WeaponStyle.RANGED)) {
 			    activeMonster.attackRanged(war.getMonsterAt(click_pos));

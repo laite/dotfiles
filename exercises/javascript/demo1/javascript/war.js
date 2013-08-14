@@ -13,7 +13,7 @@ exports.name = function() {
     return name;
 };
 
-exports.randomFromList = function(arr) {
+var randomFromList = exports.randomFromList = function(arr) {
     var i = Math.floor(arr.length * Math.random());
     return arr[i];
 }
@@ -200,19 +200,14 @@ exports.isTileEmpty = function(arr) {
 /* getDistance takes two coordinate points and calculates the distance between them */
 var getDistance = exports.getDistance = function(p1, p2) {
     var [x, y] = [Math.abs(p1[0]-p2[0]), Math.abs(p1[1]-p2[1])];
-
-    /* 
-     * Movement cost for vector is (longer side) + (shorter side / 2)
-     * division is rounded down
-     */
-    var distance = Math.max(x, y) + Math.floor(Math.min(x,y)*0.5);
+    var distance = Math.max(x, y);
 
     return distance;
 }
 
 exports.updateCursorState = function(cursor_pos,activeMonster) {
 
-    var dist = this.getDistance(cursor_pos, activeMonster.position);
+    var dist = getDistance(cursor_pos, activeMonster.position);
     var cursor_state = globals.CursorState.ALLOWED;
 
     if (dist > activeMonster.moveRange) {
@@ -553,27 +548,46 @@ exports.battle = function(id1, id2) {
  *
  */
 
-var findNearestEnemy = function(monster) {
-    found = null;
-    distance = 1000;
+var findSpecificMonster = function(monster, want_friend = false, want_weakest = false) {
+    foundList = [];
+    key = 1000;
 
     globals.GroundTiles.forEach(function(tile) {
-	if ((tile.monsterId != null) && (monster.family != globals.Monsters.sprites()[tile.monsterId].family)
-	    && (getDistance(monster.position, tile.position) < distance)) {
-		distance = getDistance(monster.position, tile.position);
-		found = tile.position;
-	    }
+	if (tile.monsterId != null) {
 
+	    /* we find either closest or weakest */
+	    if (((!want_weakest) && (getDistance(monster.position, tile.position) < key)) 
+	       || ((want_weakest) && (globals.Monsters.sprites()[tile.monsterId].hp < key))) {
+
+		/* check if it's enemy/friend we wanted */
+		if (((want_friend) && (monster.family == globals.Monsters.sprites()[tile.monsterId].family)) 
+		    || ((!want_friend) && (monster.family != globals.Monsters.sprites()[tile.monsterId].family))) {
+			key = (want_weakest)? globals.Monsters.sprites()[tile.monsterId].hp : getDistance(monster.position, tile.position);
+			foundList.push(tile.position);
+		    }
+	    }
+	}
     });
+
+    var found = null;
+    if (foundList.length > 0)
+	found = randomFromList(foundList);
 
     return found;
 }
 
-/* 
- * TODO:
- * 		better target selection
- * 		attack/magic ranges?
- */
+var findNearestEnemy = function(monster) {
+    return findSpecificMonster(monster, false, false);
+}
+
+var findNearestFriend = function(monster) {
+    return findSpecificMonster(monster, true, false);
+}
+
+var findWeakestFriend = function(monster) {
+    return findSpecificMonster(monster, true, true);
+}
+
 exports.doAI = function(monster) {
     console.log("AI:",monster.name,monster.position,monster.family);
     var nearestEnemyPosition = findNearestEnemy(monster);
@@ -582,11 +596,11 @@ exports.doAI = function(monster) {
 	CAST_SPELL : 4, DO_NOTHING : 99};
 
     if (nearestEnemyPosition) {
-	console.log("Nearest enemy:",nearestEnemyPosition,this.getDistance(monster.position, nearestEnemyPosition));
+	console.log("Nearest enemy:",nearestEnemyPosition,getDistance(monster.position, nearestEnemyPosition));
 
 	/* by default, we attack with our hands and claws. */
 	var action = Action.ATTACK;
-	var distance = this.getDistance(monster.position, nearestEnemyPosition);
+	var distance = getDistance(monster.position, nearestEnemyPosition);
 	var nearestEnemy = this.getMonsterAt(nearestEnemyPosition);
 
 	if (nearestEnemy == null) {
@@ -667,8 +681,14 @@ exports.doAI = function(monster) {
 	    }
 	}
 	else if (action === Action.GATHER_AROUND) {
-	    console.log("Action: GATHER_AROUND");
-	    monster.skipTurn();
+	    var nearestFriendPosition = findNearestFriend(monster);
+	    var friendDistance = getDistance(monster.position, nearestFriendPosition);
+
+	    /* if we are close to a friend and have a bow, we'll just shoot */
+	    if ((friendDistance <= 2) && (monster.weapon === globals.WeaponStyle.RANGED))
+		monster.attackRanged(nearestEnemy);
+	    else
+		monster.moveTo(nearestFriendPosition);
 	}
 	else if (action === Action.DEFEND_WEAK) {
 	    console.log("Action: DEFEND_WEAK");
