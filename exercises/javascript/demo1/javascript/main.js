@@ -11,12 +11,10 @@
  */
 
 var globals = require('global');
+var war = require('war');
 
 var gamejs = require('gamejs');
 var draw = require('gamejs/draw');
-var $v = require('gamejs/utils/vectors');
-
-var war = require('war');
 
 
 /*

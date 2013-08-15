@@ -13,12 +13,6 @@ exports.name = function() {
     return name;
 };
 
-var randomFromList = exports.randomFromList = function(arr) {
-    var i = Math.floor(arr.length * Math.random());
-    return arr[i];
-}
-
-
 /*
  *
  * Classes
@@ -95,7 +89,9 @@ var Ground = exports.Ground = function(rect, state) {
 };
 
 var getGroundTile = function(x, y) {
-    //console.log("getGroundTile", x, y, globals.GroundTiles.sprites()[y*globals.TILE_AMOUNT+x])
+    x = Math.max(Math.min(x,globals.TILE_AMOUNT-1), 0);
+    y = Math.max(Math.min(y,globals.TILE_AMOUNT-1), 0);
+
     return globals.GroundTiles.sprites()[y*globals.TILE_AMOUNT+x];
 }
 
@@ -187,6 +183,15 @@ exports.getSpawnPoint = function(family) {
 	return spawnPlaces[familyNum];
     }
 }
+
+/* randomFromList gets array as parameter, returns one randomly 
+ * TODO: weighting using other array as second parameter
+ */
+var randomFromList = exports.randomFromList = function(arr) {
+    var i = Math.floor(arr.length * Math.random());
+    return arr[i];
+}
+
 
 /* getTile returns array of wanted tile index */
 exports.getTile = function(arr) {
@@ -584,44 +589,44 @@ var findSpecificMonster = function(monster, want_friend = false, want_weakest = 
     var foundList = [];
     var key = 100000;
 
-    this.isSmaller = function(tile) {
+    this.isSmaller = function(other) {
 	if (want_weakest)
-	    return (getMonsterFromId(tile.monsterId).hp < key);
+	    return (other.hp < key);
 	else
-	    return (getDistance(monster.position, tile.position, monster.family) < key);
+	    return (getDistance(monster.position, other.position, monster.family) < key);
     }
 
-    this.isEqual = function(tile) {
+    this.isEqual = function(other) {
 	if (want_weakest)
-	    return (getMonsterFromId(tile.monsterId).hp == key);
+	    return (other.hp == key);
 	else
-	    return (getDistance(monster.position, tile.position, monster.family) == key);
+	    return (getDistance(monster.position, other.position, monster.family) == key);
     }
 
-    this.isSuitableFamily = function(tile) {
+    this.isSuitableFamily = function(other) {
 	if (want_friend)
-	    return (monster.family === getMonsterFromId(tile.monsterId).family);
+	    return (monster.family === other.family);
 	else
-	    return (monster.family !== getMonsterFromId(tile.monsterId).family);
+	    return (monster.family !== other.family);
     }
 
-    this.setKey = function(tile) {
+    this.setKey = function(other) {
 	if (want_weakest) 
-	    return getMonsterFromId(tile.monsterId).hp;
+	    return other.hp;
 	else
-	    return getDistance(monster.position, tile.position, monster.family);
+	    return getDistance(monster.position, other.position, monster.family);
     }
 
-    globals.GroundTiles.forEach(function(tile) {
-	if (tile.monsterId != null) {
-	    if (this.isSuitableFamily(tile)) {
-		if (this.isSmaller(tile)) {
+    globals.Monsters.forEach(function(other) {
+	if (other.id != null) {
+	    if (this.isSuitableFamily(other)) {
+		if (this.isSmaller(other)) {
 		    foundList = [];
-		    foundList.push(tile.position);
-		    key = this.setKey(tile);
+		    foundList.push(other.position);
+		    key = this.setKey(other);
 		}
-		else if (this.isEqual(tile)) {
-		    foundList.push(tile.position);
+		else if (this.isEqual(other)) {
+		    foundList.push(other.position);
 		}
 	    }
 	}
@@ -638,22 +643,22 @@ var findNearestEnemyRanged = function(monster) {
     var foundList = [];
     var key = 1000;
 
-    globals.GroundTiles.forEach(function(tile) {
-	if (tile.monsterId != null) {
-
-	    var dist = getRangedDistance(monster.position, tile.position);
+    globals.Monsters.forEach(function(other) {
+	if (monster.id != other.id) {
+	    var dist = getRangedDistance(monster.position, other.position);
 	    /* we find either closest or weakest */
-		/* check if it's enemy/friend we wanted */
-		if (monster.family != globals.Monsters.sprites()[tile.monsterId].family) {
-		    if (dist < key) { 
-			key = getRangedDistance(monster.position, tile.position);
-			foundList = [];
-			foundList.push(tile.position);
-		    }
-		    else if (dist == key)
-			foundList.push(tile.position);
+	    /* check if it's enemy/friend we wanted */
+	    if (monster.family != other.family) {
+		if (dist < key) { 
+		    key = getRangedDistance(monster.position, other.position);
+		    foundList = [];
+		    foundList.push(other.position);
 		}
+		else if (dist == key)
+		    foundList.push(other.position);
+	    }
 	}
+
     });
 
     var found = null;

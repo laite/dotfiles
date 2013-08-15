@@ -1,17 +1,6 @@
 
-* NEXT *
-
-¤ actual AI
-¤ show possible tiles where to move
-¤ make AI move towards enemy
-
 * LATER *
 
-sidebar
-	¤ status
-	¤ actions
-	¤ 
-
-other:
-	¤ keyboard commands
-	¤ attack/magic ranges?
+¤ show possible tiles where to move
+¤ handle destination aftermath in war.findPathTo instead of monsters this.moveTo
+	* make sure that human doesn't skip turn when clicking on no-path tile
