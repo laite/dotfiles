@@ -2,10 +2,18 @@
  * global.js
  *
  */
+exports.director;
+exports.warScene;
+exports.endStatisticsScene;
+exports.menuScene;
 
 exports.Monsters;
 exports.GroundTiles;
 exports.attackIcon;
+
+exports.activeMonster = null;
+exports.activeEnemy = null;
+exports.activeMonsterIndex = -1;
 
 exports.cursor_pos = [0,0];
 exports.NEED_INIT = false;

@@ -95,6 +95,81 @@ var getGroundTile = function(x, y) {
     return globals.GroundTiles.sprites()[y*globals.TILE_AMOUNT+x];
 }
 
+var resetGroundOccupants = function() {
+    globals.GroundTiles.forEach(function() {
+	this.occupied = false;
+	this.monsterId = null;
+    });
+}
+
+/*
+ *
+ * AttackIcon
+ *
+ *
+ */
+
+var AttackIcon = exports.AttackIcon = function(rect) {
+    AttackIcon.superConstructor.apply(this, arguments);
+
+    this.originalImage = gamejs.image.load("images/attack.png");
+    this.image = this.originalImage;
+
+    this.rect = new gamejs.Rect(rect, [globals.TILE_SIZE, globals.TILE_SIZE]);
+    console.log("New attackicon: ", this.rect);
+
+    this.time = 0;
+    this.scale = 1;
+    this.scaleSpeed = (1/globals.ATTACK_ICON_DURATION);
+    this.duration = globals.ATTACK_ICON_DURATION;
+
+    this.origSize = [globals.TILE_SIZE, globals.TILE_SIZE];
+
+    this.reset = function() {
+	this.time = 0;
+	this.scale = 1;
+	this.image = this.originalImage;
+    }
+
+    this.setRanged = function() {
+	this.originalImage = gamejs.image.load("images/attack_ranged.png");
+	this.image = this.originalImage;
+	this.scaleSpeed = (1/globals.RANGED_ATTACK_ICON_DURATION);
+	this.duration = globals.RANGED_ATTACK_ICON_DURATION;
+    }
+
+    this.setMelee = function() {
+	this.originalImage = gamejs.image.load("images/attack.png");
+	this.image = this.originalImage;
+	this.scaleSpeed = (1/globals.ATTACK_ICON_DURATION);
+	this.duration = globals.ATTACK_ICON_DURATION;
+    }
+
+    this.setMagic = function() {
+	this.originalImage = gamejs.image.load("images/attack_magic.png");
+	this.image = this.originalImage;
+	this.scaleSpeed = (1/globals.MAGIC_ATTACK_ICON_DURATION);
+	this.duration = globals.MAGIC_ATTACK_ICON_DURATION;
+    }
+
+    return this;
+};
+
+gamejs.utils.objects.extend(Ground, gamejs.sprite.Sprite);
+gamejs.utils.objects.extend(AttackIcon, gamejs.sprite.Sprite);
+
+AttackIcon.prototype.update = function(msDuration) {
+    if (globals.attackOn) {
+	var delta = [Math.floor(this.scale*this.origSize[0]), Math.floor(this.scale*this.origSize[1])];
+	this.scale += Math.floor(100*msDuration*this.scaleSpeed)/100;
+	this.image = gamejs.transform.scale(this.originalImage, [Math.floor(this.scale*this.origSize[0]), Math.floor(this.scale*this.origSize[1])]);
+	var size = this.image.getSize();
+	delta[0] = Math.max(0, size[0] - delta[0]);
+	delta[1] = Math.max(0, size[1] - delta[1]);
+
+	this.rect = new gamejs.Rect(this.rect.left-(delta[0]/2), this.rect.top-(delta[1]/2), size[0], size[1]);
+    }
+}
 
 /*
  *
@@ -225,7 +300,7 @@ var getDistance = exports.getDistance = function(p1, p2, family = null) {
     var path = findPathTo(family, p1, p2);
 
     if (path.length == 0)
-	return 1000;
+	return 3000;
     else
 	return path.length;
 }
@@ -235,17 +310,17 @@ var getRangedDistance = function(p1, p2) {
     return Math.max(x, y);
 }
 
-exports.updateCursorState = function(cursor_pos,activeMonster) {
+exports.updateCursorState = function(cursor_pos,monster) {
 
-    var dist = getDistance(cursor_pos, activeMonster.position, activeMonster.family);
+    var dist = getDistance(cursor_pos, monster.position, monster.family);
     var cursor_state = globals.CursorState.ALLOWED;
 
-    if (dist > activeMonster.moveRange) {
+    if (dist > monster.moveRange) {
 	cursor_state = globals.CursorState.DISALLOWED;
     }
     else {
 	if (isTileOccupied(cursor_pos)) {
-	    if (getMonsterAt(cursor_pos).family != activeMonster.family)
+	    if (getMonsterAt(cursor_pos).family != monster.family)
 		cursor_state = globals.CursorState.ATTACK;
 	}
 	else {
@@ -360,6 +435,7 @@ exports.init = function(forceUnit = 0) {
      */
 
     var i = 0;
+    resetGroundOccupants();
     units.reset();
 
     globals.Monsters.forEach(function(monster) {
@@ -415,9 +491,6 @@ var getTileMonsterId = function(arr) {
     arr[0] = Math.max(Math.min(arr[0],globals.TILE_AMOUNT-1), 0);
     arr[1] = Math.max(Math.min(arr[1],globals.TILE_AMOUNT-1), 0);
 
-    if (((arr[0] > (globals.TILE_AMOUNT-1)) || (arr[0] < 0)) || ((arr[1] > (globals.TILE_AMOUNT-1)) || (arr[1] < 0)))
-	console.error("invalid argument at getTileMonsterId!");
-
     return getGroundTile(arr[0], arr[1]).monsterId;
 }
 
@@ -447,7 +520,7 @@ var findPathTo = exports.findPathTo = function(family, p1, p2) {
 		/* we can pass through the tiles that are occupied by own family */
 		var monsterInTile = getMonsterAt([i, j]);
 		if (monsterInTile == null)
-		    console.error("findPathTo: null monsterInTile");
+		    console.error("findPathTo: null monsterInTile", [i, j]);
 
 		if ((family != null) && (monsterInTile.family == family)) {
 		    board[i][j] = 0;
