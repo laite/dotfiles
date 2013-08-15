@@ -7,6 +7,13 @@ exports.Monsters;
 exports.GroundTiles;
 exports.attackIcon;
 
+exports.cursor_pos = [0,0];
+exports.NEED_INIT = false;
+
+/* attackOn helps in the 'attackIcon animation' showing */
+exports.attackOn = false;
+exports.stillBattling = true;
+
 /* TILE_SIZE and TILE_AMOUNT can be changed, but TILE_SIZE*TILE_AMOUNT must be 640 (for now) */
 exports.TILE_SIZE = 64;
 exports.TILE_AMOUNT = 10;
@@ -45,12 +52,14 @@ exports.TileState = {
     NOT_OCCUPIED : 3
 };
 
-exports.CursorState = {
+var CursorState = exports.CursorState = {
     ALLOWED : 0,
     DISALLOWED : 1,
     ATTACK : 2,
     ACTIVE_MONSTER : 3
 };
+
+exports.cursor_state = CursorState.ALLOWED;
 
 /* controllers */
 exports.Controller = {
