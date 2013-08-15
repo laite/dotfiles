@@ -196,7 +196,6 @@ var Monster = function() {
      * attack() is only used for ranged attacks
      */
     this.attackRanged = function(enemy) {
-	console.log("attackRanged:",enemy.name,this.name);
 	this.enemy = enemy;
 	this.changeState(globals.MonsterState.ATTACKING);
 	globals.attackIcon.setRanged();
@@ -938,7 +937,6 @@ gamejs.preload(['images/tile2.png']);
 gamejs.preload(['images/attack.png']);
 gamejs.preload(['images/attack_ranged.png']);
 gamejs.preload(['images/attack_magic.png']);
-
 
 /* Go! */
 gamejs.ready(main);

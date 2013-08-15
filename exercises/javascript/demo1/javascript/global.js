@@ -7,15 +7,15 @@ exports.Monsters;
 exports.GroundTiles;
 exports.attackIcon;
 
-exports.TILE_SIZE = 40;
-exports.TILE_AMOUNT = 16;
+/* TILE_SIZE and TILE_AMOUNT can be changed, but TILE_SIZE*TILE_AMOUNT must be 640 (for now) */
+exports.TILE_SIZE = 64;
+exports.TILE_AMOUNT = 10;
 
 exports.CANVAS_HEIGHT = 640;
 exports.CANVAS_WIDTH = 640;
 exports.GAME_AREA_HEIGHT = 640;
 exports.GAME_AREA_WIDTH = 640;
 
-exports.AMOUNT_OF_MONSTERS = 3;
 exports.ATTACK_ICON_DURATION = 500;
 exports.RANGED_ATTACK_ICON_DURATION = 750;
 exports.MAGIC_ATTACK_ICON_DURATION = 1000;
