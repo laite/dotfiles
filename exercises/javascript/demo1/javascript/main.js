@@ -286,7 +286,7 @@ var Orc = function() {
     this.name = "Orc ";
     this.family = "Orcs";
 
-    this.personality = war.randomFromList([globals.MonsterPersonality.BERSERK,globals.MonsterPersonality.INDIVIDUAL]);
+    this.personality = globals.MonsterPersonality.BERSERK;
     this.naturalSpeedType = globals.MonsterSpeed.QUICK;
     this.endurance = globals.MonsterEndurance.TOUGH;
     this.weapon = globals.WeaponStyle.MELEE;
@@ -308,7 +308,7 @@ var ToughOrc = function() {
     this.name = "Tough Orc ";
     this.family = "Orcs";
 
-    this.personality = war.randomFromList([globals.MonsterPersonality.BERSERK,globals.MonsterPersonality.INDIVIDUAL]);
+    this.personality = globals.MonsterPersonality.BERSERK;
     this.naturalSpeedType = globals.MonsterSpeed.VERY_QUICK;
     this.endurance = globals.MonsterEndurance.VERY_TOUGH;
     this.weapon = globals.WeaponStyle.MELEE;
@@ -621,16 +621,19 @@ function main() {
 
     globals.Monsters = new gamejs.sprite.Group();
 
-    for (var i=0; i < (10); i++)
+    for (var i=0; i < (16); i++)
     {
-	if (Math.random() < 0.5)
+	var monsterType = Math.random()*20;
+	if (monsterType < 15)
 	    globals.Monsters.add(new Orc());
-	else
+	else if (monsterType < 10)
 	    globals.Monsters.add(new ToughOrc());
+	else if (monsterType < 19)
+	    globals.Monsters.add(new Octopus());
+	else
+	    globals.Monsters.add(new Evileye());
     }
 
-    for (var i=0; i < (10); i++)
-        globals.Monsters.add(new Octopus());
 
     //globals.Monsters.add(new Evileye([4*globals.TILE_SIZE, 4*globals.TILE_SIZE]));
 
@@ -775,7 +778,7 @@ function main() {
 
 			// get clicked tile, its state and distance from activeMonster
 			var click_pos = war.getTile(event.pos);
-			var dist = war.getDistance(click_pos, activeMonster.position);
+			var dist = war.getDistance(click_pos, activeMonster.position, activeMonster.family);
 
 			var tileState = war.isTileEmpty(click_pos);
 			console.log("Click:", click_pos, "empty:", tileState, "dist:", dist);

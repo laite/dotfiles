@@ -582,14 +582,20 @@ exports.battle = function(id1, id2) {
 
 var findSpecificMonster = function(monster, want_friend = false, want_weakest = false) {
     var foundList = [];
-    var key = 1000;
+    var key = 100000;
 
-    this.isSmaller = function(tile) 
-    {
+    this.isSmaller = function(tile) {
 	if (want_weakest)
-	    return (getDistance(monster.position, tile.position, monster.family) < key);
+	    return (getMonsterFromId(tile.monsterId).hp < key);
 	else
-	    return (globals.Monsters.sprites()[tile.monsterId].hp < key);
+	    return (getDistance(monster.position, tile.position, monster.family) < key);
+    }
+
+    this.isEqual = function(tile) {
+	if (want_weakest)
+	    return (getMonsterFromId(tile.monsterId).hp == key);
+	else
+	    return (getDistance(monster.position, tile.position, monster.family) == key);
     }
 
     this.isSuitableFamily = function(tile) {
@@ -607,11 +613,16 @@ var findSpecificMonster = function(monster, want_friend = false, want_weakest = 
     }
 
     globals.GroundTiles.forEach(function(tile) {
-	if ((tile.monsterId != null) && (this.isSmaller(tile))) {
-	    /* check if it's enemy/friend we wanted */
+	if (tile.monsterId != null) {
 	    if (this.isSuitableFamily(tile)) {
-		key = this.setKey(tile);
-		foundList.push(tile.position);
+		if (this.isSmaller(tile)) {
+		    foundList = [];
+		    foundList.push(tile.position);
+		    key = this.setKey(tile);
+		}
+		else if (this.isEqual(tile)) {
+		    foundList.push(tile.position);
+		}
 	    }
 	}
     });
@@ -688,6 +699,8 @@ exports.doAI = function(monster) {
 
 	if (nearestEnemy == null) {
 	    console.error("nearestEnemy = null!");
+	    monster.skipTurn();
+	    return;
 	}
 
 	/*
