@@ -133,9 +133,16 @@ var Monster = function() {
      */
     this.moveTo = function(rect) {
 
+	/* 
+	 * findPathTo gives us an array of waypoints
+	 * or [] if no path could be found.
+	 */
 	var destination = war.findPathTo(this.family, this.position, rect);
 
 	if (destination.length > 0) {
+	    /*
+	     * If we are returning from melee attack, we don't set tile occupation here
+	     */
 	    if (this.getState() !== globals.MonsterState.MOVING_AFTER_ATTACK) {
 		war.setTileState(this.position, globals.TileState.NOT_OCCUPIED);
 	    }
@@ -143,36 +150,46 @@ var Monster = function() {
 
 	    /* we have to make sure monster doesn't move past it's range */
 	    if (this.moveRange < destination.length)
-		destination = destination.splice(1, this.moveRange);
+		destination = destination.slice(0, this.moveRange);
 
 	    /* a_star gives us destination even if it's occupied/blocked, so we 
 	     * cut off the path until we find a free spot (or run out of points)
 	     */
-	    if (destination.length > 0) {
-		var free = false;
+	    var free = false;
 
-		while (!free && (destination.length > 0)) {
-		    var x = destination[destination.length-1].x;
-		    var y = destination[destination.length-1].y;
+	    while (!free && (destination.length > 0)) {
+		var x = destination[destination.length-1].x;
+		var y = destination[destination.length-1].y;
 
-		    /* tile is considered free if there's an enemy; that means we attack it */
-		    if ((war.isTileEmpty([x, y])) &&
-			    (!war.isTileOccupied([x, y]) || (this.family != war.getMonsterAt([x, y]).family))) {
-			free = true;
-		    }
-		    else
-			destination = destination.slice(0, destination.length-1);
+		var isEmpty = war.isTileEmpty([x, y]);
+		var isOccupied = war.isTileOccupied([x, y]);
 
+		/* If tile is empty and non-occupied, there's no problem moving there */
+		if ((isEmpty) && (!isOccupied)) {
+		    free = true;
+		}
+		/* Tile is also considered free if there's an enemy; that means we attack it */
+		else if ((isOccupied) && (this.family !== war.getMonsterAt([x, y]).family)) {
+		    free = true;
+		}
+		/* Otherwise we cut off last destination point as unfit */
+		else {
+		    destination = destination.slice(0, destination.length-1);
 		}
 	    }
 
+	    /* At this point destination may be empty */
 	    this.destination = destination;
 	}
-	else if (this.controller == globals.Controller.AI)
-	    this.skipTurn();
 
-	/* note that units turn continues until we get a proper destination 
-	 * TODO: or turn is manually skipped */
+	/*
+	 * if we have no path, we simply sleep this turn
+	 * (note that war.doAI handles ranged etc. attacking,
+	 * no need to do that here) 
+	 */
+	if ((this.controller == globals.Controller.AI) && (destination.length == 0)) {
+	    this.skipTurn();
+	}
     }
 
     /*
@@ -367,7 +384,7 @@ var AttackIcon = function(rect) {
     this.scaleSpeed = (1/globals.ATTACK_ICON_DURATION);
     this.duration = globals.ATTACK_ICON_DURATION;
 
-    this.origSize = this.originalImage.getSize();
+    this.origSize = [globals.TILE_SIZE, globals.TILE_SIZE];
 
     this.reset = function() {
 	this.time = 0;
@@ -424,38 +441,55 @@ AttackIcon.prototype.update = function(msDuration) {
 
 Monster.prototype.update = function(msDuration) {
 
+    /*
+     * If monster is currently moving someplace (may be melee attack)
+     */
     if (this.stateIs(globals.MonsterState.MOVING)) {
 
+	/*
+	 * Monster must have a destination
+	 */
 	if (this.destination.length == 0) {
 	    console.warn(this.name + " tried to move, but has no destination!");
 	    this.endTurn();
 	    return;
 	}
-	/* get direction to destination from current place */
-	var position = [this.rect.left, this.rect.top];
-	var newPosition = [this.destination[0].x, this.destination[0].y];
-	var goal = [this.destination[0].x*globals.TILE_SIZE, this.destination[0].y*globals.TILE_SIZE];
-	var delta = [0, 0];
-	var diff = [Math.abs(goal[0]-position[0]), Math.abs(goal[1]-position[1])];
 
-	if ((war.samePlace(position, goal)) && (this.destination.length != 0)) {
+	/* Find our current position in pixels */
+	var pixel_position = [this.rect.left, this.rect.top];
+	/* Find where we are going */
+	var newPosition = [this.destination[0].x, this.destination[0].y];
+	/* In actual pixels */
+	var goal = [this.destination[0].x*globals.TILE_SIZE, this.destination[0].y*globals.TILE_SIZE];
+	/* Movement delta (relative) in pixels */
+	var delta = [0, 0];
+	/* Length of wanted movement in pixels */
+	var diff = [Math.abs(goal[0]-pixel_position[0]), Math.abs(goal[1]-pixel_position[1])];
+
+	/* If we have arrived at current destination point, but have still journey to go */
+	if ((war.samePlace(pixel_position, goal)) && (this.destination.length != 0)) {
+	    /* shift current location off the destination array */
 	    this.destination.shift();
 	}
 
-	if ((war.samePlace(position, goal)) && (this.destination.length == 0)) {
+	/* If we have arrived at current destination point AND it's our final stop */
+	if ((war.samePlace(pixel_position, goal)) && (this.destination.length == 0)) {
+	    /* set monsters position */
 	    this.position = newPosition;
 
 	    /* if we are on hostile tile, we launch attack */
 	    if ((war.isTileOccupied(this.position)) && (war.getMonsterAt(this.position).family != this.family)) {
+		/* we can use getMonsterAt since attacking monster is not yet 'positioned' here */
 		this.enemy = war.getMonsterAt(this.position);
+		/* stop moving, start attacking */
 		this.changeState(globals.MonsterState.ATTACKING);
+		/* apparently, we're going melee */
 		globals.attackIcon.setMelee();
 	    }
-	    /* else, we end turn */
+	    /* if there's no reason to get exited, we simply occupy this position and end turn */
 	    else {
 		war.setTileState(this.position, globals.TileState.OCCUPIED, this.id);
 		this.endTurn();
-		console.log("Monster",this.name,"finished its journey.");
 	    }
 
 	    return;
@@ -467,8 +501,8 @@ Monster.prototype.update = function(msDuration) {
 	delta[0] = Math.min(speed, diff[0]);
 	delta[1] = Math.min(speed, diff[1]);
 
-	delta[0] = (position[0] > goal[0])? (-delta[0]) : (delta[0]);
-	delta[1] = (position[1] > goal[1])? (-delta[1]) : (delta[1]);
+	delta[0] = (pixel_position[0] > goal[0])? (-delta[0]) : (delta[0]);
+	delta[1] = (pixel_position[1] > goal[1])? (-delta[1]) : (delta[1]);
 
 	// moveIp, move in place
 	this.rect.moveIp(delta[0], delta[1]);

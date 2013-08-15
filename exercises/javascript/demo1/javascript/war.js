@@ -175,7 +175,7 @@ var familylist = [];
 exports.getSpawnPoint = function(family) {
     // TODO: map has spawn points up to n families?
     // for now, we use 4 corners
-    var spawnPlaces = [[0,0], [9,9], [0,9], [9,0]];
+    var spawnPlaces = [[0,0], [(globals.TILE_AMOUNT-1),(globals.TILE_AMOUNT-1)], [0,(globals.TILE_AMOUNT-1)], [(globals.TILE_AMOUNT-1),0]];
     var familyNum = familylist.indexOf(family);
     
     console.log("familynum:",familyNum);
@@ -410,7 +410,7 @@ var getTileMonsterId = function(arr) {
     arr[0] = Math.max(Math.min(arr[0],globals.TILE_AMOUNT-1), 0);
     arr[1] = Math.max(Math.min(arr[1],globals.TILE_AMOUNT-1), 0);
 
-    if (((arr[0] > 9) || (arr[0] < 0)) || ((arr[1] > 9) || (arr[1] < 0)))
+    if (((arr[0] > (globals.TILE_AMOUNT-1)) || (arr[0] < 0)) || ((arr[1] > (globals.TILE_AMOUNT-1)) || (arr[1] < 0)))
 	console.error("invalid argument at getTileMonsterId!");
 
     return getGroundTile(arr[0], arr[1]).monsterId;
@@ -440,9 +440,16 @@ var findPathTo = exports.findPathTo = function(family, p1, p2) {
 	    board[i][j] = isTileBlocked([i,j])? 1 : 0;
 	    if (isTileOccupied([i,j])) {
 		/* we can pass through the tiles that are occupied by own family */
-		if (getMonsterAt([i,j]).family != family) {
-		    board[i][j] = 1;
+		var monsterInTile = getMonsterAt([i, j]);
+		if (monsterInTile == null)
+		    console.error("findPathTo: null monsterInTile");
+
+		if ((family != null) && (monsterInTile.family == family)) {
+		    board[i][j] = 0;
 		}
+		else
+		    board[i][j] = 1;
+
 	    }	
 	}
     }
@@ -577,19 +584,34 @@ var findSpecificMonster = function(monster, want_friend = false, want_weakest = 
     var foundList = [];
     var key = 1000;
 
+    this.isSmaller = function(tile) 
+    {
+	if (want_weakest)
+	    return (getDistance(monster.position, tile.position) < key);
+	else
+	    return (globals.Monsters.sprites()[tile.monsterId].hp < key);
+    }
+
+    this.isSuitableFamily = function(tile) {
+	if (want_friend)
+	    return (monster.family === getMonsterFromId(tile.monsterId).family);
+	else
+	    return (monster.family !== getMonsterFromId(tile.monsterId).family);
+    }
+
+    this.setKey = function(tile) {
+	if (want_weakest) 
+	    return getMonsterFromId(tile.monsterId).hp;
+	else
+	    return getDistance(monster.position, tile.position);
+    }
+
     globals.GroundTiles.forEach(function(tile) {
-	if (tile.monsterId != null) {
-
-	    /* we find either closest or weakest */
-	    if (((!want_weakest) && (getDistance(monster.position, tile.position) < key)) 
-	       || ((want_weakest) && (globals.Monsters.sprites()[tile.monsterId].hp < key))) {
-
-		/* check if it's enemy/friend we wanted */
-		if (((want_friend) && (monster.family == globals.Monsters.sprites()[tile.monsterId].family)) 
-		    || ((!want_friend) && (monster.family != globals.Monsters.sprites()[tile.monsterId].family))) {
-			key = (want_weakest)? globals.Monsters.sprites()[tile.monsterId].hp : getDistance(monster.position, tile.position);
-			foundList.push(tile.position);
-		    }
+	if ((tile.monsterId != null) && (this.isSmaller(tile))) {
+	    /* check if it's enemy/friend we wanted */
+	    if (this.isSuitableFamily(tile)) {
+		key = this.setKey(tile);
+		foundList.push(tile.position);
 	    }
 	}
     });

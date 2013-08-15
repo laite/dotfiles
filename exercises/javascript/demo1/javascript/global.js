@@ -7,8 +7,8 @@ exports.Monsters;
 exports.GroundTiles;
 exports.attackIcon;
 
-exports.TILE_SIZE = 64;
-exports.TILE_AMOUNT = 10;
+exports.TILE_SIZE = 40;
+exports.TILE_AMOUNT = 16;
 
 exports.CANVAS_HEIGHT = 640;
 exports.CANVAS_WIDTH = 640;
