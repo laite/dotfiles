@@ -4,3 +4,4 @@
 ¤ show possible tiles where to move
 ¤ handle destination aftermath in war.findPathTo instead of monsters this.moveTo
 	* make sure that human doesn't skip turn when clicking on no-path tile
+¤ attack/ranged icons

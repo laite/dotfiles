@@ -1,5 +1,6 @@
 var war = require('war');
 var globals = require('global');
+var monster = require('monster');
 
 var gamejs = require('gamejs');
 
@@ -13,7 +14,55 @@ var gamejs = require('gamejs');
 
 var WarScene = exports.WarScene = function(director, mainSurface) {
     this.init = function() {
-	console.log(war.name());
+	/* If there's no ongoing battle, we init everything from the start */
+	if (!globals.stillBattling) {
+	    console.log("ground");
+	    /* Ground */
+
+	    globals.GroundTiles = new gamejs.sprite.Group();
+
+	    for (var y=0; y<globals.TILE_AMOUNT; y++) {
+		for (var x=0; x<globals.TILE_AMOUNT; x++) {
+		    // there's a 25% chance that tile is lava */
+		    var blocked = (Math.random() > 0.25)? globals.TileState.EMPTY : globals.TileState.BLOCKED;
+		    globals.GroundTiles.add(new war.Ground([x*globals.TILE_SIZE, y*globals.TILE_SIZE], blocked));
+		}
+	    }
+
+	    /* Monsters */
+
+	    globals.Monsters = new gamejs.sprite.Group();
+
+	    for (var i=0; i < (6); i++)
+	    {
+		var monsterType = Math.random()*20;
+		if (monsterType < 5)
+		    globals.Monsters.add(new monster.Orc());
+		else if (monsterType < 10)
+		    globals.Monsters.add(new monster.ToughOrc());
+		else if (monsterType < 19)
+		    globals.Monsters.add(new monster.Octopus());
+		else
+		    globals.Monsters.add(new monster.Evileye());
+	    }
+	    console.log("monsters");
+
+	    globals.attackIcon = new war.AttackIcon([0,0]);
+	    console.log("attackIcon");
+
+
+	    /*
+	     * Engine initializations
+	     */
+
+
+	    war.init();
+	    console.log("war.init");
+	    war.battleStatus.add(war.name());
+
+	    globals.stillBattling = true;
+	    console.log(war.name());
+	}
     }
 
     this.handleEvent = function(event)
@@ -155,15 +204,23 @@ var WarScene = exports.WarScene = function(director, mainSurface) {
 var EndStatisticsScene = exports.EndStatisticsScene = function(director) {
 
     this.handleEvent = function(event) {
+
 	/* Mouse clicking */
 	if (event.type === gamejs.event.MOUSE_UP) {
 	    var rect = new gamejs.Rect(0,0,globals.GAME_AREA_WIDTH, globals.GAME_AREA_HEIGHT);
 
 	    /* if we are actually on game area */
 	    if (rect.collidePoint(event.pos)) {
-		globals.stillBattling = true;
+
+	    }
+	}
+
+	if (event.type === gamejs.event.KEY_UP) {
+	    /* [p]ause game */
+	    if (event.key === gamejs.event.K_p) {
 		director.replaceScene(globals.warScene);
 	    }
+
 	}
     }
 
@@ -188,6 +245,12 @@ var EndStatisticsScene = exports.EndStatisticsScene = function(director) {
     }
 }
 exports.MenuScene = function(director) {
+    this.handleEvent = function(event) {
 
+    }
+
+    this.update = function(msDuration) {
+
+    }
 }
 

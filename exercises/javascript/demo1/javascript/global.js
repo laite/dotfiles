@@ -20,7 +20,7 @@ exports.NEED_INIT = false;
 
 /* attackOn helps in the 'attackIcon animation' showing */
 exports.attackOn = false;
-exports.stillBattling = true;
+exports.stillBattling = false;
 
 /* TILE_SIZE and TILE_AMOUNT can be changed, but TILE_SIZE*TILE_AMOUNT must be 640 (for now) */
 exports.TILE_SIZE = 64;

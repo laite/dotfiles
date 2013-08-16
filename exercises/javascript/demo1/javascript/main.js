@@ -31,71 +31,16 @@ var scene = require('scene');
 function main() {
 
 
-    /*
-     * Initial screen setup
-     */
-
-
+    /* Initial screen setup */
     gamejs.display.setMode([globals.CANVAS_WIDTH, globals.CANVAS_HEIGHT]);
-    gamejs.display.setCaption("Example Monsters");
+    gamejs.display.setCaption("Here be monsters");
 
     var mainSurface = gamejs.display.getSurface();
 
     /*
-     * Sprites
-     */
-
-    /* Ground */
-
-    globals.GroundTiles = new gamejs.sprite.Group();
-
-    for (var y=0; y<globals.TILE_AMOUNT; y++) {
-	for (var x=0; x<globals.TILE_AMOUNT; x++) {
-	    // there's a 25% chance that tile is lava */
-	    var blocked = (Math.random() > 0.25)? globals.TileState.EMPTY : globals.TileState.BLOCKED;
-	    globals.GroundTiles.add(new war.Ground([x*globals.TILE_SIZE, y*globals.TILE_SIZE], blocked));
-	}
-    }
-
-    /* Monsters */
-
-    globals.Monsters = new gamejs.sprite.Group();
-
-    for (var i=0; i < (16); i++)
-    {
-	var monsterType = Math.random()*20;
-	if (monsterType < 15)
-	    globals.Monsters.add(new monster.Orc());
-	else if (monsterType < 10)
-	    globals.Monsters.add(new monster.ToughOrc());
-	else if (monsterType < 19)
-	    globals.Monsters.add(new monster.Octopus());
-	else
-	    globals.Monsters.add(new monster.Evileye());
-    }
-
-    globals.attackIcon = new war.AttackIcon([0,0]);
-
-
-    /*
-     * Engine initializations
-     */
-
-
-    war.init();
-    war.battleStatus.add(war.name());
-
-
-
-    /*
-     *
-     *
-     *
      *
      *
      * Director
-     *
-     *
      *
      *
      */
@@ -143,6 +88,7 @@ function main() {
 	    if (activeScene.init) {
 		activeScene.init();
 	    }
+
 	};
 
 	this.getScene = function() {

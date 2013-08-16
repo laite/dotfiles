@@ -449,11 +449,16 @@ Monster.prototype.update = function(msDuration) {
 		/* enemy is dead, so we can stay at its position (if melee-fight) */
 		if (this.enemy.hp <= 0) {
 		    war.battleStatus.add(this.enemy.name + " was killed!");
-		    this.enemy.kill();
 
 		    if (war.samePlace(this.position, this.enemy.position)) {
 			war.setTileState(this.position, globals.TileState.OCCUPIED, this.id);
 		    }
+		    else {
+			/* if we kill enemy by ranged attack, we clear its position */
+			war.setTileState(this.enemy.position, globals.TileState.NOT_OCCUPIED);
+		    }
+
+		    this.enemy.kill();
 		    this.endTurn();
 		    console.log("Monster",this.name,"killed its enemy!");
 		}
