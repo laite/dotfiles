@@ -13,6 +13,7 @@ alias rawexit='rawdog -uw && exit'
 alias :q='exit'
 alias d='dict -d wn '
 
+alias torinfo='deluge-console info | egrep "Progress|Name"'
 alias find_sub='subberthehut -a -s'
 
 # git
