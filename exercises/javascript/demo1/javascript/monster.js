@@ -219,6 +219,10 @@ var Monster = exports.Monster = function() {
 	return (this.controller === globals.Controller.HUMAN);
     }
 
+    this.isWizard = function() {
+	return (this.weapon == globals.WeaponStyle.MAGIC);
+    }
+
     /* this.changeState calls appropriate methods on changing the state of monster */
     this.changeState = function(newState) { 
 

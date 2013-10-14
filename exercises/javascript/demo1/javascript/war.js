@@ -85,6 +85,16 @@ var Ground = exports.Ground = function(rect, state) {
 	return this.blocked;
     }
 
+    this.setBlocked = function(block) {
+	this.blocked = block;
+	if (this.blocked === globals.TileState.EMPTY)
+	    this.image = gamejs.image.load("images/tile.png");
+	else if (this.blocked === globals.TileState.BLOCKED)
+	    this.image = gamejs.image.load("images/tile2.png");
+
+	console.log("Block at",this.position," changed its state. Blocked:",this.blocked);
+    }
+
     return this;
 };
 
@@ -499,7 +509,7 @@ exports.setTileState = function(arr, state, id) {
 	getGroundTile(x, y).monsterId = id;
     }
     else {
-	getGroundTile(x, y).blocked = blocked;
+	getGroundTile(x, y).setBlocked(state);
     }
 }
 

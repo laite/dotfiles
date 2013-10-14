@@ -139,6 +139,15 @@ var WarScene = exports.WarScene = function(director, mainSurface) {
 		    monster.controller = (monster.controller === globals.Controller.HUMAN)? globals.Controller.AI : globals.Controller.HUMAN;
 		})
 	    }
+	    if (event.key === gamejs.event.K_b) {
+		/* all wizards can modify blocked, empty tiles directly */
+		if (globals.activeMonster.isWizard() && !war.isTileOccupied(globals.cursor_pos)) {
+		    var blocked = (war.isTileBlocked(globals.cursor_pos))? globals.TileState.EMPTY : globals.TileState.BLOCKED;
+		    war.setTileState(globals.cursor_pos, blocked);
+		    war.battleStatus.add(globals.activeMonster.name + " modified battle arena!");
+		    globals.activeMonster.endTurn();
+		}
+	    }
 	}
 
 	/* Mouse clicking */
