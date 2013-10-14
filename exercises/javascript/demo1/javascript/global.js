@@ -10,6 +10,7 @@ exports.menuScene;
 exports.Monsters;
 exports.GroundTiles;
 exports.attackIcon;
+exports.familyList;
 
 exports.selectedScenario = -1;
 exports.activeMonster = null;

@@ -22,6 +22,9 @@ exports.loadScenario = function(scenario) {
     /* Monsters */
     globals.Monsters = new gamejs.sprite.Group();
 
+    /* Make sure that families get spawned correctly */
+    globals.familyList = [];
+
     /* 
      * Scenario 1: 
      *

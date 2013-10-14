@@ -241,19 +241,17 @@ var units = new Units();
  *
  */
 
-var familylist = [];
-
 /* getSpawnPoint returns an free place for new monster */
 exports.getSpawnPoint = function(family) {
     // TODO: map has spawn points up to n families?
     // for now, we use 4 corners
     var spawnPlaces = [[0,0], [(globals.TILE_AMOUNT-1),(globals.TILE_AMOUNT-1)], [0,(globals.TILE_AMOUNT-1)], [(globals.TILE_AMOUNT-1),0]];
-    var familyNum = familylist.indexOf(family);
+    var familyNum = globals.familyList.indexOf(family);
     
     console.log("familynum:",familyNum);
     if (familyNum == -1) {
-	familylist.push(family);
-	return spawnPlaces[familylist.length-1];
+	globals.familyList.push(family);
+	return spawnPlaces[globals.familyList.length-1];
     }
     else {
 	return spawnPlaces[familyNum];
@@ -460,7 +458,6 @@ exports.init = function(forceUnit) {
     units.setCurrentUnit(forceUnit);
 
     console.log("* INIT *");
-    //this.battleStatus.add(this.name());
 }
 
 /*
