@@ -11,6 +11,7 @@ exports.Monsters;
 exports.GroundTiles;
 exports.attackIcon;
 
+exports.selectedScenario = -1;
 exports.activeMonster = null;
 exports.activeEnemy = null;
 exports.activeMonsterIndex = -1;

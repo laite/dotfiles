@@ -1,6 +1,7 @@
 var war = require('war');
 var globals = require('global');
 var monster = require('monster');
+var scenario = require('scenarios');
 
 var gamejs = require('gamejs');
 
@@ -78,36 +79,16 @@ var WarScene = exports.WarScene = function(director, mainSurface) {
 	if (!globals.stillBattling) {
 	    console.log("Re-initializing battlefield!");
 
-	    /* Ground */
-	    globals.GroundTiles = new gamejs.sprite.Group();
-
-	    for (var y=0; y<globals.TILE_AMOUNT; y++) {
-		for (var x=0; x<globals.TILE_AMOUNT; x++) {
-		    // there's a 15% chance that tile is lava */
-		    var blocked = (Math.random() > 0.15)? globals.TileState.EMPTY : globals.TileState.BLOCKED;
-		    globals.GroundTiles.add(new war.Ground([x*globals.TILE_SIZE, y*globals.TILE_SIZE], blocked));
-		}
+	    /* If no scenario is selected, we fall */
+	    if (globals.selectedScenario == -1) {
+		console.error("No scenario selected!");
+		director.replaceScene(globals.menuScene);
+		// XXX: necessary?
+		return;
 	    }
 
-	    /* Monsters */
-	    globals.Monsters = new gamejs.sprite.Group();
-
-	    for (var i=0; i < (6); i++)
-	    {
-		var monsterType = Math.random()*20;
-		if (monsterType < 5)
-		    globals.Monsters.add(new monster.Orc());
-		else if (monsterType < 10)
-		    globals.Monsters.add(new monster.ToughOrc());
-		else if (monsterType < 19)
-		    globals.Monsters.add(new monster.Octopus());
-		else
-		    globals.Monsters.add(new monster.Evileye());
-	    }
-
-	    /* attackIcon */
-	    globals.attackIcon = new war.AttackIcon([0,0]);
-
+	    // scenario loader takes care of initializing ground and monsters
+	    scenario.loadScenario(globals.selectedScenario);
 
 	    /*
 	     * Engine initializations
@@ -305,20 +286,31 @@ var MenuScene = exports.MenuScene = function(director) {
     this.init = function() {
 	var box = document.getElementById("mainmenu");
 	box.style.display = "block";
-	box.innerHTML = "<h1>Main Menu</h1>";
-	box.innerHTML += "<h2>Choose scenario</h2>";
-	box.innerHTML += "<ol><li>Orcs vs. Octopi</li><li>Bossfight</li><li>Demo</li></ol>";
     }
 
     this.exit = function() {
 	var box = document.getElementById("mainmenu");
 	box.style.display = "none";
-	box.innerHTML = "";
     }
 
     this.handleEvent = function(event) {
 	if (event.type === gamejs.event.MOUSE_UP) {
-	    //director.replaceScene(globals.warScene);
+	    var selected = -1;
+	    var click = event.pos;
+	    
+	    // we must compensate for html page margin here (sigh)
+	    click[0] += 30; click[1] += 30;
+
+	    for (var i=1; i<=3; i++) {
+		var rect = document.getElementById("scn"+i).getBoundingClientRect();
+		if (rect.left <= click[0] && rect.right >= click[0] && rect.top <= click[1] && rect.bottom >= click[1])
+		    selected = i;
+	    }
+
+	    if (selected != -1) {
+		globals.selectedScenario = selected;
+		director.replaceScene(globals.warScene);
+	    }
 	}
 
 	if (event.type === gamejs.event.KEY_UP) {

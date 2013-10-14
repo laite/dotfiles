@@ -460,7 +460,7 @@ exports.init = function(forceUnit) {
     units.setCurrentUnit(forceUnit);
 
     console.log("* INIT *");
-    this.battleStatus.add(this.name());
+    //this.battleStatus.add(this.name());
 }
 
 /*

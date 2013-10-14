@@ -249,10 +249,12 @@ var Monster = exports.Monster = function() {
  */
 
 
-var Orc = exports.Orc = function() {
+var Orc = exports.Orc = function(controller, faction) {
+    if(typeof(faction)==='undefined') faction = "Orcs";
+
     this.image_name = "images/orc";
     this.name = "Orc ";
-    this.family = "Orcs";
+    this.family = faction;
 
     this.personality = globals.MonsterPersonality.BERSERK;
     this.naturalSpeedType = globals.MonsterSpeed.QUICK;
@@ -266,15 +268,16 @@ var Orc = exports.Orc = function() {
     this.damageModifier = 3;
     this.damageBonus = 3;
 
-    this.controller = globals.Controller.AI;
+    this.controller = controller;
 
     Monster.call(this);
 }
 
-var ToughOrc = exports.ToughOrc = function() {
+var ToughOrc = exports.ToughOrc = function(controller, faction) {
+    if(typeof(faction)==='undefined') faction = "Orcs";
     this.image_name = "images/tough_orc";
     this.name = "Tough Orc ";
-    this.family = "Orcs";
+    this.family = faction;
 
     this.personality = globals.MonsterPersonality.BERSERK;
     this.naturalSpeedType = globals.MonsterSpeed.VERY_QUICK;
@@ -288,15 +291,16 @@ var ToughOrc = exports.ToughOrc = function() {
     this.damageModifier = 6;
     this.damageBonus = 10;
 
-    this.controller = globals.Controller.AI;
+    this.controller = controller;
 
     Monster.call(this);
 }
 
-var Octopus = exports.Octopus = function() {
+var Octopus = exports.Octopus = function(controller, faction) {
+    if(typeof(faction)==='undefined') faction = "Monsters";
     this.image_name = "images/octopus";
     this.name = "Octo-Monster ";
-    this.family = "Monsters";
+    this.family = faction;
 
     this.personality = war.randomFromList([globals.MonsterPersonality.CAREFUL,globals.MonsterPersonality.INDIVIDUAL]);
     this.naturalSpeedType = globals.MonsterSpeed.QUICK;
@@ -310,15 +314,16 @@ var Octopus = exports.Octopus = function() {
     this.damageModifier = 4;
     this.damageBonus = 0;
 
-    this.controller = globals.Controller.AI;
+    this.controller = controller;
 
     Monster.call(this);
 }
 
-var Evileye = exports.Evileye = function() {
+var Evileye = exports.Evileye = function(controller, faction) {
+    if(typeof(faction)==='undefined') faction = "Boss";
     this.image_name = "images/evileye";
     this.name = "Evil eye";
-    this.family = "Boss";
+    this.family = faction;
 
     this.personality = globals.MonsterPersonality.IMMOBILE;
     this.naturalSpeedType = globals.MonsterSpeed.VERY_SLOW;
@@ -332,7 +337,7 @@ var Evileye = exports.Evileye = function() {
     this.damageModifier = 3;
     this.damageBonus = 0;
 
-    this.controller = globals.Controller.AI;
+    this.controller = controller;
 
     Monster.call(this);
 }

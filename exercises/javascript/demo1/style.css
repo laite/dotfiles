@@ -1,7 +1,7 @@
 body{
     background:#fff;
     color:#222;
-    margin:1em 0 2em 6em;
+    margin: 30px;
     padding:0;
 }
 
@@ -45,7 +45,7 @@ body{
 }
 
 #mainmenu {
-    border-radius: 25px;
+    //border-radius: 25px;
     border: 1px solid black;
     background: rgba(255,255,255,0.8);
     display: none;
@@ -58,4 +58,16 @@ body{
 
     text-align: center;
 
+}
+
+#scenarioTable {
+    margin: 0px auto 30px auto;
+}
+
+#scenarioTable tr td {
+    color: #884422;
+}
+
+#scenarioTable tr td:hover {
+    color: #ffaa00;
 }
