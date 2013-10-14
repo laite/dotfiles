@@ -241,16 +241,24 @@ var units = new Units();
  *
  */
 
-/* getSpawnPoint returns an free place for new monster */
+/*
+ * getSpawnPoint returns an free place for new monster 
+ * Max amount of families allowed is 8 
+ */
 exports.getSpawnPoint = function(family) {
-    // TODO: map has spawn points up to n families?
-    // for now, we use 4 corners
-    var spawnPlaces = [[0,0], [(globals.TILE_AMOUNT-1),(globals.TILE_AMOUNT-1)], [0,(globals.TILE_AMOUNT-1)], [(globals.TILE_AMOUNT-1),0]];
+    var pMax = globals.TILE_AMOUNT - 1;
+    var pHalf = Math.floor(pMax);
+    var spawnPlaces = [[0,0], [pMax,pMax], [0,pMax], [pMax,0],[0,pHalf], [pMax,pHalf], [pHalf,0], [pHalf,pMax]];
     var familyNum = globals.familyList.indexOf(family);
     
     console.log("familynum:",familyNum);
     if (familyNum == -1) {
 	globals.familyList.push(family);
+	if (globals.familyList.length > 8) {
+	    console.error("Too many families!");
+	    return [0,0];
+	}
+
 	return spawnPlaces[globals.familyList.length-1];
     }
     else {
