@@ -239,6 +239,8 @@ var WarScene = exports.WarScene = function(director, mainSurface) {
 
 var EndStatisticsScene = exports.EndStatisticsScene = function(director) {
 
+    this.returnScene = globals.warScene;
+
     this.handleEvent = function(event) {
 
 	/* Mouse clicking */
@@ -247,14 +249,19 @@ var EndStatisticsScene = exports.EndStatisticsScene = function(director) {
 
 	    /* if we are actually on game area */
 	    if (rect.collidePoint(event.pos)) {
-
+		director.replaceScene(this.returnScene);
 	    }
 	}
 
 	if (event.type === gamejs.event.KEY_UP) {
 	    /* [p]ause game */
 	    if (event.key === gamejs.event.K_p) {
-		director.replaceScene(globals.warScene);
+		director.replaceScene(this.returnScene);
+	    }
+	    /* [q]uit battle */
+	    if (event.key === gamejs.event.K_q) {
+		globals.stillBattling = false;
+		director.replaceScene(globals.menuScene);
 	    }
 
 	}
@@ -265,12 +272,15 @@ var EndStatisticsScene = exports.EndStatisticsScene = function(director) {
 	box.style.display = "block";
 
 	if (!globals.stillBattling) {
+	    this.returnScene = globals.menuScene;
 	    box.innerHTML = "<h1>Game over</h1>";
-	    box.innerHTML += ""
+	    box.innerHTML += "<p>Click to continue</p>"
 	}
 	else {
+	    this.returnScene = globals.warScene;
 	    box.innerHTML = "<h1>Game paused</h1>";
-	    box.innerHTML += ""
+	    box.innerHTML += "<p>Click to continue</p>"
+	    box.innerHTML += "<p>Press 'q' to return to main menu.</p>"
 	}
     }
 
