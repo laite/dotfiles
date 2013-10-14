@@ -299,22 +299,30 @@ var EndStatisticsScene = exports.EndStatisticsScene = function(director) {
 	box.innerHTML = "";
     }
 }
-exports.MenuScene = function(director) {
+
+var MenuScene = exports.MenuScene = function(director) {
 
     this.init = function() {
-
-	/* TODO: Ask to load previous data or create new */
-
 	var box = document.getElementById("mainmenu");
-	box.innerHtml = "<h1>Main Menu</h1>";
+	box.style.display = "block";
+	box.innerHTML = "<h1>Main Menu</h1>";
+	box.innerHTML += "<h2>Choose scenario</h2>";
+	box.innerHTML += "<ol><li>Orcs vs. Octopi</li><li>Bossfight</li><li>Demo</li></ol>";
     }
+
+    this.exit = function() {
+	var box = document.getElementById("mainmenu");
+	box.style.display = "none";
+	box.innerHTML = "";
+    }
+
     this.handleEvent = function(event) {
 	if (event.type === gamejs.event.MOUSE_UP) {
-	    director.replaceScene(globals.warScene);
+	    //director.replaceScene(globals.warScene);
 	}
 
 	if (event.type === gamejs.event.KEY_UP) {
-	    /* [p]ause game */
+	    /* XXX: debug only */
 	    if (event.key === gamejs.event.K_p) {
 		director.replaceScene(globals.warScene);
 	    }

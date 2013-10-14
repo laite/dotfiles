@@ -4,11 +4,18 @@
     <title>GameJS Application</title>
     <link type="text/css" href="./style.css" rel="stylesheet" />
     <script src="./public/a_star.js"></script>
+    <!--
+	Production script
+	<script src="./javascript/app.min.js"></script>
+    -->
+    <!--
+	Debug scripts
+    -->
     <script src="./public/yabble.js"></script>
     <script src="./public/gamejs.min.js"></script>
     <script>
         require.setModuleRoot('./javascript/');
-        require.run('main')
+        require.run('main');
     </script>
 </head>
 <body>
@@ -41,7 +48,7 @@
 		</div>
 	    </div>
 	    <div id="gamepaused"></div>
-	    <div id="mainmenu"></div>
+	    <div id="mainmenu">Text</div>
 	    <div id="statusLine"></div>
 	</div>
         <p>

@@ -219,7 +219,8 @@ var Units = function() {
 	this.units.sort(sort_index);
     }
 
-    this.setCurrentUnit = function(unit = 0) {
+    this.setCurrentUnit = function(unit) {
+	if(typeof(unit)==='undefined') unit = 0;
 	this.currentUnit = unit%this.units.length;
 	console.log("currentUnit:",this.currentUnit,"units.length:",this.units.length);
     }
@@ -296,7 +297,8 @@ var isTileEmpty = exports.isTileEmpty = function(arr) {
 }
 
 /* getDistance takes two coordinate points and calculates the distance between them */
-var getDistance = exports.getDistance = function(p1, p2, family = null) {
+var getDistance = exports.getDistance = function(p1, p2, family) {
+    if(typeof(family)==='undefined') family = null;
     var path = findPathTo(family, p1, p2);
 
     if (path.length == 0)
@@ -306,7 +308,9 @@ var getDistance = exports.getDistance = function(p1, p2, family = null) {
 }
 
 var getRangedDistance = function(p1, p2) {
-    var [x, y] = [Math.abs(p1[0]-p2[0]), Math.abs(p1[1]-p2[1])];
+    var x = Math.abs(p1[0]-p2[0]);
+    var y = Math.abs(p1[1]-p2[1]);
+
     return Math.max(x, y);
 }
 
@@ -335,7 +339,8 @@ exports.updateCursorState = function(cursor_pos,monster) {
 exports.drawCursor = function(surface, position, state) {
 
     var cursor_size = 0;
-    var [x, y] = position;
+    var x = position[0];
+    var y = position[1];
 
     if (state !== globals.CursorState.ACTIVE_MONSTER) {
 	x *= globals.TILE_SIZE;
@@ -423,7 +428,9 @@ exports.drawStats = function(monster, enemy) {
  *
  */
 
-exports.init = function(forceUnit = 0) {
+exports.init = function(forceUnit) {
+
+    if(typeof(forceUnit)==='undefined') forceUnit = 0;
 
     /*
      * Init units
@@ -439,7 +446,8 @@ exports.init = function(forceUnit = 0) {
     units.reset();
 
     globals.Monsters.forEach(function(monster) {
-	var [x, y] = monster.position;
+	var x = monster.position[0];
+	var y = monster.position[1];
 
 	monster.id = i++;
 	units.addUnit(monster.id);
@@ -476,8 +484,10 @@ exports.getCurrentUnitIndex = function() {
     return units.getCurrentUnitIndex();
 }
 
-exports.setTileState = function(arr, state, id = null) {
-    var [x,y] = arr;
+exports.setTileState = function(arr, state, id) {
+    if(typeof(id)==='undefined') id = null;
+    var x = arr[0];
+    var y = arr[1];
 
     if ((state === globals.TileState.OCCUPIED) || (state === globals.TileState.NOT_OCCUPIED)) {
 	getGroundTile(x, y).occupied = (state === globals.TileState.OCCUPIED)? true : false;
@@ -558,8 +568,10 @@ var findFreeTile = function(rect) {
 
     var allPoints = [];
     var found = false, foundPoint = [];
-    var [x0, y0] = [Math.min(rect[0],rect[2]), Math.min(rect[1],rect[3])];
-    var [x1, y1] = [Math.max(rect[0],rect[2]), Math.max(rect[1],rect[3])];
+    var x0 = Math.min(rect[0],rect[2]);
+    var y0 = Math.min(rect[1],rect[3]);
+    var x1 = Math.max(rect[0],rect[2]);
+    var y1 = Math.max(rect[1],rect[3]);
 
     console.log("Looking free tile:",[x0,y0], [x1,y1]);
     for (var x = x0; x <= x1; x++) {
@@ -659,7 +671,10 @@ exports.battle = function(id1, id2) {
  *
  */
 
-var findSpecificMonster = function(monster, want_friend = false, want_weakest = false) {
+var findSpecificMonster = function(monster, want_friend, want_weakest) {
+    if(typeof(want_friend)==='undefined') want_friend = false;
+    if(typeof(want_weakest)==='undefined') want_weakest = false;
+
     var foundList = [];
     var key = 100000;
 
