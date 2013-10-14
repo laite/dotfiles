@@ -113,3 +113,10 @@ exports.WeaponStyle = {
     RANGED : 1,
     MAGIC : 2
 }
+
+/* effects */
+exports.Spells = {
+    CONFUSION : "Confuse",
+    POISON : "Poison",
+    PARALYZE : "Paralyze"
+}

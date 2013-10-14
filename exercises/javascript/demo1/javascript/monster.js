@@ -53,6 +53,75 @@ var Monster = exports.Monster = function() {
     // state of monster is private, so it won't get changed by accident
     var state = globals.MonsterState.INACTIVE;
 
+    var Effects = function() {
+	var Effect = function(effectName, effectDuration) {
+	    this.name = effectName;
+	    this.duration = effectDuration;
+	}
+
+	this.effectTable = [];
+
+	this.add = function(name, dur) {
+	    this.effectTable.push(new Effect(name, dur));
+	}
+
+	this.has = function(wanted) {
+	    for (var i=0; i < this.effectTable.length; i++) {
+		if (this.effectTable[i].name == wanted) {
+		    return true;
+		}
+	    }
+	    return false;
+	}
+
+	this.reduce = function() {
+	    var newEffects = [];
+	    for (var i=0; i < this.effectTable.length; i++) {
+		this.effectTable[i].duration--;
+		if (this.effectTable[i].duration > 0) {
+		    newEffects.push(this.effectTable[i]);
+		}
+	    }
+	    this.effectTable = newEffects;
+	}
+
+	this.getEffectString = function() {
+	    var str = "";
+	    for (var i=0; i<this.effectTable.length; i++) {
+		str += "[" + this.effectTable[i].name[0] + "(" + this.effectTable[i].duration + ")]";
+	    }
+	    return str;
+	}
+    }
+
+    this.effects = new Effects();
+
+    this.addEffect = function(eName, dur) {
+	this.effects.add(eName, dur);
+	if (eName == globals.Spells.CONFUSION)
+	    war.battleStatus.add(this.name + " is confused!");
+	else if (eName == globals.Spells.POISON)
+	    war.battleStatus.add(this.name + " is poisoned!");
+    }
+
+    this.hasEffect = function(eff) {
+	return this.effects.has(eff);
+    }
+
+    this.handleEffects = function() {
+	this.effects.reduce();
+
+	for (var i=0; i<this.effects.effectTable.length; i++)
+	{
+	    var efName = this.effects.effectTable[i].name;
+	    if (efName == globals.Spells.POISON)
+		console.warn("POISON!");
+	    else if (efName == globals.Spells.PARALYZE) {
+		war.battleStatus.add(this.name + " is PARALYZED and misses its turn!");
+		this.endTurn();
+	    }
+	}
+    }
 
     /*
      *
@@ -189,6 +258,8 @@ var Monster = exports.Monster = function() {
     /* activate sets monster as 'active' one on battlefield */
     this.activate = function() {
 	console.log(this.name, "just became active");
+
+	this.handleEffects();
 
 	/* if this is computer controlled, it launches its ai sequence */
 	if (this.controller === globals.Controller.AI) {

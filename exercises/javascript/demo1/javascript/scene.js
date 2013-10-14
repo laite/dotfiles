@@ -139,6 +139,7 @@ var WarScene = exports.WarScene = function(director, mainSurface) {
 		    monster.controller = (monster.controller === globals.Controller.HUMAN)? globals.Controller.AI : globals.Controller.HUMAN;
 		})
 	    }
+	    /* [b]lock toggle */
 	    if (event.key === gamejs.event.K_b) {
 		/* all wizards can modify blocked, empty tiles directly */
 		if (globals.activeMonster.isWizard() && !war.isTileOccupied(globals.cursor_pos)) {
@@ -146,6 +147,23 @@ var WarScene = exports.WarScene = function(director, mainSurface) {
 		    war.setTileState(globals.cursor_pos, blocked);
 		    war.battleStatus.add(globals.activeMonster.name + " modified battle arena!");
 		    globals.activeMonster.endTurn();
+		}
+	    }
+	    /* [c]onfuse monster or [v] Paralyze him */
+	    if ((event.key === gamejs.event.K_v) || (event.key === gamejs.event.K_c)) {
+		var focusMonster = war.getMonsterAt(globals.cursor_pos);
+		if (focusMonster !== null) {
+		    console.log(focusMonster.name);
+		    if (globals.activeMonster.isWizard() && war.isTileOccupied(focusMonster.position)) {
+			var spell = (event.key === gamejs.event.K_c)? globals.Spells.CONFUSION : globals.Spells.PARALYZE;
+			
+			if (focusMonster.hasEffect(spell))
+			    war.battleStatus.add(focusMonster.name + " already is " + spell + "d!");
+			else {
+			    focusMonster.addEffect(spell,3+Math.floor(Math.random()*3));
+			    globals.activeMonster.endTurn();
+			}
+		    }
 		}
 	    }
 	}

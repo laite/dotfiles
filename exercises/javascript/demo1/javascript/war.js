@@ -231,6 +231,7 @@ var Units = function() {
 
     this.setCurrentUnit = function(unit) {
 	if(typeof(unit)==='undefined') unit = 0;
+
 	this.currentUnit = unit%this.units.length;
 	console.log("currentUnit:",this.currentUnit,"units.length:",this.units.length);
     }
@@ -421,7 +422,7 @@ exports.drawStats = function(monster, enemy) {
     if (enemy != null) {
 	var health = enemy.hp + " (" + Math.round(100*enemy.hp/enemy.maxhp) + "%)";
 
-	document.getElementById("mt2Name").innerHTML = enemy.name;
+	document.getElementById("mt2Name").innerHTML = enemy.name + enemy.effects.getEffectString();
 	document.getElementById("mt2Family").innerHTML = enemy.family;
 	document.getElementById("mt2Speed").innerHTML = enemy.speed;
 	document.getElementById("mt2Health").innerHTML = health;
