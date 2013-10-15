@@ -93,8 +93,12 @@ var Monster = exports.Monster = function() {
 
     this.addEffect = function(efName, dur) {
 	this.effects.add(efName, dur);
-	if ((efName == globals.Spells.CONFUSION) || (efName == globals.Spells.POISON))
-	    war.battleStatus.add(this.name + " is " + efName + "d!");
+	if (efName == globals.Spells.CONFUSION)
+	    war.battleStatus.add(this.name + " is confused!");
+	else if (efName == globals.Spells.POISON)
+	    war.battleStatus.add(this.name + " is poisoned!");
+	else if (efName == globals.Spells.PARALYZE)
+	    war.battleStatus.add(this.name + " is paralyzed!");
     }
 
     this.hasEffect = function(eff) {
