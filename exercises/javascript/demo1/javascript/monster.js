@@ -98,10 +98,8 @@ var Monster = exports.Monster = function() {
 
     this.addEffect = function(eName, dur) {
 	this.effects.add(eName, dur);
-	if (eName == globals.Spells.CONFUSION)
-	    war.battleStatus.add(this.name + " is confused!");
-	else if (eName == globals.Spells.POISON)
-	    war.battleStatus.add(this.name + " is poisoned!");
+	if ((eName == globals.Spells.CONFUSION) || (eName == globals.Spells.POISON))
+	    war.battleStatus.add(this.name + " is " + eName + "d!");
     }
 
     this.hasEffect = function(eff) {
@@ -111,6 +109,7 @@ var Monster = exports.Monster = function() {
     this.handleEffects = function() {
 	this.effects.reduce();
 
+	var turnOver = false;
 	for (var i=0; i<this.effects.effectTable.length; i++)
 	{
 	    var efName = this.effects.effectTable[i].name;
@@ -118,9 +117,11 @@ var Monster = exports.Monster = function() {
 		console.warn("POISON!");
 	    else if (efName == globals.Spells.PARALYZE) {
 		war.battleStatus.add(this.name + " is PARALYZED and misses its turn!");
-		this.endTurn();
+		turnOver = true;
 	    }
 	}
+	if (turnOver)
+	    this.endTurn();
     }
 
     /*
@@ -261,8 +262,8 @@ var Monster = exports.Monster = function() {
 
 	this.handleEffects();
 
-	/* if this is computer controlled, it launches its ai sequence */
-	if (this.controller === globals.Controller.AI) {
+	/* if this is computer controlled and still active (effects can make monster skip turn), it launches its ai sequence */
+	if ((this.isActive()) && (this.controller === globals.Controller.AI)) {
 	    war.doAI(this);
 	}
     }
