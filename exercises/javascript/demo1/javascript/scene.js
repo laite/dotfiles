@@ -141,8 +141,8 @@ var WarScene = exports.WarScene = function(director, mainSurface) {
 	    }
 	    /* [b]lock toggle */
 	    if (event.key === gamejs.event.K_b) {
-		/* all wizards can modify blocked, empty tiles directly */
-		if (globals.activeMonster.isWizard() && !war.isTileOccupied(globals.cursor_pos)) {
+		/* all monsters can modify blocked, empty tiles directly */
+		if (!war.isTileOccupied(globals.cursor_pos)) {
 		    var blocked = (war.isTileBlocked(globals.cursor_pos))? globals.TileState.EMPTY : globals.TileState.BLOCKED;
 		    war.setTileState(globals.cursor_pos, blocked);
 		    war.battleStatus.add(globals.activeMonster.name + " modified battle arena!");
