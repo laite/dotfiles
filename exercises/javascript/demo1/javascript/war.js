@@ -412,6 +412,7 @@ exports.drawStats = function(monster, enemy) {
 	var health = monster.hp + " (" + Math.round(100*monster.hp/monster.maxhp) + "%)";
 
 	document.getElementById("mt1Name").innerHTML = monster.name;
+	document.getElementById("mt1Effects").innerHTML = monster.effects.getEffectString();
 	document.getElementById("mt1Family").innerHTML = monster.family;
 	document.getElementById("mt1Speed").innerHTML = monster.speed;
 	document.getElementById("mt1Health").innerHTML = health;
@@ -422,7 +423,8 @@ exports.drawStats = function(monster, enemy) {
     if (enemy != null) {
 	var health = enemy.hp + " (" + Math.round(100*enemy.hp/enemy.maxhp) + "%)";
 
-	document.getElementById("mt2Name").innerHTML = enemy.name + enemy.effects.getEffectString();
+	document.getElementById("mt2Name").innerHTML = enemy.name;
+	document.getElementById("mt2Effects").innerHTML = enemy.effects.getEffectString();
 	document.getElementById("mt2Family").innerHTML = enemy.family;
 	document.getElementById("mt2Speed").innerHTML = enemy.speed;
 	document.getElementById("mt2Health").innerHTML = health;
