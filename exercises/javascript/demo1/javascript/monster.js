@@ -44,14 +44,16 @@ var Monster = exports.Monster = function() {
     // destination is used while traveling
     this.destination = [];
 
-
-    /*
-     * Private members
-     */
-
-
     // state of monster is private, so it won't get changed by accident
     var state = globals.MonsterState.INACTIVE;
+
+
+    /*
+     *
+     * Effects
+     *
+     */
+
 
     var Effects = function() {
 	var Effect = function(effectName, effectDuration) {
@@ -85,21 +87,14 @@ var Monster = exports.Monster = function() {
 	    this.effectTable = newEffects;
 	}
 
-	this.getEffectString = function() {
-	    var str = "";
-	    for (var i=0; i<this.effectTable.length; i++) {
-		str += "[" + this.effectTable[i].name[0] + "(" + this.effectTable[i].duration + ")]";
-	    }
-	    return str;
-	}
     }
 
     this.effects = new Effects();
 
-    this.addEffect = function(eName, dur) {
-	this.effects.add(eName, dur);
-	if ((eName == globals.Spells.CONFUSION) || (eName == globals.Spells.POISON))
-	    war.battleStatus.add(this.name + " is " + eName + "d!");
+    this.addEffect = function(efName, dur) {
+	this.effects.add(efName, dur);
+	if ((efName == globals.Spells.CONFUSION) || (efName == globals.Spells.POISON))
+	    war.battleStatus.add(this.name + " is " + efName + "d!");
     }
 
     this.hasEffect = function(eff) {
@@ -115,6 +110,8 @@ var Monster = exports.Monster = function() {
 	    var efName = this.effects.effectTable[i].name;
 	    if (efName == globals.Spells.POISON)
 		console.warn("POISON!");
+	    else if (efName == globals.Spells.CONFUSION) 
+		war.battleStatus.add(this.name + " is " + efName + "d!");
 	    else if (efName == globals.Spells.PARALYZE) {
 		war.battleStatus.add(this.name + " is PARALYZED and misses its turn!");
 		turnOver = true;
@@ -124,11 +121,29 @@ var Monster = exports.Monster = function() {
 	    this.endTurn();
     }
 
+    this.getEffectString = function() {
+	var str = "";
+	for (var i=0; i<this.effects.effectTable.length; i++) {
+	    str += this.effects.effectTable[i].name[0] + "(" + this.effects.effectTable[i].duration + ") ";
+	}
+	return str;
+    }
+
+
     /*
      *
      * Monster public functions
      *
      */
+
+
+    // getEffectedFamily returns this.family UNLESS monster is confused or otherwise enchanted
+    this.getEffectedFamily = function() {
+	if (this.hasEffect(globals.Spells.CONFUSION))
+	    return "";
+	else
+	    return this.family;
+    }
 
     this.kill = function() {
 	console.log("Killing",this.name);
@@ -175,7 +190,7 @@ var Monster = exports.Monster = function() {
 	 * findPathTo gives us an array of waypoints
 	 * or [] if no path could be found.
 	 */
-	var destination = war.findPathTo(this.family, this.position, rect);
+	var destination = war.findPathTo(this.getEffectedFamily(), this.position, rect);
 
 	if (destination.length > 0) {
 	    /*
@@ -206,8 +221,9 @@ var Monster = exports.Monster = function() {
 		if ((isEmpty) && (!isOccupied)) {
 		    free = true;
 		}
-		/* Tile is also considered free if there's an enemy; that means we attack it */
-		else if ((isOccupied) && (this.family !== war.getMonsterAt([x, y]).family)) {
+		/* Tile is also considered free if there's an enemy; that means we attack it 
+		 * Note that getEffectedFamily might return "" if monster is confused (about its identity) */
+		else if ((isOccupied) && (this.getEffectedFamily() !== war.getMonsterAt([x, y]).family)) {
 		    free = true;
 		}
 		/* Otherwise we cut off last destination point as unfit */
@@ -293,6 +309,17 @@ var Monster = exports.Monster = function() {
 
     this.isWizard = function() {
 	return (this.weapon == globals.WeaponStyle.MAGIC);
+    }
+
+    this.canRetaliate = function() {
+	var can = true;
+
+	if (this.hasEffect(globals.Spells.CONFUSION) || this.hasEffect(globals.Spells.PARALYZE)) {
+	    war.battleStatus.add(this.name + " is unable to retaliate!");
+	    can = false;
+	}
+
+	return can;
     }
 
     /* this.changeState calls appropriate methods on changing the state of monster */
@@ -464,7 +491,7 @@ Monster.prototype.update = function(msDuration) {
 	    this.position = newPosition;
 
 	    /* if we are on hostile tile, we launch attack */
-	    if ((war.isTileOccupied(this.position)) && (war.getMonsterAt(this.position).family != this.family)) {
+	    if ((war.isTileOccupied(this.position)) && (war.getMonsterAt(this.position).family != this.getEffectedFamily())) {
 		/* we can use getMonsterAt since attacking monster is not yet 'positioned' here */
 		this.enemy = war.getMonsterAt(this.position);
 		/* stop moving, start attacking */

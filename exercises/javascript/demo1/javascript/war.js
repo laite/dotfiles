@@ -316,6 +316,10 @@ var isTileEmpty = exports.isTileEmpty = function(arr) {
 /* getDistance takes two coordinate points and calculates the distance between them */
 var getDistance = exports.getDistance = function(p1, p2, family) {
     if(typeof(family)==='undefined') family = null;
+
+    if (p1[0] == p2[0] && p1[1] == p2[1])
+	return 3000;
+
     var path = findPathTo(family, p1, p2);
 
     if (path.length == 0)
@@ -333,7 +337,7 @@ var getRangedDistance = function(p1, p2) {
 
 exports.updateCursorState = function(cursor_pos,monster) {
 
-    var dist = getDistance(cursor_pos, monster.position, monster.family);
+    var dist = getDistance(cursor_pos, monster.position, monster.getEffectedFamily());
     var cursor_state = globals.CursorState.ALLOWED;
 
     if (dist > monster.moveRange) {
@@ -341,7 +345,7 @@ exports.updateCursorState = function(cursor_pos,monster) {
     }
     else {
 	if (isTileOccupied(cursor_pos)) {
-	    if (getMonsterAt(cursor_pos).family != monster.family)
+	    if (getMonsterAt(cursor_pos).family != monster.getEffectedFamily())
 		cursor_state = globals.CursorState.ATTACK;
 	}
 	else {
@@ -412,7 +416,7 @@ exports.drawStats = function(monster, enemy) {
 	var health = monster.hp + " (" + Math.round(100*monster.hp/monster.maxhp) + "%)";
 
 	document.getElementById("mt1Name").innerHTML = monster.name;
-	document.getElementById("mt1Effects").innerHTML = monster.effects.getEffectString();
+	document.getElementById("mt1Effects").innerHTML = monster.getEffectString();
 	document.getElementById("mt1Family").innerHTML = monster.family;
 	document.getElementById("mt1Speed").innerHTML = monster.speed;
 	document.getElementById("mt1Health").innerHTML = health;
@@ -424,7 +428,7 @@ exports.drawStats = function(monster, enemy) {
 	var health = enemy.hp + " (" + Math.round(100*enemy.hp/enemy.maxhp) + "%)";
 
 	document.getElementById("mt2Name").innerHTML = enemy.name;
-	document.getElementById("mt2Effects").innerHTML = enemy.effects.getEffectString();
+	document.getElementById("mt2Effects").innerHTML = enemy.getEffectString();
 	document.getElementById("mt2Family").innerHTML = enemy.family;
 	document.getElementById("mt2Speed").innerHTML = enemy.speed;
 	document.getElementById("mt2Health").innerHTML = health;
@@ -664,7 +668,7 @@ exports.battle = function(id1, id2) {
 	this.battleStatus.add(m1.name + " hit " + m2.name + " for " + m1Damage + " damage!");
 	m2.hp -= m1Damage;
 
-	if (m2.hp > 0) {
+	if ((m2.hp > 0) && m2.canRetaliate()) {
 	    var m2Damage = m2.getDamage(globals.WeaponStyle.MELEE);
 	    console.log(m2.name,"damage:",m2Damage);
 	    this.battleStatus.add(m2.name + " hit " + m1.name + " for " + m2Damage + " damage!");
@@ -700,28 +704,28 @@ var findSpecificMonster = function(monster, want_friend, want_weakest) {
 	if (want_weakest)
 	    return (other.hp < key);
 	else
-	    return (getDistance(monster.position, other.position, monster.family) < key);
+	    return (getDistance(monster.position, other.position, monster.getEffectedFamily()) < key);
     }
 
     this.isEqual = function(other) {
 	if (want_weakest)
 	    return (other.hp == key);
 	else
-	    return (getDistance(monster.position, other.position, monster.family) == key);
+	    return (getDistance(monster.position, other.position, monster.getEffectedFamily()) == key);
     }
 
     this.isSuitableFamily = function(other) {
 	if (want_friend)
-	    return (monster.family === other.family);
+	    return (monster.getEffectedFamily() === other.family);
 	else
-	    return (monster.family !== other.family);
+	    return (monster.getEffectedFamily() !== other.family);
     }
 
     this.setKey = function(other) {
 	if (want_weakest) 
 	    return other.hp;
 	else
-	    return getDistance(monster.position, other.position, monster.family);
+	    return getDistance(monster.position, other.position, monster.getEffectedFamily());
     }
 
     globals.Monsters.forEach(function(other) {
@@ -755,7 +759,7 @@ var findNearestEnemyRanged = function(monster) {
 	    var dist = getRangedDistance(monster.position, other.position);
 	    /* we find either closest or weakest */
 	    /* check if it's enemy/friend we wanted */
-	    if (monster.family != other.family) {
+	    if (monster.getEffectedFamily() != other.family) {
 		if (dist < key) { 
 		    key = getRangedDistance(monster.position, other.position);
 		    foundList = [];
@@ -791,7 +795,7 @@ var findWeakestFriend = function(monster) {
 }
 
 exports.doAI = function(monster) {
-    console.log("AI:",monster.name,monster.position,monster.family);
+    console.log("AI:",monster.name,monster.position,monster.family,monster.getEffectedFamily());
     var nearestEnemyPosition;
     if (monster.weapon === globals.WeaponStyle.MELEE)
        nearestEnemyPosition = findNearestEnemy(monster);
@@ -802,11 +806,11 @@ exports.doAI = function(monster) {
 	CAST_SPELL : 4, DO_NOTHING : 99};
 
     if (nearestEnemyPosition) {
-	console.log("Nearest enemy:",nearestEnemyPosition,getDistance(monster.position, nearestEnemyPosition, monster.family));
+	console.log("Nearest enemy:",nearestEnemyPosition,getDistance(monster.position, nearestEnemyPosition, monster.getEffectedFamily()));
 
 	/* by default, we attack with our hands and claws. */
 	var action = Action.ATTACK;
-	var distance = getDistance(monster.position, nearestEnemyPosition, monster.family);
+	var distance = getDistance(monster.position, nearestEnemyPosition, monster.getEffectedFamily());
 	var nearestEnemy = getMonsterAt(nearestEnemyPosition);
 
 	if (nearestEnemy == null) {
@@ -890,7 +894,7 @@ exports.doAI = function(monster) {
 	}
 	else if (action === Action.GATHER_AROUND) {
 	    var nearestFriendPosition = findNearestFriend(monster);
-	    var friendDistance = getDistance(monster.position, nearestFriendPosition, monster.family);
+	    var friendDistance = getDistance(monster.position, nearestFriendPosition, monster.getEffectedFamily());
 
 	    /* if we are close to a friend and have a bow, we'll just shoot */
 	    if ((friendDistance <= 2) && (monster.weapon === globals.WeaponStyle.RANGED))

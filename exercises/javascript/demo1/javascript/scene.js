@@ -183,7 +183,7 @@ var WarScene = exports.WarScene = function(director, mainSurface) {
 
 		    // get clicked tile, its state and distance from globals.activeMonster
 		    var click_pos = war.getTile(event.pos);
-		    var dist = war.getDistance(click_pos, globals.activeMonster.position, globals.activeMonster.family);
+		    var dist = war.getDistance(click_pos, globals.activeMonster.position, globals.activeMonster.getEffectedFamily());
 
 		    var tileState = war.isTileEmpty(click_pos);
 		    var occupied = "false";
@@ -192,7 +192,7 @@ var WarScene = exports.WarScene = function(director, mainSurface) {
 		    }
 		    console.log("Click:", click_pos, "empty:", tileState, "occupied:", occupied, "dist:", dist);
 
-		    if ((war.isTileOccupiedByEnemy(click_pos, globals.activeMonster.family)) && (globals.activeMonster.weapon === globals.WeaponStyle.RANGED)) {
+		    if ((war.isTileOccupiedByEnemy(click_pos, globals.activeMonster.getEffectedFamily())) && (globals.activeMonster.weapon === globals.WeaponStyle.RANGED)) {
 			globals.activeMonster.attackRanged(war.getMonsterAt(click_pos));
 		    }
 		    else
