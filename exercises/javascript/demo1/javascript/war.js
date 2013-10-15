@@ -169,7 +169,7 @@ gamejs.utils.objects.extend(Ground, gamejs.sprite.Sprite);
 gamejs.utils.objects.extend(AttackIcon, gamejs.sprite.Sprite);
 
 AttackIcon.prototype.update = function(msDuration) {
-    if (globals.attackOn) {
+    if (globals.attackOn || globals.effectOn) {
 	var delta = [Math.floor(this.scale*this.origSize[0]), Math.floor(this.scale*this.origSize[1])];
 	this.scale += Math.floor(100*msDuration*this.scaleSpeed)/100;
 	this.image = gamejs.transform.scale(this.originalImage, [Math.floor(this.scale*this.origSize[0]), Math.floor(this.scale*this.origSize[1])]);

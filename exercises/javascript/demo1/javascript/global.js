@@ -20,8 +20,9 @@ exports.activeMonsterIndex = -1;
 exports.cursor_pos = [0,0];
 exports.NEED_INIT = false;
 
-/* attackOn helps in the 'attackIcon animation' showing */
+/* attackOn/effectOn helps in the 'attackIcon animation' showing */
 exports.attackOn = false;
+exports.effectOn = false;
 exports.stillBattling = false;
 
 /* TILE_SIZE and TILE_AMOUNT can be changed, but TILE_SIZE*TILE_AMOUNT must be 640 (for now) */

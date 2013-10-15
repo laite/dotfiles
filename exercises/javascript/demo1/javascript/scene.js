@@ -149,17 +149,24 @@ var WarScene = exports.WarScene = function(director, mainSurface) {
 		    globals.activeMonster.endTurn();
 		}
 	    }
-	    /* [c]onfuse monster or [v] Paralyze him */
-	    if ((event.key === gamejs.event.K_v) || (event.key === gamejs.event.K_c)) {
+	    /* [c]onfuse monster [v] Paralyze him [x] Poison*/
+	    if ((event.key === gamejs.event.K_v) || (event.key === gamejs.event.K_c) || (event.key === gamejs.event.K_x)) {
 		var focusMonster = war.getMonsterAt(globals.cursor_pos);
 		if (focusMonster !== null) {
 		    console.log(focusMonster.name);
 		    if (globals.activeMonster.isWizard() && war.isTileOccupied(focusMonster.position)) {
-			var spell = (event.key === gamejs.event.K_c)? globals.Spells.CONFUSION : globals.Spells.PARALYZE;
+			var spell;
+		       	if (event.key === gamejs.event.K_c)
+			    spell = globals.Spells.CONFUSION;
+			else if (event.key === gamejs.event.K_v)
+			    spell = globals.Spells.PARALYZE;
+			else if (event.key === gamejs.event.K_x)
+			    spell = globals.Spells.POISON;
 			
 			if (focusMonster.hasEffect(spell))
 			    war.battleStatus.add(focusMonster.name + " already is " + spell + "d!");
 			else {
+			    // TODO: durations
 			    focusMonster.addEffect(spell,3+Math.floor(Math.random()*3));
 			    globals.activeMonster.endTurn();
 			}
@@ -217,18 +224,27 @@ var WarScene = exports.WarScene = function(director, mainSurface) {
 
 	    /* We check here if turn has changed and set new monster as active if necessary */
 	    if ((war.getCurrentUnit() != globals.activeMonsterIndex) || (globals.NEED_INIT)) {
+
+		globals.NEED_INIT = false;
+
 		globals.activeMonsterIndex = war.getCurrentUnit();
 		globals.activeMonster = globals.Monsters.sprites()[globals.activeMonsterIndex];
 		globals.activeMonster.changeState(globals.MonsterState.ACTIVE);
-		/* also update cursor state for new monster */
-		globals.cursor_state = war.updateCursorState(globals.cursor_pos, globals.activeMonster);
 
-		/* globals.activeEnemy is null if there is no monster at cursor position */
-		globals.activeEnemy = war.getMonsterAt(globals.cursor_pos);
-		war.drawStats(globals.activeMonster, globals.activeEnemy);
+		// acticeMonster may instantly be killed due to effects (e.g. poison)
+		if (!globals.NEED_INIT) {
+		    /* also update cursor state for new monster */
+		    globals.cursor_state = war.updateCursorState(globals.cursor_pos, globals.activeMonster);
+
+		    /* globals.activeEnemy is null if there is no monster at cursor position */
+		    globals.activeEnemy = war.getMonsterAt(globals.cursor_pos);
+		    war.drawStats(globals.activeMonster, globals.activeEnemy);
+		}
+		else {
+		    // may be that our war is over
+		    globals.stillBattling = war.areThereStillEnemies();
+		}
 	    }
-
-	    globals.NEED_INIT = false;
 
 	    /*
 	     * Drawing stuff
@@ -255,10 +271,21 @@ var WarScene = exports.WarScene = function(director, mainSurface) {
 	    /* Finally, some stats */
 
 
-	    if (globals.attackOn) {
+	    if (globals.attackOn || globals.effectOn) {
 		globals.attackIcon.update(msDuration);
 		globals.attackIcon.draw(mainSurface);
+
+		if (globals.effectOn) {
+		    if (globals.attackIcon.time < globals.attackIcon.duration) {
+			globals.attackIcon.time += msDuration;
+		    }
+		    else {
+			globals.effectOn = false;
+			globals.attackIcon.reset();
+		    }
+		}
 	    }
+
 
 	} // globals.stillBattling
     }

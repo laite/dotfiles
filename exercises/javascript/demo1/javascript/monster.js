@@ -104,7 +104,9 @@ var Monster = exports.Monster = function() {
     this.handleEffects = function() {
 	var effectResult = {
 	    skipTurn : false,
-	    loseControl : false
+	    loseControl : false,
+	    takeDamage : false,
+	    damage : 0
 	};
 
 	this.effects.reduce();
@@ -112,8 +114,12 @@ var Monster = exports.Monster = function() {
 	for (var i=0; i<this.effects.effectTable.length; i++)
 	{
 	    var efName = this.effects.effectTable[i].name;
-	    if (efName == globals.Spells.POISON)
-		console.warn("POISON!");
+	    if (efName == globals.Spells.POISON) {
+		effectResult.takeDamage = true;
+		// TODO: adjust poison damage?
+		effectResult.damage += Math.floor(this.hp*0.2);
+		war.battleStatus.add(this.name + " takes poison damage: -" + effectResult.damage + "hp.");
+	    }
 	    else if (efName == globals.Spells.CONFUSION) {
 		war.battleStatus.add(this.name + " is " + efName + "d!");
 		effectResult.loseControl = true;
@@ -283,12 +289,34 @@ var Monster = exports.Monster = function() {
 	console.log(this.name, "just became active");
 
 	var effectResult = this.handleEffects();
+	var thisSkips = effectResult.skipTurn;
+	var thisDies = false;
 
-	if (effectResult.skipTurn) {
+	if (effectResult.takeDamage) {
+	    globals.attackIcon.setMagic();
+	    globals.attackIcon.rect.left = this.position[0]*globals.TILE_SIZE;
+	    globals.attackIcon.rect.top = this.position[1]*globals.TILE_SIZE;
+
+	    globals.effectOn = true;
+
+	    this.hp -= effectResult.damage;
+	    // monster may very well die here
+	    if (this.hp < 0) {
+		console.log("Monster",this.name,"has died due to effects!");
+		war.battleStatus.add(this.name + " died to magical effects.");
+		thisDies = true;
+	    }
+	}
+	if (thisDies) {
+	    war.setTileState(this.position, globals.TileState.NOT_OCCUPIED);
 	    this.endTurn();
+	    this.kill();
 	}
 
-	if ((!effectResult.skipTurn) && (effectResult.loseControl || this.controller === globals.Controller.AI)) {
+	else if (thisSkips) {
+	    this.endTurn();
+	}
+	else if (effectResult.loseControl || this.controller === globals.Controller.AI) {
 	    /* if this is computer controlled OR confused (etc.) it launches its ai sequence */
 	    war.doAI(this);
 	}
