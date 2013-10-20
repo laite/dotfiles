@@ -54,6 +54,23 @@ var Monster = exports.Monster = function() {
      *
      */
 
+    this.castSpell = function(spell, duration, tile) {
+	/*
+	 * TODO: non-monster specific spells
+	 * var hasEnemy = war.isTileOccupied(tile);
+	 */
+	var focusMonster = war.getMonsterAt(tile);
+	if (focusMonster !== null) {
+	    if (!focusMonster.hasEffect(spell)) {
+		focusMonster.addEffect(spell,duration);
+		this.endTurn();
+	    }
+	    else
+		war.battleStatus.add(focusMonster.name + " already has that effect!");
+	}
+	else
+	    war.battleStatus.add("There is no monster to cast spell upon!");
+    }
 
     var Effects = function() {
 	var Effect = function(effectName, effectDuration) {
@@ -80,7 +97,7 @@ var Monster = exports.Monster = function() {
 	    var newEffects = [];
 	    for (var i=0; i < this.effectTable.length; i++) {
 		this.effectTable[i].duration--;
-		if (this.effectTable[i].duration > 0) {
+		if (this.effectTable[i].duration >= 0) {
 		    newEffects.push(this.effectTable[i]);
 		}
 	    }

@@ -151,26 +151,15 @@ var WarScene = exports.WarScene = function(director, mainSurface) {
 	    }
 	    /* [c]onfuse monster [v] Paralyze him [x] Poison*/
 	    if ((event.key === gamejs.event.K_v) || (event.key === gamejs.event.K_c) || (event.key === gamejs.event.K_x)) {
-		var focusMonster = war.getMonsterAt(globals.cursor_pos);
-		if (focusMonster !== null) {
-		    console.log(focusMonster.name);
-		    if (globals.activeMonster.isWizard() && war.isTileOccupied(focusMonster.position)) {
-			var spell;
-		       	if (event.key === gamejs.event.K_c)
-			    spell = globals.Spells.CONFUSION;
-			else if (event.key === gamejs.event.K_v)
-			    spell = globals.Spells.PARALYZE;
-			else if (event.key === gamejs.event.K_x)
-			    spell = globals.Spells.POISON;
-			
-			if (focusMonster.hasEffect(spell))
-			    war.battleStatus.add(focusMonster.name + " already is " + spell + "d!");
-			else {
-			    // TODO: durations
-			    focusMonster.addEffect(spell,3+Math.floor(Math.random()*3));
-			    globals.activeMonster.endTurn();
-			}
-		    }
+		if (globals.activeMonster.isWizard() ) {
+		    var duration = Math.floor(1+Math.random()*2);
+
+		    if (event.key === gamejs.event.K_c)
+			globals.activeMonster.castSpell(globals.Spells.CONFUSION, duration, globals.cursor_pos);
+		    else if (event.key === gamejs.event.K_v)
+			globals.activeMonster.castSpell(globals.Spells.PARALYZE, duration, globals.cursor_pos);
+		    else if (event.key === gamejs.event.K_x)
+			globals.activeMonster.castSpell(globals.Spells.POISON, duration, globals.cursor_pos);
 		}
 	    }
 	}
