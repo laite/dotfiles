@@ -734,6 +734,10 @@ var findSpecificMonster = function(monster, conditions) {
     }
 
     this.isEqual = function(other) {
+	// if we want monster that hasn't got certain effect, we test it here
+	if ((conditions.noEffect) && (other.hasEffect(conditions.noEffect)))
+	    return false;
+
 	if (conditions.type == "strongest" || conditions.type == "weakest")
 	    return (other.hp == key);
 	else
@@ -924,6 +928,9 @@ exports.doAI = function(monster) {
 	 *
 	 */
 
+	// New fate to avoid certain 'paths'
+	fate = Math.random();
+
 	if (action === Action.ATTACK) {
 	    console.log("Action: ATTACK");
 	    if (monster.weapon === globals.WeaponStyle.MELEE)
@@ -931,7 +938,14 @@ exports.doAI = function(monster) {
 	    else if (monster.weapon === globals.WeaponStyle.RANGED)
 		monster.attackRanged(nearestEnemy);
 	    else {
-		monster.castSpell(globals.Spells.POISON, nearestEnemyPosition);
+		if (fate < 0.66)
+		    monster.castSpell(globals.Spells.POISON, nearestEnemyPosition);
+		else {
+		    if (monster.damage[globals.WeaponStyle.RANGED] < monster.damage[globals.WeaponStyle.MELEE])
+			monster.moveTo(nearestEnemyPosition);
+		    else
+			monster.attackRanged(nearestEnemy);
+		}
 	    }
 	}
 	else if (action === Action.GATHER_AROUND) {
@@ -958,12 +972,17 @@ exports.doAI = function(monster) {
 		spell = globals.Spells.PARALYZE;
 
 	    var target = findTargetForSpell(monster, spell);
+	    
 	    // we only cast spell if there's a suitable target
-	    if (target !== null)
+	    // there is a slight chance that caster decides to attack instead
+	    if ((target !== null) && (fate < 0.95))
 		monster.castSpell(spell, target);
 	    else {
-		console.log("Couldn't find target for spell");
-		monster.skipTurn();
+		console.log("Couldn't find target for spell, attacking!");
+		if (monster.damage[globals.WeaponStyle.RANGED] < monster.damage[globals.WeaponStyle.MELEE])
+		    monster.moveTo(nearestEnemyPosition);
+		else
+		    monster.attackRanged(nearestEnemy);
 	    }
 	}
 	else

@@ -25,6 +25,10 @@ exports.loadScenario = function(scenario) {
     /* Make sure that families get spawned correctly */
     globals.familyList = [];
 
+    /* Clear possible effect/attack animations */
+    globals.attackOn = false;
+    globals.effectOn = false;
+
     /* 
      * Scenario 1: 
      *
