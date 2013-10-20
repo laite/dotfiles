@@ -693,22 +693,28 @@ exports.battle = function(id1, id2) {
  *
  */
 
-var findSpecificMonster = function(monster, want_friend, want_weakest) {
+var findSpecificMonster = function(monster, want_friend, want_weakest, want_strongest) {
     if(typeof(want_friend)==='undefined') want_friend = false;
     if(typeof(want_weakest)==='undefined') want_weakest = false;
+    if(typeof(want_strongest)==='undefined') want_strongest = false;
 
     var foundList = [];
-    var key = 100000;
+    var key = (want_strongest)? -1 : 100000;
 
-    this.isSmaller = function(other) {
+    /*
+     * Define some helper functions to clean up logic
+     */
+    this.isBetter = function(other) {
 	if (want_weakest)
 	    return (other.hp < key);
+	else if (want_strongest)
+	    return (other.hp > key);
 	else
 	    return (getDistance(monster.position, other.position, monster.getEffectedFamily()) < key);
     }
 
     this.isEqual = function(other) {
-	if (want_weakest)
+	if (want_weakest || want_strongest)
 	    return (other.hp == key);
 	else
 	    return (getDistance(monster.position, other.position, monster.getEffectedFamily()) == key);
@@ -722,20 +728,27 @@ var findSpecificMonster = function(monster, want_friend, want_weakest) {
     }
 
     this.setKey = function(other) {
-	if (want_weakest) 
+	if (want_weakest || want_strongest)
 	    return other.hp;
 	else
 	    return getDistance(monster.position, other.position, monster.getEffectedFamily());
     }
 
+    /*
+     * Actual 'finder' 
+     */
     globals.Monsters.forEach(function(other) {
+	// if monster is still available
 	if (other.id != null) {
+	    // ..and wanted family
 	    if (this.isSuitableFamily(other)) {
-		if (this.isSmaller(other)) {
+		// and better than previous ones
+		if (this.isBetter(other)) {
 		    foundList = [];
 		    foundList.push(other.position);
 		    key = this.setKey(other);
 		}
+		// if there are equally good candidates, we'll take note of them all
 		else if (this.isEqual(other)) {
 		    foundList.push(other.position);
 		}
@@ -743,11 +756,8 @@ var findSpecificMonster = function(monster, want_friend, want_weakest) {
 	}
     });
 
-    var found = null;
-    if (foundList.length > 0)
-	found = randomFromList(foundList);
-
-    return found;
+    // foundList contains all candidates (if any)
+    return (foundList.length > 0)? randomFromList(foundList) : null;
 }
 
 var findNearestEnemyRanged = function(monster) { 
@@ -783,15 +793,19 @@ var findNearestEnemyRanged = function(monster) {
 
 
 var findNearestEnemy = function(monster) {
-    return findSpecificMonster(monster, false, false);
+    return findSpecificMonster(monster, false, false, false);
 }
 
 var findNearestFriend = function(monster) {
-    return findSpecificMonster(monster, true, false);
+    return findSpecificMonster(monster, true, false, false);
 }
 
 var findWeakestFriend = function(monster) {
-    return findSpecificMonster(monster, true, true);
+    return findSpecificMonster(monster, true, true, false);
+}
+
+var findStrongestEnemy = function(monster) {
+    return findSpecificMonster(monster, false, false, true);
 }
 
 exports.doAI = function(monster) {
