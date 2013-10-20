@@ -975,7 +975,7 @@ exports.doAI = function(monster) {
 	    
 	    // we only cast spell if there's a suitable target
 	    // there is a slight chance that caster decides to attack instead
-	    if ((target !== null) && (fate < 0.95))
+	    if ((target !== null) && (fate < 0.94))
 		monster.castSpell(spell, target);
 	    else {
 		console.log("Couldn't find target for spell, attacking!");
