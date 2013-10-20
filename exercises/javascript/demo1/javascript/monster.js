@@ -67,11 +67,11 @@ var Monster = exports.Monster = function() {
 
 		globals.attackIcon.setMagic();
 		globals.attackIcon.magicAt(focusMonster.position[0]*globals.TILE_SIZE, focusMonster.position[1]*globals.TILE_SIZE);
+		this.endTurn();
 	    }
 	    else {
 		war.battleStatus.add(focusMonster.name + " already has that effect!");
 	    }
-	    this.endTurn();
 	}
 	else
 	    war.battleStatus.add("There is no monster to cast spell upon!");
@@ -162,7 +162,7 @@ var Monster = exports.Monster = function() {
     this.getEffectString = function() {
 	var str = "";
 	for (var i=0; i<this.effects.effectTable.length; i++) {
-	    str += this.effects.effectTable[i].name[0] + "(" + this.effects.effectTable[i].duration + ") ";
+	    str += this.effects.effectTable[i].name + "(" + this.effects.effectTable[i].duration + ") ";
 	}
 	return str;
     }

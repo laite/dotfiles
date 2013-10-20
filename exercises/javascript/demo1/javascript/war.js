@@ -705,42 +705,50 @@ exports.battle = function(id1, id2) {
  *
  */
 
-var findSpecificMonster = function(monster, want_friend, want_weakest, want_strongest) {
-    if(typeof(want_friend)==='undefined') want_friend = false;
-    if(typeof(want_weakest)==='undefined') want_weakest = false;
-    if(typeof(want_strongest)==='undefined') want_strongest = false;
+var findSpecificMonster = function(monster, conditions) {
+    if(typeof(conditions)==='undefined')
+    {
+	console.warn("unspecified conditions!");
+	conditions = { type : "nearest", family : "enemy" };
+    }
+    else
+	console.log("conditions:",conditions.type, conditions.family,conditions.noEffect);
 
     var foundList = [];
-    var key = (want_strongest)? -1 : 100000;
+    var key = (conditions.type == "strongest")? -1 : 100000;
 
     /*
      * Define some helper functions to clean up logic
      */
     this.isBetter = function(other) {
-	if (want_weakest)
+	// if we want monster that hasn't got certain effect, we test it here
+	if ((conditions.noEffect) && (other.hasEffect(conditions.noEffect)))
+	    return false;
+
+	if (conditions.type == "weakest")
 	    return (other.hp < key);
-	else if (want_strongest)
+	else if (conditions.type == "strongest")
 	    return (other.hp > key);
-	else
+	else if (conditions.type == "nearest")
 	    return (getDistance(monster.position, other.position, monster.getEffectedFamily()) < key);
     }
 
     this.isEqual = function(other) {
-	if (want_weakest || want_strongest)
+	if (conditions.type == "strongest" || conditions.type == "weakest")
 	    return (other.hp == key);
 	else
 	    return (getDistance(monster.position, other.position, monster.getEffectedFamily()) == key);
     }
 
     this.isSuitableFamily = function(other) {
-	if (want_friend)
+	if (conditions.family == "friend")
 	    return (monster.getEffectedFamily() === other.family);
 	else
 	    return (monster.getEffectedFamily() !== other.family);
     }
 
     this.setKey = function(other) {
-	if (want_weakest || want_strongest)
+	if (conditions.type == "strongest" || conditions.type == "weakest")
 	    return other.hp;
 	else
 	    return getDistance(monster.position, other.position, monster.getEffectedFamily());
@@ -806,19 +814,28 @@ var findNearestEnemyRanged = function(monster) {
 
 
 var findNearestEnemy = function(monster) {
-    return findSpecificMonster(monster, false, false, false);
+    var conditions = { type : "nearest", family : "enemy" }
+    return findSpecificMonster(monster, conditions);
 }
 
 var findNearestFriend = function(monster) {
-    return findSpecificMonster(monster, true, false, false);
+    var conditions = { type : "nearest", family : "friend" }
+    return findSpecificMonster(monster, conditions);
 }
 
 var findWeakestFriend = function(monster) {
-    return findSpecificMonster(monster, true, true, false);
+    var conditions = { type: "weakest", family : "friend" };
+    return findSpecificMonster(monster, conditions);
 }
 
 var findStrongestEnemy = function(monster) {
-    return findSpecificMonster(monster, false, false, true);
+    var conditions = { type: "strongest", family : "enemy" };
+    return findSpecificMonster(monster, conditions);
+}
+
+var findTargetForSpell = function(monster, spell) {
+    var conditions = { type: "strongest", family : "enemy", noEffect : spell };
+    return findSpecificMonster(monster, conditions);
 }
 
 exports.doAI = function(monster) {
@@ -932,14 +949,22 @@ exports.doAI = function(monster) {
 	    monster.skipTurn();
 	}
 	else if (action === Action.CAST_SPELL) {
-	    var strongestEnemy = findStrongestEnemy(monster);
-	    console.log("Strongest enemy: ", strongestEnemy);
+	    var spell;
 	    if (fate < 0.33)
-		monster.castSpell(globals.Spells.CONFUSION, strongestEnemy);
+		spell = globals.Spells.CONFUSION;
 	    else if (fate < 0.66)
-		monster.castSpell(globals.Spells.POISON, strongestEnemy);
+		spell = globals.Spells.POISON;
 	    else
-		monster.castSpell(globals.Spells.PARALYZE, strongestEnemy);
+		spell = globals.Spells.PARALYZE;
+
+	    var target = findTargetForSpell(monster, spell);
+	    // we only cast spell if there's a suitable target
+	    if (target !== null)
+		monster.castSpell(spell, target);
+	    else {
+		console.log("Couldn't find target for spell");
+		monster.skipTurn();
+	    }
 	}
 	else
 	    monster.skipTurn();
