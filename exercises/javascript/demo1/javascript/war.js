@@ -768,6 +768,7 @@ var findSpecificMonster = function(monster, want_friend, want_weakest, want_stro
 	}
     });
 
+    console.log("foundList",foundList.length);
     // foundList contains all candidates (if any)
     return (foundList.length > 0)? randomFromList(foundList) : null;
 }
@@ -931,7 +932,14 @@ exports.doAI = function(monster) {
 	    monster.skipTurn();
 	}
 	else if (action === Action.CAST_SPELL) {
-	    monster.castSpell(globals.Spells.POISON, nearestEnemyPosition);
+	    var strongestEnemy = findStrongestEnemy(monster);
+	    console.log("Strongest enemy: ", strongestEnemy);
+	    if (fate < 0.33)
+		monster.castSpell(globals.Spells.CONFUSION, strongestEnemy);
+	    else if (fate < 0.66)
+		monster.castSpell(globals.Spells.POISON, strongestEnemy);
+	    else
+		monster.castSpell(globals.Spells.PARALYZE, strongestEnemy);
 	}
 	else
 	    monster.skipTurn();
