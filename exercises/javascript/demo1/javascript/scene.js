@@ -316,11 +316,16 @@ var EndStatisticsScene = exports.EndStatisticsScene = function(director) {
 	if (!globals.stillBattling) {
 	    this.returnScene = globals.menuScene;
 	    box.innerHTML = "<h1>Game over</h1>";
+	    if (globals.Monsters.sprites().length > 0)
+		box.innerHTML += "<p>" + globals.Monsters.sprites()[0].family + " won!</p>";
+
 	    box.innerHTML += "<p>Click to continue</p>"
 	}
 	else {
 	    this.returnScene = globals.warScene;
 	    box.innerHTML = "<h1>Game paused</h1>";
+	    if (globals.Monsters.sprites().length > 0)
+		box.innerHTML += "<p>" + globals.Monsters.sprites()[0].family + " won!</p>";
 	    box.innerHTML += "<p>Click to continue</p>"
 	    box.innerHTML += "<p>Press 'q' to return to main menu.</p>"
 	}
