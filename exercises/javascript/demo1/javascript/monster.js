@@ -54,7 +54,7 @@ var Monster = exports.Monster = function() {
      *
      */
 
-    this.castSpell = function(spell, duration, tile) {
+    this.castSpell = function(spell, tile) {
 	/*
 	 * TODO: non-monster specific spells
 	 * var hasEnemy = war.isTileOccupied(tile);
@@ -62,11 +62,16 @@ var Monster = exports.Monster = function() {
 	var focusMonster = war.getMonsterAt(tile);
 	if (focusMonster !== null) {
 	    if (!focusMonster.hasEffect(spell)) {
+		var duration = Math.floor(1+Math.random()*2);
 		focusMonster.addEffect(spell,duration);
-		this.endTurn();
+
+		globals.attackIcon.setMagic();
+		globals.attackIcon.magicAt(focusMonster.position[0]*globals.TILE_SIZE, focusMonster.position[1]*globals.TILE_SIZE);
 	    }
-	    else
+	    else {
 		war.battleStatus.add(focusMonster.name + " already has that effect!");
+	    }
+	    this.endTurn();
 	}
 	else
 	    war.battleStatus.add("There is no monster to cast spell upon!");
@@ -315,10 +320,7 @@ var Monster = exports.Monster = function() {
 
 	if (effectResult.takeDamage) {
 	    globals.attackIcon.setMagic();
-	    globals.attackIcon.rect.left = this.position[0]*globals.TILE_SIZE;
-	    globals.attackIcon.rect.top = this.position[1]*globals.TILE_SIZE;
-
-	    globals.effectOn = true;
+	    globals.attackIcon.magicAt(this.position[0]*globals.TILE_SIZE, this.position[1]*globals.TILE_SIZE);
 
 	    this.hp -= effectResult.damage;
 	    // monster may very well die here
@@ -582,12 +584,8 @@ Monster.prototype.update = function(msDuration) {
     else if (this.stateIs(globals.MonsterState.ATTACKING)) {
 
 	if (!globals.attackOn) {
-
 	    /* show icon on top of enemy */
-	    globals.attackIcon.rect.left = this.enemy.position[0]*globals.TILE_SIZE;
-	    globals.attackIcon.rect.top = this.enemy.position[1]*globals.TILE_SIZE;
-
-	    globals.attackOn = true;
+	    globals.attackIcon.attackAt(this.enemy.position[0]*globals.TILE_SIZE, this.enemy.position[1]*globals.TILE_SIZE);
 	}
 	else if (globals.attackIcon.time < globals.attackIcon.duration) {
 	    globals.attackIcon.time += msDuration;

@@ -162,6 +162,18 @@ var AttackIcon = exports.AttackIcon = function(rect) {
 	this.duration = globals.MAGIC_ATTACK_ICON_DURATION;
     }
 
+    this.magicAt = function(left, top) {
+	this.rect.left = left;
+	this.rect.top = top;
+	globals.effectOn = true;
+    }
+
+    this.attackAt = function(left, top) {
+	this.rect.left = left;
+	this.rect.top = top;
+	globals.attackOn = true;
+    }
+
     return this;
 };
 
@@ -901,9 +913,7 @@ exports.doAI = function(monster) {
 	    else if (monster.weapon === globals.WeaponStyle.RANGED)
 		monster.attackRanged(nearestEnemy);
 	    else {
-		// TODO: implement spells
-		// for now, we just attack
-		monster.attackRanged(nearestEnemy);
+		monster.castSpell(globals.Spells.POISON, nearestEnemyPosition);
 	    }
 	}
 	else if (action === Action.GATHER_AROUND) {
@@ -921,9 +931,7 @@ exports.doAI = function(monster) {
 	    monster.skipTurn();
 	}
 	else if (action === Action.CAST_SPELL) {
-	    // TODO: implement spells
-	    // for now, we just attack
-	    monster.attackRanged(nearestEnemy);
+	    monster.castSpell(globals.Spells.POISON, nearestEnemyPosition);
 	}
 	else
 	    monster.skipTurn();
