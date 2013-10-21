@@ -2,10 +2,28 @@
  * global.js
  *
  */
+exports.director;
+exports.warScene;
+exports.endStatisticsScene;
+exports.menuScene;
 
 exports.Monsters;
 exports.GroundTiles;
 exports.attackIcon;
+exports.familyList;
+
+exports.selectedScenario = -1;
+exports.activeMonster = null;
+exports.activeEnemy = null;
+exports.activeMonsterIndex = -1;
+
+exports.cursor_pos = [0,0];
+exports.NEED_INIT = false;
+
+/* attackOn/effectOn helps in the 'attackIcon animation' showing */
+exports.attackOn = false;
+exports.effectOn = false;
+exports.stillBattling = false;
 
 /* TILE_SIZE and TILE_AMOUNT can be changed, but TILE_SIZE*TILE_AMOUNT must be 640 (for now) */
 exports.TILE_SIZE = 64;
@@ -17,8 +35,8 @@ exports.GAME_AREA_HEIGHT = 640;
 exports.GAME_AREA_WIDTH = 640;
 
 exports.ATTACK_ICON_DURATION = 500;
-exports.RANGED_ATTACK_ICON_DURATION = 750;
-exports.MAGIC_ATTACK_ICON_DURATION = 1000;
+exports.RANGED_ATTACK_ICON_DURATION = 500;
+exports.MAGIC_ATTACK_ICON_DURATION = 500;
 
 exports.LOG_LINES = 10;
 
@@ -45,12 +63,14 @@ exports.TileState = {
     NOT_OCCUPIED : 3
 };
 
-exports.CursorState = {
+var CursorState = exports.CursorState = {
     ALLOWED : 0,
     DISALLOWED : 1,
     ATTACK : 2,
     ACTIVE_MONSTER : 3
 };
+
+exports.cursor_state = CursorState.ALLOWED;
 
 /* controllers */
 exports.Controller = {
@@ -93,4 +113,11 @@ exports.WeaponStyle = {
     MELEE : 0,
     RANGED : 1,
     MAGIC : 2
+}
+
+/* effects */
+exports.Spells = {
+    CONFUSION : "Confuse",
+    POISON : "Poison",
+    PARALYZE : "Paralyze"
 }

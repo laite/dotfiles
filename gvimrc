@@ -7,6 +7,8 @@ set guicursor+=a:blinkon0
 set mousehide		" Hide the mouse when typing text
 set guifont=Monospace\ 9
 
+set clipboard=autoselect,unnamedplus
+
 " set initial size of gvim
 set lines=40
 set columns=140

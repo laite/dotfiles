@@ -13,12 +13,6 @@ exports.name = function() {
     return name;
 };
 
-var randomFromList = exports.randomFromList = function(arr) {
-    var i = Math.floor(arr.length * Math.random());
-    return arr[i];
-}
-
-
 /*
  *
  * Classes
@@ -91,14 +85,113 @@ var Ground = exports.Ground = function(rect, state) {
 	return this.blocked;
     }
 
+    this.setBlocked = function(block) {
+	this.blocked = block;
+	if (this.blocked === globals.TileState.EMPTY)
+	    this.image = gamejs.image.load("images/tile.png");
+	else if (this.blocked === globals.TileState.BLOCKED)
+	    this.image = gamejs.image.load("images/tile2.png");
+
+	console.log("Block at",this.position," changed its state. Blocked:",this.blocked);
+    }
+
     return this;
 };
 
 var getGroundTile = function(x, y) {
-    //console.log("getGroundTile", x, y, globals.GroundTiles.sprites()[y*globals.TILE_AMOUNT+x])
+    x = Math.max(Math.min(x,globals.TILE_AMOUNT-1), 0);
+    y = Math.max(Math.min(y,globals.TILE_AMOUNT-1), 0);
+
     return globals.GroundTiles.sprites()[y*globals.TILE_AMOUNT+x];
 }
 
+var resetGroundOccupants = function() {
+    globals.GroundTiles.forEach(function() {
+	this.occupied = false;
+	this.monsterId = null;
+    });
+}
+
+/*
+ *
+ * AttackIcon
+ *
+ *
+ */
+
+var AttackIcon = exports.AttackIcon = function(rect) {
+    AttackIcon.superConstructor.apply(this, arguments);
+
+    this.originalImage = gamejs.image.load("images/attack.png");
+    this.image = this.originalImage;
+
+    this.rect = new gamejs.Rect(rect, [globals.TILE_SIZE, globals.TILE_SIZE]);
+    console.log("New attackicon: ", this.rect);
+
+    this.time = 0;
+    this.scale = 1;
+    this.scaleSpeed = (1/globals.ATTACK_ICON_DURATION);
+    this.duration = globals.ATTACK_ICON_DURATION;
+
+    this.origSize = [globals.TILE_SIZE, globals.TILE_SIZE];
+
+    this.reset = function() {
+	this.time = 0;
+	this.scale = 1;
+	this.image = this.originalImage;
+    }
+
+    this.setRanged = function() {
+	this.originalImage = gamejs.image.load("images/attack_ranged.png");
+	this.image = this.originalImage;
+	this.scaleSpeed = (1/globals.RANGED_ATTACK_ICON_DURATION);
+	this.duration = globals.RANGED_ATTACK_ICON_DURATION;
+    }
+
+    this.setMelee = function() {
+	this.originalImage = gamejs.image.load("images/attack.png");
+	this.image = this.originalImage;
+	this.scaleSpeed = (1/globals.ATTACK_ICON_DURATION);
+	this.duration = globals.ATTACK_ICON_DURATION;
+    }
+
+    this.setMagic = function() {
+	this.originalImage = gamejs.image.load("images/attack_magic.png");
+	this.image = this.originalImage;
+	this.scaleSpeed = (1/globals.MAGIC_ATTACK_ICON_DURATION);
+	this.duration = globals.MAGIC_ATTACK_ICON_DURATION;
+    }
+
+    this.magicAt = function(left, top) {
+	this.rect.left = left;
+	this.rect.top = top;
+	globals.effectOn = true;
+    }
+
+    this.attackAt = function(left, top) {
+	this.rect.left = left;
+	this.rect.top = top;
+	globals.attackOn = true;
+    }
+
+    return this;
+};
+
+gamejs.utils.objects.extend(Ground, gamejs.sprite.Sprite);
+gamejs.utils.objects.extend(AttackIcon, gamejs.sprite.Sprite);
+
+AttackIcon.prototype.update = function(msDuration) {
+    if (globals.attackOn || globals.effectOn) {
+	var delta = [Math.floor(this.scale*this.origSize[0]), Math.floor(this.scale*this.origSize[1])];
+	this.scale += Math.floor(100*msDuration*this.scaleSpeed)/100;
+	this.image = gamejs.transform.scale(this.originalImage, [Math.floor(this.scale*this.origSize[0]), Math.floor(this.scale*this.origSize[1])]);
+	var size = this.image.getSize();
+	delta[0] = Math.max(0, size[0] - delta[0]);
+	delta[1] = Math.max(0, size[1] - delta[1]);
+
+	this.rect = new gamejs.Rect(this.rect.left-(delta[0]/2), this.rect.top-(delta[1]/2), size[0], size[1]);
+    }
+}
 
 /*
  *
@@ -148,7 +241,9 @@ var Units = function() {
 	this.units.sort(sort_index);
     }
 
-    this.setCurrentUnit = function(unit = 0) {
+    this.setCurrentUnit = function(unit) {
+	if(typeof(unit)==='undefined') unit = 0;
+
 	this.currentUnit = unit%this.units.length;
 	console.log("currentUnit:",this.currentUnit,"units.length:",this.units.length);
     }
@@ -169,24 +264,39 @@ var units = new Units();
  *
  */
 
-var familylist = [];
-
-/* getSpawnPoint returns an free place for new monster */
+/*
+ * getSpawnPoint returns an free place for new monster 
+ * Max amount of families allowed is 8 
+ */
 exports.getSpawnPoint = function(family) {
-    // TODO: map has spawn points up to n families?
-    // for now, we use 4 corners
-    var spawnPlaces = [[0,0], [(globals.TILE_AMOUNT-1),(globals.TILE_AMOUNT-1)], [0,(globals.TILE_AMOUNT-1)], [(globals.TILE_AMOUNT-1),0]];
-    var familyNum = familylist.indexOf(family);
+    var pMax = globals.TILE_AMOUNT - 1;
+    var pHalf = Math.floor(pMax);
+    var spawnPlaces = [[0,0], [pMax,pMax], [0,pMax], [pMax,0],[0,pHalf], [pMax,pHalf], [pHalf,0], [pHalf,pMax]];
+    var familyNum = globals.familyList.indexOf(family);
     
     console.log("familynum:",familyNum);
     if (familyNum == -1) {
-	familylist.push(family);
-	return spawnPlaces[familylist.length-1];
+	globals.familyList.push(family);
+	if (globals.familyList.length > 8) {
+	    console.error("Too many families!");
+	    return [0,0];
+	}
+
+	return spawnPlaces[globals.familyList.length-1];
     }
     else {
 	return spawnPlaces[familyNum];
     }
 }
+
+/* randomFromList gets array as parameter, returns one randomly 
+ * TODO: weighting using other array as second parameter
+ */
+var randomFromList = exports.randomFromList = function(arr) {
+    var i = Math.floor(arr.length * Math.random());
+    return arr[i];
+}
+
 
 /* getTile returns array of wanted tile index */
 exports.getTile = function(arr) {
@@ -216,31 +326,38 @@ var isTileEmpty = exports.isTileEmpty = function(arr) {
 }
 
 /* getDistance takes two coordinate points and calculates the distance between them */
-var getDistance = exports.getDistance = function(p1, p2, family = null) {
+var getDistance = exports.getDistance = function(p1, p2, family) {
+    if(typeof(family)==='undefined') family = null;
+
+    if (p1[0] == p2[0] && p1[1] == p2[1])
+	return 3000;
+
     var path = findPathTo(family, p1, p2);
 
     if (path.length == 0)
-	return 1000;
+	return 3000;
     else
 	return path.length;
 }
 
 var getRangedDistance = function(p1, p2) {
-    var [x, y] = [Math.abs(p1[0]-p2[0]), Math.abs(p1[1]-p2[1])];
+    var x = Math.abs(p1[0]-p2[0]);
+    var y = Math.abs(p1[1]-p2[1]);
+
     return Math.max(x, y);
 }
 
-exports.updateCursorState = function(cursor_pos,activeMonster) {
+exports.updateCursorState = function(cursor_pos,monster) {
 
-    var dist = getDistance(cursor_pos, activeMonster.position, activeMonster.family);
+    var dist = getDistance(cursor_pos, monster.position, monster.getEffectedFamily());
     var cursor_state = globals.CursorState.ALLOWED;
 
-    if (dist > activeMonster.moveRange) {
+    if (dist > monster.moveRange) {
 	cursor_state = globals.CursorState.DISALLOWED;
     }
     else {
 	if (isTileOccupied(cursor_pos)) {
-	    if (getMonsterAt(cursor_pos).family != activeMonster.family)
+	    if (getMonsterAt(cursor_pos).family != monster.getEffectedFamily())
 		cursor_state = globals.CursorState.ATTACK;
 	}
 	else {
@@ -255,7 +372,8 @@ exports.updateCursorState = function(cursor_pos,activeMonster) {
 exports.drawCursor = function(surface, position, state) {
 
     var cursor_size = 0;
-    var [x, y] = position;
+    var x = position[0];
+    var y = position[1];
 
     if (state !== globals.CursorState.ACTIVE_MONSTER) {
 	x *= globals.TILE_SIZE;
@@ -310,6 +428,7 @@ exports.drawStats = function(monster, enemy) {
 	var health = monster.hp + " (" + Math.round(100*monster.hp/monster.maxhp) + "%)";
 
 	document.getElementById("mt1Name").innerHTML = monster.name;
+	document.getElementById("mt1Effects").innerHTML = monster.getEffectString();
 	document.getElementById("mt1Family").innerHTML = monster.family;
 	document.getElementById("mt1Speed").innerHTML = monster.speed;
 	document.getElementById("mt1Health").innerHTML = health;
@@ -321,6 +440,7 @@ exports.drawStats = function(monster, enemy) {
 	var health = enemy.hp + " (" + Math.round(100*enemy.hp/enemy.maxhp) + "%)";
 
 	document.getElementById("mt2Name").innerHTML = enemy.name;
+	document.getElementById("mt2Effects").innerHTML = enemy.getEffectString();
 	document.getElementById("mt2Family").innerHTML = enemy.family;
 	document.getElementById("mt2Speed").innerHTML = enemy.speed;
 	document.getElementById("mt2Health").innerHTML = health;
@@ -343,7 +463,9 @@ exports.drawStats = function(monster, enemy) {
  *
  */
 
-exports.init = function(forceUnit = 0) {
+exports.init = function(forceUnit) {
+
+    if(typeof(forceUnit)==='undefined') forceUnit = 0;
 
     /*
      * Init units
@@ -355,10 +477,12 @@ exports.init = function(forceUnit = 0) {
      */
 
     var i = 0;
+    resetGroundOccupants();
     units.reset();
 
     globals.Monsters.forEach(function(monster) {
-	var [x, y] = monster.position;
+	var x = monster.position[0];
+	var y = monster.position[1];
 
 	monster.id = i++;
 	units.addUnit(monster.id);
@@ -394,24 +518,23 @@ exports.getCurrentUnitIndex = function() {
     return units.getCurrentUnitIndex();
 }
 
-exports.setTileState = function(arr, state, id = null) {
-    var [x,y] = arr;
+exports.setTileState = function(arr, state, id) {
+    if(typeof(id)==='undefined') id = null;
+    var x = arr[0];
+    var y = arr[1];
 
     if ((state === globals.TileState.OCCUPIED) || (state === globals.TileState.NOT_OCCUPIED)) {
 	getGroundTile(x, y).occupied = (state === globals.TileState.OCCUPIED)? true : false;
 	getGroundTile(x, y).monsterId = id;
     }
     else {
-	getGroundTile(x, y).blocked = blocked;
+	getGroundTile(x, y).setBlocked(state);
     }
 }
 
 var getTileMonsterId = function(arr) {
     arr[0] = Math.max(Math.min(arr[0],globals.TILE_AMOUNT-1), 0);
     arr[1] = Math.max(Math.min(arr[1],globals.TILE_AMOUNT-1), 0);
-
-    if (((arr[0] > (globals.TILE_AMOUNT-1)) || (arr[0] < 0)) || ((arr[1] > (globals.TILE_AMOUNT-1)) || (arr[1] < 0)))
-	console.error("invalid argument at getTileMonsterId!");
 
     return getGroundTile(arr[0], arr[1]).monsterId;
 }
@@ -442,7 +565,7 @@ var findPathTo = exports.findPathTo = function(family, p1, p2) {
 		/* we can pass through the tiles that are occupied by own family */
 		var monsterInTile = getMonsterAt([i, j]);
 		if (monsterInTile == null)
-		    console.error("findPathTo: null monsterInTile");
+		    console.error("findPathTo: null monsterInTile", [i, j]);
 
 		if ((family != null) && (monsterInTile.family == family)) {
 		    board[i][j] = 0;
@@ -479,8 +602,10 @@ var findFreeTile = function(rect) {
 
     var allPoints = [];
     var found = false, foundPoint = [];
-    var [x0, y0] = [Math.min(rect[0],rect[2]), Math.min(rect[1],rect[3])];
-    var [x1, y1] = [Math.max(rect[0],rect[2]), Math.max(rect[1],rect[3])];
+    var x0 = Math.min(rect[0],rect[2]);
+    var y0 = Math.min(rect[1],rect[3]);
+    var x1 = Math.max(rect[0],rect[2]);
+    var y1 = Math.max(rect[1],rect[3]);
 
     console.log("Looking free tile:",[x0,y0], [x1,y1]);
     for (var x = x0; x <= x1; x++) {
@@ -555,7 +680,7 @@ exports.battle = function(id1, id2) {
 	this.battleStatus.add(m1.name + " hit " + m2.name + " for " + m1Damage + " damage!");
 	m2.hp -= m1Damage;
 
-	if (m2.hp > 0) {
+	if ((m2.hp > 0) && m2.canRetaliate()) {
 	    var m2Damage = m2.getDamage(globals.WeaponStyle.MELEE);
 	    console.log(m2.name,"damage:",m2Damage);
 	    this.battleStatus.add(m2.name + " hit " + m1.name + " for " + m2Damage + " damage!");
@@ -580,80 +705,106 @@ exports.battle = function(id1, id2) {
  *
  */
 
-var findSpecificMonster = function(monster, want_friend = false, want_weakest = false) {
+var findSpecificMonster = function(monster, conditions) {
+    if(typeof(conditions)==='undefined')
+    {
+	console.warn("unspecified conditions!");
+	conditions = { type : "nearest", family : "enemy" };
+    }
+    else
+	console.log("conditions:",conditions.type, conditions.family,conditions.noEffect);
+
     var foundList = [];
-    var key = 100000;
+    var key = (conditions.type == "strongest")? -1 : 100000;
 
-    this.isSmaller = function(tile) {
-	if (want_weakest)
-	    return (getMonsterFromId(tile.monsterId).hp < key);
-	else
-	    return (getDistance(monster.position, tile.position, monster.family) < key);
+    /*
+     * Define some helper functions to clean up logic
+     */
+    this.isBetter = function(other) {
+	// if we want monster that hasn't got certain effect, we test it here
+	if ((conditions.noEffect) && (other.hasEffect(conditions.noEffect)))
+	    return false;
+
+	if (conditions.type == "weakest")
+	    return (other.hp < key);
+	else if (conditions.type == "strongest")
+	    return (other.hp > key);
+	else if (conditions.type == "nearest")
+	    return (getDistance(monster.position, other.position, monster.getEffectedFamily()) < key);
     }
 
-    this.isEqual = function(tile) {
-	if (want_weakest)
-	    return (getMonsterFromId(tile.monsterId).hp == key);
+    this.isEqual = function(other) {
+	// if we want monster that hasn't got certain effect, we test it here
+	if ((conditions.noEffect) && (other.hasEffect(conditions.noEffect)))
+	    return false;
+
+	if (conditions.type == "strongest" || conditions.type == "weakest")
+	    return (other.hp == key);
 	else
-	    return (getDistance(monster.position, tile.position, monster.family) == key);
+	    return (getDistance(monster.position, other.position, monster.getEffectedFamily()) == key);
     }
 
-    this.isSuitableFamily = function(tile) {
-	if (want_friend)
-	    return (monster.family === getMonsterFromId(tile.monsterId).family);
+    this.isSuitableFamily = function(other) {
+	if (conditions.family == "friend")
+	    return (monster.getEffectedFamily() === other.family);
 	else
-	    return (monster.family !== getMonsterFromId(tile.monsterId).family);
+	    return (monster.getEffectedFamily() !== other.family);
     }
 
-    this.setKey = function(tile) {
-	if (want_weakest) 
-	    return getMonsterFromId(tile.monsterId).hp;
+    this.setKey = function(other) {
+	if (conditions.type == "strongest" || conditions.type == "weakest")
+	    return other.hp;
 	else
-	    return getDistance(monster.position, tile.position, monster.family);
+	    return getDistance(monster.position, other.position, monster.getEffectedFamily());
     }
 
-    globals.GroundTiles.forEach(function(tile) {
-	if (tile.monsterId != null) {
-	    if (this.isSuitableFamily(tile)) {
-		if (this.isSmaller(tile)) {
+    /*
+     * Actual 'finder' 
+     */
+    globals.Monsters.forEach(function(other) {
+	// if monster is still available
+	if (other.id != null) {
+	    // ..and wanted family
+	    if (this.isSuitableFamily(other)) {
+		// and better than previous ones
+		if (this.isBetter(other)) {
 		    foundList = [];
-		    foundList.push(tile.position);
-		    key = this.setKey(tile);
+		    foundList.push(other.position);
+		    key = this.setKey(other);
 		}
-		else if (this.isEqual(tile)) {
-		    foundList.push(tile.position);
+		// if there are equally good candidates, we'll take note of them all
+		else if (this.isEqual(other)) {
+		    foundList.push(other.position);
 		}
 	    }
 	}
     });
 
-    var found = null;
-    if (foundList.length > 0)
-	found = randomFromList(foundList);
-
-    return found;
+    console.log("foundList",foundList.length);
+    // foundList contains all candidates (if any)
+    return (foundList.length > 0)? randomFromList(foundList) : null;
 }
 
 var findNearestEnemyRanged = function(monster) { 
     var foundList = [];
     var key = 1000;
 
-    globals.GroundTiles.forEach(function(tile) {
-	if (tile.monsterId != null) {
-
-	    var dist = getRangedDistance(monster.position, tile.position);
+    globals.Monsters.forEach(function(other) {
+	if (monster.id != other.id) {
+	    var dist = getRangedDistance(monster.position, other.position);
 	    /* we find either closest or weakest */
-		/* check if it's enemy/friend we wanted */
-		if (monster.family != globals.Monsters.sprites()[tile.monsterId].family) {
-		    if (dist < key) { 
-			key = getRangedDistance(monster.position, tile.position);
-			foundList = [];
-			foundList.push(tile.position);
-		    }
-		    else if (dist == key)
-			foundList.push(tile.position);
+	    /* check if it's enemy/friend we wanted */
+	    if (monster.getEffectedFamily() != other.family) {
+		if (dist < key) { 
+		    key = getRangedDistance(monster.position, other.position);
+		    foundList = [];
+		    foundList.push(other.position);
 		}
+		else if (dist == key)
+		    foundList.push(other.position);
+	    }
 	}
+
     });
 
     var found = null;
@@ -667,19 +818,32 @@ var findNearestEnemyRanged = function(monster) {
 
 
 var findNearestEnemy = function(monster) {
-    return findSpecificMonster(monster, false, false);
+    var conditions = { type : "nearest", family : "enemy" }
+    return findSpecificMonster(monster, conditions);
 }
 
 var findNearestFriend = function(monster) {
-    return findSpecificMonster(monster, true, false);
+    var conditions = { type : "nearest", family : "friend" }
+    return findSpecificMonster(monster, conditions);
 }
 
 var findWeakestFriend = function(monster) {
-    return findSpecificMonster(monster, true, true);
+    var conditions = { type: "weakest", family : "friend" };
+    return findSpecificMonster(monster, conditions);
+}
+
+var findStrongestEnemy = function(monster) {
+    var conditions = { type: "strongest", family : "enemy" };
+    return findSpecificMonster(monster, conditions);
+}
+
+var findTargetForSpell = function(monster, spell) {
+    var conditions = { type: "strongest", family : "enemy", noEffect : spell };
+    return findSpecificMonster(monster, conditions);
 }
 
 exports.doAI = function(monster) {
-    console.log("AI:",monster.name,monster.position,monster.family);
+    console.log("AI:",monster.name,monster.position,monster.family,monster.getEffectedFamily());
     var nearestEnemyPosition;
     if (monster.weapon === globals.WeaponStyle.MELEE)
        nearestEnemyPosition = findNearestEnemy(monster);
@@ -690,11 +854,11 @@ exports.doAI = function(monster) {
 	CAST_SPELL : 4, DO_NOTHING : 99};
 
     if (nearestEnemyPosition) {
-	console.log("Nearest enemy:",nearestEnemyPosition,getDistance(monster.position, nearestEnemyPosition, monster.family));
+	console.log("Nearest enemy:",nearestEnemyPosition,getDistance(monster.position, nearestEnemyPosition, monster.getEffectedFamily()));
 
 	/* by default, we attack with our hands and claws. */
 	var action = Action.ATTACK;
-	var distance = getDistance(monster.position, nearestEnemyPosition, monster.family);
+	var distance = getDistance(monster.position, nearestEnemyPosition, monster.getEffectedFamily());
 	var nearestEnemy = getMonsterAt(nearestEnemyPosition);
 
 	if (nearestEnemy == null) {
@@ -764,6 +928,9 @@ exports.doAI = function(monster) {
 	 *
 	 */
 
+	// New fate to avoid certain 'paths'
+	fate = Math.random();
+
 	if (action === Action.ATTACK) {
 	    console.log("Action: ATTACK");
 	    if (monster.weapon === globals.WeaponStyle.MELEE)
@@ -771,14 +938,19 @@ exports.doAI = function(monster) {
 	    else if (monster.weapon === globals.WeaponStyle.RANGED)
 		monster.attackRanged(nearestEnemy);
 	    else {
-		// TODO: implement spells
-		// for now, we just attack
-		monster.attackRanged(nearestEnemy);
+		if (fate < 0.66)
+		    monster.castSpell(globals.Spells.POISON, nearestEnemyPosition);
+		else {
+		    if (monster.damage[globals.WeaponStyle.RANGED] < monster.damage[globals.WeaponStyle.MELEE])
+			monster.moveTo(nearestEnemyPosition);
+		    else
+			monster.attackRanged(nearestEnemy);
+		}
 	    }
 	}
 	else if (action === Action.GATHER_AROUND) {
 	    var nearestFriendPosition = findNearestFriend(monster);
-	    var friendDistance = getDistance(monster.position, nearestFriendPosition, monster.family);
+	    var friendDistance = getDistance(monster.position, nearestFriendPosition, monster.getEffectedFamily());
 
 	    /* if we are close to a friend and have a bow, we'll just shoot */
 	    if ((friendDistance <= 2) && (monster.weapon === globals.WeaponStyle.RANGED))
@@ -791,9 +963,27 @@ exports.doAI = function(monster) {
 	    monster.skipTurn();
 	}
 	else if (action === Action.CAST_SPELL) {
-	    // TODO: implement spells
-	    // for now, we just attack
-	    monster.attackRanged(nearestEnemy);
+	    var spell;
+	    if (fate < 0.33)
+		spell = globals.Spells.CONFUSION;
+	    else if (fate < 0.66)
+		spell = globals.Spells.POISON;
+	    else
+		spell = globals.Spells.PARALYZE;
+
+	    var target = findTargetForSpell(monster, spell);
+	    
+	    // we only cast spell if there's a suitable target
+	    // there is a slight chance that caster decides to attack instead
+	    if ((target !== null) && (fate < 0.94))
+		monster.castSpell(spell, target);
+	    else {
+		console.log("Couldn't find target for spell, attacking!");
+		if (monster.damage[globals.WeaponStyle.RANGED] < monster.damage[globals.WeaponStyle.MELEE])
+		    monster.moveTo(nearestEnemyPosition);
+		else
+		    monster.attackRanged(nearestEnemy);
+	    }
 	}
 	else
 	    monster.skipTurn();
