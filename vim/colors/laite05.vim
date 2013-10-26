@@ -17,8 +17,9 @@ hi NonText      gui=none guifg=#999999 guibg=#dddddd
 hi TabLine    	gui=none guifg=#666666 guibg=#f0f0f0
 hi TabLineSel   gui=bold guifg=black   guibg=#f0f0f0
 hi TabLineFill	gui=none guifg=black   guibg=#f0f0f0
-hi LineNr 		gui=none guifg=#999999 guibg=#dddddd 
+hi LineNr 	gui=none guifg=#999999 guibg=#dddddd 
 hi FoldColumn	gui=none guifg=#999999 guibg=#f0f0f0
+hi SignColumn	gui=none guifg=#999999 guibg=#f0f0f0
 
 hi StatusLine   gui=none guibg=#9899ea guifg=#333333
 hi StatusLineNC gui=none guibg=#bbbbbb guifg=white
@@ -49,12 +50,13 @@ hi Visual       gui=none guibg=#d8bcb1 guifg=white
 hi Search       gui=none guibg=#ffaa55 guifg=black
 hi Directory    gui=none guifg=darkblue
 hi WarningMsg   gui=none guifg=red 
-hi Error        gui=none guifg=white guibg=red
-hi Todo         gui=none guifg=black guibg=yellow
+hi Error        gui=none guifg=white guibg=#aa2200
+hi Todo         gui=none guifg=white guibg=#ffaa00
 
 hi MoreMsg      gui=none
 hi ModeMsg      gui=none guifg=#990000
-
+hi SpellCap	gui=none guifg=black guibg=#f0f0f0
+hi SpellBad	gui=none guifg=black guibg=#f0f0f0
 
 hi perlIdentifier			gui=none guifg=black 
 hi perlVarPlain				gui=none guifg=#106020 

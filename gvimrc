@@ -16,12 +16,13 @@ set columns=140
 " we presume that gvim is mostly for coding
 " whereas vim is all-around editor
 set foldcolumn=3
-set foldmethod=syntax
-set foldnestmax=2
+set foldmethod=indent
+set foldnestmax=3
 set foldminlines=1
 set foldlevel=99
 
 set showtabline=2
+set laststatus=2
 
 if exists("+showtabline")
   function! MyTabLine()

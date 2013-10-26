@@ -43,6 +43,12 @@ git clone https://github.com/tpope/vim-surround.git ~/.vim/bundle/vim-surround
 # Ctrlp
 git clone https://github.com/kien/ctrlp.vim.git ~/.vim/bundle/ctrlp.vim
 
+# Syntastic
+git clone https://github.com/scrooloose/syntastic.git ~/.vim/bundle/syntastic
+
+# airline
+git clone https://github.com/bling/vim-airline ~/.vim/bundle/vim-airline
+
 #snippets for SnipMate come from different repository
 git clone https://github.com/honza/vim-snippets.git ./vim-snippets
 cp -t ~/.vim vim-snippets/autoload vim-snippets/snippets

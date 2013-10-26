@@ -17,10 +17,10 @@ set showcmd						" display incomplete commands
 set incsearch					" do incremental searching
 set mouse=a						" enable mouse for all modes
 set hlsearch					" highlight search results
-set tabstop=8					" number of spaces a tab counts for
+set tabstop=4					" number of spaces a tab counts for
 set noexpandtab					" don't handle tab as spaces
 set shiftwidth=4				" number of spaces for (auto)indent
-set softtabstop=4				" number of spaces that a <tab> counts
+"set softtabstop=4				" number of spaces that a <tab> counts
 set smartindent					" start new lines indented
 set nowrap						" don't wrap long lines
 set ignorecase smartcase 		" ignore case on lowcase-searches
@@ -192,12 +192,21 @@ endif
 let g:ctrlp_follow_symlinks = 1
 let g:ctrlp_map = '<Leader>f'
 let g:ctrlp_max_height = 25
-let g:ctrlp_working_path_mode = 'a'
+let g:ctrlp_working_path_mode = ''
+let g:ctrlp_use_caching = 25
+let g:ctrlp_switch_buffer = 'e'
+
 
 " delimitMate
 " use <C-l> in insert mode for escaping brackets
 imap <C-l> <Plug>delimitMateS-Tab
 imap <Leader><C-l> <Plug>delimitMateJumpMany
+
+" Syntastic
+
+" Airline
+let g:airline#extensions#whitespace#enabled = 0
+let g:airline_theme="lucius"
 
 """ Plugins End """
 
