@@ -36,13 +36,13 @@ if [ -f ~/.Xresources ]; then
 	backupped="$backupped .Xresources"
 fi
 
-ln -s /home/laite/workspace/dotfiles/vimrc ~/.vimrc
-ln -s /home/laite/workspace/dotfiles/gvimrc ~/.gvimrc
-ln -s /home/laite/workspace/dotfiles/numbermaps.vim ~/.numbermaps.vim
-ln -s /home/laite/workspace/dotfiles/bashrc ~/.bashrc
-ln -s /home/laite/workspace/dotfiles/bash_aliases ~/.bash_aliases
-ln -s /home/laite/workspace/dotfiles/bash_functions ~/.bash_functions
-ln -s /home/laite/workspace/dotfiles/Xresources ~/.Xresources
+ln -s /home/machina/workspace/dotfiles/vimrc ~/.vimrc
+ln -s /home/machina/workspace/dotfiles/gvimrc ~/.gvimrc
+ln -s /home/machina/workspace/dotfiles/numbermaps.vim ~/.numbermaps.vim
+ln -s /home/machina/workspace/dotfiles/bashrc ~/.bashrc
+ln -s /home/machina/workspace/dotfiles/bash_aliases ~/.bash_aliases
+ln -s /home/machina/workspace/dotfiles/bash_functions ~/.bash_functions
+ln -s /home/machina/workspace/dotfiles/Xresources ~/.Xresources
 
 echo "All is well"
 echo $backupped

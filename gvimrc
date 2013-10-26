@@ -18,11 +18,17 @@ set columns=140
 set foldcolumn=3
 set foldmethod=indent
 set foldnestmax=3
+=======
+set foldnestmax=2
+>>>>>>> e108fb7d9a87407923d769f72eca5a13ea5d037a
 set foldminlines=1
 set foldlevel=99
 
 set showtabline=2
 set laststatus=2
+=======
+set clipboard=unnamedplus,autoselectplus
+>>>>>>> e108fb7d9a87407923d769f72eca5a13ea5d037a
 
 if exists("+showtabline")
   function! MyTabLine()
