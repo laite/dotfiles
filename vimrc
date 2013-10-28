@@ -95,6 +95,9 @@ vnoremap ä `
 vnoremap ää ``
 vnoremap Ä %
 
+" use - as backwards search
+nnoremap - ?
+
 " insert mode mappings
 inoremap <C-U> <C-G>u<C-U>
 
@@ -195,6 +198,8 @@ let g:ctrlp_max_height = 25
 let g:ctrlp_working_path_mode = ''
 let g:ctrlp_use_caching = 25
 let g:ctrlp_switch_buffer = 'e'
+
+nnoremap <Leader>b :CtrlPBuffer<CR>
 
 
 " delimitMate
