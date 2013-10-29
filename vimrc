@@ -5,7 +5,6 @@ set nocompatible
 " one plugin to handle 'em all
 call pathogen#infect()
 
-
 syntax on						" make pretty colors
 set shortmess+=I				" hide start screen
 set backspace=indent,eol,start 	" allow backspacing over everything in insert mode
