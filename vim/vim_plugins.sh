@@ -49,6 +49,9 @@ git clone https://github.com/scrooloose/syntastic.git ~/.vim/bundle/syntastic
 # airline
 git clone https://github.com/bling/vim-airline ~/.vim/bundle/vim-airline
 
+# tComment
+git clone https://github.com/tomtom/tcomment_vim.git ~/.vim/bundle/tcomment_vim
+
 #snippets for SnipMate come from different repository
 git clone https://github.com/honza/vim-snippets.git ./vim-snippets
 cp -rt ~/.vim vim-snippets/autoload vim-snippets/snippets

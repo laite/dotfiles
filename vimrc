@@ -63,7 +63,6 @@ cnoremap <C-n> <Down>
 cnoremap <expr> %% getcmdtype() == ':' ? expand('%:h').'/' : '%%'
 
 " normal mode mappings
-nnoremap <silent> <F3> :TagbarToggle<CR>
 nnoremap <silent> <Leader>ä :nohl<CR>
 " create empty lines and return to normal mode
 nnoremap <Leader>o o<Esc>
@@ -177,6 +176,8 @@ let g:EasyMotion_leader_key = '<Leader>'
 let g:tagbar_left = 1
 let g:tagbar_compact = 1
 let g:tagbar_autoclose = 1
+nnoremap <Leader>t :TagbarToggle<CR>
+nnoremap <silent> <F3> :TagbarToggle<CR>
 
 " Set separate Supertab settings for terminal and gvim
 if has('gui_running')
@@ -211,6 +212,12 @@ imap <Leader><C-l> <Plug>delimitMateJumpMany
 " Airline
 let g:airline#extensions#whitespace#enabled = 0
 let g:airline_theme="lucius"
+
+" tComment
+nnoremap <Leader>b :TCommentBlock<CR>
+vnoremap <Leader>b :TCommentBlock<CR>
+nnoremap <Leader>c :TComment<CR>
+vnoremap <Leader>c :TComment<CR>
 
 """ Plugins End """
 
