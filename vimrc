@@ -200,6 +200,8 @@ let g:ctrlp_use_caching = 25
 let g:ctrlp_switch_buffer = 'e'
 
 nnoremap <Leader>b :CtrlPBuffer<CR>
+nnoremap <Leader>g :CtrlPBufTag<CR>
+nnoremap <Leader>G :CtrlPBufTagAll<CR>
 
 
 " delimitMate
@@ -214,8 +216,8 @@ let g:airline#extensions#whitespace#enabled = 0
 let g:airline_theme="lucius"
 
 " tComment
-nnoremap <Leader>b :TCommentBlock<CR>
-vnoremap <Leader>b :TCommentBlock<CR>
+nnoremap <Leader>C :TCommentBlock<CR>
+vnoremap <Leader>C :TCommentBlock<CR>
 nnoremap <Leader>c :TComment<CR>
 vnoremap <Leader>c :TComment<CR>
 
