@@ -34,7 +34,7 @@ set listchars=extends:>,precedes:<
 
 " foldingmethods for gvim are specified in .gvimrc (they differ a bit)
 set foldcolumn=2
-set foldmethod=syntax
+set foldmethod=indent
 set foldnestmax=2
 set foldminlines=1
 
@@ -213,7 +213,7 @@ imap <Leader><C-l> <Plug>delimitMateJumpMany
 
 " Airline
 let g:airline#extensions#whitespace#enabled = 0
-let g:airline_theme="lucius"
+let g:airline_theme="jellybeans"
 
 " tComment
 nnoremap <Leader>C :TCommentBlock<CR>
