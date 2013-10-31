@@ -5,7 +5,7 @@ set ch=1
 set guioptions=agit
 set guicursor+=a:blinkon0
 set mousehide		" Hide the mouse when typing text
-set guifont=Monospace\ 9
+set guifont=Dina\ 9
 
 set clipboard=autoselect,unnamedplus
 
@@ -73,5 +73,5 @@ if exists("+showtabline")
   set tabline=%!MyTabLine()
 endif
 
-color laite05
+color laite06
 "color rdark
