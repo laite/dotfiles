@@ -95,6 +95,7 @@ vnoremap Ä %
 
 " use - as backwards search
 nnoremap - ?
+vnoremap - ?
 
 " insert mode mappings
 inoremap <C-U> <C-G>u<C-U>
