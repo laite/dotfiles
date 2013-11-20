@@ -203,6 +203,7 @@ let g:ctrlp_switch_buffer = 'e'
 nnoremap <Leader>b :CtrlPBuffer<CR>
 nnoremap <Leader>g :CtrlPBufTag<CR>
 nnoremap <Leader>G :CtrlPBufTagAll<CR>
+nnoremap <Leader>F :CtrlP %:h<CR>
 
 
 " delimitMate
