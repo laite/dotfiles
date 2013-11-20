@@ -23,3 +23,5 @@ alias g_pu='git push origin master'
 alias g_ad='git add'
 alias g_di='git diff --color=auto'
 alias xclip='xclip -se c'
+
+alias tyc='tty-clock -c -C 3'
