@@ -52,7 +52,6 @@ let g:is_bash=1
 map <S-Insert> <MiddleMouse>
 map! <S-Insert> <MiddleMouse>
 map <Leader>h :A<CR>
-map <F4> :AS<CR>
 
 " commandline mappings
 cnoreabbrev vhelp belowright vert help
@@ -178,7 +177,6 @@ let g:tagbar_left = 1
 let g:tagbar_compact = 1
 let g:tagbar_autoclose = 1
 nnoremap <Leader>t :TagbarToggle<CR>
-nnoremap <silent> <F3> :TagbarToggle<CR>
 
 " Set separate Supertab settings for terminal and gvim
 if has('gui_running')
@@ -222,6 +220,13 @@ nnoremap <Leader>C :TCommentBlock<CR>
 vnoremap <Leader>C :TCommentBlock<CR>
 nnoremap <Leader>c :TComment<CR>
 vnoremap <Leader>c :TComment<CR>
+
+" dbgPaVim
+
+let g:dbgPavimPort = 9009
+let g:dbgPavimBreakAtEntry = 0
+nnoremap <Leader>p :Bp<CR>
+
 
 """ Plugins End """
 
