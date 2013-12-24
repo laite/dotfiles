@@ -196,7 +196,7 @@ let g:ctrlp_map = '<Leader>f'
 let g:ctrlp_max_height = 25
 let g:ctrlp_working_path_mode = ''
 let g:ctrlp_use_caching = 25
-let g:ctrlp_switch_buffer = 'e'
+let g:ctrlp_switch_buffer = 't'
 
 nnoremap <Leader>b :CtrlPBuffer<CR>
 nnoremap <Leader>g :CtrlPBufTag<CR>
