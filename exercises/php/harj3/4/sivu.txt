@@ -1,3 +1,0 @@
-<p>Now with sessions.</p>
-<div><ol> </ol></div>
-<p>&nbsp;</p>
