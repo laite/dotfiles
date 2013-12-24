@@ -71,4 +71,9 @@ hi Todo			ctermfg=245		cterm=none		guifg=#8f8f8f	gui=none
 hi! link FoldColumn		Folded
 hi! link CursorColumn	CursorLine
 
+" Breakpoints
+hi DbgBreakPt gui=none guifg=#f6f3e8 guibg=#161616
+hi DbgCurrent gui=none guifg=#ffaa00 guibg=#161616
+
+
 " vim:set ts=4 sw=4 noet:
