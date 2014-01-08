@@ -1,9 +1,0 @@
-// Ex 1.9 : loops
-
-#include <iostream>
-
-int main()
-{
-
-	return 0;
-}

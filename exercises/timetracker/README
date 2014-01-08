@@ -1,5 +1,0 @@
-Timetracker is a small program to keep track of time spent on different tasks.
-
-Requires (at least) gtkmm-dev, boost-filesystem and boost-system.
-
-Basically this is still just an exercise, but somewhat useful (at least to me).

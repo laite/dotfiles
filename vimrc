@@ -53,7 +53,6 @@ let g:is_bash=1
 map <S-Insert> <MiddleMouse>
 map! <S-Insert> <MiddleMouse>
 map <Leader>h :A<CR>
-map <F4> :AS<CR>
 
 " commandline mappings
 cnoreabbrev vhelp belowright vert help
@@ -181,7 +180,6 @@ let g:tagbar_left = 1
 let g:tagbar_compact = 1
 let g:tagbar_autoclose = 1
 nnoremap <Leader>t :TagbarToggle<CR>
-nnoremap <silent> <F3> :TagbarToggle<CR>
 
 " Set separate Supertab settings for terminal and gvim
 if has('gui_running')
@@ -201,11 +199,12 @@ let g:ctrlp_map = '<Leader>f'
 let g:ctrlp_max_height = 25
 let g:ctrlp_working_path_mode = ''
 let g:ctrlp_use_caching = 25
-let g:ctrlp_switch_buffer = 'e'
+let g:ctrlp_switch_buffer = 't'
 
 nnoremap <Leader>b :CtrlPBuffer<CR>
 nnoremap <Leader>g :CtrlPBufTag<CR>
 nnoremap <Leader>G :CtrlPBufTagAll<CR>
+nnoremap <Leader>F :CtrlP %:h<CR>
 
 
 " delimitMate
@@ -224,6 +223,13 @@ nnoremap <Leader>C :TCommentBlock<CR>
 vnoremap <Leader>C :TCommentBlock<CR>
 nnoremap <Leader>c :TComment<CR>
 vnoremap <Leader>c :TComment<CR>
+
+" dbgPaVim
+
+let g:dbgPavimPort = 9009
+let g:dbgPavimBreakAtEntry = 0
+nnoremap <Leader>p :Bp<CR>
+
 
 """ Plugins End """
 

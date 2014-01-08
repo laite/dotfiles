@@ -1,6 +1,0 @@
-// header.h
-
-const int headerConst = 13;
-
-extern int headerData;
-extern int HeaderFunction();

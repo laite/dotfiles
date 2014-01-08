@@ -54,12 +54,12 @@ endif
 
 " Syntax highlighting
 hi Keyword		ctermfg=111		cterm=none		guifg=#f0f0f0	gui=none
-hi Statement	ctermfg=111		cterm=none		guifg=#f0f0f0	gui=none
-hi Constant		ctermfg=173		cterm=none		guifg=#e5786d	gui=none
-hi Number		ctermfg=173		cterm=none		guifg=#e5786d	gui=none
-hi PreProc		ctermfg=173		cterm=none		guifg=#e5786d	gui=none
-hi Function		ctermfg=192		cterm=none		guifg=#f0f0f0	gui=none
-hi Identifier	ctermfg=192		cterm=none		guifg=#f0f0f0	gui=none
+hi Statement	ctermfg=111		cterm=none		guifg=#ff8c5e	gui=none
+hi Constant		ctermfg=173		cterm=none		guifg=#ff8c5e	gui=none
+hi Number		ctermfg=173		cterm=none		guifg=#ff8c5e	gui=none
+hi PreProc		ctermfg=173		cterm=none		guifg=#ff8c5e	gui=none
+hi Function		ctermfg=192		cterm=none		guifg=#41b181	gui=none
+hi Identifier	ctermfg=192		cterm=none		guifg=#41b181	gui=none
 hi Type			ctermfg=192		cterm=none		guifg=#a0a8b0	gui=none
 hi Special		ctermfg=194		cterm=none		guifg=#77b6aa	gui=none
 hi String		ctermfg=113		cterm=none		guifg=#95e454	gui=none
@@ -70,5 +70,10 @@ hi Todo			ctermfg=245		cterm=none		guifg=#8f8f8f	gui=none
 " Links
 hi! link FoldColumn		Folded
 hi! link CursorColumn	CursorLine
+
+" Breakpoints
+hi DbgBreakPt gui=none guifg=#f6f3e8 guibg=#161616
+hi DbgCurrent gui=none guifg=#ffaa00 guibg=#161616
+
 
 " vim:set ts=4 sw=4 noet:
