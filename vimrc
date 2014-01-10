@@ -197,6 +197,7 @@ let g:ctrlp_max_height = 25
 let g:ctrlp_working_path_mode = ''
 let g:ctrlp_use_caching = 25
 let g:ctrlp_switch_buffer = 't'
+let g:ctrlp_open_multiple_files = '2vjr'
 
 nnoremap <Leader>b :CtrlPBuffer<CR>
 nnoremap <Leader>g :CtrlPBufTag<CR>
