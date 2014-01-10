@@ -29,6 +29,7 @@ set linebreak
 set showbreak=\ -->\ 
 set number
 set relativenumber				" use relative numbers by default
+set tw=0
 
 set listchars=extends:>,precedes:<
 
@@ -168,6 +169,8 @@ nnoremap <C-n> :call NumberToggle()<cr>
 
 """ Plugins """
 
+" Fugitive
+nnoremap <Leader>s :Gstatus<CR>
 
 " EasyMotion
 let g:EasyMotion_leader_key = '<Leader>'
