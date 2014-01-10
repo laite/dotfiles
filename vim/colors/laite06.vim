@@ -66,6 +66,10 @@ hi String		ctermfg=113		cterm=none		guifg=#95e454	gui=none
 hi Comment		ctermfg=246		cterm=none		guifg=#99968b	gui=none
 hi Todo			ctermfg=245		cterm=none		guifg=#8f8f8f	gui=none
 
+" Diffs
+hi DiffAdd gui=none guibg=#005500
+hi DiffDelete gui=none guibg=#aa0000
+hi DiffChange gui=none guibg=#000088
 
 " Links
 hi! link FoldColumn		Folded
@@ -74,6 +78,5 @@ hi! link CursorColumn	CursorLine
 " Breakpoints
 hi DbgBreakPt gui=none guifg=#f6f3e8 guibg=#161616
 hi DbgCurrent gui=none guifg=#ffaa00 guibg=#161616
-
 
 " vim:set ts=4 sw=4 noet:
