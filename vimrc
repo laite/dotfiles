@@ -212,6 +212,7 @@ nnoremap <Leader>F :CtrlP %:h<CR>
 " use <C-l> in insert mode for escaping brackets
 imap <C-l> <Plug>delimitMateS-Tab
 imap <Leader><C-l> <Plug>delimitMateJumpMany
+let delimitMate_matchpairs = "(:),[:],{:}"
 
 " Syntastic
 
