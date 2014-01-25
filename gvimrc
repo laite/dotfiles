@@ -73,5 +73,5 @@ if exists("+showtabline")
   set tabline=%!MyTabLine()
 endif
 
-color laite06
+color laite07
 "color rdark
