@@ -73,6 +73,9 @@ nnoremap <Leader><Leader>o o<ESC>kO<ESC>j
 nnoremap <Leader>d ^D
 " treat c-h as real backspace also in normal mode
 nnoremap <C-H> "_X
+" also delete always to void with x/X
+nnoremap x "_x
+nnoremap X "_X
 " make Y behave like C and D (yank to the end of line)
 nnoremap Y y$
 " easier jumping between windows and tabs
