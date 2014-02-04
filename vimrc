@@ -290,7 +290,7 @@ if has("autocmd")
   " au BufNewFile,BufRead *.cpp set syntax=cpp11
   
   " use external browser through script with php files
-  autocmd FileType php set keywordprg=~/.vim/php_doc
+  " autocmd FileType php set keywordprg=~/.vim/php_doc
 
   augroup END
 
