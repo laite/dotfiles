@@ -19,7 +19,6 @@ set foldcolumn=3
 set foldmethod=indent
 set foldnestmax=3
 set foldminlines=1
-set foldlevel=99
 
 set showtabline=2
 set laststatus=2
