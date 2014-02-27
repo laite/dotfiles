@@ -20,7 +20,7 @@ set tabstop=4					" number of spaces a tab counts for
 set noexpandtab					" don't handle tab as spaces
 set shiftwidth=4				" number of spaces for (auto)indent
 "set softtabstop=4				" number of spaces that a <tab> counts
-set smartindent					" start new lines indented
+"set smartindent					" start new lines indented
 set nowrap						" don't wrap long lines
 set ignorecase smartcase 		" ignore case on lowcase-searches
 set scrolloff=5 				" always +- 5 rows in sight
@@ -38,15 +38,7 @@ set foldcolumn=2
 set foldmethod=indent
 set foldnestmax=2
 set foldminlines=1
-
-let javaScript_fold=1         " JavaScript
-let perl_fold=1               " Perl
-let php_folding=1             " PHP
-let r_syntax_folding=1        " R
-let ruby_fold=1               " Ruby
-let sh_fold_enabled=1         " sh
-let vimsyn_folding='af'       " Vim script
-let xml_syntax_folding=1      " XML
+set foldlevel=99
 
 let mapleader = "ö"
 let g:is_bash=1
@@ -147,6 +139,7 @@ inoremap <C-J> ;<CR>
 " inoremap <C-B>
 
 
+
 " other key bindings
 "This allows for change paste motion cp{motion}
 nmap <silent> cp :set opfunc=ChangePaste<CR>g@
@@ -183,18 +176,6 @@ let g:tagbar_left = 1
 let g:tagbar_compact = 1
 let g:tagbar_autoclose = 1
 nnoremap <Leader>t :TagbarToggle<CR>
-
-" Set separate Supertab settings for terminal and gvim
-if has('gui_running')
-	let g:SuperTabMappingTabLiteral = '<C-Tab>'
-	let g:SuperTabMappingForward = '<Tab>'
-	let g:SuperTabMappingBackward = '<C-S-Tab>'
-else
-	let g:SuperTabMappingTabLiteral = '<tab>'
-	" <C-@> in terminal equals control-space
-	let g:SuperTabMappingForward = '<C-@>'
-	let g:SuperTabMappingBackward = '<S-C-@>'
-endif
 
 " ctrlp
 let g:ctrlp_follow_symlinks = 1
@@ -235,6 +216,12 @@ let g:dbgPavimPort = 9009
 let g:dbgPavimBreakAtEntry = 0
 nnoremap <Leader>p :Bp<CR>
 
+" snipMate
+" sniptrigger that doesn't conflict with YouCompleteMe
+imap <C-t> <Esc>a<Plug>snipMateNextOrTrigger
+
+" YouCompleteMe
+let g:ycm_autoclose_preview_window_after_completion = 1
 
 """ Plugins End """
 
