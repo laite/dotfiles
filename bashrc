@@ -26,7 +26,7 @@ shopt -s checkwinsize
 #	PS1='${debian_chroot:+($debian_chroot)}\[\033[00m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 # fi
 
-PS1='\[\033[00m\]# \u@\h \[\033[01;34m\]\w\n\[\033[00;37m\]>\[\033[00m\] '
+PS1='\[\033[00m\]# \u@\h \[\033[01;34m\]\w\[\033[00;33m\] $(parse_git_branch)\n\[\033[00;37m\]>\[\033[00m\] '
 
 
 if [ -x /usr/bin/dircolors ]; then
