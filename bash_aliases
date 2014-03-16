@@ -25,3 +25,5 @@ alias g_di='git diff --color=auto'
 alias xclip='xclip -se c'
 
 alias tyc='tty-clock -c -C 3'
+
+alias dirsize='find . -maxdepth 1 -type d -exec du -sh "{}" \;'
