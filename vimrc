@@ -28,7 +28,7 @@ set sidescrolloff=5				" always +- 5 columns
 set linebreak
 set showbreak=\ -->\ 
 set number
-set norelativenumber				" don't use relative numbers by default
+set relativenumber				" use relative numbers by default
 set tw=0
 let loaded_matchparen = 1
 
