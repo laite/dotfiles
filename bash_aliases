@@ -27,3 +27,5 @@ alias xclip='xclip -se c'
 alias tyc='tty-clock -c -C 3'
 
 alias dirsize='find . -maxdepth 1 -type d -exec du -sh "{}" \;'
+alias redtop='python2.7 /home/machina/workspace/git/reddit-top/reddit_top -i 60m'
+alias tmux='tmux -2'
