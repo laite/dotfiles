@@ -1,4 +1,5 @@
 #!/bin/bash
+sleep 3
 # key definitions for 1337 keyboard usage
 # "original" (finnish) meanings of keys abbreviated in comments
 
