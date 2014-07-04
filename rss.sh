@@ -19,7 +19,8 @@ do
 			i=0;
 			info[0]=${info[0]/Title: /}
 			info[1]=${info[1]/Link: /}
-			info[2]=${info[2]/Author: /}
+			#info[2]=${info[2]/Author: /}
+			info[2]="Someone"
 			echo "$chan *:: LobsterWiki :: ${info[2]} changed page \"${info[0]}\" - ${info[1]}" > /home/laite/.weechat/weechat_fifo_3061 ;
 		fi
 	done
