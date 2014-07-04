@@ -1,5 +1,6 @@
 #!/bin/bash
 
+WEECHAT_FOLDER="" # /path/to/.weechat
 CHANNEL="" # irc.server.#channel
 TOKEN="" # fill in your token
 
@@ -22,7 +23,7 @@ do
 			info[1]=${info[1]/Link: /}
 			#info[2]=${info[2]/Author: /}
 			info[2]="Someone"
-			echo "$CHANNEL *:: LobsterWiki :: ${info[2]} changed page \"${info[0]}\" - ${info[1]}" > /home/laite/.weechat/weechat_fifo_3061 ;
+			echo "$CHANNEL *:: LobsterWiki :: ${info[2]} changed page \"${info[0]}\" - ${info[1]}" > $WEECHAT_FOLDER/weechat_fifo_* ;
 		fi
 	done
 done 
