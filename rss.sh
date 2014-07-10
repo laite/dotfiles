@@ -26,9 +26,9 @@ do
 
 		if [ $i -eq 3 ] ; 
 		then
+			i=0;
 			if [ $elapsed -ge $TIMEOUT ] || [ "$lastpage" != "$info[0]" ] ;
 			then
-				i=0;
 				lasttime=$(date +%s)
 				lastpage=$info[0]
 				info[0]=${info[0]/Title: /}
