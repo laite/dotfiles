@@ -22,7 +22,7 @@ do
 		info[$i]=$x
 		((i++))
 		now=$(date +%s)
-		elapsed=$((now-last))
+		elapsed=$((now-lasttime))
 
 		if [ $i -eq 3 ] ; 
 		then
