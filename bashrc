@@ -28,6 +28,21 @@ shopt -s checkwinsize
 
 PS1='\[\033[00m\]# \u@\h \[\033[01;34m\]\w\[\033[00;33m\] $(parse_git_branch)\n\[\033[00;37m\]>\[\033[00m\] '
 
+# eternalish history
+# Undocumented feature which sets the size to "unlimited".
+# http://stackoverflow.com/questions/9457233/unlimited-bash-history
+export HISTFILESIZE=
+export HISTSIZE=
+export HISTTIMEFORMAT="[%F %T] "
+# Change the file location because certain bash sessions truncate .bash_history file upon close.
+# http://superuser.com/questions/575479/bash-history-truncated-to-500-lines-on-each-login
+export HISTFILE=~/.bash_eternal_history
+# Force prompt to write history after every command.
+# http://superuser.com/questions/20900/bash-history-loss
+PROMPT_COMMAND="history -a; $PROMPT_COMMAND"
+
+# disable XON flow control (for using ^S with reverse search)
+stty -ixon
 
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
