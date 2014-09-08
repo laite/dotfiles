@@ -29,30 +29,3 @@ man() {
 function parse_git_branch {
 	git branch --no-color 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\[\1\] /'
 }
-
-
-# Path marks
-export MARKPATH=$HOME/.marks
-
-# Make sure dir exists
-[ -d $MARKPATH ] || mkdir $MARKPATH
-
-# Jump
-function j {
-	cd -P "$MARKPATH/$1" 2>/dev/null || echo "No such mark: $1"
-}
-
-# Add mark
-function m {
-	mkdir -p "$MARKPATH"; ln -s "$(pwd)" "$MARKPATH/$1"
-}
-
-# Remove mark
-function mr {
-	rm -i "$MARKPATH/$1"
-}
-
-# List marks
-function ml {
-	ls -lA "$MARKPATH" | sed 's/  / /g' | cut -d' ' -f9- | sed 's/ -/\t-/g' && echo
-}
