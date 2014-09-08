@@ -7,7 +7,7 @@ function mkcd()
 # print contents of directory if it's less than 20 files
 function cd()
 {
-	if [ "$(ls -1 "$*" | wc -l)" -lt "20" ]; then
+	if [ "$(ls -1 "$*" 2> /dev/null | wc -l)" -lt "20" ]; then
 		builtin cd "$*" && ls
 	else
 		builtin cd "$*"
