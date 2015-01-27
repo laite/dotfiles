@@ -56,3 +56,19 @@ function mr {
 function ml {
 	ls -lA "$MARKPATH" | sed 's/  / /g' | cut -d' ' -f9- | sed 's/ -/\t-/g' && echo
 }
+
+function curlGET {
+	curl -i -X GET $1
+}
+
+function curlPOST {
+	curl -i -X POST -H 'Content-Type: application/json' -d "$1" $2
+}
+
+function curlDELETE {
+	curl -i -X DELETE $1
+}
+
+function curlPUT {
+	curl -i -X PUT -H 'Content-Type: application/json' -d "$1" $2
+}
