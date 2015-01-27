@@ -8,6 +8,8 @@ xmodmap -e 'keycode 16 = 7 underscore 7 slash braceleft NoSymbol braceleft'
 # key 21 = left to backspace
 xmodmap -e 'keycode 21 = asciitilde acute asciitilde acute grave equal grave equal'
 
+# key 30 = u
+xmodmap -e 'keycode 30 = u U u U udiaeresis Udiaeresis udiaeresis Udiaeresis'
 # key 34 = swedish 'o'
 xmodmap -e 'keycode 34 = bracketleft braceleft bracketleft braceleft parenleft dead_abovering parenright dead_abovering'
 # key 35 = dead_circum/dead_tilde
