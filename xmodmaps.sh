@@ -3,6 +3,9 @@ sleep 3
 # key definitions for 1337 keyboard usage
 # "original" (finnish) meanings of keys abbreviated in comments
 
+# Note - requires xcape!
+setxkbmap -option 'caps:ctrl_modifier'
+xcape -e 'Caps_Lock=Escape'
 # 16 = number 7
 xmodmap -e 'keycode 16 = 7 underscore 7 slash braceleft NoSymbol braceleft'
 # key 21 = left to backspace
@@ -27,4 +30,5 @@ xmodmap -e 'keycode 51 = apostrophe asterisk apostrophe asterisk quotedbl dead_c
 xmodmap -e 'keycode 61 = slash minus underscore slash underscore dead_belowcomma underscore dead_belowcomma'
 
 # change caps lock to escape (great in vim)
-xmodmap -e 'clear Lock' -e 'keycode 0x42 = Control_L' -e 'add Control = Control_L'
+# xmodmap -e 'clear Lock' -e 'keycode 0x42 = Control_L' -e 'add Control = Control_L'
+
