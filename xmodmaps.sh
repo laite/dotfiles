@@ -9,7 +9,7 @@ xcape -e 'Caps_Lock=Escape'
 # 16 = number 7
 xmodmap -e 'keycode 16 = 7 underscore 7 slash braceleft NoSymbol braceleft'
 # key 21 = left to backspace
-xmodmap -e 'keycode 21 = asciitilde acute asciitilde acute grave equal grave equal'
+xmodmap -e 'keycode 21 = asciitilde dead_tilde asciitilde dead_tilde grave equal grave equal'
 
 # key 30 = u
 xmodmap -e 'keycode 30 = u U u U udiaeresis Udiaeresis udiaeresis Udiaeresis'
@@ -22,7 +22,7 @@ xmodmap -e 'keycode 35 = bracketright braceright bracketright braceright parenri
 xmodmap -e 'keycode 38 = a A a A dead_abovering SCHWA dead_abovering SCHWA'
 
 # key 49 = section/half
-xmodmap -e 'keycode 49 = asciicircum dollar asciicircum dollar 0 NoSymbol 0 NoSymbol'
+xmodmap -e 'keycode 49 = asciicircum dollar asciicircum dollar dead_acute NoSymbol dead_acute NoSymbol'
 # key 51 = apostrophe/asterisk
 xmodmap -e 'keycode 51 = apostrophe asterisk apostrophe asterisk quotedbl dead_caron quotedbl dead_breve'
 
