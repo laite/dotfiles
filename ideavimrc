@@ -1,0 +1,50 @@
+set scrolloff=10
+set relativenumber
+set showmode
+set showcmd
+set visualbell
+set clipboard+=unnamed
+
+set ignorecase
+set smartcase
+set incsearch
+
+let mapleader = ","
+
+set surround
+set highlightedyank
+
+set easymotion
+set notimeout
+
+inoremap jk <Esc>
+nnoremap <Leader>h :nohl<CR>
+
+nnoremap <A-n> :tabnext<CR>
+nnoremap <A-p> :tabprev<CR>
+
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
+
+map <Leader>c <Action>(CommentByLineComment)
+
+map <Leader>s <Plug>(easymotion-s)
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+map <Leader>l <Plug>(easymotion-w)
+
+map <Leader>wv <Action>(SplitVertically)
+map <Leader>ws <Action>(SplitHorizontally)
+map <Leader>wu <Action>(Unsplit)
+map <Leader>wm <Action>(MoveWindowToOppositeTabGroup)
+
+map <Leader>am <Action>(ShowIntentionActions)
+map <Leader>am <Action>(SearchEverywhere)
+
+
+
+
+
+
